@@ -3,7 +3,8 @@ import 'package:glyph/ferry/error.dart';
 
 extension ClientX on Client {
   Future<TData> req<TData, TVars>(
-      OperationRequest<TData, TVars> operationRequest) async {
+    OperationRequest<TData, TVars> operationRequest,
+  ) async {
     OperationResponse<TData, TVars> resp;
     try {
       resp = await request(operationRequest).first;

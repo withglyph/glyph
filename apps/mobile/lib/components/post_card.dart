@@ -16,8 +16,8 @@ import 'package:jiffy/jiffy.dart';
 class PostCard extends ConsumerWidget {
   const PostCard(
     this.post, {
-    super.key,
     required this.padding,
+    super.key,
   });
 
   final GPostCard_post post;
@@ -47,8 +47,6 @@ class PostCard extends ConsumerWidget {
                     ),
                     const Gap(2),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         if (post.publishedRevision!.subtitle != null)
                           Flexible(
@@ -152,8 +150,8 @@ class PostCard extends ConsumerWidget {
           ),
         ),
       ),
-      onPressed: () {
-        context.router.push(PostRoute(permalink: post.permalink));
+      onPressed: () async {
+        await context.router.push(PostRoute(permalink: post.permalink));
       },
     );
   }

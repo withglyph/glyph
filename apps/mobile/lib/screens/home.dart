@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
@@ -9,9 +11,7 @@ import 'package:glyph/components/post_card.dart';
 import 'package:glyph/components/pressable.dart';
 import 'package:glyph/components/svg_icon.dart';
 import 'package:glyph/components/svg_image.dart';
-import 'package:glyph/const.dart';
 import 'package:glyph/extensions/color.dart';
-import 'package:glyph/ferry/extension.dart';
 import 'package:glyph/ferry/widget.dart';
 import 'package:glyph/graphql/__generated__/home_screen_query.req.gql.dart';
 import 'package:glyph/routers/app.gr.dart';
@@ -28,20 +28,14 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
-  final operation = GHomeScreen_QueryReq(
-    (b) => b
-      ..requestId = 'HomeScreen_Query'
-      ..vars.take = kPaginationSize,
-  );
-
-  bool isFetching = false;
-
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
 
     for (final carousel in _carousels) {
-      precacheImage(NetworkImage(carousel.backgroundImageUrl), context);
+      unawaited(
+        precacheImage(NetworkImage(carousel.backgroundImageUrl), context),
+      );
     }
   }
 
@@ -50,176 +44,150 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     return DefaultShell(
       appBar: Heading.empty(),
       child: GraphQLOperation(
-        operation: operation,
+        operation: GHomeScreen_QueryReq(),
         builder: (context, client, data) {
-          return NotificationListener<ScrollNotification>(
-            onNotification: (notification) {
-              print(isFetching);
-              if (isFetching || notification.metrics.extentAfter > 200) {
-                return false;
-              }
-
-              isFetching = true;
-              client
-                  .req(
-                    operation.rebuild((b) => b
-                      ..vars.page =
-                          data.followingFeed.length ~/ kPaginationSize + 1
-                      ..updateResult = (previous, result) {
-                        if (previous == null || result == null) {
-                          return result;
-                        }
-
-                        return previous.rebuild(
-                          (b) => b..followingFeed.addAll(result.followingFeed),
-                        );
-                      }),
-                  )
-                  .then((value) => isFetching = false);
-
-              return false;
-            },
-            child: CustomScrollView(
-              physics: const AlwaysScrollableScrollPhysics(),
-              slivers: [
-                SliverToBoxAdapter(
-                  child: Column(
-                    children: [
-                      Heading(
-                        bottomBorder: false,
-                        leading: const SvgImage('logos/full', width: 80),
-                        actions: [
-                          Pressable(
-                            child: const SvgIcon('notification'),
-                            onPressed: () {
-                              context.router.push(const NotificationRoute());
-                            },
+          return CustomScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            slivers: [
+              SliverToBoxAdapter(
+                child: Column(
+                  children: [
+                    Heading(
+                      bottomBorder: false,
+                      leading: const SvgImage('logos/full', width: 80),
+                      actions: [
+                        Pressable(
+                          child: const SvgIcon('notification'),
+                          onPressed: () async {
+                            await context.router.push(
+                              const NotificationRoute(),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                    const Gap(4),
+                    const _Carousel(),
+                    const Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 22,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          _Shortcut(
+                            icon: 'illustrations/home_menu_1',
+                            title: '에디터PICK',
+                          ),
+                          MaxGap(12),
+                          _Shortcut(
+                            icon: 'illustrations/home_menu_2',
+                            title: '챌린지',
+                          ),
+                          MaxGap(12),
+                          _Shortcut(
+                            icon: 'illustrations/home_menu_3',
+                            title: '지금 뜨는 태그',
+                          ),
+                          MaxGap(12),
+                          _Shortcut(
+                            icon: 'illustrations/home_menu_4',
+                            title: '내 스페이스',
                           ),
                         ],
                       ),
-                      const Gap(4),
-                      const _Carousel(),
-                      const Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 20,
-                          vertical: 22,
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            _Shortcut(
-                              icon: 'illustrations/home_menu_1',
-                              title: '에디터PICK',
-                            ),
-                            MaxGap(12),
-                            _Shortcut(
-                              icon: 'illustrations/home_menu_2',
-                              title: '챌린지',
-                            ),
-                            MaxGap(12),
-                            _Shortcut(
-                              icon: 'illustrations/home_menu_3',
-                              title: '지금 뜨는 태그',
-                            ),
-                            MaxGap(12),
-                            _Shortcut(
-                              icon: 'illustrations/home_menu_4',
-                              title: '내 스페이스',
-                            ),
-                          ],
-                        ),
-                      ),
-                      const HorizontalDivider(color: BrandColors.gray_50),
-                      const Gap(8),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 20,
-                          vertical: 8,
-                        ),
-                        child: Row(
-                          children: [
-                            const Text(
-                              '구독',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                            const Spacer(),
-                            Container(
-                              padding: const EdgeInsets.fromLTRB(10, 5, 8, 5),
-                              decoration: BoxDecoration(
-                                border: Border.all(color: BrandColors.gray_150),
-                                borderRadius: BorderRadius.circular(18),
-                              ),
-                              child: const Row(
-                                children: [
-                                  Text(
-                                    '최신순',
-                                    style: TextStyle(
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.w600,
-                                      color: BrandColors.gray_600,
-                                    ),
-                                  ),
-                                  Gap(3),
-                                  SvgIcon(
-                                    'chevron-down',
-                                    size: 14,
-                                    color: BrandColors.gray_500,
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const Gap(10),
-                            Container(
-                              padding: const EdgeInsets.fromLTRB(10, 5, 8, 5),
-                              decoration: BoxDecoration(
-                                border: Border.all(color: BrandColors.gray_150),
-                                borderRadius: BorderRadius.circular(18),
-                              ),
-                              child: const Row(
-                                children: [
-                                  Text(
-                                    '필터',
-                                    style: TextStyle(
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.w600,
-                                      color: BrandColors.gray_600,
-                                    ),
-                                  ),
-                                  Gap(3),
-                                  SvgIcon(
-                                    'filter-cog',
-                                    size: 14,
-                                    color: BrandColors.gray_500,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                SliverList.separated(
-                  itemCount: data.followingFeed.length,
-                  itemBuilder: (context, index) {
-                    return PostCard(
-                      data.followingFeed[index],
+                    ),
+                    const HorizontalDivider(color: BrandColors.gray_50),
+                    const Gap(8),
+                    Padding(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 20,
-                        vertical: 18,
+                        vertical: 8,
                       ),
-                    );
-                  },
-                  separatorBuilder: (context, index) {
-                    return const HorizontalDivider(color: BrandColors.gray_50);
-                  },
+                      child: Row(
+                        children: [
+                          const Text(
+                            '구독',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          const Spacer(),
+                          Container(
+                            padding: const EdgeInsets.fromLTRB(10, 5, 8, 5),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: BrandColors.gray_150),
+                              borderRadius: BorderRadius.circular(18),
+                            ),
+                            child: const Row(
+                              children: [
+                                Text(
+                                  '최신순',
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w600,
+                                    color: BrandColors.gray_600,
+                                  ),
+                                ),
+                                Gap(3),
+                                SvgIcon(
+                                  'chevron-down',
+                                  size: 14,
+                                  color: BrandColors.gray_500,
+                                ),
+                              ],
+                            ),
+                          ),
+                          const Gap(10),
+                          Container(
+                            padding: const EdgeInsets.fromLTRB(10, 5, 8, 5),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: BrandColors.gray_150),
+                              borderRadius: BorderRadius.circular(18),
+                            ),
+                            child: const Row(
+                              children: [
+                                Text(
+                                  '필터',
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w600,
+                                    color: BrandColors.gray_600,
+                                  ),
+                                ),
+                                Gap(3),
+                                SvgIcon(
+                                  'filter-cog',
+                                  size: 14,
+                                  color: BrandColors.gray_500,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+              SliverList.separated(
+                itemCount: data.followingFeed.length,
+                itemBuilder: (context, index) {
+                  return PostCard(
+                    data.followingFeed[index],
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 18,
+                    ),
+                  );
+                },
+                separatorBuilder: (context, index) {
+                  return const HorizontalDivider(color: BrandColors.gray_50);
+                },
+              ),
+            ],
           );
         },
       ),
@@ -317,17 +285,6 @@ class _Carousel extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.end,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        if (carousel.bottomline != null) ...[
-                          Text(
-                            carousel.bottomline!,
-                            style: const TextStyle(
-                              fontSize: 10,
-                              fontWeight: FontWeight.w300,
-                              color: BrandColors.gray_0,
-                            ),
-                          ),
-                          const Gap(2),
-                        ],
                         Text(
                           carousel.title,
                           style: const TextStyle(
@@ -395,9 +352,9 @@ class _Carousel extends StatelessWidget {
             ),
           );
         },
-        onTap: (index) {
+        onTap: (index) async {
           final carousel = _carousels[index];
-          context.router.push(carousel.route);
+          await context.router.push(carousel.route);
         },
       ),
     );
@@ -405,21 +362,18 @@ class _Carousel extends StatelessWidget {
 }
 
 class _CarouselData {
-  final String title;
-  final String? subtitle;
-  final String? bottomline;
-  final String color;
-  final String backgroundImageUrl;
-  final PageRouteInfo route;
-
   _CarouselData({
     required this.title,
-    this.subtitle,
-    this.bottomline,
     required this.color,
     required this.backgroundImageUrl,
     required this.route,
+    this.subtitle,
   });
+  final String title;
+  final String? subtitle;
+  final String color;
+  final String backgroundImageUrl;
+  final PageRouteInfo route;
 }
 
 class _Shortcut extends StatelessWidget {

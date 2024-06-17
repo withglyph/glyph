@@ -5,7 +5,7 @@ import 'package:glyph/shells/default.dart';
 
 @RoutePage()
 class PlaceholderScreen extends ConsumerWidget {
-  const PlaceholderScreen({super.key, required this.text});
+  const PlaceholderScreen({required this.text, super.key});
 
   final String text;
 

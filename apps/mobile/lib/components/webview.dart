@@ -10,8 +10,8 @@ import 'package:glyph/providers/auth.dart';
 
 class WebView extends ConsumerStatefulWidget {
   const WebView({
-    super.key,
     required this.path,
+    super.key,
     this.fitToContent = false,
     this.readOnly = true,
     this.onJsMessage,
@@ -22,10 +22,13 @@ class WebView extends ConsumerStatefulWidget {
   final bool fitToContent;
   final bool readOnly;
   final Future<void> Function(
-      dynamic data, Future<void> Function(dynamic data) reply)? onJsMessage;
+    dynamic data,
+    Future<void> Function(dynamic data) reply,
+  )? onJsMessage;
   final Future<NavigationActionPolicy?> Function(
-          InAppWebViewController controller, NavigationAction navigationAction)?
-      onNavigate;
+    InAppWebViewController controller,
+    NavigationAction navigationAction,
+  )? onNavigate;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _WebviewState();
@@ -114,27 +117,32 @@ class _WebviewState extends ConsumerState<WebView> {
 
           if (defaultTargetPlatform != TargetPlatform.android ||
               await WebViewFeature.isFeatureSupported(
-                  WebViewFeature.WEB_MESSAGE_LISTENER)) {
-            await controller.addWebMessageListener(WebMessageListener(
-              jsObjectName: 'flutter',
-              allowedOriginRules: {'*'},
-              onPostMessage:
-                  (message, sourceOrigin, isMainFrame, replyProxy) async {
-                await widget.onJsMessage?.call(
-                  json.decode(utf8.decode(base64.decode(message!.data))),
-                  (data) async => await replyProxy.postMessage(
-                    WebMessage(
-                      data: base64.encode(utf8.encode(json.encode(data))),
+                WebViewFeature.WEB_MESSAGE_LISTENER,
+              )) {
+            await controller.addWebMessageListener(
+              WebMessageListener(
+                jsObjectName: 'flutter',
+                allowedOriginRules: {'*'},
+                onPostMessage:
+                    (message, sourceOrigin, isMainFrame, replyProxy) async {
+                  await widget.onJsMessage?.call(
+                    json.decode(utf8.decode(base64.decode(message!.data))),
+                    (data) => replyProxy.postMessage(
+                      WebMessage(
+                        data: base64.encode(utf8.encode(json.encode(data))),
+                      ),
                     ),
-                  ),
-                );
-              },
-            ));
+                  );
+                },
+              ),
+            );
           }
 
-          controller.loadUrl(
-            urlRequest: URLRequest(
-              url: WebUri('${Env.baseUrl}${widget.path}?webview=true'),
+          unawaited(
+            controller.loadUrl(
+              urlRequest: URLRequest(
+                url: WebUri('${Env.baseUrl}${widget.path}?webview=true'),
+              ),
             ),
           );
         },

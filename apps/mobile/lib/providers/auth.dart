@@ -1,5 +1,6 @@
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:get_it/get_it.dart';
 import 'package:glyph/ferry/client.dart';
 import 'package:glyph/graphql/__generated__/auth_provider_logout_user_mutation.req.gql.dart';
@@ -7,10 +8,9 @@ import 'package:glyph/graphql/__generated__/auth_provider_query.data.gql.dart';
 import 'package:glyph/graphql/__generated__/auth_provider_query.req.gql.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'auth.g.dart';
 part 'auth.freezed.dart';
+part 'auth.g.dart';
 
 @freezed
 sealed class AuthState with _$AuthState {
@@ -83,9 +83,9 @@ class Auth extends _$Auth {
     } else {
       _mixpanel.identify(resp.data!.me!.id);
       _mixpanel.getPeople()
-        ..set('\$email', resp.data!.me!.email)
-        ..set('\$name', resp.data!.me!.profile.name)
-        ..set('\$avatar', resp.data!.me!.profile.avatar.url);
+        ..set(r'$email', resp.data!.me!.email)
+        ..set(r'$name', resp.data!.me!.profile.name)
+        ..set(r'$avatar', resp.data!.me!.profile.avatar.url);
 
       return AuthState.authenticated(
         accessToken: accessToken,

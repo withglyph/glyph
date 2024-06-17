@@ -4,9 +4,9 @@ import 'package:glyph/themes/colors.dart';
 
 class PullToRefresh extends StatelessWidget {
   const PullToRefresh({
-    super.key,
     required this.child,
     required this.onRefresh,
+    super.key,
   });
 
   final Widget child;
@@ -71,11 +71,11 @@ class PullToRefresh extends StatelessWidget {
 
 class PullToRefreshListView extends StatelessWidget {
   const PullToRefreshListView({
-    super.key,
     required this.onRefresh,
     required this.itemCount,
     required this.itemBuilder,
     required this.emptyText,
+    super.key,
   });
 
   final Future<void> Function() onRefresh;
@@ -85,33 +85,35 @@ class PullToRefreshListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, constraints) {
-      return PullToRefresh(
-        onRefresh: onRefresh,
-        child: itemCount == 0
-            ? SingleChildScrollView(
-                physics: const AlwaysScrollableScrollPhysics(),
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(
-                    minHeight: constraints.maxHeight,
-                  ),
-                  child: Center(
-                    child: Text(
-                      emptyText,
-                      style: const TextStyle(
-                        fontSize: 15,
-                        color: BrandColors.gray_500,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return PullToRefresh(
+          onRefresh: onRefresh,
+          child: itemCount == 0
+              ? SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      minHeight: constraints.maxHeight,
+                    ),
+                    child: Center(
+                      child: Text(
+                        emptyText,
+                        style: const TextStyle(
+                          fontSize: 15,
+                          color: BrandColors.gray_500,
+                        ),
                       ),
                     ),
                   ),
+                )
+              : ListView.builder(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  itemCount: itemCount,
+                  itemBuilder: itemBuilder,
                 ),
-              )
-            : ListView.builder(
-                physics: const AlwaysScrollableScrollPhysics(),
-                itemCount: itemCount,
-                itemBuilder: itemBuilder,
-              ),
-      );
-    });
+        );
+      },
+    );
   }
 }

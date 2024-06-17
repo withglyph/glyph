@@ -28,8 +28,8 @@ class FeedScreen extends ConsumerWidget {
         actions: [
           Pressable(
             child: const SvgIcon('settings'),
-            onPressed: () {
-              context.router.push(
+            onPressed: () async {
+              await context.router.push(
                 WebViewRoute(
                   title: '구독 관리',
                   path: '/me/subscribes',

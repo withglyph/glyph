@@ -18,8 +18,8 @@ import 'package:pinput/pinput.dart';
 @RoutePage()
 class LoginWithCodeScreen extends ConsumerStatefulWidget {
   const LoginWithCodeScreen({
-    super.key,
     required this.email,
+    super.key,
   });
 
   final String email;
@@ -40,8 +40,8 @@ class _LoginWithCodeScreenState extends ConsumerState<LoginWithCodeScreen> {
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ModalRoute.of(context)!.didPush().then((value) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await ModalRoute.of(context)!.didPush().then((value) {
         _pinFocusNode.requestFocus();
         _transitionCompleter.complete();
       });
@@ -167,9 +167,10 @@ class _LoginWithCodeScreenState extends ConsumerState<LoginWithCodeScreen> {
                     _hasError = true;
                   });
 
-                  Future.delayed(const Duration(milliseconds: 500), () {
-                    _pinController.clear();
-                  });
+                  Future.delayed(
+                    const Duration(milliseconds: 500),
+                    _pinController.clear,
+                  );
                 }
               },
             ),

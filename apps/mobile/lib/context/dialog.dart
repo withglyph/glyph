@@ -9,8 +9,8 @@ extension DialogX on BuildContext {
   Future<T?> showDialog<T>({
     required String title,
     required String content,
-  }) async {
-    return await material.showDialog(
+  }) {
+    return material.showDialog(
       context: this,
       barrierDismissible: false,
       builder: (context) {

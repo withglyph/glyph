@@ -5,7 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:glyph/themes/colors.dart';
 
 class TextToastWidget extends ConsumerWidget {
-  const TextToastWidget({super.key, required this.message});
+  const TextToastWidget({required this.message, super.key});
 
   final String message;
 
@@ -29,7 +29,7 @@ class TextToastWidget extends ConsumerWidget {
 }
 
 class ToastScope extends ConsumerStatefulWidget {
-  const ToastScope({super.key, required this.child});
+  const ToastScope({required this.child, super.key});
 
   final Widget child;
 

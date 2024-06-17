@@ -25,14 +25,14 @@ class ArchiveScreen extends ConsumerWidget {
         return Scaffold(
           appBar: const Heading(
             bottomBorder: false,
-            title: const Text(
+            title: Text(
               '보관함',
-              style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
+              style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
             ),
           ),
           body: Column(
             children: [
-              Container(
+              DecoratedBox(
                 decoration: const BoxDecoration(
                   color: BrandColors.gray_0,
                   border: Border(
@@ -79,7 +79,7 @@ class ArchiveScreen extends ConsumerWidget {
                   ),
                 ),
               ),
-              Expanded(child: child)
+              Expanded(child: child),
             ],
           ),
         );

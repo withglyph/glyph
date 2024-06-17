@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:glyph/routers/app.dart';
-import 'package:glyph/routers/observer.dart';
 import 'package:glyph/screens/splash.dart';
 import 'package:glyph/themes/colors.dart';
 import 'package:glyph/widgets/errror.dart';
@@ -26,7 +25,6 @@ class _AppState extends State<App> {
     return MaterialApp.router(
       routerConfig: _router.config(
         placeholder: (context) => const SplashScreen(),
-        navigatorObservers: () => [AppRouterObserver()],
       ),
       debugShowCheckedModeBanner: false,
       theme: ThemeData(

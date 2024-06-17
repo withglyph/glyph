@@ -143,7 +143,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    const Gap(4),
+                    Gap(4),
                     Text(
                       '(최대 20자)',
                       style: TextStyle(
@@ -171,21 +171,18 @@ class _ProfileScreenState extends State<ProfileScreen>
                         enabledBorder: OutlineInputBorder(
                           borderSide: const BorderSide(
                             color: BrandColors.gray_100,
-                            width: 1,
                           ),
                           borderRadius: BorderRadius.circular(2),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderSide: const BorderSide(
                             color: BrandColors.gray_100,
-                            width: 1,
                           ),
                           borderRadius: BorderRadius.circular(2),
                         ),
                         disabledBorder: OutlineInputBorder(
                           borderSide: const BorderSide(
                             color: BrandColors.gray_100,
-                            width: 1,
                           ),
                           borderRadius: BorderRadius.circular(2),
                         ),

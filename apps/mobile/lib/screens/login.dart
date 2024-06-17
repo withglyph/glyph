@@ -1,8 +1,8 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:ferry_flutter/ferry_flutter.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_naver_login/flutter_naver_login.dart';
@@ -47,14 +47,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
       duration: const Duration(minutes: 20),
     );
 
-    _animationController.addListener(() {
-      if (_animationController.status == AnimationStatus.completed) {
-        final client = ref.read(ferryProvider);
-        client.requestController.add(GLoginScreen_QueryReq());
-      }
-    });
-
-    _animationController.repeat();
+    _animationController
+      ..addListener(() {
+        if (_animationController.status == AnimationStatus.completed) {
+          final client = ref.read(ferryProvider);
+          client.requestController.add(GLoginScreen_QueryReq());
+        }
+      })
+      ..repeat();
 
     _alignmentAnimation = AlignmentTween(
       begin: Alignment.centerLeft,
@@ -165,8 +165,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                             ),
                           ),
                         ),
-                        onPressed: () {
-                          context.showBottomSheet(
+                        onPressed: () async {
+                          await context.showBottomSheet(
                             builder: (context) => _BottomSheet(),
                           );
                         },
@@ -194,7 +194,7 @@ class _BottomSheet extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // ignore: prefer_function_declarations_over_variables
-    final login = (GUserSingleSignOnProvider provider, String token) async {
+    final login = (provider, token) async {
       if (!context.mounted) {
         return;
       }
@@ -299,7 +299,7 @@ class _BottomSheet extends ConsumerWidget {
                     GUserSingleSignOnProvider.APPLE,
                     credential.authorizationCode,
                   );
-                } catch (_) {}
+                } on Exception catch (_) {}
               },
             ),
           ],
@@ -310,9 +310,9 @@ class _BottomSheet extends ConsumerWidget {
             backgroundColor: BrandColors.gray_0,
             onPressed: () async {
               final router = context.router;
-              router.maybePop();
+              unawaited(router.maybePop());
               await ModalRoute.of(context)!.completed;
-              router.push(const LoginWithEmailRoute());
+              await router.push(const LoginWithEmailRoute());
             },
           ),
         ],
@@ -323,12 +323,12 @@ class _BottomSheet extends ConsumerWidget {
 
 class _Button extends StatelessWidget {
   const _Button({
-    this.icon,
     required this.text,
     required this.foregroundColor,
     required this.backgroundColor,
-    this.borderColor,
     required this.onPressed,
+    this.icon,
+    this.borderColor,
   });
 
   final Widget? icon;
@@ -348,9 +348,7 @@ class _Button extends StatelessWidget {
         decoration: BoxDecoration(
           color: backgroundColor,
           borderRadius: BorderRadius.circular(4),
-          border: borderColor == null
-              ? null
-              : Border.all(color: borderColor!, width: 1),
+          border: borderColor == null ? null : Border.all(color: borderColor!),
         ),
         child: Stack(
           children: [

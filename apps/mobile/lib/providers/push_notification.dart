@@ -1,14 +1,14 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:get_it/get_it.dart';
 import 'package:glyph/ferry/extension.dart';
 import 'package:glyph/graphql/__generated__/push_notification_provider_delete_push_notification_token_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/push_notification_provider_register_push_notification_token_mutation.req.gql.dart';
 import 'package:glyph/providers/ferry.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'push_notification.g.dart';
 part 'push_notification.freezed.dart';
+part 'push_notification.g.dart';
 
 @freezed
 sealed class PushNotificationState with _$PushNotificationState {

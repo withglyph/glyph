@@ -6,7 +6,7 @@ import 'package:glyph/routers/app.gr.dart';
 
 @RoutePage()
 class EditorScreen extends ConsumerWidget {
-  const EditorScreen({super.key, @PathParam() required this.permalink});
+  const EditorScreen({@PathParam() required this.permalink, super.key});
 
   final String permalink;
 
@@ -21,9 +21,9 @@ class EditorScreen extends ConsumerWidget {
           readOnly: false,
           onJsMessage: (data, reply) async {
             if (data['type'] == 'close') {
-              context.router.maybePop();
+              await context.router.maybePop();
             } else if (data['type'] == 'publish') {
-              context.router.replace(
+              await context.router.replace(
                 PostRoute(permalink: data['permalink']),
               );
             }

@@ -13,8 +13,12 @@ Client createFerryClient(String? accessToken) {
 
   final cache = Cache(possibleTypes: possibleTypesMap);
 
-  return Client(link: link, cache: cache, defaultFetchPolicies: {
-    OperationType.query: FetchPolicy.CacheAndNetwork,
-    OperationType.mutation: FetchPolicy.NetworkOnly,
-  });
+  return Client(
+    link: link,
+    cache: cache,
+    defaultFetchPolicies: {
+      OperationType.query: FetchPolicy.CacheAndNetwork,
+      OperationType.mutation: FetchPolicy.NetworkOnly,
+    },
+  );
 }

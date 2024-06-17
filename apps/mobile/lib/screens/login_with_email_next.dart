@@ -12,8 +12,8 @@ import 'package:glyph/themes/colors.dart';
 @RoutePage()
 class LoginWithEmailNextScreen extends ConsumerWidget {
   const LoginWithEmailNextScreen({
-    super.key,
     required this.email,
+    super.key,
   });
 
   final String email;
@@ -124,8 +124,8 @@ class LoginWithEmailNextScreen extends ConsumerWidget {
                   color: BrandColors.gray_600,
                 ),
               ),
-              onPressed: () {
-                context.router.push(LoginWithCodeRoute(email: email));
+              onPressed: () async {
+                await context.router.push(LoginWithCodeRoute(email: email));
               },
             ),
           ],

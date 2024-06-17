@@ -12,8 +12,8 @@ import 'package:glyph/themes/colors.dart';
 class ThumbnailPostCard extends ConsumerWidget {
   const ThumbnailPostCard(
     this.post, {
-    super.key,
     required this.padding,
+    super.key,
   });
 
   final GThumbnailPostCard_post post;
@@ -83,8 +83,8 @@ class ThumbnailPostCard extends ConsumerWidget {
           ),
         ),
       ),
-      onPressed: () {
-        context.router.push(PostRoute(permalink: post.permalink));
+      onPressed: () async {
+        await context.router.push(PostRoute(permalink: post.permalink));
       },
     );
   }

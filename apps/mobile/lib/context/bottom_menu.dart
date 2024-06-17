@@ -18,17 +18,16 @@ extension BottomMenuX on BuildContext {
 }
 
 class BottomMenuItem {
+  BottomMenuItem({
+    required this.icon,
+    required this.title,
+    required this.onTap,
+    this.color,
+  });
   final String icon;
   final String title;
   final Color? color;
   final void Function() onTap;
-
-  BottomMenuItem({
-    required this.icon,
-    required this.title,
-    this.color,
-    required this.onTap,
-  });
 }
 
 class _BottomMenu extends StatelessWidget {
@@ -64,8 +63,8 @@ class _BottomMenu extends StatelessWidget {
                 ],
               ),
             ),
-            onPressed: () {
-              context.router.maybePop();
+            onPressed: () async {
+              await context.router.maybePop();
               item.onTap();
             },
           );

@@ -69,8 +69,8 @@ class _MeScreenState extends ConsumerState<MeScreen>
                       'notification',
                       color: _appBarForegroundColorAnimation.value,
                     ),
-                    onPressed: () {
-                      context.router.push(const NotificationRoute());
+                    onPressed: () async {
+                      await context.router.push(const NotificationRoute());
                     },
                   ),
                   const Gap(16),
@@ -79,8 +79,8 @@ class _MeScreenState extends ConsumerState<MeScreen>
                       'settings',
                       color: _appBarForegroundColorAnimation.value,
                     ),
-                    onPressed: () {
-                      context.router.push(const SettingsRoute());
+                    onPressed: () async {
+                      await context.router.push(const SettingsRoute());
                     },
                   ),
                 ],
@@ -89,7 +89,7 @@ class _MeScreenState extends ConsumerState<MeScreen>
           ),
           body: NotificationListener<ScrollUpdateNotification>(
             onNotification: (notification) {
-              final box = _spaceHeaderKey.currentContext?.findRenderObject()
+              final box = _spaceHeaderKey.currentContext!.findRenderObject()!
                   as RenderBox;
               final offset = box.localToGlobal(Offset.zero);
               final safeAreaHeight = MediaQuery.of(context).padding.top;
@@ -153,8 +153,8 @@ class _MeScreenState extends ConsumerState<MeScreen>
                               ),
                             ],
                           ),
-                          onPressed: () {
-                            context.router.push(const ProfileRoute());
+                          onPressed: () async {
+                            await context.router.push(const ProfileRoute());
                           },
                         ),
                         const Gap(20),
@@ -168,8 +168,10 @@ class _MeScreenState extends ConsumerState<MeScreen>
                                   child: const Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      SvgIcon('coin',
-                                          color: BrandColors.gray_0),
+                                      SvgIcon(
+                                        'coin',
+                                        color: BrandColors.gray_0,
+                                      ),
                                       Gap(4),
                                       Text(
                                         '포인트',
@@ -178,11 +180,11 @@ class _MeScreenState extends ConsumerState<MeScreen>
                                           fontWeight: FontWeight.w500,
                                           color: BrandColors.gray_0,
                                         ),
-                                      )
+                                      ),
                                     ],
                                   ),
-                                  onPressed: () {
-                                    context.router.push(
+                                  onPressed: () async {
+                                    await context.router.push(
                                       const PointPurchaseRoute(),
                                     );
                                   },
@@ -210,11 +212,11 @@ class _MeScreenState extends ConsumerState<MeScreen>
                                           fontWeight: FontWeight.w500,
                                           color: BrandColors.gray_0,
                                         ),
-                                      )
+                                      ),
                                     ],
                                   ),
-                                  onPressed: () {
-                                    context.router.push(
+                                  onPressed: () async {
+                                    await context.router.push(
                                       WebViewRoute(
                                         title: '수익/출금',
                                         path: '/me/revenue',
@@ -245,11 +247,11 @@ class _MeScreenState extends ConsumerState<MeScreen>
                                           fontWeight: FontWeight.w500,
                                           color: BrandColors.gray_0,
                                         ),
-                                      )
+                                      ),
                                     ],
                                   ),
-                                  onPressed: () {
-                                    context.router.push(
+                                  onPressed: () async {
+                                    await context.router.push(
                                       WebViewRoute(
                                         title: '콘텐츠 필터링',
                                         path: '/me/contentfilters',
@@ -294,8 +296,11 @@ class _MeScreenState extends ConsumerState<MeScreen>
                             padding: const EdgeInsets.fromLTRB(6, 4, 8, 4),
                             child: const Row(
                               children: [
-                                SvgIcon('plus',
-                                    size: 16, color: BrandColors.gray_600),
+                                SvgIcon(
+                                  'plus',
+                                  size: 16,
+                                  color: BrandColors.gray_600,
+                                ),
                                 Text(
                                   '만들기',
                                   style: TextStyle(
@@ -307,8 +312,8 @@ class _MeScreenState extends ConsumerState<MeScreen>
                               ],
                             ),
                           ),
-                          onPressed: () {
-                            context.showDialog(
+                          onPressed: () async {
+                            await context.showDialog(
                               title: '스페이스 만들기',
                               content: '지금은 스페이스를 만들 수 없어요.',
                             );

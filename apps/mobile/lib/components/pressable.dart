@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 class Pressable extends StatelessWidget {
   const Pressable({
+    required this.child,
     super.key,
     this.onPressed,
-    required this.child,
   });
 
   final Widget child;

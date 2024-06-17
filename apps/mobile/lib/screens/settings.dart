@@ -43,8 +43,8 @@ class SettingsScreen extends ConsumerWidget {
                 const _Section('문의 및 안내'),
                 _Item(
                   title: '고객센터',
-                  onPressed: () {
-                    launchUrl(
+                  onPressed: () async {
+                    await launchUrl(
                       Uri.parse('https://penxle.channel.io'),
                       mode: LaunchMode.externalApplication,
                     );
@@ -98,8 +98,8 @@ class SettingsScreen extends ConsumerWidget {
                 const _Section('서비스 정보'),
                 _Item(
                   title: '이용약관',
-                  onPressed: () {
-                    launchUrl(
+                  onPressed: () async {
+                    await launchUrl(
                       Uri.parse('https://help.withglyph.com/legal/terms'),
                       mode: LaunchMode.externalApplication,
                     );
@@ -107,8 +107,8 @@ class SettingsScreen extends ConsumerWidget {
                 ),
                 _Item(
                   title: '개인정보처리방침',
-                  onPressed: () {
-                    launchUrl(
+                  onPressed: () async {
+                    await launchUrl(
                       Uri.parse('https://help.withglyph.com/legal/privacy'),
                       mode: LaunchMode.externalApplication,
                     );
@@ -116,15 +116,17 @@ class SettingsScreen extends ConsumerWidget {
                 ),
                 _Item(
                   title: '사업자 정보',
-                  onPressed: () {
-                    launchUrl(
+                  onPressed: () async {
+                    await launchUrl(
                       Uri.parse(
-                          'https://www.ftc.go.kr/bizCommPop.do?wrkr_no=6108803078'),
+                        'https://www.ftc.go.kr/bizCommPop.do?wrkr_no=6108803078',
+                      ),
                       mode: LaunchMode.externalApplication,
                     );
                   },
                 ),
                 FutureBuilder(
+                  // ignore: discarded_futures
                   future: PackageInfo.fromPlatform(),
                   builder: (context, snapshot) {
                     return _Item(
@@ -154,8 +156,8 @@ class SettingsScreen extends ConsumerWidget {
                 ),
                 _Item(
                   title: '오픈소스 라이센스',
-                  onPressed: () {
-                    context.router.push(const OssLicensesRoute());
+                  onPressed: () async {
+                    await context.router.push(const OssLicensesRoute());
                   },
                 ),
                 const Gap(60),
@@ -165,7 +167,6 @@ class SettingsScreen extends ConsumerWidget {
                     decoration: BoxDecoration(
                       border: Border.all(
                         color: BrandColors.gray_150,
-                        width: 1,
                       ),
                       borderRadius: BorderRadius.circular(2),
                     ),
@@ -180,7 +181,7 @@ class SettingsScreen extends ConsumerWidget {
                     ),
                   ),
                   onPressed: () async {
-                    context.loader.run(() async {
+                    await context.loader.run(() async {
                       await ref
                           .read(pushNotificationProvider.notifier)
                           .clearToken();
@@ -206,7 +207,7 @@ class _Section extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text(
-      this.title,
+      title,
       style: const TextStyle(
         fontSize: 12,
         fontWeight: FontWeight.w600,
@@ -219,9 +220,9 @@ class _Section extends StatelessWidget {
 class _Item extends StatelessWidget {
   const _Item({
     required this.title,
+    required this.onPressed,
     this.leading,
     this.trailing,
-    required this.onPressed,
   });
 
   final String title;
@@ -232,13 +233,13 @@ class _Item extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Pressable(
+      onPressed: onPressed,
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 16),
         decoration: const BoxDecoration(
           border: Border(
             bottom: BorderSide(
               color: BrandColors.gray_50,
-              width: 1,
             ),
           ),
         ),
@@ -262,7 +263,6 @@ class _Item extends StatelessWidget {
           ],
         ),
       ),
-      onPressed: onPressed,
     );
   }
 }

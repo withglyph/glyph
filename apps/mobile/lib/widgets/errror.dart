@@ -36,8 +36,8 @@ class AppErrorWidget extends StatelessWidget {
                   ),
                 ),
               ),
-              onTap: () {
-                context.router.maybePop();
+              onTap: () async {
+                await context.router.maybePop();
               },
             ),
           ],

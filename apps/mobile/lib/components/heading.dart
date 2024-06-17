@@ -42,7 +42,7 @@ class Heading extends StatelessWidget implements PreferredSizeWidget {
       value: baseSystemUiOverlayStyle.copyWith(
         statusBarColor: backgroundColor,
       ),
-      child: Container(
+      child: DecoratedBox(
         decoration: BoxDecoration(
           color: backgroundColor,
         ),
@@ -55,7 +55,6 @@ class Heading extends StatelessWidget implements PreferredSizeWidget {
                   ? const Border(
                       bottom: BorderSide(
                         color: BrandColors.gray_100,
-                        width: 1,
                       ),
                     )
                   : null,
@@ -95,7 +94,7 @@ class Heading extends StatelessWidget implements PreferredSizeWidget {
   }
 
   @override
-  final preferredSize = _preferredSize;
+  get preferredSize => _preferredSize;
 
   static PreferredSizeWidget animated({
     required AnimationController animation,
@@ -132,7 +131,7 @@ class EmptyHeading extends StatelessWidget implements PreferredSizeWidget {
   final SystemUiOverlayStyle? fallbackSystemUiOverlayStyle;
 
   @override
-  final preferredSize = Size.zero;
+  get preferredSize => Size.zero;
 
   @override
   Widget build(BuildContext context) {
@@ -147,7 +146,7 @@ class EmptyHeading extends StatelessWidget implements PreferredSizeWidget {
       value: baseSystemUiOverlayStyle.copyWith(
         statusBarColor: backgroundColor,
       ),
-      child: Container(
+      child: ColoredBox(
         color: backgroundColor ?? BrandColors.gray_0,
         child: const SafeArea(
           child: SizedBox.shrink(),

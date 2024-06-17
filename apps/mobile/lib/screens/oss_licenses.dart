@@ -15,7 +15,9 @@ class OssLicensesScreen extends StatefulWidget {
 
 class _OssLicensesScreenState extends State<OssLicensesScreen> {
   final _licenses = LicenseRegistry.licenses.fold(
-      <LicenseEntry>[], (prev, license) => prev..add(license)).then((entries) {
+    <LicenseEntry>[],
+    (prev, license) => prev..add(license),
+  ).then((entries) {
     final licenses = <String, List<String>>{};
 
     for (final entry in entries) {
@@ -58,8 +60,8 @@ class _OssLicensesScreenState extends State<OssLicensesScreen> {
                     ),
                   ),
                 ),
-                onPressed: () {
-                  context.router.push(
+                onPressed: () async {
+                  await context.router.push(
                     OssLicensesDetailsRoute(
                       package: entry.key,
                       paragraphs: entry.value,

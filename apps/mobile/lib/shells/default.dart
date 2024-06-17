@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:glyph/components/heading.dart';
 import 'package:glyph/themes/colors.dart';
 
 class DefaultShell extends StatelessWidget {
   const DefaultShell({
+    required this.child,
     super.key,
     this.title,
-    required this.child,
     this.actions,
     this.useSafeArea = false,
     this.appBar,
@@ -37,7 +36,6 @@ class DefaultShell extends StatelessWidget {
                     ),
                   ),
             actions: actions,
-            backgroundColor: BrandColors.gray_0,
             bottomBorder: bottomBorder,
           ),
       body: useSafeArea ? SafeArea(child: child) : child,

@@ -41,7 +41,10 @@ class NotificationScreen extends ConsumerWidget {
             final req =
                 GNotificationScreen_MarkAllNotificationsAsRead_MutationReq();
             await client.req(req);
-            context.toast.show('모든 알림을 읽었어요');
+
+            if (context.mounted) {
+              context.toast.show('모든 알림을 읽었어요');
+            }
           },
         ),
       ],
@@ -125,10 +128,10 @@ class NotificationScreen extends ConsumerWidget {
                                   .fromNow(),
                               style:
                                   const TextStyle(color: BrandColors.gray_400),
-                            )
+                            ),
                           ],
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ),
@@ -150,8 +153,8 @@ class NotificationScreen extends ConsumerWidget {
                     orElse: () => null,
                   );
 
-                  if (route != null) {
-                    context.router.push(route);
+                  if (context.mounted && route != null) {
+                    await context.router.push(route);
                   }
                 },
               );

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:glyph/themes/colors.dart';
@@ -10,21 +12,23 @@ class LoaderController {
   final BuildContext context;
 
   void show() {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        _loaderContext = context;
+    unawaited(
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+          _loaderContext = context;
 
-        return const PopScope(
-          canPop: false,
-          child: Center(
-            child: CircularProgressIndicator(
-              color: BrandColors.brand_600,
+          return const PopScope(
+            canPop: false,
+            child: Center(
+              child: CircularProgressIndicator(
+                color: BrandColors.brand_600,
+              ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 

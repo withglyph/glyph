@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -27,11 +29,13 @@ class _LoginWithTokenScreenState extends ConsumerState<LoginWithTokenScreen> {
       (b) => b..vars.input.token = widget.token,
     );
 
-    client.req(req).then((resp) async {
-      await ref
-          .read(authProvider.notifier)
-          .setAccessToken(resp.authorizeUserEmailToken.token);
-    });
+    unawaited(
+      client.req(req).then((resp) async {
+        await ref
+            .read(authProvider.notifier)
+            .setAccessToken(resp.authorizeUserEmailToken.token);
+      }),
+    );
   }
 
   @override

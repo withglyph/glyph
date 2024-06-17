@@ -22,6 +22,8 @@ import 'package:in_app_purchase/in_app_purchase.dart';
 
 @RoutePage()
 class PointPurchaseScreen extends ConsumerStatefulWidget {
+  const PointPurchaseScreen({super.key});
+
   @override
   createState() => _PointPurchaseScreenState();
 }
@@ -36,45 +38,43 @@ class _PointPurchaseScreenState extends ConsumerState<PointPurchaseScreen> {
   void initState() {
     super.initState();
 
-    this._fetchProducts();
+    unawaited(_fetchProducts());
 
     _purchaseStreamSubscription =
-        _iap.purchaseStream.listen((purchaseDetailsList) {
-      purchaseDetailsList.forEach(
-        (purchaseDetails) async {
-          if (purchaseDetails.status == PurchaseStatus.pending) {
-          } else {
-            if (purchaseDetails.pendingCompletePurchase) {
-              await _iap.completePurchase(purchaseDetails);
-            }
-
-            if (purchaseDetails.status == PurchaseStatus.purchased) {
-              final client = ref.read(ferryProvider);
-              final req = GPurchasePointScreen_InAppPurchasePoint_MutationReq(
-                (b) => b
-                  ..vars.input.store = Platform.isIOS
-                      ? GStoreKind.APP_STORE
-                      : GStoreKind.PLAY_STORE
-                  ..vars.input.productId = purchaseDetails.productID
-                  ..vars.input.data =
-                      purchaseDetails.verificationData.serverVerificationData,
-              );
-              await client.req(req);
-              client.requestController.add(GPointPurchaseScreen_QueryReq());
-            }
-
-            if (context.mounted) {
-              context.loader.dismiss();
-            }
+        _iap.purchaseStream.listen((purchaseDetailsList) async {
+      for (final purchaseDetails in purchaseDetailsList) {
+        if (purchaseDetails.status == PurchaseStatus.pending) {
+        } else {
+          if (purchaseDetails.pendingCompletePurchase) {
+            await _iap.completePurchase(purchaseDetails);
           }
-        },
-      );
+
+          if (purchaseDetails.status == PurchaseStatus.purchased) {
+            final client = ref.read(ferryProvider);
+            final req = GPurchasePointScreen_InAppPurchasePoint_MutationReq(
+              (b) => b
+                ..vars.input.store = Platform.isIOS
+                    ? GStoreKind.APP_STORE
+                    : GStoreKind.PLAY_STORE
+                ..vars.input.productId = purchaseDetails.productID
+                ..vars.input.data =
+                    purchaseDetails.verificationData.serverVerificationData,
+            );
+            await client.req(req);
+            client.requestController.add(GPointPurchaseScreen_QueryReq());
+          }
+
+          if (mounted) {
+            context.loader.dismiss();
+          }
+        }
+      }
     });
   }
 
   @override
   void dispose() {
-    _purchaseStreamSubscription?.cancel();
+    unawaited(_purchaseStreamSubscription?.cancel());
 
     super.dispose();
   }
@@ -160,7 +160,9 @@ class _PointPurchaseScreenState extends ConsumerState<PointPurchaseScreen> {
                             ),
                           );
                         } else {
-                          context.loader.dismiss();
+                          if (context.mounted) {
+                            context.loader.dismiss();
+                          }
 
                           client.requestController
                               .add(GPointPurchaseScreen_QueryReq());

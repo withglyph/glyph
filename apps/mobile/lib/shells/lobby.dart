@@ -1,6 +1,6 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:glyph/components/pressable.dart';
 import 'package:glyph/components/svg_icon.dart';
 import 'package:glyph/ferry/extension.dart';
@@ -37,10 +37,10 @@ class LobbyShell extends ConsumerWidget {
               icon: const SvgIcon('home', color: BrandColors.gray_400),
               activeIcon: const SvgIcon('home-filled'),
               isActive: tabsRouter.activeIndex == 0,
-              onTap: () {
+              onTap: () async {
                 if (tabsRouter.activeIndex == 0) {
                   final controller = PrimaryScrollController.maybeOf(context);
-                  controller?.animateTo(
+                  await controller?.animateTo(
                     0,
                     duration: const Duration(milliseconds: 1000),
                     curve: Curves.fastEaseInToSlowEaseOut,
@@ -54,10 +54,10 @@ class LobbyShell extends ConsumerWidget {
               icon: const SvgIcon('search', color: BrandColors.gray_400),
               activeIcon: const SvgIcon('search'),
               isActive: tabsRouter.activeIndex == 1,
-              onTap: () {
+              onTap: () async {
                 if (tabsRouter.activeIndex == 1) {
                   final controller = PrimaryScrollController.maybeOf(context);
-                  controller?.animateTo(
+                  await controller?.animateTo(
                     0,
                     duration: const Duration(milliseconds: 1000),
                     curve: Curves.fastEaseInToSlowEaseOut,
@@ -79,7 +79,7 @@ class LobbyShell extends ConsumerWidget {
                       color: BrandColors.gray_900.withOpacity(0.2),
                       offset: const Offset(2, 3),
                       blurRadius: 20,
-                    )
+                    ),
                   ],
                 ),
                 child: const Center(
@@ -96,7 +96,7 @@ class LobbyShell extends ConsumerWidget {
                 final resp = await client.req(req);
 
                 if (context.mounted) {
-                  context.router.push(
+                  await context.router.push(
                     EditorRoute(permalink: resp.createPost.permalink),
                   );
                 }
@@ -106,10 +106,10 @@ class LobbyShell extends ConsumerWidget {
               icon: const SvgIcon('archive', color: BrandColors.gray_400),
               activeIcon: const SvgIcon('archive-filled'),
               isActive: tabsRouter.activeIndex == 2,
-              onTap: () {
+              onTap: () async {
                 if (tabsRouter.activeIndex == 2) {
                   final controller = PrimaryScrollController.maybeOf(context);
-                  controller?.animateTo(
+                  await controller?.animateTo(
                     0,
                     duration: const Duration(milliseconds: 1000),
                     curve: Curves.fastEaseInToSlowEaseOut,
@@ -127,9 +127,10 @@ class LobbyShell extends ConsumerWidget {
                 child: Padding(
                   padding: const EdgeInsets.all(1), // Border radius
                   child: ClipOval(
-                      child: me == null
-                          ? null
-                          : Image.network(me.profile.avatar.url)),
+                    child: me == null
+                        ? null
+                        : Image.network(me.profile.avatar.url),
+                  ),
                 ),
               ),
               activeIcon: CircleAvatar(
@@ -139,16 +140,17 @@ class LobbyShell extends ConsumerWidget {
                 child: Padding(
                   padding: const EdgeInsets.all(1), // Border radius
                   child: ClipOval(
-                      child: me == null
-                          ? null
-                          : Image.network(me.profile.avatar.url)),
+                    child: me == null
+                        ? null
+                        : Image.network(me.profile.avatar.url),
+                  ),
                 ),
               ),
               isActive: tabsRouter.activeIndex == 3,
-              onTap: () {
+              onTap: () async {
                 if (tabsRouter.activeIndex == 3) {
                   final controller = PrimaryScrollController.maybeOf(context);
-                  controller?.animateTo(
+                  await controller?.animateTo(
                     0,
                     duration: const Duration(milliseconds: 1000),
                     curve: Curves.fastEaseInToSlowEaseOut,
@@ -167,8 +169,8 @@ class LobbyShell extends ConsumerWidget {
 
 class LobbyBottomNavigationBar extends ConsumerWidget {
   const LobbyBottomNavigationBar({
-    super.key,
     required this.items,
+    super.key,
   });
 
   final List<LobbyBottomNavigationBarItem> items;
@@ -199,8 +201,8 @@ class LobbyBottomNavigationBar extends ConsumerWidget {
 
 class LobbyBottomNavigationBarItem extends ConsumerWidget {
   const LobbyBottomNavigationBarItem({
-    super.key,
     required this.icon,
+    super.key,
     this.activeIcon,
     this.isActive,
     this.onTap,

@@ -4,13 +4,14 @@ import 'package:glyph/themes/colors.dart';
 
 class ToggleSwitch extends StatefulWidget {
   const ToggleSwitch({
-    super.key,
     required this.value,
+    super.key,
     this.onChanged,
   });
 
   final bool value;
-  final Function(bool)? onChanged;
+  // ignore: avoid_positional_boolean_parameters
+  final Function(bool value)? onChanged;
 
   @override
   createState() => _ToggleSwitchState();

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
@@ -6,8 +8,8 @@ import 'package:glyph/themes/colors.dart';
 
 class FormTextField extends StatefulWidget {
   const FormTextField({
-    super.key,
     required this.name,
+    super.key,
     this.controller,
     this.focusNode,
     this.labelText,
@@ -81,9 +83,11 @@ class _FormTextFieldState extends State<FormTextField>
 
     if (widget.autofocus) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        ModalRoute.of(context)!.didPush().then((value) {
-          _focusNode.requestFocus();
-        });
+        unawaited(
+          ModalRoute.of(context)!.didPush().then((value) {
+            _focusNode.requestFocus();
+          }),
+        );
       });
     }
   }

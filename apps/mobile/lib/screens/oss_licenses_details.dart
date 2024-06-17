@@ -5,9 +5,9 @@ import 'package:glyph/shells/default.dart';
 @RoutePage()
 class OssLicensesDetailsScreen extends StatelessWidget {
   const OssLicensesDetailsScreen({
-    super.key,
     required this.package,
     required this.paragraphs,
+    super.key,
   });
 
   final String package;

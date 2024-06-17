@@ -13,14 +13,14 @@ import 'package:glyph/ferry/extension.dart';
 import 'package:glyph/ferry/widget.dart';
 import 'package:glyph/graphql/__generated__/tag_screen_follow_tag_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/tag_screen_mute_tag_mutation.req.gql.dart';
-import 'package:glyph/graphql/__generated__/tag_screen_unmute_tag_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/tag_screen_query.req.gql.dart';
 import 'package:glyph/graphql/__generated__/tag_screen_unfollow_tag_mutation.req.gql.dart';
+import 'package:glyph/graphql/__generated__/tag_screen_unmute_tag_mutation.req.gql.dart';
 import 'package:glyph/themes/colors.dart';
 
 @RoutePage()
 class TagScreen extends StatefulWidget {
-  const TagScreen({super.key, required this.name});
+  const TagScreen({required this.name, super.key});
 
   final String name;
 
@@ -47,7 +47,6 @@ class _TagScreenState extends State<TagScreen>
     );
 
     _appBarBackgroundColorAnimation = ColorTween(
-      begin: null,
       end: BrandColors.gray_0,
     ).animate(_appBarAnimationController);
 
@@ -90,8 +89,8 @@ class _TagScreenState extends State<TagScreen>
                       : null,
                   actions: [
                     Pressable(
-                      onPressed: () {
-                        context.showBottomSheet(
+                      onPressed: () async {
+                        await context.showBottomSheet(
                           builder: (context) {
                             return Padding(
                               padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
@@ -110,7 +109,6 @@ class _TagScreenState extends State<TagScreen>
                                   const Gap(8),
                                   Pressable(
                                     onPressed: () async {
-                                      print('pressed');
                                       if (data.tag.muted) {
                                         final req =
                                             GTagScreen_UnmuteTag_MutationReq(
@@ -126,7 +124,10 @@ class _TagScreenState extends State<TagScreen>
                                         );
                                         await client.req(req);
                                       }
-                                      Navigator.pop(context);
+
+                                      if (context.mounted) {
+                                        await context.router.maybePop();
+                                      }
                                     },
                                     child: Padding(
                                       padding: const EdgeInsets.symmetric(
@@ -177,7 +178,7 @@ class _TagScreenState extends State<TagScreen>
                 if (_key.currentContext == null) return false;
 
                 final box =
-                    _key.currentContext!.findRenderObject() as RenderBox;
+                    _key.currentContext!.findRenderObject()! as RenderBox;
                 final offset = box.localToGlobal(Offset.zero);
                 final safeAreaHeight = MediaQuery.of(context).padding.top;
                 final spaceHeaderTopPosition = offset.dy - safeAreaHeight - 44;
@@ -206,8 +207,6 @@ class _TagScreenState extends State<TagScreen>
                                 Color(0xFF323232),
                                 BrandColors.gray_900,
                               ],
-                              begin: Alignment.centerLeft,
-                              end: Alignment.centerRight,
                             ),
                           ),
                           child: Center(
@@ -282,6 +281,27 @@ class _TagScreenState extends State<TagScreen>
                                       ),
                                     const Gap(8),
                                     Pressable(
+                                      onPressed: data.tag.muted
+                                          ? null
+                                          : () async {
+                                              if (data.tag.followed) {
+                                                final req =
+                                                    GTagScreen_UnfollowTag_MutationReq(
+                                                  (b) => b
+                                                    ..vars.input.tagId =
+                                                        data.tag.id,
+                                                );
+                                                await client.req(req);
+                                              } else {
+                                                final req =
+                                                    GTagScreen_FollowTag_MutationReq(
+                                                  (b) => b
+                                                    ..vars.input.tagId =
+                                                        data.tag.id,
+                                                );
+                                                await client.req(req);
+                                              }
+                                            },
                                       child: Container(
                                         width: 68,
                                         padding: const EdgeInsets.symmetric(
@@ -312,27 +332,6 @@ class _TagScreenState extends State<TagScreen>
                                           ),
                                         ),
                                       ),
-                                      onPressed: data.tag.muted
-                                          ? null
-                                          : () async {
-                                              if (data.tag.followed) {
-                                                final req =
-                                                    GTagScreen_UnfollowTag_MutationReq(
-                                                  (b) => b
-                                                    ..vars.input.tagId =
-                                                        data.tag.id,
-                                                );
-                                                await client.req(req);
-                                              } else {
-                                                final req =
-                                                    GTagScreen_FollowTag_MutationReq(
-                                                  (b) => b
-                                                    ..vars.input.tagId =
-                                                        data.tag.id,
-                                                );
-                                                await client.req(req);
-                                              }
-                                            },
                                     ),
                                   ],
                                 ),
@@ -348,7 +347,7 @@ class _TagScreenState extends State<TagScreen>
                           const SliverToBoxAdapter(
                             child: Column(
                               children: [
-                                const Gap(78),
+                                Gap(78),
                                 Text(
                                   '해당 태그가 뮤트되어 있어 포스트를 볼 수 없습니다.\n포스트를 보시려면 뮤트 설정을 해제해주세요.',
                                   textAlign: TextAlign.center,
@@ -357,7 +356,7 @@ class _TagScreenState extends State<TagScreen>
                                     color: BrandColors.gray_400,
                                   ),
                                 ),
-                                const Gap(78),
+                                Gap(78),
                               ],
                             ),
                           ),
@@ -393,7 +392,8 @@ class _TagScreenState extends State<TagScreen>
                               return const Padding(
                                 padding: EdgeInsets.symmetric(horizontal: 20),
                                 child: HorizontalDivider(
-                                    color: BrandColors.gray_50),
+                                  color: BrandColors.gray_50,
+                                ),
                               );
                             },
                           ),

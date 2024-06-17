@@ -6,9 +6,9 @@ import 'package:glyph/shells/default.dart';
 @RoutePage()
 class WebViewScreen extends StatelessWidget {
   const WebViewScreen({
-    super.key,
     required this.title,
     required this.path,
+    super.key,
   });
 
   final String title;
@@ -17,9 +17,9 @@ class WebViewScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultShell(
-      title: this.title,
+      title: title,
       child: WebView(
-        path: this.path,
+        path: path,
       ),
     );
   }
