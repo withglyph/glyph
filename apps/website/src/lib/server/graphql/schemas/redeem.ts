@@ -19,9 +19,24 @@ import { getSpaceMember, useFirstRow, useFirstRowOrThrow } from '$lib/server/uti
 import { builder } from '../builder';
 import { createObjectRef } from '../utils';
 import { Post, PostPurchase } from './post';
+import type { Transaction } from '$lib/server/database';
 
 // cspell:disable-next-line
 const generateRedeemCode = customAlphabet('HMN34P67R9TWCXYF', 20);
+
+const checkRedeemCodeGroupState = async (groupId: string, tx?: Transaction) => {
+  const db = tx ?? database;
+
+  const availableCodeCount = await db
+    .select({ count: count() })
+    .from(RedeemCodes)
+    .where(and(eq(RedeemCodes.groupId, groupId), eq(RedeemCodes.state, 'AVAILABLE')))
+    .then((rows) => rows[0].count ?? 0);
+
+  if (availableCodeCount === 0) {
+    await db.update(RedeemCodeGroups).set({ state: 'INACTIVE' }).where(eq(RedeemCodeGroups.id, groupId));
+  }
+};
 
 /**
  * * Types
@@ -355,12 +370,18 @@ builder.mutationFields((t) => ({
         throw new IntentionalError('이미 사용된 코드에요');
       }
 
-      return await database
-        .update(RedeemCodes)
-        .set({ state: 'REVOKED' })
-        .where(eq(RedeemCodes.id, code.id))
-        .returning()
-        .then(useFirstRowOrThrow());
+      return await database.transaction(async (tx) => {
+        const redeemCode = await database
+          .update(RedeemCodes)
+          .set({ state: 'REVOKED' })
+          .where(eq(RedeemCodes.id, code.id))
+          .returning()
+          .then(useFirstRowOrThrow());
+
+        await checkRedeemCodeGroupState(redeemCode.groupId, tx);
+
+        return redeemCode;
+      });
     },
   }),
 
@@ -439,6 +460,8 @@ builder.mutationFields((t) => ({
           .then(useFirstRowOrThrow());
 
         await tx.update(RedeemCodes).set({ state: 'USED' }).where(eq(RedeemCodes.id, redeem.id));
+
+        await checkRedeemCodeGroupState(redeem.groupId, tx);
 
         return await tx
           .insert(RedeemCodeRedemptions)

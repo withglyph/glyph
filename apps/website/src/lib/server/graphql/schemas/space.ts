@@ -319,13 +319,16 @@ Space.implement({
           return [];
         }
 
-        const groups = await database
-          .select({ id: RedeemCodeGroups.id })
-          .from(RedeemCodeGroups)
-          .innerJoin(Posts, eq(Posts.id, RedeemCodeGroups.postId))
-          .where(and(eq(RedeemCodeGroups.userId, context.session.userId), eq(Posts.spaceId, space.id)));
-
-        return groups.map((group) => group.id);
+        return [
+          ...(await database
+            .select()
+            .from(RedeemCodeGroups)
+            .where(and(eq(RedeemCodeGroups.spaceId, space.id), eq(RedeemCodeGroups.state, 'ACTIVE')))),
+          ...(await database
+            .select()
+            .from(RedeemCodeGroups)
+            .where(and(eq(RedeemCodeGroups.spaceId, space.id), eq(RedeemCodeGroups.state, 'INACTIVE')))),
+        ];
       },
     }),
   }),
