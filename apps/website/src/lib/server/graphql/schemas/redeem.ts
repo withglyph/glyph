@@ -32,10 +32,16 @@ RedeemCode.implement({
   fields: (t) => ({
     id: t.exposeID('id'),
     state: t.expose('state', { type: RedeemCodeState }),
+    code: t.exposeString('code'),
 
-    code: t.field({
+    formattedCode: t.field({
       type: 'String',
       resolve: (redeemCode) => redeemCode.code.match(/.{1,4}/g)?.join('-') ?? '',
+    }),
+
+    qrCodeUrl: t.field({
+      type: 'String',
+      resolve: (redeemCode, _, context) => `${context.event.url.origin}/api/redeem/qr/{${redeemCode.code}.png`,
     }),
 
     redemption: t.field({
@@ -89,6 +95,8 @@ RedeemCodeGroup.implement({
       type: [RedeemCode],
       args: {
         state: t.arg({ type: RedeemCodeState, required: false }),
+        page: t.arg({ type: 'Int', defaultValue: 1 }),
+        take: t.arg({ type: 'Int', defaultValue: 10 }),
       },
       resolve: async (group, args) => {
         if (args.state) {
@@ -96,19 +104,42 @@ RedeemCodeGroup.implement({
             .select()
             .from(RedeemCodes)
             .where(and(eq(RedeemCodes.groupId, group.id), eq(RedeemCodes.state, args.state)))
-            .orderBy(RedeemCodes.id);
+            .orderBy(RedeemCodes.id)
+            .limit(args.take)
+            .offset((args.page - 1) * args.take);
         } else {
+          const availableRedeemCodes = await database
+            .select()
+            .from(RedeemCodes)
+            .where(and(eq(RedeemCodes.groupId, group.id), eq(RedeemCodes.state, 'AVAILABLE')))
+            .orderBy(RedeemCodes.id)
+            .limit(args.take)
+            .offset((args.page - 1) * args.take);
+
+          if (availableRedeemCodes.length === args.take) {
+            return availableRedeemCodes;
+          }
+
+          const take = args.take - availableRedeemCodes.length;
+          const offset =
+            availableRedeemCodes.length > 0
+              ? 0
+              : await database
+                  .select({ count: count() })
+                  .from(RedeemCodes)
+                  .where(and(eq(RedeemCodes.groupId, group.id), eq(RedeemCodes.state, 'AVAILABLE')))
+                  .then((rows) => rows[0].count ?? 0)
+                  .then((count) => (args.page - 1) * args.take - count);
+
           return [
-            ...(await database
-              .select()
-              .from(RedeemCodes)
-              .where(and(eq(RedeemCodes.groupId, group.id), eq(RedeemCodes.state, 'AVAILABLE')))
-              .orderBy(RedeemCodes.id)),
+            ...availableRedeemCodes,
             ...(await database
               .select()
               .from(RedeemCodes)
               .where(and(eq(RedeemCodes.groupId, group.id), ne(RedeemCodes.state, 'AVAILABLE')))
-              .orderBy(RedeemCodes.id)),
+              .orderBy(RedeemCodes.id)
+              .limit(take)
+              .offset(offset)),
           ];
         }
       },
@@ -170,7 +201,7 @@ const CreateRedeemCodeGroupInput = builder.inputType('CreateRedeemCodeGroupInput
   }),
 });
 
-const DeleteRedeemCodeGroupInput = builder.inputType('DeleteRedeemCodeGroupInput', {
+const RevokeRedeemCodeGroupInput = builder.inputType('RevokeRedeemCodeGroupInput', {
   fields: (t) => ({
     id: t.id(),
   }),
@@ -280,9 +311,9 @@ builder.mutationFields((t) => ({
     },
   }),
 
-  deleteRedeemCodeGroup: t.withAuth({ user: true }).field({
+  revokeRedeemCodeGroup: t.withAuth({ user: true }).field({
     type: RedeemCodeGroup,
-    args: { input: t.arg({ type: DeleteRedeemCodeGroupInput }) },
+    args: { input: t.arg({ type: RevokeRedeemCodeGroupInput }) },
     resolve: async (_, { input }, context) => {
       const group = await database
         .select({ id: RedeemCodeGroups.id })

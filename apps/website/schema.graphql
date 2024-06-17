@@ -151,10 +151,6 @@ input DeletePushNotificationTokenInput {
   token: String!
 }
 
-input DeleteRedeemCodeGroupInput {
-  id: ID!
-}
-
 input DeleteSpaceCollectionInput {
   spaceCollectionId: ID!
 }
@@ -345,7 +341,6 @@ type Mutation {
   deletePost(input: DeletePostInput!): Post!
   deletePostReaction(input: DeletePostReactionInput!): Post!
   deletePushNotificationToken(input: DeletePushNotificationTokenInput!): Void
-  deleteRedeemCodeGroup(input: DeleteRedeemCodeGroupInput!): RedeemCodeGroup!
   deleteSpace(input: DeleteSpaceInput!): Space!
   deleteSpaceCollection(input: DeleteSpaceCollectionInput!): SpaceCollection!
   deleteSpaceProfile(input: DeleteSpaceProfileInput!): SpaceMember!
@@ -379,6 +374,7 @@ type Mutation {
   registerRedeemCode(input: RegisterRedeemCodeInput!): RedeemCodeRedemption!
   replacePostThumbnail(input: ReplacePostThumbnailInput!): Post!
   revokeRedeemCode(input: RevokeRedeemCodeInput!): Redeem!
+  revokeRedeemCodeGroup(input: RevokeRedeemCodeGroupInput!): RedeemCodeGroup!
   sendPushNotification(input: SendPushNotificationInput!): Boolean!
   setSpace(input: SetSpaceInput!): Space!
   setSpaceCollectionPosts(input: SetSpaceCollectionPostsInput!): SpaceCollection!
@@ -800,7 +796,9 @@ type Query {
 
 type Redeem {
   code: String!
+  formattedCode: String!
   id: ID!
+  qrCodeUrl: String!
   redemption: RedeemCodeRedemption!
   state: RedeemCodeState!
 }
@@ -808,7 +806,7 @@ type Redeem {
 type RedeemCodeGroup {
   availableCodeCount: Int!
   codeCount: Int!
-  codes(state: RedeemCodeState): [Redeem!]!
+  codes(page: Int! = 1, state: RedeemCodeState, take: Int! = 10): [Redeem!]!
   createdAt: DateTime!
   description: String
   expiresAt: DateTime!
@@ -892,6 +890,10 @@ enum RevenueWithdrawalState {
   FAILED
   PENDING
   SUCCESS
+}
+
+input RevokeRedeemCodeGroupInput {
+  id: ID!
 }
 
 input RevokeRedeemCodeInput {

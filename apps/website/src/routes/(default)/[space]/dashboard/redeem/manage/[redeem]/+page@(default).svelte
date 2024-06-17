@@ -29,7 +29,7 @@
         codes {
           id
           state
-          code
+          formattedCode
         }
 
         post {
@@ -248,7 +248,7 @@
           <dl class={flex({ direction: 'column', gap: '2px' })}>
             <div class={flex({ align: 'center', gap: '12px', fontSize: '13px' })}>
               <dt class={css({ fontWeight: 'semibold', color: 'gray.800', width: '46px' })}>번호</dt>
-              <dd class={css({ color: 'gray.600' })}>{code.code}</dd>
+              <dd class={css({ color: 'gray.600' })}>{code.formattedCode}</dd>
             </div>
             <div class={flex({ align: 'center', gap: '12px', fontSize: '13px' })}>
               <dt class={css({ fontWeight: 'semibold', color: 'gray.800', width: '46px' })}>사용여부</dt>
