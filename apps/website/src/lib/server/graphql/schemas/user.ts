@@ -33,6 +33,7 @@ import {
   PostViews,
   Profiles,
   ProvisionedUsers,
+  RedeemCodeRedemptions,
   Revenues,
   RevenueWithdrawals,
   SpaceFollows,
@@ -86,7 +87,8 @@ import { PostComment } from './comment';
 import { Image } from './image';
 import { IUserNotification } from './notification';
 import { IPointTransaction } from './point';
-import { Post } from './post';
+import { Post, PostPurchase } from './post';
+import { RedeemCodeRedemption } from './redeem';
 import { Revenue, RevenueWithdrawal } from './revenue';
 import { Space } from './space';
 import { Tag } from './tag';
@@ -403,6 +405,32 @@ User.implement({
           .orderBy(desc(PostPurchases.createdAt));
 
         return purchases.map((purchase) => purchase.postId);
+      },
+
+      deprecationReason: 'Use postPurchases instead',
+    }),
+
+    postPurchases: t.field({
+      type: [PostPurchase],
+      resolve: async (user) => {
+        return await database
+          .select()
+          .from(PostPurchases)
+          .where(eq(PostPurchases.userId, user.id))
+          .orderBy(desc(PostPurchases.createdAt));
+      },
+    }),
+
+    redeemCodeRedemptions: t.field({
+      type: [RedeemCodeRedemption],
+      resolve: async (user) => {
+        return await database
+          .select({ RedeemCodeRedemptions })
+          .from(RedeemCodeRedemptions)
+          .innerJoin(PostPurchases, eq(PostPurchases.id, RedeemCodeRedemptions.purchaseId))
+          .where(eq(PostPurchases.userId, user.id))
+          .orderBy(desc(RedeemCodeRedemptions.createdAt))
+          .then((rows) => rows.map((row) => row.RedeemCodeRedemptions));
       },
     }),
 

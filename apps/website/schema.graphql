@@ -102,6 +102,12 @@ input CreatePostReactionInput {
   postId: ID!
 }
 
+input CreateRedeemCodeGroupInput {
+  count: Int!
+  description: String
+  postId: ID!
+}
+
 input CreateSpaceCollectionInput {
   description: String
   name: String!
@@ -143,6 +149,10 @@ input DeletePostReactionInput {
 
 input DeletePushNotificationTokenInput {
   token: String!
+}
+
+input DeleteRedeemCodeGroupInput {
+  id: ID!
 }
 
 input DeleteSpaceCollectionInput {
@@ -327,6 +337,7 @@ type Mutation {
   createComment(input: CreateCommentInput!): PostComment!
   createPost(input: CreatePostInput!): Post!
   createPostReaction(input: CreatePostReactionInput!): Post!
+  createRedeemCodeGroup(input: CreateRedeemCodeGroupInput!): RedeemCodeGroup!
   createSpace(input: CreateSpaceInput!): Space!
   createSpaceCollection(input: CreateSpaceCollectionInput!): SpaceCollection!
   createUser(input: CreateUserInput!): User!
@@ -334,6 +345,7 @@ type Mutation {
   deletePost(input: DeletePostInput!): Post!
   deletePostReaction(input: DeletePostReactionInput!): Post!
   deletePushNotificationToken(input: DeletePushNotificationTokenInput!): Void
+  deleteRedeemCodeGroup(input: DeleteRedeemCodeGroupInput!): RedeemCodeGroup!
   deleteSpace(input: DeleteSpaceInput!): Space!
   deleteSpaceCollection(input: DeleteSpaceCollectionInput!): SpaceCollection!
   deleteSpaceProfile(input: DeleteSpaceProfileInput!): SpaceMember!
@@ -364,7 +376,9 @@ type Mutation {
   purchasePoint(input: PurchasePointInput!): PointPurchase!
   purchasePost(input: PurchasePostInput!): Post!
   registerPushNotificationToken(input: RegisterPushNotificationTokenInput!): Void
+  registerRedeemCode(input: RegisterRedeemCodeInput!): RedeemCodeRedemption!
   replacePostThumbnail(input: ReplacePostThumbnailInput!): Post!
+  revokeRedeemCode(input: RevokeRedeemCodeInput!): Redeem!
   sendPushNotification(input: SendPushNotificationInput!): Boolean!
   setSpace(input: SetSpaceInput!): Space!
   setSpaceCollectionPosts(input: SetSpaceCollectionPostsInput!): SpaceCollection!
@@ -590,6 +604,14 @@ enum PostPriceCategory {
   PAID
 }
 
+type PostPurchase {
+  createdAt: DateTime!
+  id: ID!
+  pointAmount: Int!
+  post: Post!
+  revision: PostRevision!
+}
+
 type PostReaction {
   emoji: String!
   id: ID!
@@ -767,6 +789,8 @@ type Query {
   provisionedUser(token: String!): ProvisionedUser!
   recommendFeed: [Post!]!
   recommendedTags: [Tag!]!
+  redeemCodeGroup(id: ID!): RedeemCodeGroup!
+  redeemCodeRedemption(id: ID!): RedeemCodeRedemption!
   revenueWithdrawal(id: String!): RevenueWithdrawal!
   searchPosts(adultFilter: Boolean, excludeTags: [String!]! = [], includeTags: [String!]! = [], orderBy: SearchOrderByKind! = ACCURACY, page: Int! = 1, query: String!, take: Int! = 10): SearchResult!
   space(slug: String!): Space!
@@ -774,9 +798,34 @@ type Query {
   tag(name: String!): Tag!
 }
 
+type Redeem {
+  code: String!
+  id: ID!
+  redemption: RedeemCodeRedemption!
+  state: RedeemCodeState!
+}
+
+type RedeemCodeGroup {
+  availableCodeCount: Int!
+  codeCount: Int!
+  codes(state: RedeemCodeState): [Redeem!]!
+  createdAt: DateTime!
+  description: String
+  expiresAt: DateTime!
+  id: ID!
+  post: Post!
+  state: RedeemCodeGroupState!
+}
+
 enum RedeemCodeGroupState {
   ACTIVE
   INACTIVE
+}
+
+type RedeemCodeRedemption {
+  createdAt: DateTime!
+  id: ID!
+  postPurchase: PostPurchase!
 }
 
 enum RedeemCodeState {
@@ -788,6 +837,10 @@ enum RedeemCodeState {
 
 input RegisterPushNotificationTokenInput {
   token: String!
+}
+
+input RegisterRedeemCodeInput {
+  code: String!
 }
 
 input ReplacePostThumbnailInput {
@@ -841,6 +894,10 @@ enum RevenueWithdrawalState {
   SUCCESS
 }
 
+input RevokeRedeemCodeInput {
+  id: ID!
+}
+
 enum SearchOrderByKind {
   ACCURACY
   LATEST
@@ -890,6 +947,7 @@ type Space {
   name: String!
   postCount: Int!
   posts(anyCollection: Boolean, collectionId: ID, mine: Boolean! = false, priceCategory: PostPriceCategory, visibility: PostVisibility): [Post!]!
+  redeemCodeGroups: [RedeemCodeGroup!]!
   slug: String!
   visibility: SpaceVisibility!
 }
@@ -1172,10 +1230,12 @@ type User {
   personalIdentity: UserPersonalIdentity
   point(kind: PointKind): Int!
   points(amountFilter: Int! = 0): [IPointTransaction!]!
+  postPurchases: [PostPurchase!]!
   posts(state: PostState! = PUBLISHED): [Post!]!
   profile: Profile!
-  purchasedPosts: [Post!]!
+  purchasedPosts: [Post!]! @deprecated(reason: "Use postPurchases instead")
   recentlyViewedPosts: [Post!]!
+  redeemCodeRedemptions: [RedeemCodeRedemption!]!
   revenue(withdrawable: Boolean): Int!
   revenueWithdrawals: [RevenueWithdrawal!]!
   revenues(page: Int! = 1, take: Int! = 10): [Revenue!]!

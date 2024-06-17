@@ -2,7 +2,11 @@ import { and, eq } from 'drizzle-orm';
 import { database, inArray, SpaceMembers } from '../database';
 import type { Context } from '../context';
 
-export const getSpaceMember = async (context: Context, spaceId: string) => {
+export const getSpaceMember = async (context: Context, spaceId: string | null | undefined) => {
+  if (!spaceId) {
+    return null;
+  }
+
   const loader = context.loader({
     name: 'spaceMemberBySpaceId',
     nullable: true,

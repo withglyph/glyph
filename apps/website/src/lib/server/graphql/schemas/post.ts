@@ -956,6 +956,25 @@ PostContentSnapshot.implement({
   }),
 });
 
+export const PostPurchase = createObjectRef('PostPurchase', PostPurchases);
+PostPurchase.implement({
+  fields: (t) => ({
+    id: t.exposeID('id'),
+    pointAmount: t.exposeInt('pointAmount'),
+    createdAt: t.expose('createdAt', { type: 'DateTime' }),
+
+    post: t.field({
+      type: Post,
+      resolve: (purchase) => purchase.postId,
+    }),
+
+    revision: t.field({
+      type: PostRevision,
+      resolve: (purchase) => purchase.revisionId,
+    }),
+  }),
+});
+
 export type SynchronizePostResultType = typeof SynchronizePostResult.$inferType;
 export const SynchronizePostResult = builder.simpleObject('SynchronizePostResult', {
   fields: (t) => ({

@@ -13,6 +13,7 @@ import {
   Posts,
   PostTags,
   Profiles,
+  RedeemCodeGroups,
   SpaceCollectionPosts,
   SpaceCollections,
   SpaceFollows,
@@ -40,6 +41,7 @@ import { createObjectRef } from '../utils';
 import { SpaceCollection } from './collection';
 import { Image } from './image';
 import { Post } from './post';
+import { RedeemCodeGroup } from './redeem';
 import { Profile } from './user';
 
 /**
@@ -307,6 +309,23 @@ Space.implement({
         });
 
         return masquerade.blockedAt ? null : masquerade.profileId;
+      },
+    }),
+
+    redeemCodeGroups: t.field({
+      type: [RedeemCodeGroup],
+      resolve: async (space, _, context) => {
+        if (!context.session || !(await spaceScopeGranter(space, context, '$space:member'))) {
+          return [];
+        }
+
+        const groups = await database
+          .select({ id: RedeemCodeGroups.id })
+          .from(RedeemCodeGroups)
+          .innerJoin(Posts, eq(Posts.id, RedeemCodeGroups.postId))
+          .where(and(eq(RedeemCodeGroups.userId, context.session.userId), eq(Posts.spaceId, space.id)));
+
+        return groups.map((group) => group.id);
       },
     }),
   }),

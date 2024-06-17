@@ -11,6 +11,7 @@ import './notification';
 import './playground';
 import './point';
 import './post';
+import './redeem';
 import './revenue';
 import './search';
 import './space';
