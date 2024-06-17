@@ -68,7 +68,9 @@
   class={flex({
     direction: 'column',
     align: 'center',
-    backgroundColor: 'gray.50',
+    bgGradient: 'to-br',
+    gradientFrom: '[#FEFEFE]',
+    gradientTo: 'gray.50',
     width: 'full',
   })}
 >
@@ -126,7 +128,14 @@
           })}
         >
           <Image
-            style={css.raw({ flex: 'none', width: '102px', aspectRatio: '16/10', objectFit: 'cover' })}
+            style={css.raw({
+              flex: 'none',
+              borderWidth: '[0.8px]',
+              borderColor: 'gray.100',
+              width: '102px',
+              aspectRatio: '16/10',
+              objectFit: 'cover',
+            })}
             $image={$query.redeemCodeGroup.post.thumbnail}
             placeholder
             size={96}
@@ -186,7 +195,7 @@
           </div>
         </dl>
 
-        <p class={css({ marginTop: '8px', fontSize: '13px', color: 'gray.600' })}>
+        <p class={css({ marginTop: '8px', fontSize: '13px', color: 'gray.600', whiteSpace: 'pre-wrap' })}>
           {$query.redeemCodeGroup.description}
         </p>
       </div>
@@ -263,7 +272,7 @@
             sm: { alignItems: 'flex-end', justifyContent: 'space-between' },
           })}
         >
-          <dl>
+          <dl class={flex({ direction: 'column', gap: '2px' })}>
             <div class={flex({ align: 'center', gap: '12px', fontSize: '13px' })}>
               <dt class={css({ fontWeight: 'semibold', color: 'gray.800', width: '46px' })}>번호</dt>
               <dd class={css({ color: 'gray.600' })}>{code.code}</dd>

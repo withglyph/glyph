@@ -89,11 +89,9 @@
             <h3 class={css({ fontSize: '14px', fontWeight: 'semibold', color: 'gray.800', truncate: true })}>
               {group.post.publishedRevision?.title ?? '(제목 없음)'}
             </h3>
-            {#if group.post.publishedRevision?.subtitle}
-              <h4 class={css({ fontSize: '13px', color: 'gray.600', height: '19px', truncate: true })}>
-                {group.post.publishedRevision.subtitle}
-              </h4>
-            {/if}
+            <h4 class={css({ fontSize: '13px', color: 'gray.600', height: '19px', truncate: true })}>
+              {group.post.publishedRevision?.subtitle ?? ''}
+            </h4>
             <div
               class={flex({
                 align: 'center',
@@ -137,7 +135,9 @@
         </div>
       </dl>
 
-      <p class={css({ marginTop: '8px', fontSize: '13px', color: 'gray.600' })}>{group.description}</p>
+      <p class={css({ marginTop: '8px', fontSize: '13px', color: 'gray.600', whiteSpace: 'pre-wrap' })}>
+        {group.description}
+      </p>
 
       <Button
         style={css.raw({ display: 'block', marginTop: '16px', width: 'full', hideFrom: 'sm' })}

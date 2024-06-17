@@ -71,7 +71,17 @@
   title={`리딤코드 생성 | ${$query.post.space.name}`}
 />
 
-<div class={flex({ direction: 'column', align: 'center', grow: '1', backgroundColor: 'gray.50', width: 'full' })}>
+<div
+  class={flex({
+    direction: 'column',
+    align: 'center',
+    grow: '1',
+    bgGradient: 'to-br',
+    gradientFrom: '[#FEFEFE]',
+    gradientTo: 'gray.50',
+    width: 'full',
+  })}
+>
   <div class={css({ width: 'full', sm: { maxWidth: '860px' } })}>
     <h1
       class={flex({
@@ -101,6 +111,8 @@
       <Image
         style={css.raw({
           flex: 'none',
+          borderWidth: '[0.8px]',
+          borderColor: 'gray.100',
           width: { base: '88px', sm: '102px' },
           aspectRatio: '16/10',
           objectFit: 'cover',

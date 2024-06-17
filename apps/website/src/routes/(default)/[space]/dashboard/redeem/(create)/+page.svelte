@@ -37,18 +37,18 @@
     종이책에 전자책 혜택을 더하다
   </h2>
 
+  <!-- prettier-ignore -->
   <p class={css({ fontSize: { base: '13px', sm: '14px' }, color: 'gray.600' })}>
     리딤코드는 종이책과 유료포스트를 함께 이용할 수 있게 도와주는 서비스로
     <br />
     해당 코드를 스캔하거나 입력하면
-    <mark class={css({ color: 'brand.400' })}>글리프에서 발행한 유료포스트가 자동으로 구매 완료</mark>
-    되도록 설정할 수 있어요.
+    <mark class={css({ color: 'brand.400' })}>글리프에서 발행한 유료포스트가 자동으로 구매 완료</mark>되도록 설정할 수 있어요.
     <br />
     코드는 한 계정에만 등록할 수 있어 안전하게 관리가 가능해요.
   </p>
 
   <Button
-    style={flex.raw({ align: 'center', gap: '4px', marginTop: '40px', hideFrom: 'sm' })}
+    style={flex.raw({ align: 'center', gap: '4px', marginTop: '40px', paddingRight: '10px', hideFrom: 'sm' })}
     href="redeem/create"
     size="sm"
     type="link"
@@ -58,7 +58,7 @@
     <Icon icon={IconChevronRight} />
   </Button>
   <Button
-    style={flex.raw({ align: 'center', gap: '4px', marginTop: '40px', hideBelow: 'sm' })}
+    style={flex.raw({ align: 'center', gap: '4px', marginTop: '40px', paddingRight: '10px', hideBelow: 'sm' })}
     href="redeem/create"
     size="md"
     type="link"

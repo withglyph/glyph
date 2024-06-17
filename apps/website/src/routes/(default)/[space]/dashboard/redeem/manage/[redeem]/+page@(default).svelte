@@ -174,7 +174,7 @@
           </div>
         </dl>
 
-        <p class={css({ marginTop: '8px', fontSize: '13px', color: 'gray.600' })}>
+        <p class={css({ marginTop: '8px', fontSize: '13px', color: 'gray.600', whiteSpace: 'pre-wrap' })}>
           {$query.redeemCodeGroup.description}
         </p>
       </div>
@@ -245,14 +245,19 @@
             sm: { alignItems: 'flex-end', justifyContent: 'space-between' },
           })}
         >
-          <dl>
+          <dl class={flex({ direction: 'column', gap: '2px' })}>
             <div class={flex({ align: 'center', gap: '12px', fontSize: '13px' })}>
               <dt class={css({ fontWeight: 'semibold', color: 'gray.800', width: '46px' })}>번호</dt>
               <dd class={css({ color: 'gray.600' })}>{code.code}</dd>
             </div>
             <div class={flex({ align: 'center', gap: '12px', fontSize: '13px' })}>
               <dt class={css({ fontWeight: 'semibold', color: 'gray.800', width: '46px' })}>사용여부</dt>
-              <dd class={css({ color: 'gray.600' }, true && { fontWeight: 'medium', color: 'brand.400' })}>
+              <dd
+                class={css(
+                  { color: 'gray.600' },
+                  code.state === 'AVAILABLE' && { fontWeight: 'medium', color: 'brand.400' },
+                )}
+              >
                 {RedeemCodeStateString[code.state]}
               </dd>
             </div>

@@ -44,7 +44,17 @@
 
 <Helmet description={`${$query.space.name} 스페이스 리딤코드 생성`} title={`리딤코드 생성 | ${$query.space.name}`} />
 
-<div class={flex({ direction: 'column', align: 'center', grow: '1', backgroundColor: 'gray.50', width: 'full' })}>
+<div
+  class={flex({
+    direction: 'column',
+    align: 'center',
+    grow: '1',
+    bgGradient: 'to-br',
+    gradientFrom: '[#FEFEFE]',
+    gradientTo: 'gray.50',
+    width: 'full',
+  })}
+>
   <div class={css({ width: 'full', sm: { maxWidth: '860px' } })}>
     <h1
       class={flex({
@@ -105,8 +115,8 @@
             <li class={css({ '& + &': { borderTopWidth: '1px', borderColor: 'gray.50' } })}>
               <Radio
                 style={css.raw(
-                  { paddingY: '16px', paddingLeft: '12px' },
-                  selectedPost === post && { backgroundColor: 'gray.50' },
+                  { paddingY: '16px', paddingLeft: '12px', cursor: 'pointer' },
+                  selectedPost === post && { backgroundColor: '[#FBFBFB]' },
                 )}
                 checked={selectedPost === post}
                 size="sm"
@@ -117,7 +127,14 @@
               >
                 <div class={flex({ align: 'center', gap: '8px', marginLeft: '12px' })}>
                   <Image
-                    style={css.raw({ flex: 'none', width: '88px', aspectRatio: '16/10', objectFit: 'cover' })}
+                    style={css.raw({
+                      flex: 'none',
+                      borderWidth: '[0.8px]',
+                      borderColor: 'gray.100',
+                      width: '88px',
+                      aspectRatio: '16/10',
+                      objectFit: 'cover',
+                    })}
                     $image={post.thumbnail}
                     placeholder
                     size={96}

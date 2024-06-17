@@ -42,12 +42,12 @@
     리딤코드 등록
   </h2>
 
+  <!-- prettier-ignore -->
   <p class={css({ fontSize: { base: '13px', sm: '14px' }, color: 'gray.600' })}>
     리딤코드는 종이책과 유료포스트를 함께 이용할 수 있게 도와주는 서비스로
     <br />
     해당 코드를 스캔하거나 입력하면
-    <mark class={css({ color: 'brand.400' })}>글리프에서 발행한 유료포스트가 자동으로 구매 완료</mark>
-    되어 이용할 수 있어요
+    <mark class={css({ color: 'brand.400' })}>글리프에서 발행한 유료포스트가 자동으로 구매 완료</mark>되어 이용할 수 있어요
   </p>
 
   <form
