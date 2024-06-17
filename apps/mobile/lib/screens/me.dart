@@ -162,95 +162,101 @@ class _MeScreenState extends ConsumerState<MeScreen>
                           height: 76,
                           color: const Color(0xFF424242),
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              Pressable(
-                                child: const Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    SvgIcon('coin', color: BrandColors.gray_0),
-                                    Gap(4),
-                                    Text(
-                                      '포인트',
-                                      style: TextStyle(
-                                        fontSize: 11,
-                                        fontWeight: FontWeight.w500,
-                                        color: BrandColors.gray_0,
-                                      ),
-                                    )
-                                  ],
+                              Expanded(
+                                child: Pressable(
+                                  child: const Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      SvgIcon('coin',
+                                          color: BrandColors.gray_0),
+                                      Gap(4),
+                                      Text(
+                                        '포인트',
+                                        style: TextStyle(
+                                          fontSize: 11,
+                                          fontWeight: FontWeight.w500,
+                                          color: BrandColors.gray_0,
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                  onPressed: () {
+                                    context.router.push(
+                                      const PointPurchaseRoute(),
+                                    );
+                                  },
                                 ),
-                                onPressed: () {
-                                  context.router.push(
-                                    const PointPurchaseRoute(),
-                                  );
-                                },
                               ),
                               Container(
                                 width: 1,
                                 height: 42,
                                 color: BrandColors.gray_500,
                               ),
-                              Pressable(
-                                child: const Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    SvgIcon(
-                                      'pig-money',
-                                      color: BrandColors.gray_0,
-                                    ),
-                                    Gap(4),
-                                    Text(
-                                      '수익/출금',
-                                      style: TextStyle(
-                                        fontSize: 11,
-                                        fontWeight: FontWeight.w500,
+                              Expanded(
+                                child: Pressable(
+                                  child: const Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      SvgIcon(
+                                        'pig-money',
                                         color: BrandColors.gray_0,
                                       ),
-                                    )
-                                  ],
+                                      Gap(4),
+                                      Text(
+                                        '수익/출금',
+                                        style: TextStyle(
+                                          fontSize: 11,
+                                          fontWeight: FontWeight.w500,
+                                          color: BrandColors.gray_0,
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                  onPressed: () {
+                                    context.router.push(
+                                      WebViewRoute(
+                                        title: '수익/출금',
+                                        path: '/me/revenue',
+                                      ),
+                                    );
+                                  },
                                 ),
-                                onPressed: () {
-                                  context.router.push(
-                                    WebViewRoute(
-                                      title: '수익/출금',
-                                      path: '/me/revenue',
-                                    ),
-                                  );
-                                },
                               ),
                               Container(
                                 width: 1,
                                 height: 42,
                                 color: BrandColors.gray_500,
                               ),
-                              Pressable(
-                                child: const Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    SvgIcon(
-                                      'filter-cog',
-                                      color: BrandColors.gray_0,
-                                    ),
-                                    Gap(4),
-                                    Text(
-                                      '콘텐츠 필터링',
-                                      style: TextStyle(
-                                        fontSize: 11,
-                                        fontWeight: FontWeight.w500,
+                              Expanded(
+                                child: Pressable(
+                                  child: const Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      SvgIcon(
+                                        'filter-cog',
                                         color: BrandColors.gray_0,
                                       ),
-                                    )
-                                  ],
+                                      Gap(4),
+                                      Text(
+                                        '콘텐츠 필터링',
+                                        style: TextStyle(
+                                          fontSize: 11,
+                                          fontWeight: FontWeight.w500,
+                                          color: BrandColors.gray_0,
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                  onPressed: () {
+                                    context.router.push(
+                                      WebViewRoute(
+                                        title: '콘텐츠 필터링',
+                                        path: '/me/contentfilters',
+                                      ),
+                                    );
+                                  },
                                 ),
-                                onPressed: () {
-                                  context.router.push(
-                                    WebViewRoute(
-                                      title: '콘텐츠 필터링',
-                                      path: '/me/contentfilters',
-                                    ),
-                                  );
-                                },
                               ),
                             ],
                           ),

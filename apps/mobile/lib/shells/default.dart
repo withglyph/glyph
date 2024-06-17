@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:glyph/components/heading.dart';
 import 'package:glyph/themes/colors.dart';
 
@@ -9,9 +10,11 @@ class DefaultShell extends StatelessWidget {
     required this.child,
     this.actions,
     this.useSafeArea = false,
+    this.appBar,
     this.bottomBorder = true,
   });
 
+  final PreferredSizeWidget? appBar;
   final String? title;
   final Widget child;
   final List<Widget>? actions;
@@ -22,20 +25,21 @@ class DefaultShell extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: BrandColors.gray_0,
-      appBar: Heading(
-        title: title == null
-            ? null
-            : Text(
-                title!,
-                style: const TextStyle(
-                  fontSize: 17,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-        actions: actions,
-        backgroundColor: BrandColors.gray_0,
-        bottomBorder: bottomBorder,
-      ),
+      appBar: appBar ??
+          Heading(
+            title: title == null
+                ? null
+                : Text(
+                    title!,
+                    style: const TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+            actions: actions,
+            backgroundColor: BrandColors.gray_0,
+            bottomBorder: bottomBorder,
+          ),
       body: useSafeArea ? SafeArea(child: child) : child,
     );
   }

@@ -1,7 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
-import 'package:gap/gap.dart';
 import 'package:glyph/components/pressable.dart';
 import 'package:glyph/components/svg_icon.dart';
 import 'package:glyph/ferry/extension.dart';
@@ -35,10 +34,8 @@ class LobbyShell extends ConsumerWidget {
         return LobbyBottomNavigationBar(
           items: [
             LobbyBottomNavigationBarItem(
-              icon:
-                  const SvgIcon('home', size: 22, color: BrandColors.gray_400),
-              label: '홈',
-              activeIcon: const SvgIcon('home-filled', size: 22),
+              icon: const SvgIcon('home', color: BrandColors.gray_400),
+              activeIcon: const SvgIcon('home-filled'),
               isActive: tabsRouter.activeIndex == 0,
               onTap: () {
                 if (tabsRouter.activeIndex == 0) {
@@ -54,10 +51,8 @@ class LobbyShell extends ConsumerWidget {
               },
             ),
             LobbyBottomNavigationBarItem(
-              icon:
-                  const SvgIcon('star', size: 22, color: BrandColors.gray_400),
-              activeIcon: const SvgIcon('star-filled', size: 22),
-              label: '구독',
+              icon: const SvgIcon('search', color: BrandColors.gray_400),
+              activeIcon: const SvgIcon('search'),
               isActive: tabsRouter.activeIndex == 1,
               onTap: () {
                 if (tabsRouter.activeIndex == 1) {
@@ -74,16 +69,25 @@ class LobbyShell extends ConsumerWidget {
             ),
             LobbyBottomNavigationBarItem(
               icon: Container(
-                constraints: const BoxConstraints(
-                  maxWidth: 36,
-                  maxHeight: 36,
-                ),
+                width: 36,
+                height: 36,
                 decoration: BoxDecoration(
                   color: BrandColors.gray_900,
                   borderRadius: BorderRadius.circular(18),
+                  boxShadow: [
+                    BoxShadow(
+                      color: BrandColors.gray_900.withOpacity(0.2),
+                      offset: const Offset(2, 3),
+                      blurRadius: 20,
+                    )
+                  ],
                 ),
                 child: const Center(
-                  child: SvgIcon('plus', size: 20, color: BrandColors.gray_0),
+                  child: SvgIcon(
+                    'plus',
+                    size: 16,
+                    color: BrandColors.gray_0,
+                  ),
                 ),
               ),
               onTap: () async {
@@ -99,10 +103,8 @@ class LobbyShell extends ConsumerWidget {
               },
             ),
             LobbyBottomNavigationBarItem(
-              icon: const SvgIcon('archive',
-                  size: 22, color: BrandColors.gray_400),
-              activeIcon: const SvgIcon('archive-filled', size: 22),
-              label: '보관함',
+              icon: const SvgIcon('archive', color: BrandColors.gray_400),
+              activeIcon: const SvgIcon('archive-filled'),
               isActive: tabsRouter.activeIndex == 2,
               onTap: () {
                 if (tabsRouter.activeIndex == 2) {
@@ -120,7 +122,7 @@ class LobbyShell extends ConsumerWidget {
             LobbyBottomNavigationBarItem(
               icon: CircleAvatar(
                 key: const ValueKey('inactive'),
-                radius: 11,
+                radius: 12,
                 backgroundColor: BrandColors.gray_100,
                 child: Padding(
                   padding: const EdgeInsets.all(1), // Border radius
@@ -132,7 +134,7 @@ class LobbyShell extends ConsumerWidget {
               ),
               activeIcon: CircleAvatar(
                 key: const ValueKey('active'),
-                radius: 11,
+                radius: 12,
                 backgroundColor: BrandColors.gray_900,
                 child: Padding(
                   padding: const EdgeInsets.all(1), // Border radius
@@ -142,7 +144,6 @@ class LobbyShell extends ConsumerWidget {
                           : Image.network(me.profile.avatar.url)),
                 ),
               ),
-              label: 'MY글리프',
               isActive: tabsRouter.activeIndex == 3,
               onTap: () {
                 if (tabsRouter.activeIndex == 3) {
@@ -181,15 +182,13 @@ class LobbyBottomNavigationBar extends ConsumerWidget {
           color: BrandColors.gray_0,
           border: Border(top: BorderSide(color: BrandColors.gray_100)),
         ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 6),
-          child: Center(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 460),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: items,
-              ),
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 460),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: items,
             ),
           ),
         ),
@@ -203,14 +202,12 @@ class LobbyBottomNavigationBarItem extends ConsumerWidget {
     super.key,
     required this.icon,
     this.activeIcon,
-    this.label,
     this.isActive,
     this.onTap,
   });
 
   final Widget icon;
   final Widget? activeIcon;
-  final String? label;
   final bool? isActive;
   final Function()? onTap;
 
@@ -222,27 +219,7 @@ class LobbyBottomNavigationBarItem extends ConsumerWidget {
       onPressed: onTap,
       child: SizedBox(
         width: 60,
-        child: Center(
-          child: label == null
-              ? currentIcon
-              : Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    currentIcon,
-                    const Gap(3),
-                    Text(
-                      label!,
-                      style: TextStyle(
-                        fontSize: 10,
-                        fontWeight: FontWeight.w500,
-                        color: isActive == true
-                            ? BrandColors.gray_900
-                            : BrandColors.gray_400,
-                      ),
-                    ),
-                  ],
-                ),
-        ),
+        child: Center(child: currentIcon),
       ),
     );
   }

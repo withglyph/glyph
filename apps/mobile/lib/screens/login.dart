@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:ferry_flutter/ferry_flutter.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_naver_login/flutter_naver_login.dart';
@@ -88,67 +89,64 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
           body: Stack(
             children: [
               if (response?.data != null)
-                AnimatedBuilder(
-                  animation: _animationController,
-                  builder: (context, child) {
-                    return UnconstrainedBox(
-                      constrainedAxis: Axis.vertical,
-                      clipBehavior: Clip.hardEdge,
-                      alignment: _alignmentAnimation.value,
-                      child: child,
-                    );
-                  },
-                  child: Row(
-                    children: response!.data!.featuredImages
-                        .map(
-                          (image) => FadeInImage(
-                            placeholder: MemoryImage(kTransparentImage),
-                            image: NetworkImage(image.url),
-                            height: double.infinity,
-                            fit: BoxFit.cover,
-                            fadeInDuration: const Duration(milliseconds: 1000),
-                            color: Colors.black.withOpacity(0.5),
-                            colorBlendMode: BlendMode.srcATop,
-                          ),
-                        )
-                        .toList(),
+                Positioned.fill(
+                  child: AnimatedBuilder(
+                    animation: _animationController,
+                    builder: (context, child) {
+                      return UnconstrainedBox(
+                        constrainedAxis: Axis.vertical,
+                        clipBehavior: Clip.hardEdge,
+                        alignment: _alignmentAnimation.value,
+                        child: child,
+                      );
+                    },
+                    child: Row(
+                      children: response!.data!.featuredImages
+                          .map(
+                            (image) => FadeInImage(
+                              placeholder: MemoryImage(kTransparentImage),
+                              image: NetworkImage(image.url),
+                              height: double.infinity,
+                              fit: BoxFit.cover,
+                              fadeInDuration:
+                                  const Duration(milliseconds: 1000),
+                              color: Colors.black.withOpacity(0.5),
+                              colorBlendMode: BlendMode.srcATop,
+                            ),
+                          )
+                          .toList(),
+                    ),
                   ),
                 ),
-              SafeArea(
-                maintainBottomViewPadding: true,
+              Positioned.fill(
                 child: Padding(
-                  padding: const EdgeInsets.all(20),
+                  padding: EdgeInsets.fromLTRB(
+                    32,
+                    MediaQuery.of(context).padding.top + 36,
+                    32,
+                    44,
+                  ),
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Text(
-                        '당신의',
+                        '당신의\n애정을 담은\n창작을 응원합니다',
                         style: TextStyle(
-                          fontSize: 32,
-                          fontWeight: FontWeight.w300,
-                          color: BrandColors.gray_0,
-                        ),
-                      ),
-                      const Gap(4),
-                      const Text(
-                        '애정을 담은',
-                        style: TextStyle(
-                          fontSize: 32,
-                          fontWeight: FontWeight.w300,
-                          color: BrandColors.gray_0,
-                        ),
-                      ),
-                      const Gap(4),
-                      const Text(
-                        '창작을 응원합니다',
-                        style: TextStyle(
-                          fontSize: 32,
+                          fontSize: 30,
                           fontWeight: FontWeight.w700,
                           color: BrandColors.gray_0,
                         ),
                       ),
-                      const Gap(32),
+                      const Gap(16),
+                      const Text(
+                        '창작자를 위한 플랫폼 글리프와 함께 하세요',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: BrandColors.gray_0,
+                        ),
+                      ),
+                      const Spacer(),
                       Pressable(
                         child: Container(
                           width: double.infinity,

@@ -109,4 +109,50 @@ class Heading extends StatelessWidget implements PreferredSizeWidget {
       ),
     );
   }
+
+  static PreferredSizeWidget empty({
+    Color? backgroundColor,
+    SystemUiOverlayStyle? systemUiOverlayStyle,
+  }) {
+    return EmptyHeading(
+      backgroundColor: backgroundColor,
+      fallbackSystemUiOverlayStyle: systemUiOverlayStyle,
+    );
+  }
+}
+
+class EmptyHeading extends StatelessWidget implements PreferredSizeWidget {
+  const EmptyHeading({
+    super.key,
+    this.backgroundColor,
+    this.fallbackSystemUiOverlayStyle,
+  });
+
+  final Color? backgroundColor;
+  final SystemUiOverlayStyle? fallbackSystemUiOverlayStyle;
+
+  @override
+  final preferredSize = Size.zero;
+
+  @override
+  Widget build(BuildContext context) {
+    final backgroundColorLuminance = backgroundColor?.computeLuminance();
+    final baseSystemUiOverlayStyle = backgroundColorLuminance != null
+        ? backgroundColorLuminance > 0.179
+            ? SystemUiOverlayStyle.dark
+            : SystemUiOverlayStyle.light
+        : fallbackSystemUiOverlayStyle ?? SystemUiOverlayStyle.dark;
+
+    return AnnotatedRegion(
+      value: baseSystemUiOverlayStyle.copyWith(
+        statusBarColor: backgroundColor,
+      ),
+      child: Container(
+        color: backgroundColor ?? BrandColors.gray_0,
+        child: const SafeArea(
+          child: SizedBox.shrink(),
+        ),
+      ),
+    );
+  }
 }

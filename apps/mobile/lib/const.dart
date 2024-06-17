@@ -1,0 +1,1 @@
+const kPaginationSize = 20;

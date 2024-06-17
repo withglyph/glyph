@@ -11,15 +11,14 @@ class Tag extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(color: BrandColors.gray_50),
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      decoration: const BoxDecoration(color: Color(0xFFF7F7F7)),
       child: Text(
         name,
         overflow: TextOverflow.ellipsis,
         style: const TextStyle(
           fontSize: 11,
-          fontWeight: FontWeight.w500,
-          color: Color(0xFF939393),
+          color: BrandColors.gray_500,
         ),
       ),
     );
