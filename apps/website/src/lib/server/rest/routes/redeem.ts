@@ -40,8 +40,8 @@ redeem.get('/redeem/qr/:code.png', async (request) => {
                   type: 'img',
                   props: {
                     src: qrUrl,
-                    width: 512,
-                    height: 512,
+                    width: 500,
+                    height: 500,
                   },
                 },
                 {
@@ -89,7 +89,7 @@ redeem.get('/redeem/qr/:code.png', async (request) => {
       },
     },
     {
-      width: 512,
+      width: 500,
       fonts: [{ name: 'Anonymous Pro', data: AnonymousProBold, weight: 700, style: 'normal' }],
     },
   );
