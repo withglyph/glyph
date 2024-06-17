@@ -1,15 +1,15 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "globalEnv": ["NODE_ENV"],
-  "pipeline": {
+  "tasks": {
     "build": {
       "dependsOn": ["codegen", "^build"],
-      "env": ["PRIVATE_*", "PUBLIC_*"],
+      "env": ["PRIVATE_\\*", "PUBLIC_\\*"],
       "outputs": ["dist/**"]
     },
     "codegen": {
       "dependsOn": ["^build"],
-      "dotEnv": [".env"],
+      "inputs": ["$TURBO_DEFAULT$", ".env"],
       "outputs": [".svelte-kit/**", ".glitch/**", "styled-system/**"]
     },
     "dev": {

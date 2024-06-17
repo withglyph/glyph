@@ -26,10 +26,10 @@
     "mrmime": "^2.0.0"
   },
   "devDependencies": {
-    "@sveltejs/kit": "^2.5.10",
-    "@types/node": "^20.12.12",
+    "@sveltejs/kit": "^2.5.16",
+    "@types/node": "^20.14.2",
     "@withglyph/tsconfig": "workspace:^",
-    "tsup": "^8.0.2",
+    "tsup": "^8.1.0",
     "typescript": "^5.4.5"
   }
 }

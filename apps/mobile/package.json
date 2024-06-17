@@ -1,4 +1,5 @@
 {
+  "name": "@withglyph/mobile",
   "scripts": {
     "beta": "pnpm run '/^beta:.+$/'",
     "beta:android": "cd android && doppler run -- bundle exec fastlane beta",
