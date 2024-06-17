@@ -10,7 +10,7 @@
   import IconPigMoney from '~icons/tabler/pig-money';
   import IconPlanet from '~icons/tabler/planet';
   import IconPlus from '~icons/tabler/plus';
-  import IconScan from '~icons/tabler/scan';
+  // import IconScan from '~icons/tabler/scan';
   import { afterNavigate, goto } from '$app/navigation';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
@@ -339,7 +339,7 @@
               수익/출금
             </a>
 
-            <a
+            <!-- <a
               class={flex({
                 align: 'center',
                 gap: '6px',
@@ -353,7 +353,7 @@
             >
               <Icon icon={IconScan} />
               리딤코드 등록
-            </a>
+            </a> -->
 
             <Link
               style={flex.raw({
