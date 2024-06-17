@@ -1,7 +1,7 @@
 import { and, count, desc, eq, notExists } from 'drizzle-orm';
 import { PostTagKind } from '$lib/enums';
 import { NotFoundError } from '$lib/errors';
-import { redis } from '$lib/server/cache';
+import { redis, useCache } from '$lib/server/cache';
 import {
   database,
   notInArray,
@@ -14,9 +14,11 @@ import {
   UserSpaceMutes,
   UserTagMutes,
 } from '$lib/server/database';
-import { getTagUsageCount } from '$lib/server/utils';
+import { elasticSearch, indexName } from '$lib/server/search';
+import { getTagUsageCount, searchResultToIds, useFirstRow } from '$lib/server/utils';
 import { builder } from '../builder';
 import { createObjectRef } from '../utils';
+import { Image } from './image';
 import { Post } from './post';
 
 /**
@@ -151,6 +153,57 @@ Tag.implement({
           .where(and(eq(UserTagMutes.tagId, tag.id), eq(UserTagMutes.userId, context.session.userId)));
 
         return mutes.length > 0;
+      },
+    }),
+
+    thumbnail: t.field({
+      type: Image,
+      nullable: true,
+      resolve: async (tag) => {
+        return await useCache(
+          `tagThumbnail:${tag.id}`,
+          async () => {
+            const searchResult = await elasticSearch.search({
+              index: indexName('posts'),
+              query: {
+                function_score: {
+                  query: {
+                    bool: {
+                      filter: [
+                        { term: { ageRating: 'ALL' } },
+                        { term: { hasThumbnail: true } },
+                        { term: { 'tags.id': tag.id } },
+                      ],
+                      should: [{ rank_feature: { field: 'reputation' } }],
+                    },
+                  },
+                  functions: [
+                    {
+                      exp: {
+                        publishedAt: {
+                          scale: '30d',
+                          offset: '7d',
+                        },
+                      },
+                    },
+                  ],
+                },
+              },
+            });
+
+            const postId = searchResultToIds(searchResult)[0];
+
+            if (postId) {
+              const post = await database
+                .select({ thumbnailId: Posts.thumbnailId })
+                .from(Posts)
+                .where(eq(Posts.id, postId))
+                .then(useFirstRow);
+              return post?.thumbnailId;
+            }
+          },
+          60 * 60 * 24,
+        );
       },
     }),
   }),

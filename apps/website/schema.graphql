@@ -1061,6 +1061,7 @@ type Tag {
   name: String!
   postCount: Int!
   posts(page: Int! = 1, take: Int! = 10): [Post!]!
+  thumbnail: Image
   usageCount: TagUsageCount!
 }
 
