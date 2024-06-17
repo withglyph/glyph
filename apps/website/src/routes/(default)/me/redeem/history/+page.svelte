@@ -131,6 +131,10 @@
           </div>
         </dl>
       </li>
+    {:else}
+      <li class={css({ margin: 'auto', paddingY: '60px', fontSize: '14px', color: 'gray.500' })}>
+        리딤코드 등록 내역이 없어요
+      </li>
     {/each}
   </ul>
 </div>

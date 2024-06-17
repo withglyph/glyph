@@ -162,5 +162,9 @@
         세부사항 보기
       </Button>
     </li>
+  {:else}
+    <li class={css({ margin: 'auto', paddingY: '60px', fontSize: '14px', color: 'gray.500' })}>
+      리딤코드 생성 내역이 없어요
+    </li>
   {/each}
 </ul>
