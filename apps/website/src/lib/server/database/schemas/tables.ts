@@ -1148,6 +1148,12 @@ export const RedeemCodeGroups = pgTable('redeem_code_groups', {
   userId: text('user_id')
     .notNull()
     .references(() => Users.id),
+  spaceId: text('space_id')
+    .notNull()
+    .references(() => Spaces.id),
+  memberId: text('member_id')
+    .notNull()
+    .references(() => SpaceMembers.id),
   postId: text('post_id')
     .notNull()
     .references(() => Posts.id),
@@ -1166,11 +1172,24 @@ export const RedeemCodes = pgTable('redeem_codes', {
   groupId: text('group_id')
     .notNull()
     .references(() => RedeemCodeGroups.id),
-  purchaseId: text('purchase_id').references(() => PostPurchases.id),
   state: E._RedeemCodeState('state').notNull(),
   code: text('code').notNull().unique(),
   createdAt: datetime('created_at')
     .notNull()
     .default(sql`now()`),
-  usedAt: datetime('used_at'),
+});
+
+export const RedeemCodeRedemptions = pgTable('redeem_code_redemptions', {
+  id: text('id')
+    .primaryKey()
+    .$defaultFn(() => createId()),
+  codeId: text('code_id')
+    .notNull()
+    .references(() => RedeemCodes.id),
+  purchaseId: text('purchase_id')
+    .notNull()
+    .references(() => PostPurchases.id),
+  createdAt: datetime('used_at')
+    .notNull()
+    .default(sql`now()`),
 });

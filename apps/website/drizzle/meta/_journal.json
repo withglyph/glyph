@@ -134,6 +134,13 @@
       "when": 1718261506055,
       "tag": "0018_stiff_doctor_doom",
       "breakpoints": false
+    },
+    {
+      "idx": 19,
+      "version": "6",
+      "when": 1718594294536,
+      "tag": "0019_next_maginty",
+      "breakpoints": false
     }
   ]
 }
