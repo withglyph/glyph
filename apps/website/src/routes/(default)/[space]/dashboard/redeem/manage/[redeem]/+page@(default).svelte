@@ -77,7 +77,7 @@
     width: 'full',
   })}
 >
-  <div class={css({ marginBottom: { base: '34px', sm: '80px' }, width: 'full', sm: { maxWidth: '860px' } })}>
+  <div class={css({ marginBottom: { base: '34px', sm: '60px' }, width: 'full', sm: { maxWidth: '860px' } })}>
     <h1
       class={flex({
         align: 'center',
@@ -100,8 +100,7 @@
         class={css({
           borderWidth: '1px',
           borderColor: 'gray.100',
-          paddingX: '14px',
-          paddingY: { base: '15px', sm: '14px' },
+          padding: '20px',
           backgroundColor: 'gray.0',
         })}
       >
@@ -155,13 +154,13 @@
 
         <dl class={flex({ direction: 'column', gap: '2px' })}>
           <div class={flex({ align: 'center', gap: '12px', fontSize: '13px' })}>
-            <dt class={css({ fontWeight: 'semibold', color: 'gray.800', width: '46px' })}>사용가능</dt>
+            <dt class={css({ fontWeight: 'semibold', width: '46px' })}>사용가능</dt>
             <dd class={css({ color: 'gray.600' })}>
               {$query.redeemCodeGroup.availableCodeCount}/{$query.redeemCodeGroup.codeCount}개
             </dd>
           </div>
           <div class={flex({ align: 'center', gap: '12px', fontSize: '13px' })}>
-            <dt class={css({ fontWeight: 'semibold', color: 'gray.800', width: '46px' })}>생성일</dt>
+            <dt class={css({ fontWeight: 'semibold', width: '46px' })}>생성일</dt>
             <dd class={css({ color: 'gray.600' })}>
               <time datetime={$query.redeemCodeGroup.createdAt}>
                 {dayjs($query.redeemCodeGroup.createdAt).formatAsDateTime()}
@@ -169,7 +168,7 @@
             </dd>
           </div>
           <div class={flex({ align: 'center', gap: '12px', fontSize: '13px' })}>
-            <dt class={css({ fontWeight: 'semibold', color: 'gray.800', width: '46px' })}>만료일</dt>
+            <dt class={css({ fontWeight: 'semibold', width: '46px' })}>만료일</dt>
             <dd class={css({ color: 'gray.600' })}>
               <time datetime={$query.redeemCodeGroup.expiresAt}>
                 {dayjs($query.redeemCodeGroup.expiresAt).formatAsDateTime()}
@@ -178,7 +177,7 @@
           </div>
         </dl>
 
-        <p class={css({ marginTop: '8px', fontSize: '13px', color: 'gray.600', whiteSpace: 'pre-wrap' })}>
+        <p class={css({ marginTop: '8px', fontSize: '13px', color: 'gray.600' })}>
           {$query.redeemCodeGroup.description}
         </p>
       </div>
@@ -202,15 +201,6 @@
     </div>
   </div>
 </div>
-
-<hr
-  class={css({
-    border: 'none',
-    width: 'full',
-    height: { base: '16px', sm: '1px' },
-    backgroundColor: { base: 'gray.50', sm: 'gray.100' },
-  })}
-/>
 
 <div
   class={flex({

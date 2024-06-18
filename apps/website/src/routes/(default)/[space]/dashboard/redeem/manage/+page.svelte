@@ -132,24 +132,24 @@
 
       <dl class={flex({ direction: 'column', gap: '2px' })}>
         <div class={flex({ align: 'center', gap: '12px', fontSize: '13px' })}>
-          <dt class={css({ fontWeight: 'semibold', color: 'gray.800', width: '46px' })}>사용가능</dt>
+          <dt class={css({ fontWeight: 'semibold', width: '46px' })}>사용가능</dt>
           <dd class={css({ color: 'gray.600' })}>{group.availableCodeCount}/{group.codeCount}</dd>
         </div>
         <div class={flex({ align: 'center', gap: '12px', fontSize: '13px' })}>
-          <dt class={css({ fontWeight: 'semibold', color: 'gray.800', width: '46px' })}>생성일</dt>
+          <dt class={css({ fontWeight: 'semibold', width: '46px' })}>생성일</dt>
           <dd class={css({ color: 'gray.600' })}>
             <time datetime={group.createdAt}>{dayjs(group.createdAt).formatAsDateTime()}</time>
           </dd>
         </div>
         <div class={flex({ align: 'center', gap: '12px', fontSize: '13px' })}>
-          <dt class={css({ fontWeight: 'semibold', color: 'gray.800', width: '46px' })}>만료일</dt>
+          <dt class={css({ fontWeight: 'semibold', width: '46px' })}>만료일</dt>
           <dd class={css({ color: 'gray.600' })}>
             <time datetime={group.expiresAt}>{dayjs(group.expiresAt).formatAsDateTime()}</time>
           </dd>
         </div>
       </dl>
 
-      <p class={css({ marginTop: '8px', fontSize: '13px', color: 'gray.600', whiteSpace: 'pre-wrap' })}>
+      <p class={css({ marginTop: '8px', fontSize: '13px', color: 'gray.600' })}>
         {group.description}
       </p>
 

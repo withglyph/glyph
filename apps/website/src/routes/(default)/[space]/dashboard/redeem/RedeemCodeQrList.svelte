@@ -96,7 +96,6 @@
             style={flex.raw({ align: 'center', justify: 'center', gap: '4px', width: { base: 'full', sm: 'fit' } })}
             download="qr-{code.formattedCode}"
             href={code.qrCodeUrl}
-            size="sm"
             type="link"
             variant="gray-outline"
           >

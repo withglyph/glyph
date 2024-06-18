@@ -66,12 +66,11 @@
     width: 'full',
   })}
 >
-  <div class={css({ width: 'full', sm: { marginBottom: '80px', maxWidth: '860px' } })}>
+  <div class={css({ smDown: { paddingX: '20px' }, width: 'full', sm: { marginBottom: '60px', maxWidth: '860px' } })}>
     <h1
       class={flex({
         align: 'center',
         gap: '8px',
-        paddingX: '20px',
         paddingY: '13px',
         fontSize: '17px',
         fontWeight: 'semibold',
@@ -84,7 +83,7 @@
       리딤코드 만들기
     </h1>
 
-    <div class={css({ smDown: { padding: '20px' }, sm: { marginTop: '40px', marginBottom: '32px' } })}>
+    <div class={css({ smDown: { paddingY: '20px' }, sm: { marginTop: '40px', marginBottom: '32px' } })}>
       <h2
         class={css({
           fontSize: { base: '17px', sm: '24px' },
@@ -101,126 +100,109 @@
       </p>
     </div>
 
-    <div
-      class={css({
-        smDown: { paddingTop: '20px', paddingX: '20px', backgroundColor: 'gray.0' },
-      })}
-    >
-      <div
-        class={css({ backgroundColor: 'gray.0', sm: { padding: '14px', borderWidth: '1px', borderColor: 'gray.100' } })}
-      >
-        <div
-          class={flex({
-            align: 'center',
-            gap: { base: '8px', sm: '12px' },
-            marginBottom: '16px',
-            borderBottomWidth: '1px',
-            borderBottomColor: 'gray.100',
-            paddingBottom: '16px',
-          })}
-        >
-          <Image
-            style={css.raw({
-              flex: 'none',
-              borderWidth: '[0.8px]',
-              borderColor: 'gray.100',
-              width: '102px',
-              aspectRatio: '16/10',
-              objectFit: 'cover',
-            })}
-            $image={$query.redeemCodeGroup.post.thumbnail}
-            placeholder
-            size={96}
-          />
-
-          <div class={css({ width: 'full', truncate: true })}>
-            <h3 class={css({ fontSize: '14px', fontWeight: 'semibold', color: 'gray.800', truncate: true })}>
-              {$query.redeemCodeGroup.post.publishedRevision?.title ?? '(제목 없음)'}
-            </h3>
-            <h4 class={css({ fontSize: '13px', color: 'gray.600', height: '19px', truncate: true })}>
-              {$query.redeemCodeGroup.post.publishedRevision?.subtitle ?? ''}
-            </h4>
-
-            <div
-              class={flex({
-                align: 'center',
-                gap: '8px',
-                marginTop: { base: '3px', sm: '6px' },
-                fontSize: '12px',
-                color: 'gray.500',
-              })}
-            >
-              <div class={flex({ align: 'center', gap: '2px' })}>
-                <Icon icon={IconCoin} />
-                <span>{comma($query.redeemCodeGroup.post.publishedRevision?.price ?? 0)}원</span>
-              </div>
-
-              <hr class={css({ border: 'none', width: '1px', height: '12px', backgroundColor: 'gray.100' })} />
-
-              <time datetime={$query.redeemCodeGroup.post.publishedRevision?.createdAt}>
-                {dayjs($query.redeemCodeGroup.post.publishedRevision?.createdAt).formatAsDate()}
-              </time>
-            </div>
-          </div>
-        </div>
-
-        <dl class={flex({ direction: 'column', gap: '2px' })}>
-          <div class={flex({ align: 'center', gap: '12px', fontSize: '13px' })}>
-            <dt class={css({ fontWeight: 'semibold', color: 'gray.800', width: '46px' })}>발급갯수</dt>
-            <dd class={css({ color: 'gray.600' })}>{$query.redeemCodeGroup.codeCount}개</dd>
-          </div>
-          <div class={flex({ align: 'center', gap: '12px', fontSize: '13px' })}>
-            <dt class={css({ fontWeight: 'semibold', color: 'gray.800', width: '46px' })}>생성일</dt>
-            <dd class={css({ color: 'gray.600' })}>
-              <time datetime={$query.redeemCodeGroup.createdAt}>
-                {dayjs($query.redeemCodeGroup.createdAt).formatAsDateTime()}
-              </time>
-            </dd>
-          </div>
-          <div class={flex({ align: 'center', gap: '12px', fontSize: '13px' })}>
-            <dt class={css({ fontWeight: 'semibold', color: 'gray.800', width: '46px' })}>만료일</dt>
-            <dd class={css({ color: 'gray.600' })}>
-              <time datetime={$query.redeemCodeGroup.expiresAt}>
-                {dayjs($query.redeemCodeGroup.expiresAt).formatAsDateTime()}
-              </time>
-            </dd>
-          </div>
-        </dl>
-
-        <p class={css({ marginTop: '8px', fontSize: '13px', color: 'gray.600', whiteSpace: 'pre-wrap' })}>
-          {$query.redeemCodeGroup.description}
-        </p>
-      </div>
-
+    <div class={css({ borderWidth: '1px', borderColor: 'gray.100', padding: '20px', backgroundColor: 'gray.0' })}>
       <div
         class={flex({
           align: 'center',
-          justify: 'flex-end',
-          marginTop: { base: '20px', sm: '8px' },
-          smDown: { paddingBottom: '34px' },
+          gap: { base: '8px', sm: '12px' },
+          marginBottom: '16px',
+          borderBottomWidth: '1px',
+          borderBottomColor: 'gray.100',
+          paddingBottom: '16px',
         })}
       >
-        <Button
-          style={css.raw({ backgroundColor: 'gray.0', width: { base: 'full', sm: '160px' } })}
-          href="/{$query.redeemCodeGroup.post.space.slug}/dashboard/redeem/manage"
-          type="link"
-          variant="gray-outline"
-        >
-          관리 페이지로 이동
-        </Button>
+        <Image
+          style={css.raw({
+            flex: 'none',
+            borderWidth: '[0.8px]',
+            borderColor: 'gray.100',
+            width: '102px',
+            aspectRatio: '16/10',
+            objectFit: 'cover',
+          })}
+          $image={$query.redeemCodeGroup.post.thumbnail}
+          placeholder
+          size={96}
+        />
+
+        <div class={css({ width: 'full', truncate: true })}>
+          <h3 class={css({ fontSize: '14px', fontWeight: 'semibold', color: 'gray.800', truncate: true })}>
+            {$query.redeemCodeGroup.post.publishedRevision?.title ?? '(제목 없음)'}
+          </h3>
+          <h4 class={css({ fontSize: '13px', color: 'gray.600', height: '19px', truncate: true })}>
+            {$query.redeemCodeGroup.post.publishedRevision?.subtitle ?? ''}
+          </h4>
+
+          <div
+            class={flex({
+              align: 'center',
+              gap: '8px',
+              marginTop: { base: '3px', sm: '6px' },
+              fontSize: '12px',
+              color: 'gray.500',
+            })}
+          >
+            <div class={flex({ align: 'center', gap: '2px' })}>
+              <Icon icon={IconCoin} />
+              <span>{comma($query.redeemCodeGroup.post.publishedRevision?.price ?? 0)}원</span>
+            </div>
+
+            <hr class={css({ border: 'none', width: '1px', height: '12px', backgroundColor: 'gray.100' })} />
+
+            <time datetime={$query.redeemCodeGroup.post.publishedRevision?.createdAt}>
+              {dayjs($query.redeemCodeGroup.post.publishedRevision?.createdAt).formatAsDate()}
+            </time>
+          </div>
+        </div>
       </div>
+
+      <dl class={flex({ direction: 'column', gap: '2px' })}>
+        <div class={flex({ align: 'center', gap: '12px', fontSize: '13px' })}>
+          <dt class={css({ fontWeight: 'semibold', color: 'gray.800', width: '46px' })}>발급갯수</dt>
+          <dd class={css({ color: 'gray.600' })}>{$query.redeemCodeGroup.codeCount}개</dd>
+        </div>
+        <div class={flex({ align: 'center', gap: '12px', fontSize: '13px' })}>
+          <dt class={css({ fontWeight: 'semibold', color: 'gray.800', width: '46px' })}>생성일</dt>
+          <dd class={css({ color: 'gray.600' })}>
+            <time datetime={$query.redeemCodeGroup.createdAt}>
+              {dayjs($query.redeemCodeGroup.createdAt).formatAsDateTime()}
+            </time>
+          </dd>
+        </div>
+        <div class={flex({ align: 'center', gap: '12px', fontSize: '13px' })}>
+          <dt class={css({ fontWeight: 'semibold', color: 'gray.800', width: '46px' })}>만료일</dt>
+          <dd class={css({ color: 'gray.600' })}>
+            <time datetime={$query.redeemCodeGroup.expiresAt}>
+              {dayjs($query.redeemCodeGroup.expiresAt).formatAsDateTime()}
+            </time>
+          </dd>
+        </div>
+      </dl>
+
+      <p class={css({ marginTop: '8px', fontSize: '13px', color: 'gray.600' })}>
+        {$query.redeemCodeGroup.description}
+      </p>
+    </div>
+
+    <div
+      class={flex({
+        align: 'center',
+        justify: 'flex-end',
+        marginTop: '8px',
+        smDown: { paddingBottom: '34px' },
+      })}
+    >
+      <Button
+        style={css.raw({ backgroundColor: 'gray.0', width: '160px' })}
+        href="/{$query.redeemCodeGroup.post.space.slug}/dashboard/redeem/manage"
+        type="link"
+        variant="gray-outline"
+      >
+        관리 페이지로 이동
+      </Button>
     </div>
   </div>
 </div>
-
-<hr
-  class={css({
-    border: 'none',
-    width: 'full',
-    height: { base: '16px', sm: '1px' },
-    backgroundColor: { base: 'gray.50', sm: 'gray.100' },
-  })}
-/>
 
 <div
   class={flex({
