@@ -7,21 +7,15 @@
   import { comma } from '$lib/utils';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
-  import RedeemCodeQrList from '../../RedeemCodeQrList.svelte';
 
   $: query = graphql(`
-    query SpaceDashboardRedeemCompletePage_Query($id: ID!, $page: Int! = 1, $take: Int! = 10) {
+    query SpaceDashboardRedeemCompletePage_Query($id: ID!) {
       redeemCodeGroup(id: $id) {
         id
         codeCount
         description
         createdAt
         expiresAt
-
-        codes(page: $page, take: $take) {
-          id
-          ...RedeemCodeQrList_redeem
-        }
 
         post {
           id
@@ -94,9 +88,7 @@
       </h2>
 
       <p class={css({ fontSize: { base: '13px', sm: '14px' }, color: { base: 'gray.500', sm: 'gray.600' } })}>
-        리딤코드를 개별적으로 하나씩 다운로드 할 수 있어요.
-        <br />
-        또한 [관리] 페이지에서 해당 코드를 자세히 확인할 수 있어요
+        발급된 리딤코드를 원하는 방식으로 배포해보세요
       </p>
     </div>
 
@@ -194,37 +186,12 @@
     >
       <Button
         style={css.raw({ backgroundColor: 'gray.0', width: '160px' })}
-        href="/{$query.redeemCodeGroup.post.space.slug}/dashboard/redeem/manage"
+        href="/{$query.redeemCodeGroup.post.space.slug}/dashboard/redeem/manage/{$query.redeemCodeGroup.id}"
         type="link"
-        variant="gray-outline"
+        variant="brand-fill"
       >
-        관리 페이지로 이동
+        보러가기
       </Button>
     </div>
   </div>
-</div>
-
-<div
-  class={flex({
-    direction: 'column',
-    align: 'center',
-    grow: '1',
-    paddingTop: { base: '34px', sm: '40px' },
-    paddingBottom: '120px',
-    width: 'full',
-    smDown: { paddingX: '20px' },
-  })}
->
-  <div class={css({ width: 'full', sm: { maxWidth: '860px' } })}>
-    <h2 class={css({ fontSize: '18px', fontWeight: 'semibold' })}>개별 다운로드</h2>
-    <p class={css({ marginTop: '2px', fontSize: '13px', color: 'gray.500' })}>
-      해당 파일은 500x500크기로 다운로드됩니다
-    </p>
-  </div>
-
-  <RedeemCodeQrList
-    $redeems={$query.redeemCodeGroup.codes}
-    codeCount={$query.redeemCodeGroup.codeCount}
-    url="/{$query.redeemCodeGroup.post.space.slug}/dashboard/redeem/manage/{$query.redeemCodeGroup.id}"
-  />
 </div>

@@ -34,17 +34,15 @@
       fontWeight: '[800]',
     })}
   >
-    종이책에 전자책 혜택을 더하다
+    유료 콘텐츠를 원하는 방식으로 배포하기
   </h2>
 
-  <!-- prettier-ignore -->
   <p class={css({ fontSize: { base: '13px', sm: '14px' }, color: 'gray.600' })}>
-    리딤코드는 종이책과 유료포스트를 함께 이용할 수 있게 도와주는 서비스로
+    리딤코드는 내가 올린 유료 포스트를 타인에게 배포할 수 있는 새로운 방법이에요. 리딤코드를 오프라인 행사에서 회지와
+    함께 제공하거나 원하는 지인에게 공유해보세요. 코드를 받은 사람은 해당 코드를 등록해 내가 지정한 유료 콘텐츠를 구매
+    절차 없이 바로 이용할 수 있어요.
     <br />
-    해당 코드를 스캔하거나 입력하면
-    <mark class={css({ color: 'brand.400' })}>글리프에서 발행한 유료포스트가 자동으로 구매 완료</mark>되도록 설정할 수 있어요.
-    <br />
-    코드는 한 계정에만 등록할 수 있어 안전하게 관리가 가능해요.
+    모든 코드는 무작위하게 생성되며 1회용이기에 내가 모르는 사이에 돌려 쓰이거나 유출될 걱정이 없어요.
   </p>
 
   <Button
@@ -54,7 +52,7 @@
     type="link"
     variant="gradation-fill"
   >
-    리딤 코드 만들기
+    리딤코드 만들기
     <Icon icon={IconChevronRight} />
   </Button>
   <Button
@@ -64,7 +62,7 @@
     type="link"
     variant="gradation-fill"
   >
-    리딤 코드 만들기
+    리딤코드 만들기
     <Icon icon={IconChevronRight} size={20} />
   </Button>
 </div>

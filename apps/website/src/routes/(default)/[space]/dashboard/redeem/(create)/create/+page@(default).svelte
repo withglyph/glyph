@@ -98,7 +98,7 @@
         </div>
 
         <p class={css({ marginTop: '2px', marginBottom: '24px', fontSize: '13px', color: 'gray.500' })}>
-          리딤코드는 유료 포스트만 생성할 수 있어요
+          리딤코드는 유료 포스트를 대상으로 생성할 수 있어요
         </p>
 
         <TextInput

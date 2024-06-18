@@ -73,7 +73,9 @@
   class={flex({
     direction: 'column',
     align: 'center',
-    backgroundColor: 'gray.50',
+    bgGradient: 'to-br',
+    gradientFrom: '[#FEFEFE]',
+    gradientTo: 'gray.50',
     width: 'full',
   })}
 >
@@ -214,7 +216,7 @@
   })}
 >
   <div class={css({ width: 'full', sm: { maxWidth: '860px' } })}>
-    <h2 class={css({ fontSize: '18px', fontWeight: 'semibold' })}>개별 다운로드</h2>
+    <h2 class={css({ fontSize: '18px', fontWeight: 'semibold' })}>코드 목록</h2>
     <p class={css({ marginTop: '2px', fontSize: '13px', color: 'gray.500' })}>
       해당 파일은 500x500크기로 다운로드됩니다
     </p>

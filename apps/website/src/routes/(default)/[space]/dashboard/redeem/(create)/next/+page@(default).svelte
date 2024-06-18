@@ -103,9 +103,33 @@
     <div
       class={flex({
         align: 'center',
+        gap: '6px',
+        marginBottom: '16px',
+        paddingX: { base: '20px', sm: '32px' },
+        smDown: { marginTop: '16px' },
+      })}
+    >
+      <div
+        class={center({
+          size: '18px',
+          fontSize: '11px',
+          fontWeight: 'medium',
+          color: 'gray.500',
+          backgroundColor: 'gray.100',
+        })}
+      >
+        1
+      </div>
+      <h2 class={css({ fontSize: { sm: '18px' }, fontWeight: 'semibold' })}>유료 포스트 선택</h2>
+    </div>
+
+    <div
+      class={flex({
+        align: 'center',
         gap: { base: '8px', sm: '12px' },
         marginBottom: { base: '24px', sm: '20px' },
-        smDown: { marginTop: '16px', paddingX: '20px' },
+        paddingX: { base: '20px', sm: '32px' },
+        smDown: { marginTop: '16px' },
       })}
     >
       <Image
@@ -174,13 +198,13 @@
           >
             2
           </div>
-          <h2 class={css({ fontSize: { sm: '18px' }, fontWeight: 'semibold' })}>리딤코드 설명</h2>
+          <h2 class={css({ fontSize: { sm: '18px' }, fontWeight: 'semibold' })}>메모</h2>
           <span class={css({ marginLeft: '-4px', fontSize: '12px', color: 'gray.500' })}>(선택)</span>
         </div>
 
         <TextArea
           style={css.raw({ marginTop: { base: '8px', sm: '16px' } })}
-          placeholder="리딤코드를 간단하게 설명해주세요. 해당 설명은 자신만 볼 수 있어요"
+          placeholder="리딤코드를 생성하는 이유 등 간략한 메모를 적을 수 있어요. 이 메모는 나만 확인할 수 있어요"
           rows={4}
           bind:value={description}
         />
@@ -205,10 +229,11 @@
           >
             3
           </div>
-          <h2 class={css({ fontSize: { sm: '18px' }, fontWeight: 'semibold' })}>발급갯수</h2>
+          <h2 class={css({ fontSize: { sm: '18px' }, fontWeight: 'semibold' })}>발급 갯수</h2>
         </div>
         <p class={css({ marginTop: '2px', fontSize: '13px', color: 'gray.500' })}>
-          리딤 코드는 한 계정에만 등록할 수 있으며, 중복 사용이 불가능합니다. 책을 읽을 독자 수만큼 코드를 발급해주세요
+          리딤코드는 한 계정에만 등록할 수 있으며, 중복 사용이 불가능해요. 포스트를 배포할 인원 수만큼 코드를
+          발급해주세요
         </p>
 
         <div
@@ -263,7 +288,7 @@
         <div class={css({ marginTop: '12px', padding: '14px', backgroundColor: '[#f4f4f4]' })}>
           <p class={css({ fontSize: '13px', fontWeight: 'semibold', color: 'gray.800' })}>유효기간</p>
           <p class={css({ marginTop: '2px', fontSize: '13px', color: 'gray.600' })}>
-            리딤코드는 1년의 유효기간이 있으며, 해당 기간이 지나면 코드를 입력할 수 없어요
+            리딤코드는 발급 이후 1년간 사용가능해요
           </p>
         </div>
       </div>
@@ -283,7 +308,7 @@
           type="link"
           variant="gray-outline"
         >
-          포스트 다시 선택
+          이전
         </Button>
         <Button
           style={css.raw({ width: 'full', sm: { maxWidth: '160px' } })}
