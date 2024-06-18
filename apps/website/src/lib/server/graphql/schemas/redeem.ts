@@ -56,7 +56,7 @@ RedeemCode.implement({
 
     qrCodeUrl: t.field({
       type: 'String',
-      resolve: (redeemCode, _, context) => `${context.event.url.origin}/api/redeem/qr/{${redeemCode.code}.png`,
+      resolve: (redeemCode, _, context) => `${context.event.url.origin}/api/redeem/qr/${redeemCode.code}.png`,
     }),
 
     redemption: t.field({
