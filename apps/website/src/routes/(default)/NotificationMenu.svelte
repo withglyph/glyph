@@ -5,7 +5,7 @@
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
   import { Button, Icon } from '$lib/components';
-  import { createFloatingActions, portal } from '$lib/svelte/actions';
+  import { createFloatingActions, portal, scrollLock } from '$lib/svelte/actions';
   import { css } from '$styled-system/css';
   import { center, circle, flex } from '$styled-system/patterns';
   import CommentNotification from './CommentNotification.svelte';
@@ -157,6 +157,7 @@
       zIndex: '50',
     })}
     use:floating
+    use:scrollLock
   >
     <div
       class={flex({
@@ -214,7 +215,10 @@
       {/if}
     </div>
 
-    <ul class={css({ minHeight: '120px', maxHeight: '440px', overflowY: 'auto', position: 'relative' })}>
+    <ul
+      class={css({ minHeight: '120px', maxHeight: '440px', overflowY: 'auto', position: 'relative' })}
+      data-scroll-lock-ignore
+    >
       {#each $user.notifications.slice(0, 20) as notification (notification.id)}
         <li>
           {#if notification.__typename === 'CommentNotification'}
@@ -231,7 +235,7 @@
         <li
           class={css({
             fontSize: '14px',
-            fontWeight: 'bold',
+            fontWeight: 'medium',
             textAlign: 'center',
             color: 'gray.500',
             position: 'absolute',
