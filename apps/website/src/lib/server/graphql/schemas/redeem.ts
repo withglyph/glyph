@@ -436,7 +436,7 @@ builder.mutationFields((t) => ({
           PostPurchases,
           and(eq(PostPurchases.postId, Posts.id), eq(PostPurchases.userId, context.session.userId)),
         )
-        .where(and(eq(Posts.id, redeem.postId), eq(Posts.state, 'PUBLISHED')))
+        .where(and(eq(Posts.id, redeem.postId), eq(Posts.state, 'PUBLISHED'), ne(Posts.visibility, 'SPACE')))
         .then(useFirstRowOrThrow(new IntentionalError('포스트를 찾을 수 없어요')));
 
       if (post.purchaseId) {
