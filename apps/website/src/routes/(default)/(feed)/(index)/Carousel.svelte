@@ -28,11 +28,11 @@
       href: '/glyph/1880172451',
     },
     {
-      title: '5월 30일 업데이트 노트',
-      subtitle: '스페이스 관리 리뉴얼\n포스트 발행옵션 일괄 수정, 컬렉션 설명 추가',
+      title: '6월 18일 업데이트 노트',
+      subtitle: '유료 콘텐츠를 원하는\n방식으로 배포하는 새로운 방법: 리딤코드',
       color: '#1717175A',
       backgroundImageUrl: 'https://glyph.pub/images/_/banner_updates_2.png',
-      href: '/glyph/2070481519',
+      href: '/glyph/1680725636',
     },
     {
       title: '<정산 기능 업데이트>',
