@@ -255,7 +255,7 @@
       variant="red-fill"
       on:click={async () => {
         await revokeRedeemCodeGroup({ id: $query.redeemCodeGroup.id });
-        mixpanel.track('redeem-code-group:delete', { id: $query.redeemCodeGroup.id });
+        mixpanel.track('redeem-code-group:revoke', { id: $query.redeemCodeGroup.id });
         await goto(`/${$query.redeemCodeGroup.post.space.slug}/dashboard/redeem/manage`);
         revokeRedeemCodeGroupOpen = false;
       }}
