@@ -12,13 +12,16 @@
 
 <button
   type="button"
-  on:touchstart={() => {
+  on:pointerup={() => {
     if ($$restProps.disabled) {
       return;
     }
 
     dispatch('click');
-    $state.editor?.commands.focus();
+
+    setTimeout(() => {
+      $state.editor?.commands.focus();
+    }, 0);
   }}
   {...$$restProps}
 >
