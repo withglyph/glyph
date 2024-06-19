@@ -12,7 +12,7 @@
 
 <button
   type="button"
-  on:pointerup={() => {
+  on:touchstart={() => {
     if ($$restProps.disabled) {
       return;
     }

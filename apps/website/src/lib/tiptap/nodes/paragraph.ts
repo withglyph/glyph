@@ -153,7 +153,7 @@ export const Paragraph = Node.create({
 
           const textNode = getTextNodeToCopyMarks(this.type, $anchor);
           if (textNode) {
-            tr.setStoredMarks(textNode.marks);
+            tr.ensureMarks(textNode.marks);
             return tr;
           }
         },

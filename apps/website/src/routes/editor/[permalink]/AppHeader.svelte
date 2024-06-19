@@ -5,7 +5,6 @@
   import { onFlutterMessage } from '$lib/flutter';
   import { portal } from '$lib/svelte/actions';
   import { css } from '$styled-system/css';
-  import { getEditorContext } from './context';
   import MobileEditMenu from './MobileEditMenu.svelte';
   import PublishMenu from './PublishMenu.svelte';
   import type { EditorPage_AppHeader_post, EditorPage_AppHeader_query } from '$glitch';
@@ -13,8 +12,6 @@
   export { _post as $post, _query as $query };
   let _query: EditorPage_AppHeader_query;
   let _post: EditorPage_AppHeader_post;
-
-  const { state } = getEditorContext();
 
   $: query = fragment(
     _query,
@@ -46,19 +43,17 @@
   });
 </script>
 
-{#if $state.editor?.isFocused}
-  <header
-    class={css({
-      position: 'fixed',
-      bottom: '0',
-      width: 'full',
-      backgroundColor: 'gray.0',
-      zIndex: '100',
-    })}
-  >
-    <MobileEditMenu />
-  </header>
-{/if}
+<header
+  class={css({
+    position: 'fixed',
+    bottom: '0',
+    width: 'full',
+    backgroundColor: 'gray.0',
+    zIndex: '100',
+  })}
+>
+  <MobileEditMenu />
+</header>
 
 {#if publishMenuOpen}
   <div

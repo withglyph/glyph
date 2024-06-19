@@ -91,6 +91,7 @@
     direction: $isWebView ? 'column-reverse' : 'column',
     color: 'gray.800',
     backgroundColor: 'gray.0',
+    touchAction: 'none',
     hideFrom: 'sm',
   })}
   on:touchend|nonpassive|preventDefault
