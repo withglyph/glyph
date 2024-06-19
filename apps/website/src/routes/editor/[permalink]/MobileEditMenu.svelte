@@ -23,6 +23,7 @@
   import IconStrikethrough from '~icons/tabler/strikethrough';
   import IconUnderline from '~icons/tabler/underline';
   import { Icon } from '$lib/components';
+  import { isWebView } from '$lib/flutter';
   import { portal } from '$lib/svelte/actions';
   import { values } from '$lib/tiptap/values';
   import { validImageMimes } from '$lib/utils';
@@ -86,15 +87,21 @@
 </script>
 
 <div
-  class={flex({ direction: 'column', color: 'gray.800', backgroundColor: 'gray.0', hideFrom: 'sm' })}
+  class={flex({
+    direction: $isWebView ? 'column-reverse' : 'column',
+    color: 'gray.800',
+    backgroundColor: 'gray.0',
+    hideFrom: 'sm',
+  })}
   on:touchend|nonpassive|preventDefault
 >
   <div
     class={flex({
       align: 'center',
       gap: '20px',
-      borderBottomWidth: '1px',
-      borderBottomColor: 'gray.200',
+      borderTopWidth: $isWebView ? '1px' : '0',
+      borderBottomWidth: $isWebView ? '0' : '1px',
+      borderColor: 'gray.200',
       paddingX: '20px',
       paddingY: '14px',
       width: 'full',
@@ -282,8 +289,9 @@
     <div
       class={flex({
         align: 'center',
-        borderBottomWidth: '1px',
-        borderBottomColor: 'gray.200',
+        borderTopWidth: $isWebView ? '1px' : '0',
+        borderBottomWidth: $isWebView ? '0' : '1px',
+        borderColor: 'gray.200',
         paddingX: '20px',
         paddingY: '14px',
         width: 'full',
@@ -435,7 +443,15 @@
   {/if}
 
   {#if bottomMenu}
-    <div class={grid({ columns: 2, borderBottomWidth: '1px', borderBottomColor: 'gray.200', touchAction: 'none' })}>
+    <div
+      class={grid({
+        columns: 2,
+        borderTopWidth: $isWebView ? '1px' : '0',
+        borderBottomWidth: $isWebView ? '0' : '1px',
+        borderColor: 'gray.200',
+        touchAction: 'none',
+      })}
+    >
       {#if bottomMenu === 'quote'}
         {#each values.blockquote as blockquote (blockquote.value)}
           <MobileToolbarButton

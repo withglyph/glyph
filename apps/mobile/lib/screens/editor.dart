@@ -1,34 +1,58 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:glyph/components/heading.dart';
+import 'package:glyph/components/pressable.dart';
 import 'package:glyph/components/webview.dart';
 import 'package:glyph/routers/app.gr.dart';
 
 @RoutePage()
-class EditorScreen extends ConsumerWidget {
+class EditorScreen extends StatefulWidget {
   const EditorScreen({@PathParam() required this.permalink, super.key});
 
   final String permalink;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  createState() => _EditorScreenState();
+}
+
+class _EditorScreenState extends State<EditorScreen> {
+  Future<void> Function(dynamic data)? reply;
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: SafeArea(
-        maintainBottomViewPadding: true,
-        child: WebView(
-          path: '/editor/$permalink?webview=true',
-          readOnly: false,
-          onJsMessage: (data, reply) async {
-            if (data['type'] == 'close') {
-              await context.router.maybePop();
-            } else if (data['type'] == 'publish') {
-              await context.router.replace(
-                PostRoute(permalink: data['permalink']),
-              );
-            }
-          },
+      appBar: Heading(
+        title: const Text(
+          '포스트 작성',
+          style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
         ),
+        actions: [
+          Pressable(
+            child: const Text(
+              '발행',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            onPressed: () async {
+              await reply?.call({'type': 'publish:open'});
+            },
+          ),
+        ],
+      ),
+      body: WebView(
+        path: '/editor/${widget.permalink}',
+        readOnly: false,
+        onJsMessage: (data, reply) async {
+          this.reply ??= reply;
+
+          if (data['type'] == 'publish:done') {
+            await context.router.replace(
+              PostRoute(permalink: data['permalink']),
+            );
+          }
+        },
       ),
     );
   }

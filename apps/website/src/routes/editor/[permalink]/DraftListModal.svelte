@@ -10,7 +10,6 @@
   import { mixpanel } from '$lib/analytics';
   import { Alert, Button, Chip, Icon, Modal } from '$lib/components';
   import { Checkbox } from '$lib/components/forms';
-  import { isWebView, postFlutterMessage } from '$lib/flutter';
   import { comma } from '$lib/utils';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
@@ -267,12 +266,7 @@
       on:click={async () => {
         if (deleteSelectedPosts) {
           if (selectedPosts.includes($post.id)) {
-            if ($isWebView) {
-              postFlutterMessage({ type: 'close' });
-              return;
-            } else {
-              await goto('/');
-            }
+            await goto('/');
           }
 
           await Promise.all(selectedPosts.map((postId) => deletePost({ postId })));
@@ -286,12 +280,7 @@
           }
 
           if (deletePostId === $post.id) {
-            if ($isWebView) {
-              postFlutterMessage({ type: 'close' });
-              return;
-            } else {
-              await goto('/');
-            }
+            await goto('/');
           }
 
           await deletePost({ postId: deletePostId });

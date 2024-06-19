@@ -89,65 +89,64 @@ class _WebviewState extends ConsumerState<WebView> {
       _ => null,
     };
 
-    return ConstrainedBox(
-      constraints: BoxConstraints(
-        maxHeight: widget.fitToContent ? _height : double.infinity,
-      ),
-      child: InAppWebView(
-        key: _key,
-        initialSettings: _settings,
-        preventGestureDelay: true,
-        onWebViewCreated: (controller) async {
-          _webViewController = controller;
+    final child = InAppWebView(
+      key: _key,
+      initialSettings: _settings,
+      preventGestureDelay: true,
+      onWebViewCreated: (controller) async {
+        _webViewController = controller;
 
-          await _cookieManager.setCookie(
-            url: WebUri(Env.baseUrl),
-            name: 'glyph-at',
-            value: accessToken!,
-            isSecure: Env.baseUrl.startsWith('https'),
-            isHttpOnly: true,
-          );
+        await _cookieManager.setCookie(
+          url: WebUri(Env.baseUrl),
+          name: 'glyph-at',
+          value: accessToken!,
+          isSecure: Env.baseUrl.startsWith('https'),
+          isHttpOnly: true,
+        );
 
-          await _cookieManager.setCookie(
-            url: WebUri(Env.baseUrl),
-            name: 'glyph-wb',
-            value: 'true',
-            isSecure: Env.baseUrl.startsWith('https'),
-          );
+        await _cookieManager.setCookie(
+          url: WebUri(Env.baseUrl),
+          name: 'glyph-wb',
+          value: 'true',
+          isSecure: Env.baseUrl.startsWith('https'),
+        );
 
-          if (defaultTargetPlatform != TargetPlatform.android ||
-              await WebViewFeature.isFeatureSupported(
-                WebViewFeature.WEB_MESSAGE_LISTENER,
-              )) {
-            await controller.addWebMessageListener(
-              WebMessageListener(
-                jsObjectName: 'flutter',
-                allowedOriginRules: {'*'},
-                onPostMessage:
-                    (message, sourceOrigin, isMainFrame, replyProxy) async {
-                  await widget.onJsMessage?.call(
-                    json.decode(utf8.decode(base64.decode(message!.data))),
-                    (data) => replyProxy.postMessage(
-                      WebMessage(
-                        data: base64.encode(utf8.encode(json.encode(data))),
-                      ),
+        if (defaultTargetPlatform != TargetPlatform.android ||
+            await WebViewFeature.isFeatureSupported(
+              WebViewFeature.WEB_MESSAGE_LISTENER,
+            )) {
+          await controller.addWebMessageListener(
+            WebMessageListener(
+              jsObjectName: 'flutter',
+              allowedOriginRules: {'*'},
+              onPostMessage:
+                  (message, sourceOrigin, isMainFrame, replyProxy) async {
+                await widget.onJsMessage?.call(
+                  json.decode(utf8.decode(base64.decode(message!.data))),
+                  (data) => replyProxy.postMessage(
+                    WebMessage(
+                      data: base64.encode(utf8.encode(json.encode(data))),
                     ),
-                  );
-                },
-              ),
-            );
-          }
-
-          unawaited(
-            controller.loadUrl(
-              urlRequest: URLRequest(
-                url: WebUri('${Env.baseUrl}${widget.path}?webview=true'),
-              ),
+                  ),
+                );
+              },
             ),
           );
-        },
-        shouldOverrideUrlLoading: widget.onNavigate,
-      ),
+        }
+
+        unawaited(
+          controller.loadUrl(
+            urlRequest: URLRequest(
+              url: WebUri('${Env.baseUrl}${widget.path}?webview=true'),
+            ),
+          ),
+        );
+      },
+      shouldOverrideUrlLoading: widget.onNavigate,
     );
+
+    return widget.fitToContent
+        ? SizedBox(height: _height, child: child)
+        : child;
   }
 }

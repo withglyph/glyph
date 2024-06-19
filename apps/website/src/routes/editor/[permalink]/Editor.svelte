@@ -3,20 +3,16 @@
   import { fromUint8Array, toUint8Array } from 'js-base64';
   import { nanoid } from 'nanoid';
   import { onMount } from 'svelte';
-  import { readable, writable } from 'svelte/store';
+  import { writable } from 'svelte/store';
   import { IndexeddbPersistence } from 'y-indexeddb';
   import * as YAwareness from 'y-protocols/awareness';
   import * as Y from 'yjs';
   import { browser } from '$app/environment';
   import { fragment, graphql } from '$glitch';
-  import { Helmet } from '$lib/components';
-  import { css } from '$styled-system/css';
-  import { flex } from '$styled-system/patterns';
-  import Content from './Content.svelte';
+  import { isWebView } from '$lib/flutter';
+  import AppEditor from './AppEditor.svelte';
   import { NETWORK, setEditorContext } from './context';
-  import FileHandler from './FileHandler.svelte';
-  import Header from './Header.svelte';
-  import TimeTravel from './TimeTravel.svelte';
+  import WebEditor from './WebEditor.svelte';
   import type { EditorPage_Editor_post, EditorPage_Editor_query } from '$glitch';
   import type { EditorState } from './context';
 
@@ -42,7 +38,8 @@
           }
         }
 
-        ...EditorPage_Header_query
+        ...EditorPage_AppEditor_query
+        ...EditorPage_WebEditor_query
       }
     `),
   );
@@ -71,8 +68,8 @@
           }
         }
 
-        ...EditorPage_Header_post
-        ...EditorPage_TimeTravel_post
+        ...EditorPage_AppEditor_post
+        ...EditorPage_WebEditor_post
       }
     `),
   );
@@ -207,25 +204,6 @@
     forceSynchronize,
   });
 
-  const title = readable<string | null>(undefined, (set) => {
-    const yText = yDoc.getText('title');
-    const handler = () => {
-      const value = yText.toString();
-      set(value === '' ? null : value);
-    };
-
-    yText.observe(handler);
-    return () => yText.unobserve(handler);
-  });
-
-  let vvHeight: number | undefined;
-
-  const handleVisualViewportChange = () => {
-    if (window.visualViewport) {
-      vvHeight = window.visualViewport.height + window.visualViewport.offsetTop;
-    }
-  };
-
   const updateConnectionState = async () => {
     if (!lastPingMessageReceivedAt) {
       return;
@@ -256,45 +234,17 @@
     const unsubscribe = postSynchronization.subscribe({ postId: $post.id });
     const interval = setInterval(() => updateConnectionState(), 1000);
 
-    handleVisualViewportChange();
-    window.visualViewport?.addEventListener('resize', handleVisualViewportChange);
-    window.visualViewport?.addEventListener('scroll', handleVisualViewportChange);
-
     return () => {
       unsubscribe();
       clearInterval(interval);
       YAwareness.removeAwarenessStates(yAwareness, [yDoc.clientID], NETWORK);
       yDoc.destroy();
-
-      window.visualViewport?.removeEventListener('resize', handleVisualViewportChange);
-      window.visualViewport?.removeEventListener('scroll', handleVisualViewportChange);
     };
   });
 </script>
 
-<Helmet description="포스트 작성하기" title={`${$title ?? '(제목 없음)'} 작성`} />
-
-<div
-  class={css({ position: 'relative', flexGrow: '1', isolation: 'isolate', userSelect: 'none', touchAction: 'none' })}
->
-  <div style:height={vvHeight ? `${vvHeight}px` : '100dvh'} class={flex({ direction: 'column' })}>
-    <Header {$post} {$query} />
-
-    <div
-      class={flex({
-        direction: 'column',
-        grow: '1',
-        marginTop: $state.timeTravel ? '62px' : { base: '103px', sm: '168px' },
-        overflow: 'auto',
-      })}
-    >
-      {#if $state.timeTravel}
-        <TimeTravel {$post} />
-      {:else}
-        <Content />
-      {/if}
-    </div>
-  </div>
-</div>
-
-<FileHandler />
+{#if $isWebView}
+  <AppEditor {$post} {$query} />
+{:else}
+  <WebEditor {$post} {$query} />
+{/if}

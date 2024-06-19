@@ -18,13 +18,11 @@
   import IconListNumbers from '~icons/tabler/list-numbers';
   import IconPhoto from '~icons/tabler/photo';
   import IconQuote from '~icons/tabler/quote';
-  import IconX from '~icons/tabler/x';
   // import FullLogo from '$assets/logos/full.svg?component';
   import RainbowLogo from '$assets/logos/full-rainbow.svg?component';
   import { fragment, graphql } from '$glitch';
   import { Alert, Button, Icon } from '$lib/components';
   import { Menu, MenuItem } from '$lib/components/menu';
-  import { isWebView, postFlutterMessage } from '$lib/flutter';
   import { createFloatingActions, portal } from '$lib/svelte/actions';
   import { values } from '$lib/tiptap/values';
   import { validImageMimes } from '$lib/utils';
@@ -150,24 +148,18 @@
       height: { base: '56px', sm: '62px' },
     })}
   >
-    {#if $isWebView}
-      <button type="button" on:click={() => postFlutterMessage({ type: 'close' })}>
-        <Icon icon={IconX} size={24} />
-      </button>
-    {:else}
-      <a class={flex({ align: 'center', gap: '8px' })} href="/">
-        <RainbowLogo
-          class={css({
-            marginTop: '20px',
-            marginBottom: '17px',
-            color: 'gray.900',
-            height: '25px',
-            hideBelow: 'sm',
-          })}
-        />
-        <Icon style={css.raw({ hideFrom: 'sm' })} icon={IconChevronLeft} size={24} />
-      </a>
-    {/if}
+    <a class={flex({ align: 'center', gap: '8px' })} href="/">
+      <RainbowLogo
+        class={css({
+          marginTop: '20px',
+          marginBottom: '17px',
+          color: 'gray.900',
+          height: '25px',
+          hideBelow: 'sm',
+        })}
+      />
+      <Icon style={css.raw({ hideFrom: 'sm' })} icon={IconChevronLeft} size={24} />
+    </a>
 
     <div class={flex({ flex: '1', justify: 'flex-end', align: 'flex-end' })}>
       {#if $state.timeTravel}

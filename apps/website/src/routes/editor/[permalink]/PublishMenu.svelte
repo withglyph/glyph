@@ -157,7 +157,7 @@
       mixpanel.track('post:publish', { postId: resp.id });
 
       if ($isWebView) {
-        postFlutterMessage({ type: 'publish', permalink: resp.permalink });
+        postFlutterMessage({ type: 'publish:done', permalink: resp.permalink });
       } else {
         await goto(`/${resp.space.slug}/${resp.permalink}`);
       }

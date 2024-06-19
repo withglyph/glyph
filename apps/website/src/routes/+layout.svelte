@@ -6,6 +6,7 @@
   import { browser } from '$app/environment';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
+  import { isWebView, postFlutterMessage } from '$lib/flutter';
   import { toast, ToastProvider } from '$lib/notification';
   import { flex } from '$styled-system/patterns';
   import AutoUpdater from './AutoUpdater.svelte';
@@ -54,6 +55,10 @@
   onMount(() => {
     if ($query.flash && $query.flash.type !== 'success') {
       toast.error($query.flash.message);
+    }
+
+    if ($isWebView) {
+      postFlutterMessage({ type: 'ready' });
     }
   });
 </script>

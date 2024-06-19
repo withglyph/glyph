@@ -16,8 +16,6 @@ export const onFlutterMessage = (handler: (message: any) => void) => {
 
     window.flutter.addEventListener('message', fn);
 
-    postFlutterMessage({ type: 'ready' });
-
     return () => {
       window.flutter.removeEventListener('message', fn);
     };
