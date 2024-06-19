@@ -84,7 +84,7 @@
             <dd class={flex({ align: 'center', gap: '4px', color: 'gray.600' })}>
               <span>{code.formattedCode}</span>
               <button
-                class={css({ padding: '2px', color: 'gray.300', _hover: { backgroundColor: 'gray.50' } })}
+                class={css({ padding: '2px', color: 'gray.400', _hover: { backgroundColor: 'gray.50' } })}
                 type="button"
                 on:click={async () => {
                   try {
