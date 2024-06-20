@@ -26,8 +26,8 @@
     "mrmime": "^2.0.0"
   },
   "devDependencies": {
-    "@sveltejs/kit": "^2.5.16",
-    "@types/node": "^20.14.2",
+    "@sveltejs/kit": "^2.5.17",
+    "@types/node": "^20.14.5",
     "@withglyph/tsconfig": "workspace:^",
     "tsup": "^8.1.0",
     "typescript": "^5.4.5"

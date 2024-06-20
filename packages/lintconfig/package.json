@@ -11,21 +11,21 @@
     "@eslint/eslintrc": "^3.1.0",
     "@eslint/js": "^8.57.0",
     "@prettier/plugin-xml": "^3.4.1",
-    "@typescript-eslint/eslint-plugin": "^7.13.0",
+    "@typescript-eslint/eslint-plugin": "^7.13.1",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-simple-import-sort": "^12.1.0",
-    "eslint-plugin-svelte": "^2.39.4",
+    "eslint-plugin-svelte": "^2.40.0",
     "eslint-plugin-unicorn": "^54.0.0",
-    "globals": "^15.5.0",
+    "globals": "^15.6.0",
     "ignore": "^5.3.1",
     "prettier-plugin-packagejson": "^2.5.0",
     "prettier-plugin-sh": "^0.14.0",
     "prettier-plugin-svelte": "^3.2.4",
-    "svelte-eslint-parser": "^0.38.0"
+    "svelte-eslint-parser": "^0.39.1"
   },
   "devDependencies": {
-    "@types/node": "^20.14.2"
+    "@types/node": "^20.14.5"
   },
   "peerDependencies": {
     "eslint": "^8.0.0",

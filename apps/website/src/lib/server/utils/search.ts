@@ -1,7 +1,8 @@
 import type { estypes } from '@elastic/elasticsearch';
 
 export const searchResultToIds = (searchResult: estypes.SearchResponse) =>
-  searchResult.hits.hits.map((hit: { _id: string }) => hit._id);
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  searchResult.hits.hits.map((hit) => hit._id!);
 
 type RawQueryContainer = {
   query: estypes.QueryDslQueryContainer;

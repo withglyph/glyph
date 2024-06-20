@@ -32,7 +32,8 @@ builder.objectType(SearchResult, {
     posts: t.field({
       type: [Post],
       resolve: ({ result }) => {
-        return result.hits.hits.map((hit) => hit._id);
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        return result.hits.hits.map((hit) => hit._id!);
       },
     }),
   }),
