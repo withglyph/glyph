@@ -34,8 +34,8 @@ class LobbyShell extends ConsumerWidget {
         return LobbyBottomNavigationBar(
           items: [
             LobbyBottomNavigationBarItem(
-              icon: const SvgIcon('home', color: BrandColors.gray_400),
-              activeIcon: const SvgIcon('home-filled'),
+              icon: const SvgIcon('article@2', color: BrandColors.gray_300),
+              activeIcon: const SvgIcon('article-filled'),
               isActive: tabsRouter.activeIndex == 0,
               onTap: () async {
                 if (tabsRouter.activeIndex == 0) {
@@ -51,8 +51,8 @@ class LobbyShell extends ConsumerWidget {
               },
             ),
             LobbyBottomNavigationBarItem(
-              icon: const SvgIcon('search', color: BrandColors.gray_400),
-              activeIcon: const SvgIcon('search'),
+              icon: const SvgIcon('search@2', color: BrandColors.gray_300),
+              activeIcon: const SvgIcon('search@2'),
               isActive: tabsRouter.activeIndex == 1,
               onTap: () async {
                 if (tabsRouter.activeIndex == 1) {
@@ -84,7 +84,7 @@ class LobbyShell extends ConsumerWidget {
                 ),
                 child: const Center(
                   child: SvgIcon(
-                    'plus',
+                    'plus@1.75',
                     size: 16,
                     color: BrandColors.gray_0,
                   ),
@@ -103,7 +103,7 @@ class LobbyShell extends ConsumerWidget {
               },
             ),
             LobbyBottomNavigationBarItem(
-              icon: const SvgIcon('archive', color: BrandColors.gray_400),
+              icon: const SvgIcon('archive@2', color: BrandColors.gray_300),
               activeIcon: const SvgIcon('archive-filled'),
               isActive: tabsRouter.activeIndex == 2,
               onTap: () async {
