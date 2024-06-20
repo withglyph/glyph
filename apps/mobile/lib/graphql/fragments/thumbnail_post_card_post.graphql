@@ -1,3 +1,4 @@
+# import './tag_tag.graphql'
 # import './img_image.graphql'
 
 fragment ThumbnailPostCard_post on Post {
@@ -20,10 +21,25 @@ fragment ThumbnailPostCard_post on Post {
   space {
     id
     name
+    followed
+    muted
 
     icon {
       id
       ...Img_image
     }
+  }
+
+  tags {
+    id
+
+    tag{
+      id
+      ...Tag_tag
+    }
+  }
+
+  bookmarkGroups {
+    id
   }
 }

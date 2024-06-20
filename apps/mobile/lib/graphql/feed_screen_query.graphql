@@ -1,8 +1,8 @@
-# import './fragments/post_card_post.graphql';
+# import './fragments/thumbnail_post_card_post.graphql';
 
 query FeedScreen_Query {
   followingFeed {
     id
-    ...PostCard_post
+    ...ThumbnailPostCard_post
   }
 }

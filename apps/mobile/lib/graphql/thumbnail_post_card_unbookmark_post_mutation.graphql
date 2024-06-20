@@ -1,0 +1,9 @@
+mutation ThumbnailPostCard_UnbookmarkPost_Mutation($input: UnbookmarkPostInput!) {
+  unbookmarkPost(input: $input) {
+    id
+
+    bookmarkGroups {
+      id
+    }
+  }
+}

@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:glyph/components/heading.dart';
 import 'package:glyph/components/horizontal_divider.dart';
-import 'package:glyph/components/post_card.dart';
 import 'package:glyph/components/pressable.dart';
 import 'package:glyph/components/pull_to_refresh.dart';
 import 'package:glyph/components/svg_icon.dart';
+import 'package:glyph/components/thumbnail_post_card.dart';
 import 'package:glyph/ferry/extension.dart';
 import 'package:glyph/ferry/widget.dart';
 import 'package:glyph/graphql/__generated__/feed_screen_query.req.gql.dart';
@@ -60,12 +60,9 @@ class _FeedScreenState extends State<FeedScreen> {
             child: ListView.separated(
               itemCount: posts.length,
               itemBuilder: (context, index) {
-                return PostCard(
+                return ThumbnailPostCard(
                   posts[index],
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 18,
-                  ),
+                  padding: const EdgeInsets.all(20),
                 );
               },
               separatorBuilder: (context, index) {
