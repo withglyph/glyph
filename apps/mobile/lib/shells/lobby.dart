@@ -24,8 +24,8 @@ class LobbyShell extends ConsumerWidget {
 
     return AutoTabsScaffold(
       routes: const [
-        HomeRoute(),
         FeedRoute(),
+        SearchRoute(),
         ArchiveRoute(),
         MeRoute(),
       ],

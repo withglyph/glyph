@@ -1,8 +1,0 @@
-# import './fragments/post_card_post.graphql'
-
-query HomeScreen_Query($page: Int, $take: Int) {
-  followingFeed(page: $page, take: $take) {
-    id
-    ...PostCard_post
-  }
-}

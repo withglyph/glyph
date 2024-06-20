@@ -1,6 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:gap/gap.dart';
 import 'package:glyph/components/heading.dart';
 import 'package:glyph/components/horizontal_divider.dart';
 import 'package:glyph/components/post_card.dart';
@@ -11,35 +11,44 @@ import 'package:glyph/ferry/extension.dart';
 import 'package:glyph/ferry/widget.dart';
 import 'package:glyph/graphql/__generated__/feed_screen_query.req.gql.dart';
 import 'package:glyph/routers/app.gr.dart';
+import 'package:glyph/shells/default.dart';
 import 'package:glyph/themes/colors.dart';
 
 @RoutePage()
-class FeedScreen extends ConsumerWidget {
+class FeedScreen extends StatefulWidget {
   const FeedScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Scaffold(
+  createState() => _FeedScreenState();
+}
+
+class _FeedScreenState extends State<FeedScreen> {
+  @override
+  Widget build(BuildContext context) {
+    return DefaultShell(
       appBar: Heading(
-        title: const Text(
-          '구독',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+        leading: const Row(
+          children: [
+            Text(
+              '추천',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800),
+            ),
+            Gap(4),
+            SvgIcon('chevron-down', size: 16),
+          ],
         ),
         actions: [
           Pressable(
-            child: const SvgIcon('settings'),
+            child: const SvgIcon('bell'),
             onPressed: () async {
               await context.router.push(
-                WebViewRoute(
-                  title: '구독 관리',
-                  path: '/me/subscribes',
-                ),
+                const NotificationRoute(),
               );
             },
           ),
         ],
       ),
-      body: GraphQLOperation(
+      child: GraphQLOperation(
         operation: GFeedScreen_QueryReq(),
         builder: (context, client, data) {
           final posts = data.followingFeed;
