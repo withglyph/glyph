@@ -1,10 +1,10 @@
 <script lang="ts">
   import { fade, fly } from 'svelte/transition';
   import IconX from '~icons/tabler/x';
-  import { Icon } from '$lib/components';
   import { portal, scrollLock } from '$lib/svelte/actions';
   import { css, sva } from '$styled-system/css';
   import { center } from '$styled-system/patterns';
+  import Icon from './Icon.svelte';
   import type { SystemStyleObject } from '$styled-system/types';
 
   export let open: boolean;

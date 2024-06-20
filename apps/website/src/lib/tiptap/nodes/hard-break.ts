@@ -32,25 +32,34 @@ export const HardBreak = Node.create({
       setHardBreak:
         () =>
         ({ commands, chain, state, editor }) => {
-          if (commands.exitCode()) {
-            return true;
-          }
+          return commands.first([
+            () => commands.exitCode(),
+            () =>
+              commands.command(() => {
+                const { selection, storedMarks } = state;
 
-          if (state.selection.$from.parent.type.spec.isolating) {
-            return false;
-          }
+                if (selection.$from.parent.type.spec.isolating) {
+                  return false;
+                }
 
-          const currentMarks = state.storedMarks ?? state.selection.$from.marks();
+                const { keepMarks } = this.options;
+                const { splittableMarks } = editor.extensionManager;
+                const marks = storedMarks || (selection.$to.parentOffset && selection.$from.marks());
 
-          const marks = currentMarks.filter((mark) => editor.extensionManager.splittableMarks.includes(mark.type.name));
+                return chain()
+                  .insertContent({ type: this.name })
+                  .command(({ tr, dispatch }) => {
+                    if (dispatch && marks && keepMarks) {
+                      const filteredMarks = marks.filter((mark) => splittableMarks.includes(mark.type.name));
 
-          return chain()
-            .insertContent({ type: this.name })
-            .command(({ tr }) => {
-              tr.ensureMarks(marks);
-              return true;
-            })
-            .run();
+                      tr.ensureMarks(filteredMarks);
+                    }
+
+                    return true;
+                  })
+                  .run();
+              }),
+          ]);
         },
     };
   },

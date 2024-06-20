@@ -3,9 +3,9 @@
   import IconChevronLeftPipe from '~icons/tabler/chevron-left-pipe';
   import IconChevronRight from '~icons/tabler/chevron-right';
   import IconChevronRightPipe from '~icons/tabler/chevron-right-pipe';
-  import { Icon } from '$lib/components';
   import { css } from '$styled-system/css';
   import { center } from '$styled-system/patterns';
+  import Icon from './Icon.svelte';
   import type { SystemStyleObject } from '$styled-system/types';
 
   export let initialPage: number;

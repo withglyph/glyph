@@ -7,11 +7,14 @@
   import IconMoodSmile from '~icons/tabler/mood-smile';
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Chip, Icon, Image, Tag } from '$lib/components';
   import { humanizeNumber } from '$lib/utils';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
+  import Chip from './Chip.svelte';
+  import Icon from './Icon.svelte';
+  import Image from './Image.svelte';
   import LoginRequireAlert from './LoginRequireAlert.svelte';
+  import Tag from './Tag.svelte';
   import type { Feed_Post_post, Feed_Post_query } from '$glitch';
   import type { SystemStyleObject } from '$styled-system/types';
 
