@@ -184,7 +184,15 @@ class ThumbnailPostCard extends ConsumerWidget {
                 ],
                 if (post.thumbnail != null) ...[
                   const Gap(12),
-                  Img(post.thumbnail, aspectRatio: 16 / 10),
+                  LayoutBuilder(
+                    builder: (context, constraints) {
+                      return Img(
+                        post.thumbnail,
+                        width: constraints.maxWidth,
+                        aspectRatio: 16 / 10,
+                      );
+                    },
+                  ),
                 ],
                 const Gap(8),
                 UnconstrainedBox(
