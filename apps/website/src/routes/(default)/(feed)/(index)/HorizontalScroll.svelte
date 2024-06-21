@@ -8,17 +8,18 @@
 
   let containerEl: HTMLDivElement | null = null;
   let currentScroll = 0;
+  let scrollOffset = 200;
 
-  const scrollLeft = (offset: number) => {
+  const scrollLeft = () => {
     if (!containerEl) return;
 
-    containerEl.scrollLeft = containerEl.scrollLeft - (window.innerWidth - offset);
+    containerEl.scrollLeft = containerEl.scrollLeft - (window.innerWidth - scrollOffset);
   };
 
-  const scrollRight = (offset: number) => {
+  const scrollRight = () => {
     if (!containerEl) return;
 
-    containerEl.scrollLeft = containerEl.scrollLeft + (window.innerWidth - offset);
+    containerEl.scrollLeft = containerEl.scrollLeft + (window.innerWidth - scrollOffset);
   };
 </script>
 
@@ -63,7 +64,7 @@
             backgroundColor: '[#000000/40]',
           })}
           type="button"
-          on:click={() => scrollLeft(50)}
+          on:click={scrollLeft}
         >
           <slot name="left-icon" />
         </button>
@@ -94,7 +95,7 @@
             backgroundColor: '[#000000/40]',
           })}
           type="button"
-          on:click={() => scrollRight(50)}
+          on:click={scrollRight}
         >
           <slot name="right-icon" />
         </button>
