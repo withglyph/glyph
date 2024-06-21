@@ -150,7 +150,11 @@ Post.implement({
     thumbnail: t.field({
       type: Image,
       nullable: true,
-      resolve: (post) => post.thumbnailId,
+      resolve: async (post, _, context) => {
+        if (await checkAgeRatingAllowed(context.session?.userId, post.ageRating, context)) {
+          return post.thumbnailId;
+        }
+      },
     }),
 
     likeCount: t.int({
