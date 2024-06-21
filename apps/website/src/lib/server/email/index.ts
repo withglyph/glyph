@@ -44,3 +44,22 @@ export const sendEmail = async <T extends SvelteComponent>({
     }),
   );
 };
+
+type SendTextEmailParams = {
+  subject: string;
+  recipient: string;
+  body: string;
+};
+
+export const sendTextEmail = async ({ subject, recipient, body }: SendTextEmailParams) => {
+  await aws.ses.send(
+    new SendEmailCommand({
+      Source: '글리프 <hello@withglyph.com>',
+      Destination: { ToAddresses: [recipient] },
+      Message: {
+        Subject: { Data: subject },
+        Body: { Text: { Data: body } },
+      },
+    }),
+  );
+};

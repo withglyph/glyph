@@ -5,8 +5,7 @@ import dayjs from 'dayjs';
 import { and, eq, inArray, ne } from 'drizzle-orm';
 import { setupDayjs } from '$lib/datetime';
 import { database, PointPurchases, UserPersonalIdentities, Users } from '$lib/server/database';
-import { sendEmail } from '$lib/server/email';
-import { ForeignPassportCompleted, ForeignPassportRejected } from '$lib/server/email/templates';
+import { sendTextEmail } from '$lib/server/email';
 import { useFirstRow } from '$lib/server/utils/database';
 
 setupDayjs();
@@ -35,6 +34,18 @@ while (true) {
 
   if (!userWithIdentity) {
     console.log(`${email} 찾을 수 없음`);
+    const answer = await rl.question(
+      `${email} 회원에게 'Glyph account not found' 사유로 거부 이메일을 보낼까요? (Y/n)`,
+    );
+
+    if (answer === 'y' || answer === 'Y' || answer === 'ㅛ' || answer.length === 0) {
+      await sendTextEmail({
+        subject: '[Glyph] Foreign Passport Verification Rejected',
+        recipient: email,
+        body: `Your foreign identity verification is rejected. Reason: Glyph account not found`,
+      });
+    }
+
     continue;
   }
 
@@ -73,15 +84,14 @@ while (true) {
     const reason = await rl.question('인증 거부 사유 입력: ');
     const answer = await rl.question(`${email} 회원에게 ${reason} 사유로 거부 이메일을 보낼까요? (Y/n)`);
     if (answer === 'y' || answer === 'Y' || answer === 'ㅛ' || answer.length === 0) {
-      sendEmail({
+      await sendTextEmail({
         subject: '[Glyph] Foreign Passport Verification Rejected',
         recipient: email,
-        template: ForeignPassportRejected,
-        props: {
-          reason,
-        },
+        body: `Your foreign identity verification is rejected. Reason: ${reason}`,
       });
     }
+
+    continue;
   }
 
   const birthdayString = await rl.question('생년월일 입력 (YYYYMMDD): ');
@@ -138,11 +148,10 @@ while (true) {
         },
       });
 
-    await sendEmail({
+    await sendTextEmail({
       subject: '[Glyph] Foreign Passport Verification Completed',
       recipient: email,
-      template: ForeignPassportCompleted,
-      props: {},
+      body: `Your foreign identity verification is completed.`,
     });
 
     console.log(`${email} 완료`);
