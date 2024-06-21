@@ -1,5 +1,8 @@
 {
   "name": "@withglyph/mobile",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
   "scripts": {
     "beta": "pnpm run '/^beta:.+$/'",
     "beta:android": "cd android && doppler run -- bundle exec fastlane beta",
@@ -9,5 +12,12 @@
     "release:android": "cd android && doppler run -- bundle exec fastlane release",
     "release:ios": "cd ios && doppler run -- bundle exec fastlane release",
     "watch": "dart run build_runner watch --delete-conflicting-outputs"
+  },
+  "devDependencies": {
+    "@iconify/json": "^2.2.220",
+    "@iconify/tools": "^4.0.4",
+    "change-case-all": "^2.1.0",
+    "fantasticon": "^3.0.0",
+    "oslllo-svg-fixer": "^4.0.1"
   }
 }

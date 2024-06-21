@@ -94,6 +94,15 @@ flutter:
           weight: 800
         - asset: assets/fonts/SUIT-Heavy.ttf
           weight: 900
+    - family: TablerIcons
+      fonts:
+        - asset: assets/fonts/TablerIcons.ttf
+    - family: TablerBoldIcons
+      fonts:
+        - asset: assets/fonts/TablerBoldIcons.ttf
+    - family: GlyphIcons
+      fonts:
+        - asset: assets/fonts/GlyphIcons.ttf
 
 flutter_native_splash:
   color: '#171717'

@@ -2,9 +2,9 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:glyph/components/pressable.dart';
-import 'package:glyph/components/svg_icon.dart';
 import 'package:glyph/ferry/widget.dart';
 import 'package:glyph/graphql/__generated__/profile_screen_query.req.gql.dart';
+import 'package:glyph/icons/tabler.dart';
 import 'package:glyph/shells/default.dart';
 import 'package:glyph/themes/colors.dart';
 import 'package:image_picker/image_picker.dart';
@@ -121,8 +121,8 @@ class _ProfileScreenState extends State<ProfileScreen>
                                 shape: BoxShape.circle,
                                 color: BrandColors.gray_900.withOpacity(0.4),
                               ),
-                              child: const SvgIcon(
-                                'camera',
+                              child: const Icon(
+                                Tabler.camera,
                                 size: 16,
                                 color: BrandColors.gray_0,
                               ),

@@ -2,9 +2,10 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:glyph/components/pressable.dart';
-import 'package:glyph/components/svg_icon.dart';
 import 'package:glyph/ferry/extension.dart';
 import 'package:glyph/graphql/__generated__/lobby_shell_create_post_mutation.req.gql.dart';
+import 'package:glyph/icons/glyph.dart';
+import 'package:glyph/icons/tabler_bold.dart';
 import 'package:glyph/providers/auth.dart';
 import 'package:glyph/providers/ferry.dart';
 import 'package:glyph/routers/app.gr.dart';
@@ -34,8 +35,8 @@ class LobbyShell extends ConsumerWidget {
         return LobbyBottomNavigationBar(
           items: [
             LobbyBottomNavigationBarItem(
-              icon: const SvgIcon('article@2', color: BrandColors.gray_300),
-              activeIcon: const SvgIcon('article-filled'),
+              icon: const Icon(TablerBold.article, color: BrandColors.gray_300),
+              activeIcon: const Icon(TablerBold.article_filled),
               isActive: tabsRouter.activeIndex == 0,
               onTap: () async {
                 if (tabsRouter.activeIndex == 0) {
@@ -51,8 +52,8 @@ class LobbyShell extends ConsumerWidget {
               },
             ),
             LobbyBottomNavigationBarItem(
-              icon: const SvgIcon('search@2', color: BrandColors.gray_300),
-              activeIcon: const SvgIcon('search@2'),
+              icon: const Icon(Glyph.search, color: BrandColors.gray_300),
+              activeIcon: const Icon(Glyph.search),
               isActive: tabsRouter.activeIndex == 1,
               onTap: () async {
                 if (tabsRouter.activeIndex == 1) {
@@ -83,8 +84,8 @@ class LobbyShell extends ConsumerWidget {
                   ],
                 ),
                 child: const Center(
-                  child: SvgIcon(
-                    'plus@1.75',
+                  child: Icon(
+                    TablerBold.plus,
                     size: 16,
                     color: BrandColors.gray_0,
                   ),
@@ -103,8 +104,8 @@ class LobbyShell extends ConsumerWidget {
               },
             ),
             LobbyBottomNavigationBarItem(
-              icon: const SvgIcon('archive@2', color: BrandColors.gray_300),
-              activeIcon: const SvgIcon('archive-filled'),
+              icon: const Icon(TablerBold.archive, color: BrandColors.gray_300),
+              activeIcon: const Icon(TablerBold.archive_filled),
               isActive: tabsRouter.activeIndex == 2,
               onTap: () async {
                 if (tabsRouter.activeIndex == 2) {

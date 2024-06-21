@@ -5,10 +5,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:glyph/components/Img.dart';
 import 'package:glyph/components/pressable.dart';
-import 'package:glyph/components/svg_icon.dart';
 import 'package:glyph/components/tag.dart';
 import 'package:glyph/extensions/iterable.dart';
 import 'package:glyph/graphql/fragments/__generated__/post_card_post.data.gql.dart';
+import 'package:glyph/icons/tabler.dart';
 import 'package:glyph/routers/app.gr.dart';
 import 'package:glyph/themes/colors.dart';
 import 'package:jiffy/jiffy.dart';
@@ -139,8 +139,8 @@ class PostCard extends ConsumerWidget {
                     borderRadius: 0,
                   ),
                   const Spacer(),
-                  const SvgIcon(
-                    'dots-vertical',
+                  const Icon(
+                    Tabler.dots_vertical,
                     size: 20,
                     color: BrandColors.gray_400,
                   ),

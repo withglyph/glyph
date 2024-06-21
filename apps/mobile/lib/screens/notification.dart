@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:glyph/components/pressable.dart';
 import 'package:glyph/components/pull_to_refresh.dart';
-import 'package:glyph/components/svg_icon.dart';
 import 'package:glyph/context/toast.dart';
 import 'package:glyph/ferry/extension.dart';
 import 'package:glyph/ferry/widget.dart';
@@ -12,6 +11,7 @@ import 'package:glyph/graphql/__generated__/notification_screen_mark_all_notific
 import 'package:glyph/graphql/__generated__/notification_screen_mark_notification_as_read_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/notification_screen_query.data.gql.dart';
 import 'package:glyph/graphql/__generated__/notification_screen_query.req.gql.dart';
+import 'package:glyph/icons/tabler.dart';
 import 'package:glyph/providers/ferry.dart';
 import 'package:glyph/routers/app.gr.dart';
 import 'package:glyph/shells/default.dart';
@@ -83,8 +83,8 @@ class NotificationScreen extends ConsumerWidget {
                           children: [
                             Row(
                               children: [
-                                const SvgIcon(
-                                  'home',
+                                const Icon(
+                                  Tabler.home,
                                   size: 14,
                                   color: BrandColors.gray_500,
                                 ),

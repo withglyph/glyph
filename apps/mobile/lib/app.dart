@@ -39,6 +39,10 @@ class _AppState extends State<App> {
           color: BrandColors.gray_100,
           space: 0,
         ),
+        iconTheme: const IconThemeData(
+          color: BrandColors.gray_900,
+          size: 24,
+        ),
         textTheme: const TextTheme(
           bodySmall: defaultTextStyle,
           bodyMedium: defaultTextStyle,

@@ -9,7 +9,6 @@ import 'package:glyph/components/Img.dart';
 import 'package:glyph/components/button.dart';
 import 'package:glyph/components/horizontal_divider.dart';
 import 'package:glyph/components/pressable.dart';
-import 'package:glyph/components/svg_icon.dart';
 import 'package:glyph/components/webview.dart';
 import 'package:glyph/context/bottom_menu.dart';
 import 'package:glyph/context/bottom_sheet.dart';
@@ -24,6 +23,7 @@ import 'package:glyph/graphql/__generated__/post_screen_query.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_screen_unbookmark_post_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_screen_update_post_view_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/schema.schema.gql.dart';
+import 'package:glyph/icons/tabler.dart';
 import 'package:glyph/routers/app.gr.dart';
 import 'package:glyph/themes/colors.dart';
 import 'package:jiffy/jiffy.dart';
@@ -328,10 +328,10 @@ class _PostScreenState extends ConsumerState<PostScreen>
                           }
 
                           return Pressable(
-                            child: SvgIcon(
+                            child: Icon(
                               switch (leadingType) {
-                                LeadingType.back => 'arrow-left',
-                                LeadingType.close => 'x',
+                                LeadingType.back => Tabler.arrow_left,
+                                LeadingType.close => Tabler.x,
                                 _ => throw UnimplementedError(),
                               },
                             ),
@@ -353,7 +353,7 @@ class _PostScreenState extends ConsumerState<PostScreen>
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Pressable(
-                            child: const SvgIcon('share-3'),
+                            child: const Icon(Tabler.share_3),
                             onPressed: () async {
                               await Share.shareUri(
                                 Uri.parse(
@@ -364,10 +364,10 @@ class _PostScreenState extends ConsumerState<PostScreen>
                           ),
                           const Gap(16),
                           Pressable(
-                            child: SvgIcon(
+                            child: Icon(
                               data.post.bookmarkGroups.isEmpty
-                                  ? 'bookmark'
-                                  : 'bookmark-filled',
+                                  ? Tabler.bookmark
+                                  : Tabler.bookmark_filled,
                             ),
                             onPressed: () async {
                               if (data.post.bookmarkGroups.isEmpty) {
@@ -390,12 +390,12 @@ class _PostScreenState extends ConsumerState<PostScreen>
                           ),
                           const Gap(16),
                           Pressable(
-                            child: const SvgIcon('dots-vertical'),
+                            child: const Icon(Tabler.dots_vertical),
                             onPressed: () async {
                               await context.showBottomMenu(
                                 items: [
                                   BottomMenuItem(
-                                    icon: 'volume-3',
+                                    icon: Tabler.volume_3,
                                     title: '스페이스 뮤트',
                                     color: BrandColors.red_600,
                                     onTap: () {},
@@ -431,7 +431,9 @@ class _PostScreenState extends ConsumerState<PostScreen>
                             Pressable(
                               child: const SizedBox(
                                 width: 60,
-                                child: Center(child: SvgIcon('list', size: 22)),
+                                child: Center(
+                                  child: Icon(Tabler.list, size: 22),
+                                ),
                               ),
                               onPressed: () {},
                             ),
@@ -441,7 +443,7 @@ class _PostScreenState extends ConsumerState<PostScreen>
                                     const EdgeInsets.symmetric(horizontal: 5),
                                 child: Row(
                                   children: [
-                                    const SvgIcon('mood-heart', size: 22),
+                                    const Icon(Tabler.mood_heart, size: 22),
                                     const Gap(3),
                                     Text(
                                       data.post.reactionCount.toString(),
@@ -462,7 +464,7 @@ class _PostScreenState extends ConsumerState<PostScreen>
                                     const EdgeInsets.symmetric(horizontal: 5),
                                 child: Row(
                                   children: [
-                                    const SvgIcon('message-circle', size: 22),
+                                    const Icon(Tabler.message_circle, size: 22),
                                     const Gap(3),
                                     Text(
                                       data.post.commentCount.toString(),
@@ -489,7 +491,7 @@ class _PostScreenState extends ConsumerState<PostScreen>
                               child: const SizedBox(
                                 width: 60,
                                 child: Center(
-                                  child: SvgIcon('chevron-left', size: 22),
+                                  child: Icon(Tabler.chevron_left, size: 22),
                                 ),
                               ),
                               onPressed: () {},
@@ -498,7 +500,7 @@ class _PostScreenState extends ConsumerState<PostScreen>
                               child: const SizedBox(
                                 width: 60,
                                 child: Center(
-                                  child: SvgIcon('chevron-right', size: 22),
+                                  child: Icon(Tabler.chevron_right, size: 22),
                                 ),
                               ),
                               onPressed: () {},
@@ -641,7 +643,7 @@ class _CommentsState extends ConsumerState<Comments>
                       right: 20,
                     ),
                     child: Pressable(
-                      child: const SvgIcon('x'),
+                      child: const Icon(Tabler.x),
                       onPressed: () async {
                         await context.router.maybePop();
                       },
@@ -742,8 +744,8 @@ class _CommentsState extends ConsumerState<Comments>
                                     ),
                                   ),
                                   const Gap(12),
-                                  const SvgIcon(
-                                    'dots-vertical',
+                                  const Icon(
+                                    Tabler.dots_vertical,
                                     size: 20,
                                     color: BrandColors.gray_400,
                                   ),
@@ -767,8 +769,8 @@ class _CommentsState extends ConsumerState<Comments>
                                         Pressable(
                                           child: Row(
                                             children: [
-                                              const SvgIcon(
-                                                'message',
+                                              const Icon(
+                                                Tabler.message,
                                                 size: 20,
                                                 color: BrandColors.gray_500,
                                               ),
@@ -804,13 +806,13 @@ class _CommentsState extends ConsumerState<Comments>
                                           child: Row(
                                             children: [
                                               if (comment.liked)
-                                                const SvgIcon(
-                                                  'heart-filled',
+                                                const Icon(
+                                                  Tabler.heart_filled,
                                                   size: 20,
                                                 )
                                               else
-                                                const SvgIcon(
-                                                  'heart',
+                                                const Icon(
+                                                  Tabler.heart,
                                                   size: 20,
                                                   color: BrandColors.gray_500,
                                                 ),
@@ -873,8 +875,8 @@ class _CommentsState extends ConsumerState<Comments>
                                           bottom: 0,
                                           child: Transform.translate(
                                             offset: const Offset(4, 4),
-                                            child: const SvgIcon(
-                                              'heart-filled',
+                                            child: const Icon(
+                                              Tabler.heart_filled,
                                               size: 16,
                                             ),
                                           ),
@@ -990,8 +992,8 @@ class _CommentsState extends ConsumerState<Comments>
                           onPressed: onSubmit,
                           child: Padding(
                             padding: const EdgeInsets.symmetric(vertical: 6),
-                            child: SvgIcon(
-                              'send-2',
+                            child: Icon(
+                              Tabler.send_2,
                               color: _isEmpty
                                   ? BrandColors.gray_400
                                   : BrandColors.brand_600,

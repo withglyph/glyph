@@ -1,7 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:gap/gap.dart';
 import 'package:glyph/components/horizontal_divider.dart';
 import 'package:glyph/components/pressable.dart';
 import 'package:glyph/routers/app.gr.dart';
@@ -118,7 +117,7 @@ class _TabItem extends StatelessWidget {
                   height: 2,
                   color: BrandColors.gray_900,
                 ),
-              )
+              ),
           ],
         ),
       ),

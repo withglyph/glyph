@@ -2,7 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:glyph/components/pressable.dart';
-import 'package:glyph/components/svg_icon.dart';
+import 'package:glyph/icons/tabler.dart';
 import 'package:glyph/themes/colors.dart';
 
 class Heading extends StatelessWidget implements PreferredSizeWidget {
@@ -69,10 +69,10 @@ class Heading extends StatelessWidget implements PreferredSizeWidget {
                       }
 
                       return Pressable(
-                        child: SvgIcon(
+                        child: Icon(
                           switch (leadingType) {
-                            LeadingType.back => 'arrow-left',
-                            LeadingType.close => 'x',
+                            LeadingType.back => Tabler.arrow_left,
+                            LeadingType.close => Tabler.x,
                             _ => throw UnimplementedError(),
                           },
                           color: leadingColor,

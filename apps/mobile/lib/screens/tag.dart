@@ -7,7 +7,6 @@ import 'package:glyph/components/heading.dart';
 import 'package:glyph/components/horizontal_divider.dart';
 import 'package:glyph/components/post_card.dart';
 import 'package:glyph/components/pressable.dart';
-import 'package:glyph/components/svg_icon.dart';
 import 'package:glyph/context/bottom_sheet.dart';
 import 'package:glyph/ferry/extension.dart';
 import 'package:glyph/ferry/widget.dart';
@@ -16,6 +15,7 @@ import 'package:glyph/graphql/__generated__/tag_screen_mute_tag_mutation.req.gql
 import 'package:glyph/graphql/__generated__/tag_screen_query.req.gql.dart';
 import 'package:glyph/graphql/__generated__/tag_screen_unfollow_tag_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/tag_screen_unmute_tag_mutation.req.gql.dart';
+import 'package:glyph/icons/tabler.dart';
 import 'package:glyph/themes/colors.dart';
 
 @RoutePage()
@@ -136,8 +136,8 @@ class _TagScreenState extends State<TagScreen>
                                       ),
                                       child: Row(
                                         children: [
-                                          SvgIcon(
-                                            'volume-3',
+                                          Icon(
+                                            Tabler.volume_3,
                                             size: 16,
                                             color: data.tag.muted
                                                 ? BrandColors.gray_900
@@ -164,8 +164,8 @@ class _TagScreenState extends State<TagScreen>
                           },
                         );
                       },
-                      child: SvgIcon(
-                        'dots-vertical',
+                      child: Icon(
+                        Tabler.dots_vertical,
                         color: _appBarForegroundColorAnimation.value,
                       ),
                     ),
@@ -263,8 +263,8 @@ class _TagScreenState extends State<TagScreen>
                                             color: BrandColors.red_200,
                                           ),
                                           child: const Center(
-                                            child: SvgIcon(
-                                              'volume-3',
+                                            child: Icon(
+                                              Tabler.volume_3,
                                               size: 16,
                                               color: BrandColors.red_600,
                                             ),

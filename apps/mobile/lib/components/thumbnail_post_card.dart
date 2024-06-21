@@ -5,7 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:glyph/components/Img.dart';
 import 'package:glyph/components/pressable.dart';
-import 'package:glyph/components/svg_icon.dart';
 import 'package:glyph/components/tag.dart';
 import 'package:glyph/context/bottom_menu.dart';
 import 'package:glyph/extensions/iterable.dart';
@@ -17,6 +16,7 @@ import 'package:glyph/graphql/__generated__/thumbnail_post_card_unbookmark_post_
 import 'package:glyph/graphql/__generated__/thumbnail_post_card_unfollow_space_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/thumbnail_post_card_unmute_space_mutation.req.gql.dart';
 import 'package:glyph/graphql/fragments/__generated__/thumbnail_post_card_post.data.gql.dart';
+import 'package:glyph/icons/tabler.dart';
 import 'package:glyph/providers/ferry.dart';
 import 'package:glyph/routers/app.gr.dart';
 import 'package:glyph/themes/colors.dart';
@@ -46,7 +46,7 @@ class ThumbnailPostCard extends ConsumerWidget {
                 Text(
                   post.space!.name,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w500,
                   ),
@@ -68,8 +68,8 @@ class ThumbnailPostCard extends ConsumerWidget {
                   ),
                 ),
                 Pressable(
-                  child: const SvgIcon(
-                    'dots-vertical',
+                  child: const Icon(
+                    Tabler.dots_vertical,
                     size: 16,
                     color: BrandColors.gray_500,
                   ),
@@ -77,7 +77,7 @@ class ThumbnailPostCard extends ConsumerWidget {
                     await context.showBottomMenu(
                       items: [
                         BottomMenuItem(
-                          icon: 'check',
+                          icon: Tabler.check,
                           title:
                               post.space!.followed ? '스페이스 구독 해제' : '스페이스 구독',
                           color: BrandColors.gray_900,
@@ -99,7 +99,7 @@ class ThumbnailPostCard extends ConsumerWidget {
                           },
                         ),
                         BottomMenuItem(
-                          icon: 'volume-3',
+                          icon: Tabler.volume_3,
                           title: post.space!.muted ? '스페이스 뮤트 해제' : '스페이스 뮤트',
                           color: post.space!.muted
                               ? BrandColors.gray_900
@@ -200,8 +200,8 @@ class ThumbnailPostCard extends ConsumerWidget {
                 const Gap(16),
                 Row(
                   children: [
-                    const SvgIcon(
-                      'clock',
+                    const Icon(
+                      Tabler.clock,
                       size: 18,
                       color: BrandColors.gray_400,
                     ),
@@ -217,8 +217,8 @@ class ThumbnailPostCard extends ConsumerWidget {
                       ),
                     ),
                     Pressable(
-                      child: const SvgIcon(
-                        'share-2',
+                      child: const Icon(
+                        Tabler.share_2,
                         size: 20,
                         color: BrandColors.gray_500,
                       ),
@@ -229,10 +229,10 @@ class ThumbnailPostCard extends ConsumerWidget {
                     ),
                     const Gap(20),
                     Pressable(
-                      child: SvgIcon(
+                      child: Icon(
                         post.bookmarkGroups.isEmpty
-                            ? 'bookmark'
-                            : 'bookmark-filled',
+                            ? Tabler.bookmark
+                            : Tabler.bookmark_filled,
                         size: 20,
                         color: BrandColors.gray_500,
                       ),

@@ -22,11 +22,12 @@ class SvgImage extends StatelessWidget {
       'assets/$assetName.svg',
       width: width,
       height: height,
+      clipBehavior: Clip.antiAlias,
       colorFilter: color == null
           ? null
           : ColorFilter.mode(
               color ?? BrandColors.gray_900,
-              BlendMode.srcIn,
+              BlendMode.srcATop,
             ),
     );
   }

@@ -2,7 +2,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:glyph/components/pressable.dart';
-import 'package:glyph/components/svg_icon.dart';
 import 'package:glyph/context/bottom_sheet.dart';
 
 extension BottomMenuX on BuildContext {
@@ -24,7 +23,7 @@ class BottomMenuItem {
     required this.onTap,
     this.color,
   });
-  final String icon;
+  final IconData icon;
   final String title;
   final Color? color;
   final void Function() onTap;
@@ -50,7 +49,7 @@ class _BottomMenu extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  SvgIcon(item.icon, size: 16, color: item.color),
+                  Icon(item.icon, size: 16, color: item.color),
                   const Gap(16),
                   Text(
                     item.title,

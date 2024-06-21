@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:glyph/components/pressable.dart';
-import 'package:glyph/components/svg_icon.dart';
 import 'package:glyph/components/toggle_switch.dart';
 import 'package:glyph/context/loader.dart';
 import 'package:glyph/ferry/extension.dart';
 import 'package:glyph/ferry/widget.dart';
 import 'package:glyph/graphql/__generated__/settings_screen_query.req.gql.dart';
 import 'package:glyph/graphql/__generated__/settings_screen_update_user_marketing_consent_mutation.req.gql.dart';
+import 'package:glyph/icons/tabler.dart';
 import 'package:glyph/providers/auth.dart';
 import 'package:glyph/providers/push_notification.dart';
 import 'package:glyph/routers/app.gr.dart';
@@ -255,8 +255,8 @@ class _Item extends StatelessWidget {
             if (leading != null) leading!,
             const Spacer(),
             trailing ??
-                const SvgIcon(
-                  'chevron-right',
+                const Icon(
+                  Tabler.chevron_right,
                   size: 20,
                   color: BrandColors.gray_400,
                 ),

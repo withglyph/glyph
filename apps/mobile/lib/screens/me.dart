@@ -6,10 +6,10 @@ import 'package:gap/gap.dart';
 import 'package:glyph/components/Img.dart';
 import 'package:glyph/components/heading.dart';
 import 'package:glyph/components/pressable.dart';
-import 'package:glyph/components/svg_icon.dart';
 import 'package:glyph/context/dialog.dart';
 import 'package:glyph/ferry/widget.dart';
 import 'package:glyph/graphql/__generated__/me_screen_query.req.gql.dart';
+import 'package:glyph/icons/tabler.dart';
 import 'package:glyph/routers/app.gr.dart';
 import 'package:glyph/themes/colors.dart';
 import 'package:sliver_tools/sliver_tools.dart';
@@ -65,8 +65,8 @@ class _MeScreenState extends ConsumerState<MeScreen>
                 backgroundColor: _appBarBackgroundColorAnimation.value,
                 actions: [
                   Pressable(
-                    child: SvgIcon(
-                      'notification',
+                    child: Icon(
+                      Tabler.bell,
                       color: _appBarForegroundColorAnimation.value,
                     ),
                     onPressed: () async {
@@ -75,8 +75,8 @@ class _MeScreenState extends ConsumerState<MeScreen>
                   ),
                   const Gap(16),
                   Pressable(
-                    child: SvgIcon(
-                      'settings',
+                    child: Icon(
+                      Tabler.settings,
                       color: _appBarForegroundColorAnimation.value,
                     ),
                     onPressed: () async {
@@ -147,8 +147,8 @@ class _MeScreenState extends ConsumerState<MeScreen>
                               ),
                               const Spacer(),
                               const Gap(24),
-                              const SvgIcon(
-                                'chevron-right',
+                              const Icon(
+                                Tabler.chevron_right,
                                 color: BrandColors.gray_400,
                               ),
                             ],
@@ -168,8 +168,8 @@ class _MeScreenState extends ConsumerState<MeScreen>
                                   child: const Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      SvgIcon(
-                                        'coin',
+                                      Icon(
+                                        Tabler.coin,
                                         color: BrandColors.gray_0,
                                       ),
                                       Gap(4),
@@ -200,8 +200,8 @@ class _MeScreenState extends ConsumerState<MeScreen>
                                   child: const Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      SvgIcon(
-                                        'pig-money',
+                                      Icon(
+                                        Tabler.pig_money,
                                         color: BrandColors.gray_0,
                                       ),
                                       Gap(4),
@@ -235,8 +235,8 @@ class _MeScreenState extends ConsumerState<MeScreen>
                                   child: const Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      SvgIcon(
-                                        'filter-cog',
+                                      Icon(
+                                        Tabler.filter_cog,
                                         color: BrandColors.gray_0,
                                       ),
                                       Gap(4),
@@ -296,8 +296,8 @@ class _MeScreenState extends ConsumerState<MeScreen>
                             padding: const EdgeInsets.fromLTRB(6, 4, 8, 4),
                             child: const Row(
                               children: [
-                                SvgIcon(
-                                  'plus',
+                                Icon(
+                                  Tabler.plus,
                                   size: 16,
                                   color: BrandColors.gray_600,
                                 ),

@@ -5,11 +5,11 @@ import 'package:glyph/components/heading.dart';
 import 'package:glyph/components/horizontal_divider.dart';
 import 'package:glyph/components/pressable.dart';
 import 'package:glyph/components/pull_to_refresh.dart';
-import 'package:glyph/components/svg_icon.dart';
 import 'package:glyph/components/thumbnail_post_card.dart';
 import 'package:glyph/ferry/extension.dart';
 import 'package:glyph/ferry/widget.dart';
 import 'package:glyph/graphql/__generated__/feed_screen_query.req.gql.dart';
+import 'package:glyph/icons/tabler.dart';
 import 'package:glyph/routers/app.gr.dart';
 import 'package:glyph/shells/default.dart';
 import 'package:glyph/themes/colors.dart';
@@ -34,12 +34,12 @@ class _FeedScreenState extends State<FeedScreen> {
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800),
             ),
             Gap(4),
-            SvgIcon('chevron-down', size: 16),
+            Icon(Tabler.chevron_down, size: 16),
           ],
         ),
         actions: [
           Pressable(
-            child: const SvgIcon('bell'),
+            child: const Icon(Tabler.bell),
             onPressed: () async {
               await context.router.push(
                 const NotificationRoute(),
