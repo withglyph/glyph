@@ -1,18 +1,18 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:glyph/components/Img.dart';
 import 'package:glyph/components/heading.dart';
 import 'package:glyph/components/pressable.dart';
-import 'package:glyph/context/dialog.dart';
+import 'package:glyph/extensions/int.dart';
 import 'package:glyph/ferry/widget.dart';
 import 'package:glyph/graphql/__generated__/me_screen_query.req.gql.dart';
 import 'package:glyph/icons/tabler.dart';
 import 'package:glyph/routers/app.gr.dart';
+import 'package:glyph/shells/default.dart';
 import 'package:glyph/themes/colors.dart';
-import 'package:sliver_tools/sliver_tools.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 @RoutePage()
 class MeScreen extends ConsumerStatefulWidget {
@@ -22,389 +22,241 @@ class MeScreen extends ConsumerStatefulWidget {
   ConsumerState<ConsumerStatefulWidget> createState() => _MeScreenState();
 }
 
-class _MeScreenState extends ConsumerState<MeScreen>
-    with TickerProviderStateMixin {
-  final _spaceHeaderKey = GlobalKey();
-
-  late AnimationController _appBarAnimationController;
-  late Animation<Color?> _appBarBackgroundColorAnimation;
-  late Animation<Color?> _appBarForegroundColorAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _appBarAnimationController = AnimationController(
-      vsync: this,
-      duration: Duration.zero,
-    );
-
-    _appBarBackgroundColorAnimation = ColorTween(
-      begin: BrandColors.gray_900,
-      end: BrandColors.gray_0,
-    ).animate(_appBarAnimationController);
-
-    _appBarForegroundColorAnimation = ColorTween(
-      begin: BrandColors.gray_0,
-      end: BrandColors.gray_900,
-    ).animate(_appBarAnimationController);
-  }
-
+class _MeScreenState extends ConsumerState<MeScreen> {
   @override
   Widget build(BuildContext context) {
     return GraphQLOperation(
       operation: GMeScreen_QueryReq(),
       builder: (context, client, data) {
-        return Scaffold(
-          backgroundColor: BrandColors.gray_900,
-          appBar: Heading.animated(
-            animation: _appBarAnimationController,
-            builder: (context) {
-              return Heading(
-                bottomBorder: false,
-                backgroundColor: _appBarBackgroundColorAnimation.value,
-                actions: [
-                  Pressable(
-                    child: Icon(
-                      Tabler.bell,
-                      color: _appBarForegroundColorAnimation.value,
+        return DefaultShell(
+          backgroundColor: BrandColors.gray_50,
+          appBar: Heading.empty(),
+          child: SizedBox.expand(
+            child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(
+                parent: BouncingScrollPhysics(),
+              ),
+              child: Column(
+                children: [
+                  Container(
+                    color: BrandColors.gray_0,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 28,
                     ),
-                    onPressed: () async {
-                      await context.router.push(const NotificationRoute());
-                    },
-                  ),
-                  const Gap(16),
-                  Pressable(
-                    child: Icon(
-                      Tabler.settings,
-                      color: _appBarForegroundColorAnimation.value,
-                    ),
-                    onPressed: () async {
-                      await context.router.push(const SettingsRoute());
-                    },
-                  ),
-                ],
-              );
-            },
-          ),
-          body: NotificationListener<ScrollUpdateNotification>(
-            onNotification: (notification) {
-              final box = _spaceHeaderKey.currentContext!.findRenderObject()!
-                  as RenderBox;
-              final offset = box.localToGlobal(Offset.zero);
-              final safeAreaHeight = MediaQuery.of(context).padding.top;
-
-              final spaceHeaderTopPosition = offset.dy - safeAreaHeight - 54;
-              _appBarAnimationController.animateTo(
-                clampDouble((-spaceHeaderTopPosition + 50) / 50, 0, 1),
-              );
-
-              return false;
-            },
-            child: CustomScrollView(
-              slivers: [
-                SliverToBoxAdapter(
-                  child: Container(
-                    color: BrandColors.gray_900,
-                    padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
-                    child: Column(
-                      children: [
-                        Pressable(
-                          child: Row(
+                    child: Pressable(
+                      child: Row(
+                        children: [
+                          CircleAvatar(
+                            radius: 27,
+                            child: ClipOval(
+                              child: Img(data.me!.profile.avatar),
+                            ),
+                          ),
+                          const Gap(14),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              CircleAvatar(
-                                radius: 27,
-                                backgroundColor: BrandColors.gray_600,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(1),
-                                  child: ClipOval(
-                                    child: Img(data.me!.profile.avatar),
-                                  ),
-                                ),
-                              ),
-                              const Gap(8),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                              Row(
                                 children: [
                                   Text(
                                     data.me!.profile.name,
                                     overflow: TextOverflow.ellipsis,
                                     style: const TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w600,
-                                      color: BrandColors.gray_0,
+                                      fontSize: 22,
+                                      fontWeight: FontWeight.w800,
                                     ),
                                   ),
-                                  Text(
-                                    data.me!.email,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(
-                                      fontSize: 12,
-                                      color: BrandColors.gray_300,
-                                    ),
+                                  const Gap(6),
+                                  const Icon(
+                                    Tabler.chevron_right,
+                                    size: 16,
                                   ),
                                 ],
                               ),
-                              const Spacer(),
-                              const Gap(24),
-                              const Icon(
-                                Tabler.chevron_right,
-                                color: BrandColors.gray_400,
-                              ),
-                            ],
-                          ),
-                          onPressed: () async {
-                            await context.router.push(const ProfileRoute());
-                          },
-                        ),
-                        const Gap(20),
-                        Container(
-                          height: 76,
-                          color: const Color(0xFF424242),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Pressable(
-                                  child: const Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(
-                                        Tabler.coin,
-                                        color: BrandColors.gray_0,
-                                      ),
-                                      Gap(4),
-                                      Text(
-                                        '포인트',
-                                        style: TextStyle(
-                                          fontSize: 11,
-                                          fontWeight: FontWeight.w500,
-                                          color: BrandColors.gray_0,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  onPressed: () async {
-                                    await context.router.push(
-                                      const PointPurchaseRoute(),
-                                    );
-                                  },
-                                ),
-                              ),
-                              Container(
-                                width: 1,
-                                height: 42,
-                                color: BrandColors.gray_500,
-                              ),
-                              Expanded(
-                                child: Pressable(
-                                  child: const Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(
-                                        Tabler.pig_money,
-                                        color: BrandColors.gray_0,
-                                      ),
-                                      Gap(4),
-                                      Text(
-                                        '수익/출금',
-                                        style: TextStyle(
-                                          fontSize: 11,
-                                          fontWeight: FontWeight.w500,
-                                          color: BrandColors.gray_0,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  onPressed: () async {
-                                    await context.router.push(
-                                      WebViewRoute(
-                                        title: '수익/출금',
-                                        path: '/me/revenue',
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ),
-                              Container(
-                                width: 1,
-                                height: 42,
-                                color: BrandColors.gray_500,
-                              ),
-                              Expanded(
-                                child: Pressable(
-                                  child: const Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(
-                                        Tabler.filter_cog,
-                                        color: BrandColors.gray_0,
-                                      ),
-                                      Gap(4),
-                                      Text(
-                                        '콘텐츠 필터링',
-                                        style: TextStyle(
-                                          fontSize: 11,
-                                          fontWeight: FontWeight.w500,
-                                          color: BrandColors.gray_0,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  onPressed: () async {
-                                    await context.router.push(
-                                      WebViewRoute(
-                                        title: '콘텐츠 필터링',
-                                        path: '/me/contentfilters',
-                                      ),
-                                    );
-                                  },
+                              Text(
+                                data.me!.email,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  color: BrandColors.gray_500,
                                 ),
                               ),
                             ],
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
+                      onPressed: () async {
+                        await context.router.push(const ProfileRoute());
+                      },
                     ),
                   ),
-                ),
-                SliverPinnedHeader(
-                  child: Container(
-                    key: _spaceHeaderKey,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 12,
-                    ),
-                    decoration: const BoxDecoration(
-                      color: BrandColors.gray_0,
-                      border: Border(
-                        bottom: BorderSide(color: BrandColors.gray_100),
+                  const Gap(6),
+                  _Section(
+                    children: [
+                      _MenuItem(
+                        icon: Tabler.planet,
+                        title: '스페이스',
+                        onPressed: () {},
                       ),
-                    ),
-                    child: Row(
-                      children: [
-                        const Text(
-                          '내 스페이스',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        const Spacer(),
-                        Pressable(
-                          child: Container(
-                            color: BrandColors.gray_50,
-                            padding: const EdgeInsets.fromLTRB(6, 4, 8, 4),
-                            child: const Row(
-                              children: [
-                                Icon(
-                                  Tabler.plus,
-                                  size: 16,
-                                  color: BrandColors.gray_600,
-                                ),
-                                Text(
-                                  '만들기',
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w500,
-                                    color: BrandColors.gray_600,
-                                  ),
-                                ),
-                              ],
+                      _MenuItem(
+                        icon: Tabler.template,
+                        title: '템플릿',
+                        onPressed: () {},
+                      ),
+                      _MenuItem(
+                        icon: Tabler.clipboard_text,
+                        title: '임시보관함',
+                        onPressed: () {},
+                      ),
+                    ],
+                  ),
+                  const Gap(6),
+                  _Section(
+                    children: [
+                      _MenuItem(
+                        icon: Tabler.coin,
+                        title: '포인트',
+                        trailing: Padding(
+                          padding: const EdgeInsets.only(right: 6),
+                          child: Text(
+                            '${data.me!.point.asFormatted}P',
+                            style: const TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600,
+                              color: BrandColors.gray_400,
                             ),
                           ),
-                          onPressed: () async {
-                            await context.showDialog(
-                              title: '스페이스 만들기',
-                              content: '지금은 스페이스를 만들 수 없어요.',
-                            );
-                          },
                         ),
-                      ],
-                    ),
-                  ),
-                ),
-                SliverList.builder(
-                  itemCount: data.me!.spaces.length,
-                  itemBuilder: (context, index) {
-                    final space = data.me!.spaces[index];
-
-                    return Pressable(
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 20,
-                          vertical: 16,
-                        ),
-                        decoration: const BoxDecoration(
-                          color: BrandColors.gray_0,
-                          border: Border(
-                            bottom: BorderSide(color: BrandColors.gray_50),
-                          ),
-                        ),
-                        child: Center(
-                          child: Row(
-                            children: [
-                              Stack(
-                                children: [
-                                  Img(
-                                    space.icon,
-                                    width: 36,
-                                    height: 36,
-                                  ),
-                                  Positioned(
-                                    bottom: 0,
-                                    right: 0,
-                                    child: Transform.translate(
-                                      offset: const Offset(4, 4),
-                                      child: Img(
-                                        space.meAsMember!.profile.avatar,
-                                        width: 22,
-                                        height: 22,
-                                        borderRadius: 11,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const Gap(12),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    space.name,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                  Text(
-                                    'by ${space.meAsMember!.profile.name}',
-                                    overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(
-                                      fontSize: 12,
-                                      color: BrandColors.gray_500,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
+                        onPressed: () async {
+                          await context.router.push(const PointPurchaseRoute());
+                        },
                       ),
-                      onPressed: () {},
-                    );
-                  },
-                ),
-                SliverFillRemaining(
-                  hasScrollBody: false,
-                  fillOverscroll: true,
-                  child: Container(color: BrandColors.gray_0),
-                ),
-              ],
+                      _MenuItem(
+                        icon: Tabler.pig_money,
+                        title: '수익/출금',
+                        onPressed: () async {
+                          await context.router.push(
+                            WebViewRoute(
+                              title: '수익/출금',
+                              path: '/me/revenue',
+                            ),
+                          );
+                        },
+                      ),
+                      _MenuItem(
+                        icon: Tabler.scan,
+                        title: '리딤코드',
+                        onPressed: () {},
+                      ),
+                    ],
+                  ),
+                  const Gap(6),
+                  _Section(
+                    children: [
+                      _MenuItem(
+                        icon: Tabler.filter_cog,
+                        title: '콘텐츠 필터링',
+                        onPressed: () async {
+                          await context.router.push(
+                            WebViewRoute(
+                              title: '콘텐츠 필터링',
+                              path: '/me/contentfilters',
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                  const Gap(6),
+                  _Section(
+                    children: [
+                      _MenuItem(
+                        icon: Tabler.settings,
+                        title: '설정',
+                        onPressed: () async {
+                          await context.router.push(const SettingsRoute());
+                        },
+                      ),
+                      _MenuItem(
+                        icon: Tabler.headset,
+                        title: '고객센터',
+                        onPressed: () async {
+                          await launchUrl(
+                            Uri.parse('https://penxle.channel.io'),
+                            mode: LaunchMode.externalApplication,
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         );
       },
+    );
+  }
+}
+
+class _Section extends StatelessWidget {
+  const _Section({required this.children});
+
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: BrandColors.gray_0,
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Column(
+        children: children,
+      ),
+    );
+  }
+}
+
+class _MenuItem extends StatelessWidget {
+  const _MenuItem({
+    required this.icon,
+    required this.title,
+    required this.onPressed,
+    this.trailing,
+  });
+
+  final IconData icon;
+  final String title;
+  final Widget? trailing;
+  final Function() onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return Pressable(
+      onPressed: onPressed,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 20),
+        child: Row(
+          children: [
+            Icon(icon, size: 16),
+            const Gap(8),
+            Text(
+              title,
+              style: const TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const Spacer(),
+            if (trailing != null) trailing!,
+            const Icon(
+              Tabler.chevron_right,
+              size: 16,
+              color: BrandColors.gray_400,
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

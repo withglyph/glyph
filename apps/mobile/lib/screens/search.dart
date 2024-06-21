@@ -3,7 +3,9 @@ import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
+import 'package:glyph/components/heading.dart';
 import 'package:glyph/extensions/color.dart';
+import 'package:glyph/icons/glyph.dart';
 import 'package:glyph/routers/app.gr.dart';
 import 'package:glyph/shells/default.dart';
 import 'package:glyph/themes/colors.dart';
@@ -20,9 +22,44 @@ class SearchScreen extends ConsumerStatefulWidget {
 class _SearchScreenState extends ConsumerState<SearchScreen> {
   @override
   Widget build(BuildContext context) {
-    return const DefaultShell(
-      title: '검색',
-      child: _Carousel(),
+    return DefaultShell(
+      appBar: Heading.empty(),
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+            child: TextField(
+              textInputAction: TextInputAction.search,
+              decoration: InputDecoration(
+                isDense: true,
+                filled: true,
+                fillColor: BrandColors.gray_50,
+                hintText: '검색어를 입력해주세요',
+                hintStyle: const TextStyle(color: BrandColors.gray_400),
+                prefixIcon: const Padding(
+                  padding: EdgeInsets.fromLTRB(12, 11, 6, 11),
+                  child: Icon(
+                    Glyph.search,
+                    size: 16,
+                    color: BrandColors.gray_400,
+                  ),
+                ),
+                prefixIconConstraints: BoxConstraints.tight(const Size(34, 38)),
+                contentPadding: const EdgeInsets.symmetric(vertical: 8),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30),
+                  borderSide: BorderSide.none,
+                ),
+              ),
+              style: const TextStyle(fontSize: 15),
+            ),
+          ),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+            child: _Carousel(),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -69,16 +106,13 @@ class _Carousel extends StatelessWidget {
       child: Swiper(
         autoplay: true,
         autoplayDelay: 5000,
-        fade: 0.9,
         duration: 500,
         curve: Curves.linearToEaseOut,
-        viewportFraction: 0.9,
         itemCount: _carousels.length,
         itemBuilder: (context, index) {
           final carousel = _carousels[index];
 
           return Container(
-            margin: const EdgeInsets.symmetric(horizontal: 4),
             clipBehavior: Clip.antiAlias,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(4),

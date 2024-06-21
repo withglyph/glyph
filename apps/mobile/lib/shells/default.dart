@@ -11,6 +11,7 @@ class DefaultShell extends StatelessWidget {
     this.useSafeArea = false,
     this.appBar,
     this.bottomBorder = true,
+    this.backgroundColor = BrandColors.gray_0,
   });
 
   final PreferredSizeWidget? appBar;
@@ -19,11 +20,12 @@ class DefaultShell extends StatelessWidget {
   final List<Widget>? actions;
   final bool useSafeArea;
   final bool bottomBorder;
+  final Color backgroundColor;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: BrandColors.gray_0,
+      backgroundColor: backgroundColor,
       appBar: appBar ??
           Heading(
             title: title == null

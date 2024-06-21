@@ -4,6 +4,7 @@ query MeScreen_Query {
   me {
     id
     email
+    point
 
     profile {
       id
@@ -12,30 +13,6 @@ query MeScreen_Query {
       avatar {
         id
         ...Img_image
-      }
-    }
-
-    spaces {
-      id
-      name
-
-      icon {
-        id
-        ...Img_image
-      }
-
-      meAsMember {
-        id
-
-        profile {
-          id
-          name
-
-          avatar {
-            id
-            ...Img_image
-          }
-        }
       }
     }
   }
