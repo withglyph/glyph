@@ -2,6 +2,7 @@
   import dayjs from 'dayjs';
   import { graphql } from '$glitch';
   import { Helmet } from '$lib/components';
+  import { EventNameString } from '$lib/const/event';
   import { comma } from '$lib/utils';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
@@ -62,11 +63,6 @@
     IN_APP_PURCHASE: '앱 내 구매',
     DUMMY: '테스트 결제',
   };
-
-  const eventName: Record<string, string> = {
-    post_publish_202402: '포스트 업로드 이벤트 참여',
-    twitter_spacelink_2024: 'SNS 연동 이벤트 참여',
-  };
 </script>
 
 <Helmet description="포인트 충전 내역을 확인할 수 있어요" title="포인트 충전 내역" />
@@ -91,7 +87,7 @@
           {#if point.__typename === 'PurchasePointTransaction'}
             {pointPurchasePaymentMethod[point.purchase.paymentMethod]}
           {:else if point.__typename === 'EventRewardPointTransaction'}
-            {eventName[point.eventEnrollment.eventCode] ?? '이벤트 참여'}
+            {EventNameString[point.eventEnrollment.eventCode] ?? '이벤트 참여'}
           {:else}
             {pointTransactionCause[point.cause]}
           {/if}

@@ -2,6 +2,7 @@
   import dayjs from 'dayjs';
   import { graphql } from '$glitch';
   import { Helmet, Image } from '$lib/components';
+  import { EventNameString } from '$lib/const/event';
   import { comma } from '$lib/utils';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
@@ -90,11 +91,6 @@
     PAYPAL: '페이팔',
     IN_APP_PURCHASE: '앱 내 구매',
     DUMMY: '테스트 결제',
-  };
-
-  const eventName: Record<string, string> = {
-    post_publish_202402: '포스트 업로드 이벤트 참여',
-    twitter_spacelink_2024: 'SNS 연동 이벤트 참여',
   };
 </script>
 
@@ -190,7 +186,7 @@
             {#if point.__typename === 'PurchasePointTransaction'}
               {pointPurchasePaymentMethod[point.purchase.paymentMethod]}
             {:else if point.__typename === 'EventRewardPointTransaction'}
-              {eventName[point.eventEnrollment.eventCode] ?? '이벤트 참여'}
+              {EventNameString[point.eventEnrollment.eventCode] ?? '이벤트 참여'}
             {:else}
               {pointTransactionCause[point.cause]}
             {/if}
