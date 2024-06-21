@@ -86,7 +86,6 @@
           alignItems: 'center',
           borderWidth: '1px',
           borderColor: 'gray.300',
-          borderRadius: '4px',
           width: 'full',
           maxWidth: '500px',
           height: '100px',
@@ -120,7 +119,6 @@
           display: 'flex',
           borderWidth: '1px',
           borderColor: 'gray.300',
-          borderRadius: '4px',
           width: 'full',
           maxWidth: '500px',
           height: '100px',
@@ -141,14 +139,14 @@
           <img class={css({ height: 'full', aspectRatio: '1/1', objectFit: 'cover' })} alt="" src={resp.thumbnailUrl} />
         {/if}
 
-        <div class={flex({ direction: 'column', grow: '1', padding: '14px' })}>
-          <div class={css({ fontSize: '14px', fontWeight: 'medium', lineClamp: 1 })}>
+        <div class={flex({ direction: 'column', grow: '1', padding: '10px' })}>
+          <div class={css({ fontSize: '12px', lineClamp: 1 })}>
             {resp.title ?? '(제목 없음)'}
           </div>
-          <div class={css({ fontSize: '12px', color: 'gray.400', lineClamp: 1 })}>
+          <div class={css({ fontSize: '10px', color: 'gray.400', lineClamp: 1 })}>
             {resp.description ?? ''}
           </div>
-          <div class={flex({ align: 'flex-end', grow: '1', fontSize: '12px', color: 'brand.400' })}>
+          <div class={flex({ align: 'flex-end', grow: '1', fontSize: '11px', color: 'brand.400' })}>
             {new URL(node.attrs.url).hostname}
           </div>
         </div>
@@ -160,78 +158,63 @@
 {#if editor && selected && resp}
   <TiptapNodeViewBubbleMenu {editor} {getPos} {node}>
     {#if resp.html}
-      <div class={flex({ smDown: { gap: '6px' } })}>
-        <button
-          class={css({
-            borderRadius: '2px',
-            padding: '4px',
-            transition: 'common',
-            _hover: { backgroundColor: 'gray.100' },
-          })}
-          type="button"
-          on:click={() => {
-            updateAttributes({ mode: 'embed-full' });
-            editor?.commands.focus();
-          }}
-        >
-          <Icon
-            style={css.raw({
-              color: node.attrs.mode === 'embed-full' ? 'brand.400' : 'gray.600',
-            })}
-            icon={IconEmbedFull}
-            size={20}
-          />
-        </button>
-        <button
-          class={css({
-            borderRadius: '2px',
-            padding: '4px',
-            transition: 'common',
-            _hover: { backgroundColor: 'gray.100' },
-          })}
-          type="button"
-          on:click={() => {
-            updateAttributes({ mode: 'embed-compact' });
-            editor?.commands.focus();
-          }}
-        >
-          <Icon
-            style={css.raw({
-              color: node.attrs.mode === 'embed-compact' ? 'brand.400' : 'gray.600',
-            })}
-            icon={IconEmbedCompact}
-            size={20}
-          />
-        </button>
-        <button
-          class={css({
-            borderRadius: '2px',
-            padding: '4px',
-            transition: 'common',
-            _hover: { backgroundColor: 'gray.100' },
-          })}
-          type="button"
-          on:click={() => {
-            updateAttributes({ mode: 'opengraph' });
-            editor?.commands.focus();
-          }}
-        >
-          <Icon
-            style={css.raw({
-              color: node.attrs.mode === 'opengraph' ? 'brand.400' : 'gray.600',
-            })}
-            icon={IconOpengraph}
-            size={20}
-          />
-        </button>
-      </div>
+      <button
+        class={css({
+          padding: '4px',
+          color: 'gray.600',
+          transition: 'common',
+          _hover: { backgroundColor: 'gray.100' },
+          _pressed: { backgroundColor: { base: 'gray.800', _hover: 'gray.600' }, color: 'gray.50' },
+        })}
+        aria-pressed={node.attrs.mode === 'embed-full'}
+        type="button"
+        on:click={() => {
+          updateAttributes({ mode: 'embed-full' });
+          editor?.commands.focus();
+        }}
+      >
+        <Icon icon={IconEmbedFull} size={20} />
+      </button>
+      <button
+        class={css({
+          padding: '4px',
+          color: 'gray.600',
+          transition: 'common',
+          _hover: { backgroundColor: 'gray.100' },
+          _pressed: { backgroundColor: { base: 'gray.800', _hover: 'gray.600' }, color: 'gray.50' },
+        })}
+        aria-pressed={node.attrs.mode === 'embed-compact'}
+        type="button"
+        on:click={() => {
+          updateAttributes({ mode: 'embed-compact' });
+          editor?.commands.focus();
+        }}
+      >
+        <Icon icon={IconEmbedCompact} size={20} />
+      </button>
+      <button
+        class={css({
+          padding: '4px',
+          color: 'gray.600',
+          transition: 'common',
+          _hover: { backgroundColor: 'gray.100' },
+          _pressed: { backgroundColor: { base: 'gray.800', _hover: 'gray.600' }, color: 'gray.50' },
+        })}
+        aria-pressed={node.attrs.mode === 'opengraph'}
+        type="button"
+        on:click={() => {
+          updateAttributes({ mode: 'opengraph' });
+          editor?.commands.focus();
+        }}
+      >
+        <Icon icon={IconOpengraph} size={20} />
+      </button>
 
       <div class={css({ width: '1px', height: '12px', backgroundColor: 'gray.200' })} />
     {/if}
 
     <button
       class={css({
-        borderRadius: '2px',
         padding: '4px',
         transition: 'common',
         _hover: { backgroundColor: 'gray.100' },
@@ -244,7 +227,6 @@
 
     <button
       class={css({
-        borderRadius: '2px',
         padding: '4px',
         transition: 'common',
         _hover: { backgroundColor: 'gray.100' },
