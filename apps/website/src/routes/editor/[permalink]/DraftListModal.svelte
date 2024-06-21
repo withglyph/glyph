@@ -279,12 +279,12 @@
             selectedPosts = selectedPosts.filter((id) => id !== deletePostId);
           }
 
+          await deletePost({ postId: deletePostId });
+          mixpanel.track('post:delete', { postId: deletePostId, via: 'editor' });
+
           if (deletePostId === $post.id) {
             await goto('/');
           }
-
-          await deletePost({ postId: deletePostId });
-          mixpanel.track('post:delete', { postId: deletePostId, via: 'editor' });
         }
 
         deletePostOpen = false;
