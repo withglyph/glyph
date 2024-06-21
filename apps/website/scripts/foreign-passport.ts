@@ -5,6 +5,8 @@ import dayjs from 'dayjs';
 import { and, eq, inArray, ne } from 'drizzle-orm';
 import { setupDayjs } from '$lib/datetime';
 import { database, PointPurchases, UserPersonalIdentities, Users } from '$lib/server/database';
+import { sendEmail } from '$lib/server/email';
+import { ForeignPassportCompleted, ForeignPassportRejected } from '$lib/server/email/templates';
 import { useFirstRow } from '$lib/server/utils/database';
 
 setupDayjs();
@@ -65,7 +67,23 @@ while (true) {
     }
   }
 
-  const name = await rl.question('이름 입력("${성} ${이름}" 형식): ');
+  const name = await rl.question('이름 입력("${성} ${이름}" 형식, 미입력시 인증 거부): ');
+
+  if (name.length === 0) {
+    const reason = await rl.question('인증 거부 사유 입력: ');
+    const answer = await rl.question(`${email} 회원에게 ${reason} 사유로 거부 이메일을 보낼까요? (Y/n)`);
+    if (answer === 'y' || answer === 'Y' || answer === 'ㅛ' || answer.length === 0) {
+      sendEmail({
+        subject: '[Glyph] Foreign Passport Verification Rejected',
+        recipient: email,
+        template: ForeignPassportRejected,
+        props: {
+          reason,
+        },
+      });
+    }
+  }
+
   const birthdayString = await rl.question('생년월일 입력 (YYYYMMDD): ');
   const birthday = dayjs.kst(birthdayString, 'YYYYMMDD');
   if (userWithIdentity.personalIdentity && !birthday.isSame(userWithIdentity.personalIdentity.birthday, 'day')) {
@@ -119,6 +137,14 @@ while (true) {
           expiresAt: dayjs.kst().add(1, 'year'),
         },
       });
+
+    await sendEmail({
+      subject: '[Glyph] Foreign Passport Verification Completed',
+      recipient: email,
+      template: ForeignPassportCompleted,
+      props: {},
+    });
+
     console.log(`${email} 완료`);
   }
 }
