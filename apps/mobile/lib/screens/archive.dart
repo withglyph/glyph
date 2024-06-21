@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:glyph/components/heading.dart';
 import 'package:glyph/components/horizontal_divider.dart';
 import 'package:glyph/components/pressable.dart';
 import 'package:glyph/routers/app.gr.dart';
@@ -23,8 +24,17 @@ class ArchiveScreen extends ConsumerWidget {
       ],
       builder: (context, child, tabController) {
         return DefaultShell(
-          bottomBorder: false,
-          title: '보관함',
+          appBar: const Heading(
+            bottomBorder: false,
+            leading: Row(
+              children: [
+                Text(
+                  '보관함',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800),
+                ),
+              ],
+            ),
+          ),
           child: Column(
             children: [
               Stack(
@@ -97,12 +107,12 @@ class _TabItem extends StatelessWidget {
         child: Stack(
           children: [
             Container(
-              padding: const EdgeInsets.only(top: 12, bottom: 6),
+              padding: const EdgeInsets.only(top: 6, bottom: 8),
               child: Center(
                 child: Text(
                   title,
                   style: TextStyle(
-                    fontSize: 15,
+                    fontSize: 16,
                     fontWeight: FontWeight.w700,
                     color:
                         isActive ? BrandColors.gray_900 : BrandColors.gray_400,

@@ -4,9 +4,7 @@ import 'package:gap/gap.dart';
 import 'package:glyph/components/heading.dart';
 import 'package:glyph/components/horizontal_divider.dart';
 import 'package:glyph/components/pressable.dart';
-import 'package:glyph/components/pull_to_refresh.dart';
 import 'package:glyph/components/thumbnail_post_card.dart';
-import 'package:glyph/ferry/extension.dart';
 import 'package:glyph/ferry/widget.dart';
 import 'package:glyph/graphql/__generated__/feed_screen_query.req.gql.dart';
 import 'package:glyph/icons/tabler.dart';
@@ -23,10 +21,13 @@ class FeedScreen extends StatefulWidget {
 }
 
 class _FeedScreenState extends State<FeedScreen> {
+  bool _showBottomBorder = false;
+
   @override
   Widget build(BuildContext context) {
     return DefaultShell(
       appBar: Heading(
+        bottomBorder: _showBottomBorder,
         leading: const Row(
           children: [
             Text(
@@ -53,11 +54,21 @@ class _FeedScreenState extends State<FeedScreen> {
         builder: (context, client, data) {
           final posts = data.followingFeed;
 
-          return PullToRefresh(
-            onRefresh: () async {
-              await client.req(GFeedScreen_QueryReq());
+          return NotificationListener<ScrollUpdateNotification>(
+            onNotification: (notification) {
+              final showBottomBorder = notification.metrics.pixels > 0;
+              if (showBottomBorder != _showBottomBorder) {
+                setState(() {
+                  _showBottomBorder = showBottomBorder;
+                });
+              }
+
+              return false;
             },
             child: ListView.separated(
+              physics: const AlwaysScrollableScrollPhysics(
+                parent: BouncingScrollPhysics(),
+              ),
               itemCount: posts.length,
               itemBuilder: (context, index) {
                 return ThumbnailPostCard(

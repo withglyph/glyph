@@ -27,7 +27,7 @@ class Heading extends StatelessWidget implements PreferredSizeWidget {
   final bool titleOnLeft;
   final bool bottomBorder;
 
-  static const _preferredSize = Size.fromHeight(44);
+  static const _preferredSize = Size.fromHeight(54);
 
   @override
   Widget build(BuildContext context) {

@@ -19,6 +19,9 @@ class ArchivePurchasesScreen extends ConsumerWidget {
         final posts = data.me!.purchasedPosts;
 
         return ListView.separated(
+          physics: const AlwaysScrollableScrollPhysics(
+            parent: BouncingScrollPhysics(),
+          ),
           itemCount: posts.length,
           itemBuilder: (context, index) {
             return PostCard(

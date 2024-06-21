@@ -4,6 +4,7 @@
 fragment ThumbnailPostCard_post on Post {
   id
   permalink
+  shortlink
   publishedAt
 
   publishedRevision {

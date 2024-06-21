@@ -55,7 +55,7 @@ class _BottomMenu extends StatelessWidget {
                     item.title,
                     style: TextStyle(
                       fontSize: 16,
-                      fontWeight: FontWeight.w500,
+                      fontWeight: FontWeight.w600,
                       color: item.color,
                     ),
                   ),

@@ -21,6 +21,7 @@ import 'package:glyph/providers/ferry.dart';
 import 'package:glyph/routers/app.gr.dart';
 import 'package:glyph/themes/colors.dart';
 import 'package:jiffy/jiffy.dart';
+import 'package:share_plus/share_plus.dart';
 
 class ThumbnailPostCard extends ConsumerWidget {
   const ThumbnailPostCard(
@@ -58,15 +59,14 @@ class ThumbnailPostCard extends ConsumerWidget {
                   color: BrandColors.gray_100,
                 ),
                 const Gap(6),
-                Expanded(
-                  child: Text(
-                    Jiffy.parse(post.publishedAt!.value).fromNow(),
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: BrandColors.gray_500,
-                    ),
+                Text(
+                  Jiffy.parse(post.publishedAt!.value).fromNow(),
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: BrandColors.gray_500,
                   ),
                 ),
+                const Spacer(),
                 Pressable(
                   child: const Icon(
                     Tabler.dots_vertical,
@@ -138,7 +138,7 @@ class ThumbnailPostCard extends ConsumerWidget {
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
                     fontSize: 16,
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
                 if (post.publishedRevision!.subtitle != null ||
@@ -190,21 +190,24 @@ class ThumbnailPostCard extends ConsumerWidget {
                         post.thumbnail,
                         width: constraints.maxWidth,
                         aspectRatio: 16 / 10,
+                        borderRadius: 4,
                       );
                     },
                   ),
                 ],
-                const Gap(8),
-                UnconstrainedBox(
-                  clipBehavior: Clip.hardEdge,
-                  alignment: Alignment.centerLeft,
-                  child: Row(
-                    children: post.tags
-                        .map((tag) => Tag(tag.tag))
-                        .intersperse(const Gap(4))
-                        .toList(),
+                if (post.tags.isNotEmpty) ...[
+                  const Gap(8),
+                  UnconstrainedBox(
+                    clipBehavior: Clip.hardEdge,
+                    alignment: Alignment.centerLeft,
+                    child: Row(
+                      children: post.tags
+                          .map((tag) => Tag(tag.tag))
+                          .intersperse(const Gap(4))
+                          .toList(),
+                    ),
                   ),
-                ),
+                ],
                 const Gap(16),
                 Row(
                   children: [
@@ -214,25 +217,27 @@ class ThumbnailPostCard extends ConsumerWidget {
                       color: BrandColors.gray_400,
                     ),
                     const Gap(3),
-                    const Expanded(
-                      child: Text(
-                        '읽는 시간 7분',
-                        style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w500,
-                          color: BrandColors.gray_400,
-                        ),
+                    const Text(
+                      '읽는 시간 7분',
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                        color: BrandColors.gray_400,
                       ),
                     ),
+                    const Spacer(),
                     Pressable(
                       child: const Icon(
                         Tabler.share_2,
                         size: 20,
                         color: BrandColors.gray_500,
                       ),
-                      onPressed: () {
-                        // TODO: share post
-                        print('share');
+                      onPressed: () async {
+                        await Share.shareUri(
+                          Uri.parse(
+                            'https://glph.to/${post.shortlink}',
+                          ),
+                        );
                       },
                     ),
                     const Gap(20),

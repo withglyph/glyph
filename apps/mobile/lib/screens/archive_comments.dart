@@ -19,6 +19,9 @@ class ArchiveCommentsScreen extends ConsumerWidget {
         final posts = data.me!.comments.map((e) => e.post).nonNulls.toList();
 
         return ListView.separated(
+          physics: const AlwaysScrollableScrollPhysics(
+            parent: BouncingScrollPhysics(),
+          ),
           itemCount: posts.length,
           itemBuilder: (context, index) {
             return PostCard(
