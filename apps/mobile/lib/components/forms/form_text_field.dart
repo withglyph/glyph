@@ -18,6 +18,7 @@ class FormTextField extends StatefulWidget {
     this.obscureText = false,
     this.keyboardType,
     this.textInputAction,
+    this.initialValue,
     this.validators,
     this.onSubmitted,
   });
@@ -31,6 +32,7 @@ class FormTextField extends StatefulWidget {
   final bool obscureText;
   final TextInputType? keyboardType;
   final TextInputAction? textInputAction;
+  final String? initialValue;
   final List<FormFieldValidator<String>>? validators;
   final ValueChanged<String?>? onSubmitted;
 
@@ -40,16 +42,26 @@ class FormTextField extends StatefulWidget {
 
 class _FormTextFieldState extends State<FormTextField>
     with SingleTickerProviderStateMixin {
+  late TextEditingController _controller;
   late FocusNode _focusNode;
+
   late AnimationController _animationController;
   late Animation<Color?> _labelColorAnimation;
   late Animation<Color?> _borderColorAnimation;
 
+  bool _ownedController = false;
   bool _ownedFocusNode = false;
 
   @override
   void initState() {
     super.initState();
+
+    if (widget.controller == null) {
+      _ownedController = true;
+      _controller = TextEditingController(text: widget.initialValue);
+    } else {
+      _controller = widget.controller!;
+    }
 
     if (widget.focusNode == null) {
       _ownedFocusNode = true;
@@ -64,7 +76,7 @@ class _FormTextFieldState extends State<FormTextField>
     );
 
     _labelColorAnimation = ColorTween(
-      begin: BrandColors.gray_400,
+      begin: BrandColors.gray_500,
       end: BrandColors.brand_400,
     ).animate(_animationController);
 
@@ -94,6 +106,10 @@ class _FormTextFieldState extends State<FormTextField>
 
   @override
   void dispose() {
+    if (_ownedController) {
+      _controller.dispose();
+    }
+
     if (_ownedFocusNode) {
       _focusNode.dispose();
     }
@@ -103,34 +119,37 @@ class _FormTextFieldState extends State<FormTextField>
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        if (widget.labelText != null) ...[
-          AnimatedBuilder(
-            animation: _animationController,
-            builder: (context, child) {
-              return Text(
-                widget.labelText!,
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w400,
-                  color: _labelColorAnimation.value,
-                ),
-              );
-            },
-          ),
-          const Gap(4),
-        ],
-        FormBuilderField(
-          name: widget.name,
-          focusNode: _focusNode,
-          validator: widget.validators != null
-              ? FormBuilderValidators.compose(widget.validators!)
-              : null,
-          builder: (field) {
-            return TextField(
-              controller: widget.controller,
+    return FormBuilderField(
+      name: widget.name,
+      focusNode: _focusNode,
+      initialValue: widget.initialValue,
+      validator: widget.validators != null
+          ? FormBuilderValidators.compose(widget.validators!)
+          : null,
+      builder: (field) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (widget.labelText != null) ...[
+              AnimatedBuilder(
+                animation: _animationController,
+                builder: (context, child) {
+                  return Text(
+                    widget.labelText!,
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: field.hasError
+                          ? BrandColors.red_600
+                          : _labelColorAnimation.value,
+                    ),
+                  );
+                },
+              ),
+              const Gap(14),
+            ],
+            TextField(
+              controller: _controller,
               focusNode: _focusNode,
               autocorrect: false,
               obscureText: widget.obscureText,
@@ -141,30 +160,49 @@ class _FormTextFieldState extends State<FormTextField>
                 border: InputBorder.none,
                 hintText: widget.hintText,
                 hintStyle: const TextStyle(
-                  fontWeight: FontWeight.w500,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
                   color: BrandColors.gray_400,
                 ),
               ),
               cursorColor: BrandColors.brand_400,
               style: const TextStyle(
-                fontWeight: FontWeight.w500,
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+                color: BrandColors.gray_900,
               ),
-              onChanged: field.didChange,
+              onChanged: (value) {
+                field
+                  ..didChange(value)
+                  ..validate();
+              },
               onSubmitted: widget.onSubmitted,
-            );
-          },
-        ),
-        const Gap(8),
-        AnimatedBuilder(
-          animation: _animationController,
-          builder: (context, child) {
-            return Container(
-              height: 1,
-              color: _borderColorAnimation.value,
-            );
-          },
-        ),
-      ],
+            ),
+            const Gap(3),
+            AnimatedBuilder(
+              animation: _animationController,
+              builder: (context, child) {
+                return Container(
+                  height: 1.5,
+                  color: field.hasError
+                      ? BrandColors.red_600
+                      : _borderColorAnimation.value,
+                );
+              },
+            ),
+            if (field.hasError) ...[
+              const Gap(6),
+              Text(
+                field.errorText!,
+                style: const TextStyle(
+                  fontSize: 11,
+                  color: BrandColors.red_600,
+                ),
+              ),
+            ],
+          ],
+        );
+      },
     );
   }
 }

@@ -1,33 +1,40 @@
 import 'package:flutter/material.dart';
-
+import 'package:glyph/components/pressable.dart';
 import 'package:glyph/themes/colors.dart';
 
 class Button extends StatelessWidget {
-  const Button({
-    required this.child,
+  const Button(
+    this.title, {
     super.key,
-    this.style,
+    this.enabled = true,
     this.onPressed,
   });
-  final Widget child;
-  final ButtonStyle? style;
-  final void Function()? onPressed;
+
+  final String title;
+  final bool enabled;
+  final Function()? onPressed;
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: onPressed,
-      style: (style ?? const ButtonStyle()).merge(
-        const ButtonStyle(
-          shape: WidgetStatePropertyAll(LinearBorder.none),
-          elevation: WidgetStatePropertyAll(0),
-          splashFactory: NoSplash.splashFactory,
-          shadowColor: WidgetStatePropertyAll(Colors.transparent),
-          foregroundColor: WidgetStatePropertyAll(BrandColors.gray_0),
-          backgroundColor: WidgetStatePropertyAll(BrandColors.gray_900),
+    return Pressable(
+      onPressed: enabled ? onPressed : null,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+        decoration: BoxDecoration(
+          color: enabled ? BrandColors.brand_400 : BrandColors.gray_150,
+          borderRadius: BorderRadius.circular(4),
+        ),
+        child: Center(
+          child: Text(
+            title,
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w700,
+              color: enabled ? BrandColors.gray_0 : BrandColors.gray_400,
+            ),
+          ),
         ),
       ),
-      child: child,
     );
   }
 }

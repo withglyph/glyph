@@ -253,7 +253,7 @@ class _PostScreenState extends ConsumerState<PostScreen>
                                         if (data.me!.point <
                                             data.post.publishedRevision!.price!)
                                           Button(
-                                            child: const Text('포인트 충전하기'),
+                                            '충전하기',
                                             onPressed: () async {
                                               await context.router.popAndPush(
                                                 const PointPurchaseRoute(),
@@ -262,7 +262,7 @@ class _PostScreenState extends ConsumerState<PostScreen>
                                           )
                                         else
                                           Button(
-                                            child: const Text('구매하기'),
+                                            '구매하기',
                                             onPressed: () async {
                                               await reply({
                                                 'type': 'purchase:proceed',
