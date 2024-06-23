@@ -75,12 +75,14 @@ class ThumbnailPostCard extends ConsumerWidget {
                   ),
                   onPressed: () async {
                     await context.showBottomMenu(
+                      title: '포스트',
                       items: [
                         BottomMenuItem(
                           icon: Tabler.check,
+                          iconColor: BrandColors.brand_400,
                           title:
                               post.space!.followed ? '스페이스 구독 해제' : '스페이스 구독',
-                          color: BrandColors.gray_900,
+                          color: BrandColors.gray_600,
                           onTap: () async {
                             final client = ref.read(ferryProvider);
                             if (post.space!.followed) {

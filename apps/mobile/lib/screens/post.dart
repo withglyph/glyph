@@ -393,6 +393,7 @@ class _PostScreenState extends ConsumerState<PostScreen>
                             child: const Icon(Tabler.dots_vertical),
                             onPressed: () async {
                               await context.showBottomMenu(
+                                title: '포스트',
                                 items: [
                                   BottomMenuItem(
                                     icon: Tabler.volume_3,

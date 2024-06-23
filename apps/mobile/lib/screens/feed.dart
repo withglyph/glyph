@@ -5,6 +5,7 @@ import 'package:glyph/components/heading.dart';
 import 'package:glyph/components/horizontal_divider.dart';
 import 'package:glyph/components/pressable.dart';
 import 'package:glyph/components/thumbnail_post_card.dart';
+import 'package:glyph/context/bottom_menu.dart';
 import 'package:glyph/ferry/widget.dart';
 import 'package:glyph/graphql/__generated__/feed_screen_query.req.gql.dart';
 import 'package:glyph/icons/tabler.dart';
@@ -22,21 +23,47 @@ class FeedScreen extends StatefulWidget {
 
 class _FeedScreenState extends State<FeedScreen> {
   bool _showBottomBorder = false;
+  _FeedType _selectedFeedType = _FeedType.recommended;
 
   @override
   Widget build(BuildContext context) {
     return DefaultShell(
       appBar: Heading(
         bottomBorder: _showBottomBorder,
-        leading: const Row(
-          children: [
-            Text(
-              '추천',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800),
-            ),
-            Gap(4),
-            Icon(Tabler.chevron_down, size: 16),
-          ],
+        leading: Pressable(
+          child: Row(
+            children: [
+              Text(
+                switch (_selectedFeedType) {
+                  _FeedType.recommended => '추천',
+                  _FeedType.following => '구독',
+                  _FeedType.challenge => '챌린지'
+                },
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+              const Gap(4),
+              const Icon(Tabler.chevron_down, size: 16),
+            ],
+          ),
+          onPressed: () async {
+            await context.showBottomSelectMenu(
+              title: '피드',
+              value: _selectedFeedType,
+              items: [
+                BottomSelectMenuItem(label: '추천', value: _FeedType.recommended),
+                BottomSelectMenuItem(label: '구독', value: _FeedType.following),
+                BottomSelectMenuItem(label: '챌린지', value: _FeedType.challenge),
+              ],
+              onSelected: (value) {
+                setState(() {
+                  _selectedFeedType = value;
+                });
+              },
+            );
+          },
         ),
         actions: [
           Pressable(
@@ -52,7 +79,11 @@ class _FeedScreenState extends State<FeedScreen> {
       child: GraphQLOperation(
         operation: GFeedScreen_QueryReq(),
         builder: (context, client, data) {
-          final posts = data.followingFeed;
+          final posts = switch (_selectedFeedType) {
+            _FeedType.recommended => data.recommendFeed,
+            _FeedType.following => data.followingFeed,
+            _FeedType.challenge => data.challengeFeed,
+          };
 
           return NotificationListener<ScrollUpdateNotification>(
             onNotification: (notification) {
@@ -88,4 +119,10 @@ class _FeedScreenState extends State<FeedScreen> {
       ),
     );
   }
+}
+
+enum _FeedType {
+  recommended,
+  following,
+  challenge,
 }
