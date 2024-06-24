@@ -245,7 +245,10 @@
               style={css.raw({ width: '68px' })}
               aria-pressed={publishMenuOpen}
               size="sm"
-              on:click={() => (publishMenuOpen = true)}
+              on:click={() => {
+                publishMenuOpen = true;
+                forceSynchronize();
+              }}
             >
               발행
             </Button>
