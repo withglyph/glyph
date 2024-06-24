@@ -58,29 +58,20 @@
   >
     {$post.contentState.title ?? '(제목 없음)'}
   </h3>
-  <div class={flex({ align: 'center', fontSize: '13px', height: '19px', truncate: true })}>
+  <div class={flex({ align: 'center', gap: '4px', fontSize: '13px', height: '19px', truncate: true })}>
     {#if $post.contentState.subtitle}
       <h4
-        class={css(
-          {
-            fontWeight: 'medium',
-            color: 'gray.800',
-            truncate: true,
-          },
-          !!$post.contentState.previewText && {
-            _after: {
-              content: '""',
-              display: 'block',
-              marginX: '4px',
-              width: '[0.8px]',
-              height: '10px',
-              backgroundColor: 'gray.500',
-            },
-          },
-        )}
+        class={css({
+          fontWeight: 'medium',
+          color: 'gray.800',
+          truncate: true,
+        })}
       >
         {$post.contentState.subtitle ?? ''}
       </h4>
+      {#if $post.contentState.previewText}
+        <hr class={css({ border: 'none', width: '[0.8px]', height: '10px', backgroundColor: 'gray.500' })} />
+      {/if}
     {/if}
     {#if $post.contentState.previewText}
       <p class={css({ color: 'gray.600', truncate: true })}>
