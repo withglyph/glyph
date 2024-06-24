@@ -2,7 +2,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:glyph/components/pressable.dart';
-import 'package:glyph/context/bottom_sheet.dart';
 import 'package:glyph/icons/tabler_bold.dart';
 import 'package:glyph/themes/colors.dart';
 
@@ -11,10 +10,11 @@ extension BottomMenuX on BuildContext {
     required String title,
     required List<BottomMenuItem> items,
   }) async {
-    await showFloatingBottomSheet(
+    await _showFloatingBottomSheet(
+      context: this,
+      title: title,
       builder: (context) {
         return _BottomMenu(
-          title: title,
           items: items,
         );
       },
@@ -27,10 +27,11 @@ extension BottomMenuX on BuildContext {
     required List<BottomSelectMenuItem<T>> items,
     required Function(T value) onSelected,
   }) async {
-    await showFloatingBottomSheet(
+    await _showFloatingBottomSheet(
+      context: this,
+      title: title,
       builder: (context) {
         return _BottomSelectMenu(
-          title: title,
           value: value,
           items: items,
           onSelected: onSelected,
@@ -58,11 +59,9 @@ class BottomMenuItem {
 
 class _BottomMenu extends StatelessWidget {
   const _BottomMenu({
-    required this.title,
     required this.items,
   });
 
-  final String title;
   final List<BottomMenuItem> items;
 
   @override
@@ -70,56 +69,45 @@ class _BottomMenu extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Gap(8),
-        Text(
-          title,
-          style: const TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-        const Gap(10),
-        ...items.map((item) {
-          return Pressable(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                vertical: 16,
-              ),
-              child: Row(
-                children: [
-                  Container(
-                    width: 22,
-                    height: 22,
-                    decoration: const BoxDecoration(
-                      color: BrandColors.gray_50,
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(
-                      item.icon,
-                      size: 12,
-                      color: item.iconColor ?? item.color,
-                    ),
-                  ),
-                  const Gap(14),
-                  Text(
-                    item.title,
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: item.color,
-                    ),
-                  ),
-                ],
-              ),
+      children: items.map((item) {
+        return Pressable(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: 16,
             ),
-            onPressed: () async {
-              await context.router.maybePop();
-              item.onTap();
-            },
-          );
-        }),
-      ],
+            child: Row(
+              children: [
+                Container(
+                  width: 22,
+                  height: 22,
+                  decoration: const BoxDecoration(
+                    color: BrandColors.gray_50,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    item.icon,
+                    size: 12,
+                    color: item.iconColor ?? item.color,
+                  ),
+                ),
+                const Gap(14),
+                Text(
+                  item.title,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: item.color,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          onPressed: () async {
+            await context.router.maybePop();
+            item.onTap();
+          },
+        );
+      }).toList(),
     );
   }
 }
@@ -136,13 +124,11 @@ class BottomSelectMenuItem<T> {
 
 class _BottomSelectMenu<T> extends StatelessWidget {
   const _BottomSelectMenu({
-    required this.title,
     required this.value,
     required this.items,
     required this.onSelected,
   });
 
-  final String title;
   final T value;
   final List<BottomSelectMenuItem<T>> items;
   final Function(T value) onSelected;
@@ -152,50 +138,107 @@ class _BottomSelectMenu<T> extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Gap(8),
-        Text(
-          title,
-          style: const TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-        const Gap(10),
-        ...items.map((item) {
-          return Pressable(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                vertical: 16,
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      item.label,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: BrandColors.gray_600,
-                      ),
+      children: items.map((item) {
+        return Pressable(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: 16,
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    item.label,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: BrandColors.gray_600,
                     ),
                   ),
-                  if (value == item.value)
-                    const Icon(
-                      TablerBold.check,
-                      size: 20,
-                      color: BrandColors.brand_400,
-                    ),
-                ],
-              ),
+                ),
+                if (value == item.value)
+                  const Icon(
+                    TablerBold.check,
+                    size: 20,
+                    color: BrandColors.brand_400,
+                  ),
+              ],
             ),
-            onPressed: () async {
-              await context.router.maybePop();
-              onSelected(item.value);
-            },
-          );
-        }),
-      ],
+          ),
+          onPressed: () async {
+            await context.router.maybePop();
+            onSelected(item.value);
+          },
+        );
+      }).toList(),
     );
   }
+}
+
+Future<T> _showFloatingBottomSheet<T>({
+  required BuildContext context,
+  required String title,
+  required WidgetBuilder builder,
+}) async {
+  return await showModalBottomSheet(
+    context: context,
+    backgroundColor: Colors.transparent,
+    elevation: 0,
+    isScrollControlled: true,
+    useSafeArea: true,
+    shape: LinearBorder.none,
+    constraints: const BoxConstraints(maxHeight: 400),
+    builder: (context) {
+      final child = builder(context);
+
+      return SafeArea(
+        child: Container(
+          margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
+          padding: const EdgeInsets.fromLTRB(24, 8, 24, 20),
+          decoration: BoxDecoration(
+            color: BrandColors.gray_0,
+            borderRadius: BorderRadius.circular(22),
+            boxShadow: [
+              BoxShadow(
+                color: BrandColors.gray_900.withOpacity(0.2),
+                offset: const Offset(2, 3),
+                blurRadius: 20,
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Center(
+                child: Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: BrandColors.gray_150,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+              ),
+              const Gap(24),
+              Text(
+                title,
+                textAlign: TextAlign.left,
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const Gap(10),
+              Flexible(
+                child: SingleChildScrollView(
+                  child: child,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
 }
