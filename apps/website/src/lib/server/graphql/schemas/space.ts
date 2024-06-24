@@ -587,6 +587,11 @@ builder.mutationFields((t) => ({
 
         await tx.update(Posts).set({ state: 'DELETED' }).where(inArray(Posts.id, postIds$));
 
+        await tx
+          .update(Posts)
+          .set({ spaceId: null, memberId: null })
+          .where(and(eq(Posts.spaceId, input.spaceId), inArray(Posts.state, ['DRAFT', 'EPHEMERAL'])));
+
         await tx.update(Spaces).set({ state: 'INACTIVE' }).where(eq(Spaces.id, input.spaceId));
       });
 
