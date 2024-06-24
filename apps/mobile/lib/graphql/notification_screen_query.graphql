@@ -1,3 +1,5 @@
+# import './fragments/img_image.graphql';
+
 query NotificationScreen_Query {
   me {
     id
@@ -14,7 +16,8 @@ query NotificationScreen_Query {
         name
 
         avatar {
-          url
+          id
+          ...Img_image
         }
       }
 

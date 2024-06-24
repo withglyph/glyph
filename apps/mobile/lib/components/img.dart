@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:glyph/components/svg_image.dart';
 import 'package:glyph/graphql/fragments/__generated__/img_image.data.gql.dart';
@@ -11,6 +13,7 @@ class Img extends StatelessWidget {
     this.width,
     this.height,
     this.aspectRatio,
+    this.quality = 75,
     this.borderRadius = 2,
     this.fit = BoxFit.cover,
   });
@@ -19,22 +22,33 @@ class Img extends StatelessWidget {
   final double? width;
   final double? height;
   final double? aspectRatio;
+  final double? quality;
   final double borderRadius;
   final BoxFit fit;
 
   @override
   Widget build(BuildContext context) {
-    final width = (aspectRatio != null && this.height != null)
-        ? (this.height! * aspectRatio!)
-        : this.width;
-    final height = (aspectRatio != null && this.width != null)
-        ? (this.width! / aspectRatio!)
-        : this.height;
+    assert(
+      width != null || height != null,
+      'You must provide either a width or a height',
+    );
+
+    assert(
+      (width != null && height != null) || aspectRatio != null,
+      'You must provide either a width and a height or an aspect ratio',
+    );
+
+    final effectiveWidth = width ?? (height! * aspectRatio!);
+    final effectiveHeight = height ?? (width! / aspectRatio!);
+
+    final dpi = MediaQuery.of(context).devicePixelRatio;
+    final size = max(effectiveWidth, effectiveHeight) * dpi;
+    final effectiveSize = pow(2, (log(size) / log(2)).ceil()).toInt();
 
     if (image == null) {
       return Container(
-        width: width,
-        height: height,
+        width: effectiveWidth,
+        height: effectiveHeight,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(borderRadius),
           color: BrandColors.gray_50,
@@ -54,9 +68,9 @@ class Img extends StatelessWidget {
         borderRadius: BorderRadius.circular(borderRadius),
         child: FadeInImage.memoryNetwork(
           placeholder: kTransparentImage,
-          image: image!.url,
-          width: width,
-          height: height,
+          image: '${image!.url}?s=$effectiveSize&q=$quality',
+          width: effectiveWidth,
+          height: effectiveHeight,
           fit: fit,
           fadeInDuration: const Duration(milliseconds: 150),
         ),

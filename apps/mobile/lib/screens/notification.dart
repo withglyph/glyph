@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
+import 'package:glyph/components/img.dart';
 import 'package:glyph/components/pressable.dart';
 import 'package:glyph/components/pull_to_refresh.dart';
 import 'package:glyph/context/toast.dart';
@@ -17,7 +18,6 @@ import 'package:glyph/routers/app.gr.dart';
 import 'package:glyph/shells/default.dart';
 import 'package:glyph/themes/colors.dart';
 import 'package:jiffy/jiffy.dart';
-import 'package:transparent_image/transparent_image.dart';
 
 @RoutePage()
 class NotificationScreen extends ConsumerWidget {
@@ -67,14 +67,11 @@ class NotificationScreen extends ConsumerWidget {
                       const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                   child: Row(
                     children: [
-                      ClipOval(
-                        child: FadeInImage(
-                          placeholder: MemoryImage(kTransparentImage),
-                          image: NetworkImage(notification.actor!.avatar.url),
-                          fadeInDuration: const Duration(milliseconds: 150),
-                          width: 48,
-                          height: 48,
-                        ),
+                      Img(
+                        notification.actor!.avatar,
+                        width: 48,
+                        height: 48,
+                        borderRadius: 24,
                       ),
                       const Gap(16),
                       Expanded(

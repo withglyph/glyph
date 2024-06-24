@@ -50,7 +50,11 @@ class _MeScreenState extends ConsumerState<MeScreen> {
                           CircleAvatar(
                             radius: 27,
                             child: ClipOval(
-                              child: Img(data.me!.profile.avatar),
+                              child: Img(
+                                data.me!.profile.avatar,
+                                width: 54,
+                                height: 54,
+                              ),
                             ),
                           ),
                           const Gap(14),
