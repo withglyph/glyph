@@ -42,7 +42,12 @@ class ThumbnailPostCard extends ConsumerWidget {
           Pressable(
             child: Row(
               children: [
-                Img(post.space?.icon, width: 20, aspectRatio: 1 / 1),
+                Img(
+                  post.space?.icon,
+                  width: 20,
+                  height: 20,
+                  aspectRatio: 1 / 1,
+                ),
                 const Gap(4),
                 Text(
                   post.space!.name,
@@ -78,8 +83,9 @@ class ThumbnailPostCard extends ConsumerWidget {
                       title: '포스트',
                       items: [
                         BottomMenuItem(
-                          icon: Tabler.check,
-                          iconColor: BrandColors.brand_400,
+                          icon:
+                              post.space!.followed ? Tabler.minus : Tabler.plus,
+                          iconColor: BrandColors.gray_600,
                           title:
                               post.space!.followed ? '스페이스 구독 해제' : '스페이스 구독',
                           color: BrandColors.gray_600,
@@ -249,7 +255,9 @@ class ThumbnailPostCard extends ConsumerWidget {
                             ? Tabler.bookmark
                             : Tabler.bookmark_filled,
                         size: 20,
-                        color: BrandColors.gray_500,
+                        color: post.bookmarkGroups.isEmpty
+                            ? BrandColors.gray_500
+                            : BrandColors.gray_900,
                       ),
                       onPressed: () async {
                         final client = ref.read(ferryProvider);
