@@ -70,7 +70,7 @@
   })}
 >
   <span class={css({ fontSize: '14px', fontWeight: 'semibold', color: 'gray.0' })}>참여만 해도 2,000P 지급</span>
-  <a class={css({ fontSize: '12px', color: 'gray.0', textDecoration: 'underline' })} href="/glyph/1880172451">
+  <a class={css({ fontSize: '12px', color: 'gray.0', textDecoration: 'underline' })} href="/glyph/1181236146">
     자세히보기
   </a>
 </div>
@@ -96,8 +96,8 @@
     })}
   >
     <div class={css({ width: 'full', maxWidth: '389px' })}>
-      <div class={css({ textAlign: 'center', height: { base: '64px', sm: '88px' } })}>
-        <ChallengeTitle class={css({ height: { base: '64px', sm: '88px' } })} />
+      <div class={css({ textAlign: 'center', height: { base: '70px', sm: '94px' } })}>
+        <ChallengeTitle class={css({ height: { base: '70px', sm: '94px' } })} />
       </div>
 
       <ul class={flex({ align: 'center', justify: 'space-between', marginTop: '24px', marginBottom: '32px' })}>

@@ -70,7 +70,7 @@
       aria-pressed={!!challengeTag}
       type="button"
       on:click={() => {
-        if (!challengeTag) tags = [...tags, { kind: 'CHALLENGE', name: '주간창작_6월_3주차' }];
+        if (!challengeTag) tags = [...tags, { kind: 'CHALLENGE', name: '주간창작_6월_4주차' }];
       }}
     >
       참여
@@ -80,7 +80,7 @@
   {#if !!challengeTag}
     <div class={css({ marginTop: '42px' })}>
       <h4 class={css({ marginBottom: '8px', fontSize: '14px', color: 'brand.400' })}>
-        {challengeTag.name === '주간창작_6월_3주차' ? '이번주' : '참여한'} 챌린지 태그
+        {challengeTag.name === '주간창작_6월_4주차' ? '이번주' : '참여한'} 챌린지 태그
       </h4>
 
       <ul class={flex({ align: 'center', gap: '8px' })}>
@@ -94,7 +94,7 @@
             backgroundColor: 'brand.50',
           })}
         >
-          {challengeTag ? challengeTag.name : '주간창작_6월_3주차'}
+          {challengeTag ? challengeTag.name : '주간창작_6월_4주차'}
         </li>
       </ul>
     </div>

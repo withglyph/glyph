@@ -638,7 +638,7 @@ builder.queryFields((t) => ({
         .where(
           and(
             eq(PostTags.kind, 'CHALLENGE'),
-            eq(Tags.name, '주간창작_6월_3주차'),
+            eq(Tags.name, '주간창작_6월_4주차'),
             eq(Posts.state, 'PUBLISHED'),
             eq(Posts.visibility, 'PUBLIC'),
             isNull(Posts.password),

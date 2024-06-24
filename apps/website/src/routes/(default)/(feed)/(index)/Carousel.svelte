@@ -25,7 +25,7 @@
       subtitle: '주간창작 챌린지와 함께 꾸준히 창작해요!',
       color: '#1717175A',
       backgroundImageUrl: 'https://glyph.pub/images/_/banner_challenge_3.png',
-      href: '/glyph/1880172451',
+      href: '/glyph/1181236146',
     },
     {
       title: '6월 18일 업데이트 노트',
