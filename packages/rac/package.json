@@ -1,0 +1,24 @@
+{
+  "name": "@withglyph/rac",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./src/index.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsup"
+  },
+  "dependencies": {
+    "@pothos/core": "^3.41.1",
+    "@pothos/plugin-dataloader": "^3.18.1",
+    "graphql": "^16.8.2",
+    "radash": "^12.1.0"
+  },
+  "devDependencies": {
+    "@withglyph/tsconfig": "workspace:^",
+    "tsup": "^8.1.0"
+  }
+}

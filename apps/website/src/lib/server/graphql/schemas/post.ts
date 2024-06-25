@@ -55,7 +55,6 @@ import {
   checkAgeRatingAllowed,
   createNotification,
   deductUserPoint,
-  defineScopeGranter,
   defragmentSpaceCollectionPosts,
   generatePostShareImage,
   getMutedSpaceIds,
@@ -63,7 +62,6 @@ import {
   getPostContentState,
   getPostViewCount,
   getSpaceMember,
-  Loader,
   makeMasquerade,
   makePostContentId,
   makeQueryContainers,
@@ -94,6 +92,69 @@ const CommentOrderByKind = builder.enumType('CommentOrderByKind', {
 
 export const Post = createObjectRef('Post', Posts);
 Post.implement({
+  roleGranter: {
+    edit: async (post, context) => {
+      if (!context.session) {
+        return false;
+      }
+
+      if (post.userId === context.session.userId) {
+        return true;
+      }
+
+      if (!post.spaceId) {
+        return false;
+      }
+
+      const meAsMember = await getSpaceMember(context, post.spaceId);
+      return !!meAsMember;
+    },
+
+    view: async (post, context) => {
+      const spaceMasqueradeLoader = context.loader({
+        name: 'SpaceMasquerade(spaceId)',
+        nullable: true,
+        load: async (spaceIds: string[]) => {
+          if (!context.session) {
+            return [];
+          }
+
+          return await database
+            .select()
+            .from(SpaceMasquerades)
+            .where(
+              and(inArray(SpaceMasquerades.spaceId, spaceIds), eq(SpaceMasquerades.userId, context.session.userId)),
+            );
+        },
+        key: (masquerade) => masquerade?.spaceId,
+      });
+
+      if (post.userId === context.session?.userId) {
+        return true;
+      }
+
+      if (!(await checkAgeRatingAllowed(context.session?.userId, post.ageRating, context))) {
+        return false;
+      }
+
+      if (post.password && post.userId !== context.session?.userId) {
+        const unlock = await redis.hget(`Post:${post.id}:passwordUnlock`, context.deviceId);
+        if (!unlock || dayjs(unlock).isBefore(dayjs())) {
+          return false;
+        }
+      }
+
+      if (post.spaceId) {
+        const masquerade = await spaceMasqueradeLoader.load(post.spaceId);
+        if (masquerade?.blockedAt) {
+          return false;
+        }
+      }
+
+      return true;
+    },
+  },
+
   fields: (t) => ({
     id: t.exposeID('id'),
     state: t.expose('state', { type: PostState }),
@@ -748,47 +809,6 @@ Post.implement({
 });
 
 export const PostRevision = createObjectRef('PostRevision', PostRevisions);
-
-const postRevisionScope = defineScopeGranter(PostRevisions, async (revision, context) => {
-  const spaceMasqueradeLoader = context.loader({
-    name: 'SpaceMasquerade(spaceId)',
-    nullable: true,
-    load: async (spaceIds: string[]) => {
-      if (!context.session) {
-        return [];
-      }
-
-      return await database
-        .select()
-        .from(SpaceMasquerades)
-        .where(and(inArray(SpaceMasquerades.spaceId, spaceIds), eq(SpaceMasquerades.userId, context.session.userId)));
-    },
-    key: (masquerade) => masquerade?.spaceId,
-  });
-
-  const post = await Loader.postById(context).load(revision.postId);
-
-  if (!(await checkAgeRatingAllowed(context.session?.userId, post.ageRating, context))) {
-    return [];
-  }
-
-  if (post.password && post.userId !== context.session?.userId) {
-    const unlock = await redis.hget(`Post:${post.id}:passwordUnlock`, context.deviceId);
-    if (!unlock || dayjs(unlock).isBefore(dayjs())) {
-      return [];
-    }
-  }
-
-  if (post.spaceId) {
-    const masquerade = await spaceMasqueradeLoader.load(post.spaceId);
-    if (masquerade?.blockedAt) {
-      return [];
-    }
-  }
-
-  return ['$postRevision:view'];
-});
-
 PostRevision.implement({
   fields: (t) => ({
     id: t.exposeID('id'),
@@ -805,22 +825,36 @@ PostRevision.implement({
     freeContent: t.field({
       type: PostRevisionContent,
       nullable: true,
+      scopes: (_, revision) => ({
+        scope: 'view',
+        resourceType: Post,
+        resourceId: revision.postId,
+      }),
+
       resolve: (revision) => revision.freeContentId,
     }),
 
     paidContent: t.field({
       type: PostRevisionContent,
       nullable: true,
+      scopes: (_, revision) => ({
+        scope: 'view',
+        resourceType: Post,
+        resourceId: revision.postId,
+      }),
+
       resolve: (revision) => revision.paidContentId,
     }),
 
     content: t.field({
       type: 'JSON',
-      resolve: async (revision, _, context) => {
-        if (!(await postRevisionScope(revision, context, '$postRevision:view'))) {
-          return {};
-        }
+      scopes: (_, revision) => ({
+        scope: 'view',
+        resourceType: Post,
+        resourceId: revision.postId,
+      }),
 
+      resolve: async (revision, _, context) => {
         type CreateDocumentOptions = { withPaidContent?: boolean };
         const createDocument = async (options?: CreateDocumentOptions) => {
           const nodes: JSONContent[] = [];
@@ -882,14 +916,18 @@ PostRevision.implement({
 
         return createDocument();
       },
+
+      scopeError: () => ({}),
     }),
 
     previewText: t.string({
-      resolve: async (revision, _, context) => {
-        if (!(await postRevisionScope(revision, context, '$postRevision:view'))) {
-          return '';
-        }
+      scopes: (_, revision) => ({
+        scope: 'view',
+        resourceType: Post,
+        resourceId: revision.postId,
+      }),
 
+      resolve: async (revision, _, context) => {
         const loader = context.loader({
           name: 'PostRevision.previewText',
           load: async (ids: string[]) => {
@@ -905,6 +943,8 @@ PostRevision.implement({
 
         return text.slice(0, 200).replaceAll(/\s+/g, ' ');
       },
+
+      scopeError: () => '',
     }),
   }),
 });

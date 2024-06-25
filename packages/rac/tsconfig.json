@@ -1,0 +1,6 @@
+{
+  "extends": ["@withglyph/tsconfig"],
+  "compilerOptions": {
+    "outDir": "dist"
+  }
+}

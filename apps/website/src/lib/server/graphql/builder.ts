@@ -3,6 +3,7 @@ import DataLoaderPlugin from '@pothos/plugin-dataloader';
 import ScopeAuthPlugin from '@pothos/plugin-scope-auth';
 import SimpleObjectsPlugin from '@pothos/plugin-simple-objects';
 import ValidationPlugin from '@pothos/plugin-validation';
+import RACPlugin from '@withglyph/rac';
 import dayjs from 'dayjs';
 import { GraphQLJSON, GraphQLVoid } from 'graphql-scalars';
 import { dev } from '$app/environment';
@@ -11,6 +12,7 @@ import type { Context, UserContext } from '../context';
 
 if (dev) {
   import('./schemas');
+  SchemaBuilder.allowPluginReRegistration = true;
 }
 
 export const builder = new SchemaBuilder<{
@@ -38,13 +40,16 @@ export const builder = new SchemaBuilder<{
     user: !!context.session,
   }),
   defaultInputFieldRequiredness: true,
-  plugins: [ScopeAuthPlugin, DataLoaderPlugin, SimpleObjectsPlugin, ValidationPlugin],
+  plugins: [ScopeAuthPlugin, RACPlugin, DataLoaderPlugin, SimpleObjectsPlugin, ValidationPlugin],
   scopeAuthOptions: {
     treatErrorsAsUnauthorized: true,
     unauthorizedError: (_, __, ___, result) => new PermissionDeniedError(result),
   },
   validationOptions: {
     validationError: (error) => new IntentionalError(error.issues[0].message),
+  },
+  racPluginOptions: {
+    permissionDeniedError: () => new PermissionDeniedError(),
   },
 });
 

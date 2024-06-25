@@ -13,7 +13,6 @@ export * from './point';
 export * from './post';
 export * from './resource';
 export * from './revenue';
-export * from './scope';
 export * from './search';
 export * from './slack';
 export * from './space';

@@ -25,50 +25,49 @@ import { Profile } from './user';
 
 export const PostComment = createObjectRef('PostComment', PostComments);
 PostComment.implement({
-  fields: (t) => ({
-    id: t.exposeID('id'),
-    content: t.string({
-      resolve: async (comment, _, context) => {
-        const commentLoader = context.loader({
-          name: 'comment(id)',
-          load: async (commentIds: string[]) => {
-            return await database.select().from(PostComments).where(inArray(PostComments.id, commentIds));
-          },
-          key: (comment) => comment.id,
-        });
+  roleGranter: {
+    view: async (comment, context) => {
+      if (comment.state === 'INACTIVE') {
+        return false;
+      }
 
-        if (comment.state === 'INACTIVE') {
-          return '';
+      if (comment.visibility !== 'PUBLIC') {
+        if (!context.session) {
+          return false;
         }
 
-        if (comment.visibility !== 'PUBLIC') {
-          if (!context.session) {
-            return '';
-          }
+        if (context.session.userId !== comment.userId) {
+          const postLoader = Loader.postById(context);
+          const post = await postLoader.load(comment.postId);
 
-          if (context.session.userId !== comment.userId) {
-            const postLoader = Loader.postById(context);
-            const post = await postLoader.load(comment.postId);
+          if (post.userId !== context.session.userId) {
+            if (!post.spaceId) {
+              return false;
+            }
 
-            if (post.userId !== context.session.userId) {
-              if (!post.spaceId) {
-                return '';
-              }
+            const member = await getSpaceMember(context, post.spaceId);
+            if (!member) {
+              const parentComment = comment.parentId
+                ? await PostComment.getDataloader(context).load(comment.parentId)
+                : null;
 
-              const member = await getSpaceMember(context, post.spaceId);
-              if (!member) {
-                const parentComment = comment.parentId ? await commentLoader.load(comment.parentId) : null;
-
-                if (parentComment?.userId !== context.session.userId) {
-                  return '';
-                }
+              if (parentComment?.userId !== context.session.userId) {
+                return false;
               }
             }
           }
         }
+      }
 
-        return comment.content;
-      },
+      return true;
+    },
+  },
+
+  fields: (t) => ({
+    id: t.exposeID('id'),
+    content: t.exposeString('content', {
+      scopes: 'view',
+      scopeError: () => '',
     }),
     pinned: t.exposeBoolean('pinned'),
     visibility: t.expose('visibility', { type: PostCommentVisibility }),

@@ -54,6 +54,7 @@
     "@withglyph/adapter-docker": "workspace:^",
     "@withglyph/glitch": "workspace:^",
     "@withglyph/lib": "workspace:^",
+    "@withglyph/rac": "workspace:^",
     "apple-signin-auth": "^1.7.6",
     "argon2": "^0.40.3",
     "async-mutex": "^0.5.0",

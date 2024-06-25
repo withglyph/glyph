@@ -1,6 +1,5 @@
 import dayjs from 'dayjs';
 import { and, count, desc, eq, isNotNull, isNull, ne, notExists } from 'drizzle-orm';
-import * as R from 'radash';
 import { match } from 'ts-pattern';
 import { PostPriceCategory, PostVisibility, SpaceMemberRole, SpaceVisibility } from '$lib/enums';
 import { FormValidationError, IntentionalError, NotFoundError, PermissionDeniedError } from '$lib/errors';
@@ -28,7 +27,6 @@ import { enqueueJob } from '$lib/server/jobs';
 import {
   createNotification,
   createRandomIcon,
-  defineScopeGranter,
   directUploadImage,
   getSpaceMember,
   makeMasquerade,
@@ -50,17 +48,23 @@ import { Profile } from './user';
 
 export const Space = createObjectRef('Space', Spaces);
 
-const spaceScopeGranter = defineScopeGranter(Spaces, async (space, context) => {
-  const meAsMember = await getSpaceMember(context, space.id);
-
-  return R.sift([
-    (space.visibility === 'PUBLIC' || !!meAsMember) && '$space:view',
-    !!meAsMember && '$space:member',
-    meAsMember?.role === 'ADMIN' && '$space:admin',
-  ]);
-});
-
 Space.implement({
+  roleGranter: {
+    view: async (space, context) => {
+      return space.visibility === 'PUBLIC' || !!(await getSpaceMember(context, space.id));
+    },
+
+    member: async (space, context) => {
+      return !!(await getSpaceMember(context, space.id));
+    },
+
+    admin: async (space, context) => {
+      const meAsMember = await getSpaceMember(context, space.id);
+
+      return meAsMember?.role === 'ADMIN';
+    },
+  },
+
   fields: (t) => ({
     id: t.exposeID('id'),
     slug: t.exposeString('slug'),
@@ -133,22 +137,22 @@ Space.implement({
 
     members: t.field({
       type: [SpaceMember],
-      resolve: async (space, _, context) => {
-        if (!(await spaceScopeGranter(space, context, '$space:view'))) {
-          return [];
-        }
-
+      scopes: 'view',
+      resolve: async (space) => {
         const members = await database
-          .select({ id: SpaceMembers.id })
+          .select()
           .from(SpaceMembers)
           .where(and(eq(SpaceMembers.spaceId, space.id), eq(SpaceMembers.state, 'ACTIVE')));
 
-        return members.map((member) => member.id);
+        return members;
       },
+
+      scopeError: () => [],
     }),
 
     posts: t.field({
       type: [Post],
+      scopes: 'view',
       args: {
         mine: t.arg.boolean({ defaultValue: false }),
         visibility: t.arg({ type: PostVisibility, required: false }),
@@ -157,10 +161,6 @@ Space.implement({
         priceCategory: t.arg({ type: PostPriceCategory, required: false }),
       },
       resolve: async (space, args, context) => {
-        if (!(await spaceScopeGranter(space, context, '$space:view'))) {
-          return [];
-        }
-
         const meAsMember = await getSpaceMember(context, space.id);
         if (args.mine && !meAsMember) {
           throw new PermissionDeniedError();
@@ -201,15 +201,14 @@ Space.implement({
 
         return posts.map((post) => post.id);
       },
+
+      scopeError: () => [],
     }),
 
     collections: t.field({
       type: [SpaceCollection],
-      resolve: async (space, _, context) => {
-        if (!(await spaceScopeGranter(space, context, '$space:view'))) {
-          return [];
-        }
-
+      scopes: 'view',
+      resolve: async (space) => {
         const collections = await database
           .select({ id: SpaceCollections.id })
           .from(SpaceCollections)
@@ -218,6 +217,8 @@ Space.implement({
 
         return collections.map((collection) => collection.id);
       },
+
+      scopeError: () => [],
     }),
 
     postCount: t.int({
@@ -274,12 +275,9 @@ Space.implement({
 
     blockedMasquerades: t.field({
       type: [SpaceMasquerade],
+      scopes: 'admin',
       grantScopes: ['$spaceMasquerade:spaceAdmin'],
-      resolve: async (space, _, context) => {
-        if (!(await spaceScopeGranter(space, context, '$space:admin'))) {
-          throw new PermissionDeniedError();
-        }
-
+      resolve: async (space) => {
         const masquerades = await database
           .select({ id: SpaceMasquerades.id })
           .from(SpaceMasquerades)
@@ -314,11 +312,8 @@ Space.implement({
 
     redeemCodeGroups: t.field({
       type: [RedeemCodeGroup],
-      resolve: async (space, _, context) => {
-        if (!context.session || !(await spaceScopeGranter(space, context, '$space:member'))) {
-          return [];
-        }
-
+      scopes: 'member',
+      resolve: async (space) => {
         return [
           ...(await database
             .select()
