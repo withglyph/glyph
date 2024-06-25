@@ -37,49 +37,17 @@ class WebView extends ConsumerStatefulWidget {
 class _WebviewState extends ConsumerState<WebView> {
   final GlobalKey _key = GlobalKey();
 
-  InAppWebViewController? _webViewController;
+  // InAppWebViewController? _webViewController;
   InAppWebViewSettings get _settings => InAppWebViewSettings(
         allowsBackForwardNavigationGestures: false,
         disableContextMenu: true,
         disableLongPressContextMenuOnLinks: true,
-        disableHorizontalScroll: widget.fitToContent,
-        disableVerticalScroll: widget.fitToContent,
-        disallowOverScroll: widget.fitToContent,
         isTextInteractionEnabled: !widget.readOnly,
         supportZoom: false,
         suppressesIncrementalRendering: true,
       );
 
   final _cookieManager = CookieManager.instance();
-
-  double _height = 0;
-  Timer? _timer;
-
-  @override
-  void initState() {
-    super.initState();
-
-    if (widget.fitToContent) {
-      _timer = Timer.periodic(const Duration(milliseconds: 500), (_) async {
-        if (mounted && _webViewController != null) {
-          final height =
-              (await _webViewController!.getContentHeight())?.toDouble();
-          if (mounted && height != null && height != _height) {
-            setState(() {
-              _height = height;
-            });
-          }
-        }
-      });
-    }
-  }
-
-  @override
-  void dispose() {
-    _timer?.cancel();
-
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -89,12 +57,12 @@ class _WebviewState extends ConsumerState<WebView> {
       _ => null,
     };
 
-    final child = InAppWebView(
+    return InAppWebView(
       key: _key,
       initialSettings: _settings,
       preventGestureDelay: true,
       onWebViewCreated: (controller) async {
-        _webViewController = controller;
+        // _webViewController = controller;
 
         await _cookieManager.setCookie(
           url: WebUri(Env.baseUrl),
@@ -137,16 +105,12 @@ class _WebviewState extends ConsumerState<WebView> {
         unawaited(
           controller.loadUrl(
             urlRequest: URLRequest(
-              url: WebUri('${Env.baseUrl}${widget.path}?webview=true'),
+              url: WebUri('${Env.baseUrl}${widget.path}'),
             ),
           ),
         );
       },
       shouldOverrideUrlLoading: widget.onNavigate,
     );
-
-    return widget.fitToContent
-        ? SizedBox(height: _height, child: child)
-        : child;
   }
 }

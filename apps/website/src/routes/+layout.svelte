@@ -63,9 +63,13 @@
   });
 </script>
 
-<div class={flex({ direction: 'column', position: 'relative', minHeight: 'dvh' })}>
+{#if $isWebView}
   <slot />
-</div>
+{:else}
+  <div class={flex({ direction: 'column', position: 'relative' })}>
+    <slot />
+  </div>
+{/if}
 
 <AutoUpdater />
 <Datadog />

@@ -1,6 +1,8 @@
 <script lang="ts">
   import stringify from 'fast-json-stable-stringify';
+  import { onMount } from 'svelte';
   import { graphql } from '$glitch';
+  import { postFlutterMessage } from '$lib/flutter';
   import { TiptapRenderer } from '$lib/tiptap/components';
   import { css } from '$styled-system/css';
   import type { Editor } from '@tiptap/core';
@@ -25,6 +27,18 @@
     editor.storage.permalink = $query.post.permalink;
     editor.storage.revisionId = $query.post.publishedRevision.id;
   }
+
+  onMount(() => {
+    const observer = new ResizeObserver((entries) => {
+      postFlutterMessage({ type: 'resize', height: entries[0].contentRect.height });
+    });
+
+    observer.observe(document.body);
+
+    return () => {
+      observer.disconnect();
+    };
+  });
 </script>
 
 <div class={css({ paddingX: '20px' })}>
