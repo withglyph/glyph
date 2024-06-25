@@ -93,8 +93,17 @@
   </div>
 </header>
 
-<div class={flex({ flexDirection: 'column', flexGrow: '1', width: 'full' })}>
-  <ul class={css({ marginX: 'auto', marginBottom: '28px', minHeight: '120px', width: 'full', maxWidth: '800px' })}>
+<div class={flex({ direction: 'column', grow: '1', width: 'full' })}>
+  <ul
+    class={flex({
+      direction: 'column',
+      grow: '1',
+      marginBottom: '28px',
+      minHeight: '120px',
+      width: 'full',
+      maxWidth: '800px',
+    })}
+  >
     {#each $query.me.notifications as notification (notification.id)}
       <li>
         {#if notification.__typename === 'CommentNotification'}
@@ -108,7 +117,7 @@
         {/if}
       </li>
     {:else}
-      <p class={css({ fontSize: '15px', color: 'gray.400', textAlign: 'center' })}>알림이 없어요</p>
+      <p class={css({ marginY: 'auto', fontSize: '15px', color: 'gray.400', textAlign: 'center' })}>알림이 없어요</p>
     {/each}
   </ul>
 </div>
