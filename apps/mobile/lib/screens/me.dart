@@ -124,7 +124,7 @@ class _MeScreenState extends ConsumerState<MeScreen> {
                         trailing: Padding(
                           padding: const EdgeInsets.only(right: 6),
                           child: Text(
-                            '${data.me!.point.asFormatted}P',
+                            '${data.me!.point.comma}P',
                             style: const TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.w600,

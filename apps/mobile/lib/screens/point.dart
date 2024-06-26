@@ -1,11 +1,10 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:glyph/components/heading.dart';
 import 'package:glyph/components/horizontal_divider.dart';
 import 'package:glyph/components/pressable.dart';
-import 'package:glyph/icons/tabler.dart';
 import 'package:glyph/routers/app.gr.dart';
+import 'package:glyph/shells/default.dart';
 import 'package:glyph/themes/colors.dart';
 
 @RoutePage()
@@ -20,38 +19,10 @@ class PointScreen extends ConsumerWidget {
         PointHistoryRoute(),
       ],
       builder: (context, child, tabController) {
-        return Scaffold(
-          appBar: Heading(
-            bottomBorder: false,
-            leading: NavigationToolbar(
-              leading: AutoLeadingButton(
-                builder: (context, leadingType, action) {
-                  if (leadingType == LeadingType.noLeading) {
-                    return const SizedBox.shrink();
-                  }
-
-                  return Pressable(
-                    child: Icon(
-                      switch (leadingType) {
-                        LeadingType.back => Tabler.arrow_left,
-                        LeadingType.close => Tabler.x,
-                        _ => throw UnimplementedError(),
-                      },
-                    ),
-                    onPressed: () => action?.call(),
-                  );
-                },
-              ),
-              middle: Text(
-                '포인트',
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ),
-          ),
-          body: Column(
+        return DefaultShell(
+          bottomBorder: false,
+          title: '포인트',
+          child: Column(
             children: [
               Stack(
                 children: [

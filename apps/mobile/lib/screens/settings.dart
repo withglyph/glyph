@@ -127,7 +127,8 @@ class SettingsScreen extends ConsumerWidget {
                         onPressed: () async {
                           await launchUrl(
                             Uri.parse(
-                                'https://help.withglyph.com/legal/privacy'),
+                              'https://help.withglyph.com/legal/privacy',
+                            ),
                             mode: LaunchMode.externalApplication,
                           );
                         },
