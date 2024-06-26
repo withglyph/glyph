@@ -47,4 +47,5 @@ __generated__/
 *.gr.dart
 *.freezed.dart
 
+**/build
 **/fastlane/report.xml

@@ -6,12 +6,46 @@ platform :ios do
       issuer_id: "790503b8-57bb-4621-a1e1-4cf096032add",
       key_id: "JSJ3753N49",
     )
+    
+    firebase_app_distribution_get_udids(
+      service_credentials_json_data: ENV["GOOGLE_SERVICE_ACCOUNT"],
+      project_number: "58678861052",
+      output_file: "build/udids.txt",
+    )
 
-    match(type: "development")
+    register_devices(devices_file: "./build/udids.txt")
+
+    match(type: "adhoc", force_for_new_devices: true)
     match(type: "appstore")
   end
 
   lane :beta do
+    latest_release = firebase_app_distribution_get_latest_release(
+      service_credentials_json_data: ENV["GOOGLE_SERVICE_ACCOUNT"],
+      app: "1:58678861052:ios:65d590f2311a51d6bd8b79",
+    )
+    target_build_number = latest_release[:buildVersion].to_i + 1
+
+    Dir.chdir("../..") do
+      sh "flutter build ipa --build-number=#{target_build_number} --dart-define=ENV=release --no-codesign"
+    end
+
+    match(type: "adhoc", readonly: true)
+    build_app(
+      output_directory: 'build',
+      output_name: 'Runner.ipa',
+      archive_path: 'build/Runner.xcarchive',
+      skip_package_dependencies_resolution: true,
+    )
+
+    firebase_app_distribution(
+      service_credentials_json_data: ENV["GOOGLE_SERVICE_ACCOUNT"],
+      app: "1:58678861052:ios:65d590f2311a51d6bd8b79",
+      groups: "ios@team",
+    )
+  end
+
+  lane :release do
     match(type: "appstore", readonly: true)
 
     app_store_connect_api_key(
@@ -19,23 +53,11 @@ platform :ios do
       key_id: "JSJ3753N49",
     )
 
-    current_build_number = latest_testflight_build_number()
+    latest_release = firebase_app_distribution_get_latest_release()
 
     Dir.chdir("../..") do
-      sh "flutter build ipa --dart-define=ENV=release --build-number=#{current_build_number + 1} --export-options-plist=ios/ExportOptions.plist"
+      sh "flutter build ipa --dart-define=ENV=release --build-number=#{current_build_number + 1} --export-options-plist=ios/ExportOptions/release.plist"
     end
-
-    upload_to_testflight(
-      ipa: "../build/ios/ipa/글리프.ipa",
-      expire_previous_builds: true,
-    )
-  end
-
-  lane :release do
-    app_store_connect_api_key(
-      issuer_id: "790503b8-57bb-4621-a1e1-4cf096032add",
-      key_id: "JSJ3753N49",
-    )
 
     upload_to_app_store(
       force: true,

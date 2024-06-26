@@ -20,6 +20,14 @@
             "package_name": "com.withglyph.app",
             "certificate_hash": "4627d21abafe784a10e1764ecd872304efb03413"
           }
+        },
+        {
+          "client_id": "58678861052-amaiphoh4p3q8h6lh46b58f5m4tbj8iq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.withglyph.app",
+            "certificate_hash": "d111f0e1ceb771a1261d2404697f6aa32668ccb5"
+          }
         }
       ],
       "api_key": [
