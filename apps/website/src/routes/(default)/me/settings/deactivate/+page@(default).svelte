@@ -3,6 +3,7 @@
   import { graphql } from '$glitch';
   import { Button, Helmet, Icon } from '$lib/components';
   import { Checkbox } from '$lib/components/forms';
+  import { isWebView, postFlutterMessage } from '$lib/flutter';
   import { comma } from '$lib/utils';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
@@ -33,7 +34,8 @@
       flexDirection: 'column',
       gap: '24px',
       marginX: 'auto',
-      paddingY: '28px',
+      paddingTop: '28px',
+      paddingBottom: { base: '60px', sm: '120px' },
       paddingX: { base: '20px', sm: '40px' },
       width: 'full',
       maxWidth: '800px',
@@ -112,15 +114,28 @@
       >
         글리프 탈퇴하기
       </Button>
-      <Button
-        style={css.raw({ display: 'block', marginTop: '12px', width: 'full', backgroundColor: 'gray.0' })}
-        href="/me/settings"
-        size="lg"
-        type="link"
-        variant="gray-outline"
-      >
-        탈퇴를 취소할래요
-      </Button>
+      {#if $isWebView}
+        <Button
+          style={css.raw({ display: 'block', marginTop: '12px', width: 'full', backgroundColor: 'gray.0' })}
+          size="lg"
+          variant="gray-outline"
+          on:click={() => {
+            postFlutterMessage({ type: 'deactivate:cancel' });
+          }}
+        >
+          탈퇴를 취소할래요
+        </Button>
+      {:else}
+        <Button
+          style={css.raw({ display: 'block', marginTop: '12px', width: 'full', backgroundColor: 'gray.0' })}
+          href="/me/settings"
+          size="lg"
+          type="link"
+          variant="gray-outline"
+        >
+          탈퇴를 취소할래요
+        </Button>
+      {/if}
     </div>
   </div>
 </div>

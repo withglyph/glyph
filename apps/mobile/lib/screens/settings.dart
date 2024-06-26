@@ -198,7 +198,13 @@ class SettingsScreen extends ConsumerWidget {
                       ),
                       _Item(
                         title: '회원탈퇴',
-                        onPressed: () {},
+                        onPressed: () async {
+                          if (context.mounted) {
+                            await context.router.push(
+                              DeactivateRoute(),
+                            );
+                          }
+                        },
                       ),
                     ],
                   ),
