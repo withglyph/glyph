@@ -133,7 +133,7 @@ class _MeScreenState extends ConsumerState<MeScreen> {
                           ),
                         ),
                         onPressed: () async {
-                          await context.router.push(const PointPurchaseRoute());
+                          await context.router.push(const PointRoute());
                         },
                       ),
                       _MenuItem(

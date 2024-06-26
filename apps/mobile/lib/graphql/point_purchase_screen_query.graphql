@@ -1,7 +1,8 @@
 query PointPurchaseScreen_Query {
   me {
     id
-
     point
+    paidPoint: point(kind: PAID)
+    freePoint: point(kind: FREE)
   }
 }

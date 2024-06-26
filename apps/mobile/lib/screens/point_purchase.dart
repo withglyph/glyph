@@ -17,7 +17,7 @@ import 'package:glyph/graphql/__generated__/point_purchase_screen_purchase_point
 import 'package:glyph/graphql/__generated__/point_purchase_screen_query.req.gql.dart';
 import 'package:glyph/graphql/__generated__/schema.schema.gql.dart';
 import 'package:glyph/providers/ferry.dart';
-import 'package:glyph/shells/default.dart';
+import 'package:glyph/themes/colors.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 
 @RoutePage()
@@ -81,101 +81,176 @@ class _PointPurchaseScreenState extends ConsumerState<PointPurchaseScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultShell(
-      title: '포인트',
-      child: GraphQLOperation(
-        operation: GPointPurchaseScreen_QueryReq(),
-        builder: (context, client, data) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Gap(20),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: Text(
-                  '현재 포인트',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
+    return GraphQLOperation(
+      operation: GPointPurchaseScreen_QueryReq(),
+      builder: (context, client, data) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: EdgeInsets.all(20),
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Text(
+                        '내 포인트',
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      const Gap(10),
+                      Text(
+                        '${data.me!.point}P',
+                        style: const TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w900,
+                          color: BrandColors.brand_400,
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Text(
-                  '${data.me!.point} P',
-                  style: const TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w700,
+                  const Gap(10),
+                  HorizontalDivider(color: BrandColors.gray_50),
+                  const Gap(10),
+                  Row(
+                    children: [
+                      Container(
+                        width: 78,
+                        child: Text(
+                          '충전한 포인트',
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: BrandColors.gray_600,
+                          ),
+                        ),
+                      ),
+                      const Gap(10),
+                      Text(
+                        '${data.me!.paidPoint}P',
+                        style: const TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w700,
+                          color: BrandColors.gray_600,
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-              ),
-              const Gap(20),
-              const HorizontalDivider(),
-              const Gap(20),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: Text(
-                  '포인트 구매',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
+                  const Gap(4),
+                  Row(
+                    children: [
+                      Container(
+                        width: 78,
+                        child: Text(
+                          '무료 포인트',
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: BrandColors.gray_600,
+                          ),
+                        ),
+                      ),
+                      const Gap(10),
+                      Text(
+                        '${data.me!.freePoint}P',
+                        style: const TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w700,
+                          color: BrandColors.gray_600,
+                        ),
+                      ),
+                    ],
                   ),
-                ),
+                ],
               ),
-              const Gap(8),
-              Expanded(
-                child: ListView.builder(
-                  itemCount: _products.length,
-                  itemBuilder: (context, index) {
-                    final product = _products[index];
-                    return ListTile(
-                      title: Text(product.title),
-                      trailing: Text(product.price),
-                      contentPadding:
-                          const EdgeInsets.symmetric(horizontal: 20),
-                      onTap: () async {
-                        context.loader.show();
+            ),
+            const HorizontalDivider(
+              height: 6,
+              color: BrandColors.gray_50,
+            ),
+            Expanded(
+              child: ListView.separated(
+                shrinkWrap: true,
+                itemCount: _products.length,
+                itemBuilder: (context, index) {
+                  final product = _products[index];
 
-                        final client = ref.read(ferryProvider);
-                        final req =
-                            GPurchasePointScreen_PurchasePoint_MutationReq(
-                          (b) => b
-                            ..vars.input.paymentMethod = kReleaseMode
-                                ? GPaymentMethod.IN_APP_PURCHASE
-                                : GPaymentMethod.DUMMY
-                            ..vars.input.pointAmount = int.parse(
-                              product.id.split('_').last,
-                            )
-                            ..vars.input.pointAgreement = true,
+                  return ListTile(
+                    title: Text(
+                      product.title,
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    trailing: Container(
+                      width: 78,
+                      height: 29,
+                      decoration: BoxDecoration(
+                        color: BrandColors.brand_400,
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                      child: Center(
+                        child: Text(
+                          product.price,
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w700,
+                            color: BrandColors.gray_0,
+                          ),
+                        ),
+                      ),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+                    onTap: () async {
+                      context.loader.show();
+
+                      final client = ref.read(ferryProvider);
+                      final req =
+                          GPurchasePointScreen_PurchasePoint_MutationReq(
+                        (b) => b
+                          ..vars.input.paymentMethod = kReleaseMode
+                              ? GPaymentMethod.IN_APP_PURCHASE
+                              : GPaymentMethod.DUMMY
+                          ..vars.input.pointAmount = int.parse(
+                            product.id.split('_').last,
+                          )
+                          ..vars.input.pointAgreement = true,
+                      );
+                      final resp = await client.req(req);
+
+                      if (kReleaseMode) {
+                        await _iap.buyConsumable(
+                          purchaseParam: PurchaseParam(
+                            productDetails: product,
+                            applicationUserName:
+                                resp.purchasePoint.paymentData.asMap['uuid'],
+                          ),
                         );
-                        final resp = await client.req(req);
-
-                        if (kReleaseMode) {
-                          await _iap.buyConsumable(
-                            purchaseParam: PurchaseParam(
-                              productDetails: product,
-                              applicationUserName:
-                                  resp.purchasePoint.paymentData.asMap['uuid'],
-                            ),
-                          );
-                        } else {
-                          if (context.mounted) {
-                            context.loader.dismiss();
-                          }
-
-                          client.requestController
-                              .add(GPointPurchaseScreen_QueryReq());
+                      } else {
+                        if (context.mounted) {
+                          context.loader.dismiss();
                         }
-                      },
-                    );
-                  },
-                ),
+
+                        client.requestController
+                            .add(GPointPurchaseScreen_QueryReq());
+                      }
+                    },
+                  );
+                },
+                separatorBuilder: (context, index) {
+                  return const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: HorizontalDivider(
+                      color: BrandColors.gray_50,
+                    ),
+                  );
+                },
               ),
-            ],
-          );
-        },
-      ),
+            ),
+          ],
+        );
+      },
     );
   }
 

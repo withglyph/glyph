@@ -66,7 +66,13 @@ class AppRouter extends $AppRouter {
             AutoRoute(page: NotificationRoute.page),
             AutoRoute(page: SettingsRoute.page),
             AutoRoute(page: ProfileRoute.page),
-            AutoRoute(page: PointPurchaseRoute.page),
+            AutoRoute(
+              page: PointRoute.page,
+              children: [
+                AutoRoute(page: PointPurchaseRoute.page),
+                AutoRoute(page: PointHistoryRoute.page),
+              ],
+            ),
             AutoRoute(page: OssLicensesRoute.page),
             AutoRoute(page: OssLicensesDetailsRoute.page),
             AutoRoute(
