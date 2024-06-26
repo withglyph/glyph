@@ -12,14 +12,12 @@ class WebView extends ConsumerStatefulWidget {
   const WebView({
     required this.path,
     super.key,
-    this.fitToContent = false,
     this.readOnly = true,
     this.onJsMessage,
     this.onNavigate,
   });
 
   final String path;
-  final bool fitToContent;
   final bool readOnly;
   final Future<void> Function(
     dynamic data,

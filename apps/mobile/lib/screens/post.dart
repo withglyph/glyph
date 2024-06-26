@@ -7,6 +7,7 @@ import 'package:gap/gap.dart';
 import 'package:get_it/get_it.dart';
 import 'package:glyph/components/Img.dart';
 import 'package:glyph/components/button.dart';
+import 'package:glyph/components/heading.dart';
 import 'package:glyph/components/horizontal_divider.dart';
 import 'package:glyph/components/pressable.dart';
 import 'package:glyph/components/webview.dart';
@@ -25,6 +26,7 @@ import 'package:glyph/graphql/__generated__/post_screen_update_post_view_mutatio
 import 'package:glyph/graphql/__generated__/schema.schema.gql.dart';
 import 'package:glyph/icons/tabler.dart';
 import 'package:glyph/routers/app.gr.dart';
+import 'package:glyph/shells/default.dart';
 import 'package:glyph/themes/colors.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
@@ -45,42 +47,17 @@ class _PostScreenState extends ConsumerState<PostScreen>
   final _mixpanel = GetIt.I<Mixpanel>();
   final _browser = ChromeSafariBrowser();
 
-  late AnimationController _scrollAnimationController;
-  late Animation<double> _bottomBarHeightAnimation;
+  final _staticFooterKey = GlobalKey();
 
   bool _showBars = true;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _scrollAnimationController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 100),
-      value: 1,
-    );
-
-    final curve = CurvedAnimation(
-      parent: _scrollAnimationController,
-      curve: Curves.linear,
-    );
-
-    _bottomBarHeightAnimation = Tween<double>(
-      begin: 0,
-      end: 44,
-    ).animate(curve);
-  }
+  bool _showFloatingFooter = false;
+  double _webViewHeight = 1;
 
   @override
   Widget build(BuildContext context) {
-    final safeAreaBottomHeight = MediaQuery.of(context).padding.bottom;
-
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        toolbarHeight: 0,
-      ),
-      body: GraphQLOperation(
+    return DefaultShell(
+      appBar: Heading.empty(),
+      child: GraphQLOperation(
         operation: GPostScreen_QueryReq(
           (b) => b..vars.permalink = widget.permalink,
         ),
@@ -98,32 +75,156 @@ class _PostScreenState extends ConsumerState<PostScreen>
           await client.req(req);
         },
         builder: (context, client, data) {
+          final footer = DecoratedBox(
+            // height: _bottomBarHeightAnimation.value,
+            decoration: const BoxDecoration(
+              color: BrandColors.gray_0,
+              border: Border(
+                top: BorderSide(color: BrandColors.gray_100),
+              ),
+            ),
+            child: SafeArea(
+              child: SizedBox(
+                height: 44,
+                child: Row(
+                  children: [
+                    Pressable(
+                      child: const SizedBox(
+                        width: 60,
+                        child: Center(
+                          child: Icon(Tabler.list, size: 22),
+                        ),
+                      ),
+                      onPressed: () {},
+                    ),
+                    Pressable(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 5),
+                        child: Row(
+                          children: [
+                            const Icon(Tabler.mood_heart, size: 22),
+                            const Gap(3),
+                            Text(
+                              data.post.reactionCount.toString(),
+                              style: const TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      onPressed: () {},
+                    ),
+                    const Gap(16),
+                    Pressable(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 5),
+                        child: Row(
+                          children: [
+                            const Icon(Tabler.message_circle, size: 22),
+                            const Gap(3),
+                            Text(
+                              data.post.commentCount.toString(),
+                              style: const TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      onPressed: () async {
+                        await context.showBottomSheet(
+                          builder: (context) {
+                            return Comments(
+                              permalink: widget.permalink,
+                            );
+                          },
+                        );
+                      },
+                    ),
+                    const Spacer(),
+                    Pressable(
+                      child: const SizedBox(
+                        width: 60,
+                        child: Center(
+                          child: Icon(Tabler.chevron_left, size: 22),
+                        ),
+                      ),
+                      onPressed: () {},
+                    ),
+                    Pressable(
+                      child: const SizedBox(
+                        width: 60,
+                        child: Center(
+                          child: Icon(Tabler.chevron_right, size: 22),
+                        ),
+                      ),
+                      onPressed: () {},
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+
           return SizedBox.expand(
             child: Stack(
               fit: StackFit.passthrough,
               children: [
                 NotificationListener<ScrollNotification>(
                   onNotification: (notification) {
-                    if (notification.metrics.pixels <= 0 && !_showBars) {
-                      setState(() {
-                        _showBars = true;
-                      });
+                    final staticFooterBox = _staticFooterKey.currentContext
+                        ?.findRenderObject() as RenderBox?;
 
-                      return false;
+                    if (staticFooterBox != null) {
+                      final staticFooterPosition =
+                          staticFooterBox.localToGlobal(Offset.zero).dy;
+                      final viewportHeight = MediaQuery.of(context).size.height;
+                      final safeAreaBottomHeight =
+                          MediaQuery.of(context).padding.bottom;
+                      final floatingFooterPosition =
+                          viewportHeight - 44 - safeAreaBottomHeight;
+
+                      if (staticFooterPosition <= floatingFooterPosition) {
+                        if (_showFloatingFooter) {
+                          setState(() {
+                            _showFloatingFooter = false;
+                          });
+                        }
+                      } else {
+                        if (!_showFloatingFooter) {
+                          setState(() {
+                            _showFloatingFooter = true;
+                          });
+                        }
+                      }
                     }
 
                     if (notification is UserScrollNotification) {
-                      if (notification.direction == ScrollDirection.forward &&
-                          !_showBars) {
-                        setState(() {
-                          _showBars = true;
-                        });
+                      if (notification.direction == ScrollDirection.forward) {
+                        if (!_showBars) {
+                          setState(() {
+                            _showBars = true;
+                          });
+                        }
                       } else if (notification.direction ==
-                              ScrollDirection.reverse &&
-                          _showBars) {
-                        setState(() {
-                          _showBars = false;
-                        });
+                          ScrollDirection.reverse) {
+                        if (_showBars) {
+                          setState(() {
+                            _showBars = false;
+                          });
+                        }
+                      } else if (notification.direction ==
+                          ScrollDirection.idle) {
+                        if (notification.metrics.pixels <= 0) {
+                          if (!_showBars) {
+                            setState(() {
+                              _showBars = true;
+                            });
+                          }
+                        }
                       }
                     }
 
@@ -227,291 +328,165 @@ class _PostScreenState extends ConsumerState<PostScreen>
                             ],
                           ),
                         ),
-                        WebView(
-                          path: '/_webview/post-view/${widget.permalink}',
-                          fitToContent: true,
-                          onJsMessage: (message, reply) async {
-                            if (message['type'] == 'purchase') {
-                              await context.showBottomSheet(
-                                builder: (context) {
-                                  return Padding(
-                                    padding: const EdgeInsets.all(20),
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.stretch,
-                                      children: [
-                                        Text(
-                                          '현재 보유 포인트: ${data.me!.point}P',
-                                          style: const TextStyle(fontSize: 16),
-                                        ),
-                                        Text(
-                                          '필요 포인트: ${data.post.publishedRevision!.price}P',
-                                          style: const TextStyle(fontSize: 16),
-                                        ),
-                                        const Gap(16),
-                                        if (data.me!.point <
-                                            data.post.publishedRevision!.price!)
-                                          Button(
-                                            '충전하기',
-                                            onPressed: () async {
-                                              await context.router.popAndPush(
-                                                const PointPurchaseRoute(),
-                                              );
-                                            },
-                                          )
-                                        else
-                                          Button(
-                                            '구매하기',
-                                            onPressed: () async {
-                                              await reply({
-                                                'type': 'purchase:proceed',
-                                              });
-
-                                              if (context.mounted) {
-                                                await context.router.maybePop();
-                                              }
-                                            },
+                        SizedBox(
+                          height: _webViewHeight,
+                          child: WebView(
+                            path: '/_webview/post-view/${widget.permalink}',
+                            onJsMessage: (message, reply) async {
+                              if (message['type'] == 'resize') {
+                                final height =
+                                    (message['height'] as num).toDouble();
+                                if (height != _webViewHeight) {
+                                  setState(() {
+                                    _webViewHeight = height;
+                                  });
+                                }
+                              } else if (message['type'] == 'purchase') {
+                                await context.showBottomSheet(
+                                  builder: (context) {
+                                    return Padding(
+                                      padding: const EdgeInsets.all(20),
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.stretch,
+                                        children: [
+                                          Text(
+                                            '현재 보유 포인트: ${data.me!.point}P',
+                                            style:
+                                                const TextStyle(fontSize: 16),
                                           ),
-                                      ],
-                                    ),
-                                  );
-                                },
-                              );
-                            }
-                          },
-                          onNavigate: (controller, navigationAction) async {
-                            if (navigationAction.navigationType ==
-                                NavigationType.LINK_ACTIVATED) {
-                              await _browser.open(
-                                url: navigationAction.request.url,
-                                settings: ChromeSafariBrowserSettings(
-                                  barCollapsingEnabled: true,
-                                  dismissButtonStyle: DismissButtonStyle.CLOSE,
-                                  enableUrlBarHiding: true,
-                                ),
-                              );
+                                          Text(
+                                            '필요 포인트: ${data.post.publishedRevision!.price}P',
+                                            style:
+                                                const TextStyle(fontSize: 16),
+                                          ),
+                                          const Gap(16),
+                                          if (data.me!.point <
+                                              data.post.publishedRevision!
+                                                  .price!)
+                                            Button(
+                                              '충전하기',
+                                              onPressed: () async {
+                                                await context.router.popAndPush(
+                                                  const PointPurchaseRoute(),
+                                                );
+                                              },
+                                            )
+                                          else
+                                            Button(
+                                              '구매하기',
+                                              onPressed: () async {
+                                                await reply({
+                                                  'type': 'purchase:proceed',
+                                                });
 
-                              return NavigationActionPolicy.CANCEL;
-                            }
+                                                if (context.mounted) {
+                                                  await context.router
+                                                      .maybePop();
+                                                }
+                                              },
+                                            ),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                );
+                              }
+                            },
+                            onNavigate: (controller, navigationAction) async {
+                              if (navigationAction.navigationType ==
+                                  NavigationType.LINK_ACTIVATED) {
+                                await _browser.open(
+                                  url: navigationAction.request.url,
+                                  settings: ChromeSafariBrowserSettings(
+                                    barCollapsingEnabled: true,
+                                    dismissButtonStyle:
+                                        DismissButtonStyle.CLOSE,
+                                    enableUrlBarHiding: true,
+                                  ),
+                                );
 
-                            return NavigationActionPolicy.ALLOW;
-                          },
+                                return NavigationActionPolicy.CANCEL;
+                              }
+
+                              return NavigationActionPolicy.ALLOW;
+                            },
+                          ),
+                        ),
+                        Container(
+                          key: _staticFooterKey,
+                          child: footer,
                         ),
                         const Gap(100),
                       ],
                     ),
                   ),
                 ),
-                AnimatedPositioned(
-                  duration: const Duration(milliseconds: 150),
-                  curve: Curves.easeInOut,
-                  top: _showBars ? 0 : -44,
-                  left: 0,
-                  right: 0,
-                  child: Container(
-                    height: 44,
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    decoration: const BoxDecoration(
-                      color: BrandColors.gray_0,
-                      border: Border(
-                        bottom: BorderSide(
-                          color: BrandColors.gray_100,
+                if (_showBars)
+                  Positioned(
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    child: Heading(
+                      actions: [
+                        Pressable(
+                          child: const Icon(Tabler.share_3),
+                          onPressed: () async {
+                            await Share.shareUri(
+                              Uri.parse(
+                                'https://glph.to/${data.post.shortlink}',
+                              ),
+                            );
+                          },
                         ),
-                      ),
-                    ),
-                    child: NavigationToolbar(
-                      leading: AutoLeadingButton(
-                        builder: (context, leadingType, action) {
-                          if (leadingType == LeadingType.noLeading) {
-                            return const SizedBox.shrink();
-                          }
-
-                          return Pressable(
-                            child: Icon(
-                              switch (leadingType) {
-                                LeadingType.back => Tabler.arrow_left,
-                                LeadingType.close => Tabler.x,
-                                _ => throw UnimplementedError(),
-                              },
-                            ),
-                            onPressed: () => action?.call(),
-                          );
-                        },
-                      ),
-                      middle: Text(
-                        data.post.publishedRevision!.title ?? '(제목 없음)',
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: BrandColors.gray_800,
+                        const Gap(16),
+                        Pressable(
+                          child: Icon(
+                            data.post.bookmarkGroups.isEmpty
+                                ? Tabler.bookmark
+                                : Tabler.bookmark_filled,
+                          ),
+                          onPressed: () async {
+                            if (data.post.bookmarkGroups.isEmpty) {
+                              final req = GPostScreen_BookmarkPost_MutationReq(
+                                (b) => b..vars.input.postId = data.post.id,
+                              );
+                              await client.req(req);
+                            } else {
+                              final req =
+                                  GPostScreen_UnbookmarkPost_MutationReq(
+                                (b) => b
+                                  ..vars.input.postId = data.post.id
+                                  ..vars.input.bookmarkGroupId =
+                                      data.post.bookmarkGroups.first.id,
+                              );
+                              await client.req(req);
+                            }
+                          },
                         ),
-                      ),
-                      centerMiddle: false,
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Pressable(
-                            child: const Icon(Tabler.share_3),
-                            onPressed: () async {
-                              await Share.shareUri(
-                                Uri.parse(
-                                  'https://glph.to/${data.post.shortlink}',
+                        const Gap(16),
+                        Pressable(
+                          child: const Icon(Tabler.dots_vertical),
+                          onPressed: () async {
+                            await context.showBottomMenu(
+                              title: '포스트',
+                              items: [
+                                BottomMenuItem(
+                                  icon: Tabler.volume_3,
+                                  title: '스페이스 뮤트',
+                                  color: BrandColors.red_600,
+                                  onTap: () {},
                                 ),
-                              );
-                            },
-                          ),
-                          const Gap(16),
-                          Pressable(
-                            child: Icon(
-                              data.post.bookmarkGroups.isEmpty
-                                  ? Tabler.bookmark
-                                  : Tabler.bookmark_filled,
-                            ),
-                            onPressed: () async {
-                              if (data.post.bookmarkGroups.isEmpty) {
-                                final req =
-                                    GPostScreen_BookmarkPost_MutationReq(
-                                  (b) => b..vars.input.postId = data.post.id,
-                                );
-                                await client.req(req);
-                              } else {
-                                final req =
-                                    GPostScreen_UnbookmarkPost_MutationReq(
-                                  (b) => b
-                                    ..vars.input.postId = data.post.id
-                                    ..vars.input.bookmarkGroupId =
-                                        data.post.bookmarkGroups.first.id,
-                                );
-                                await client.req(req);
-                              }
-                            },
-                          ),
-                          const Gap(16),
-                          Pressable(
-                            child: const Icon(Tabler.dots_vertical),
-                            onPressed: () async {
-                              await context.showBottomMenu(
-                                title: '포스트',
-                                items: [
-                                  BottomMenuItem(
-                                    icon: Tabler.volume_3,
-                                    title: '스페이스 뮤트',
-                                    color: BrandColors.red_600,
-                                    onTap: () {},
-                                  ),
-                                ],
-                              );
-                            },
-                          ),
-                        ],
-                      ),
+                              ],
+                            );
+                          },
+                        ),
+                      ],
                     ),
                   ),
-                ),
-                AnimatedPositioned(
-                  duration: const Duration(milliseconds: 150),
-                  curve: Curves.easeInOut,
-                  left: 0,
-                  right: 0,
-                  bottom: _showBars ? 0 : -44 - safeAreaBottomHeight,
-                  child: DecoratedBox(
-                    // height: _bottomBarHeightAnimation.value,
-                    decoration: const BoxDecoration(
-                      color: BrandColors.gray_0,
-                      border: Border(
-                        top: BorderSide(color: BrandColors.gray_100),
-                      ),
-                    ),
-                    child: SafeArea(
-                      child: SizedBox(
-                        height: _bottomBarHeightAnimation.value,
-                        child: Row(
-                          children: [
-                            Pressable(
-                              child: const SizedBox(
-                                width: 60,
-                                child: Center(
-                                  child: Icon(Tabler.list, size: 22),
-                                ),
-                              ),
-                              onPressed: () {},
-                            ),
-                            Pressable(
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 5),
-                                child: Row(
-                                  children: [
-                                    const Icon(Tabler.mood_heart, size: 22),
-                                    const Gap(3),
-                                    Text(
-                                      data.post.reactionCount.toString(),
-                                      style: const TextStyle(
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              onPressed: () {},
-                            ),
-                            const Gap(16),
-                            Pressable(
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 5),
-                                child: Row(
-                                  children: [
-                                    const Icon(Tabler.message_circle, size: 22),
-                                    const Gap(3),
-                                    Text(
-                                      data.post.commentCount.toString(),
-                                      style: const TextStyle(
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              onPressed: () async {
-                                await context.showBottomSheet(
-                                  builder: (context) {
-                                    return Comments(
-                                      permalink: widget.permalink,
-                                    );
-                                  },
-                                );
-                              },
-                            ),
-                            const Spacer(),
-                            Pressable(
-                              child: const SizedBox(
-                                width: 60,
-                                child: Center(
-                                  child: Icon(Tabler.chevron_left, size: 22),
-                                ),
-                              ),
-                              onPressed: () {},
-                            ),
-                            Pressable(
-                              child: const SizedBox(
-                                width: 60,
-                                child: Center(
-                                  child: Icon(Tabler.chevron_right, size: 22),
-                                ),
-                              ),
-                              onPressed: () {},
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
+                if (_showBars && _showFloatingFooter)
+                  Positioned(bottom: 0, left: 0, right: 0, child: footer),
               ],
             ),
           );

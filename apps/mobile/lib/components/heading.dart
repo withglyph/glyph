@@ -47,6 +47,7 @@ class Heading extends StatelessWidget implements PreferredSizeWidget {
           color: backgroundColor,
         ),
         child: SafeArea(
+          bottom: false,
           child: Container(
             constraints: BoxConstraints.tight(_preferredSize),
             padding: const EdgeInsets.symmetric(horizontal: 20),
