@@ -10,8 +10,8 @@ class DeactivateScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: Heading(
-        title: const Text(
+      appBar: const Heading(
+        title: Text(
           '회원 탈퇴',
           style: TextStyle(
             fontSize: 17,

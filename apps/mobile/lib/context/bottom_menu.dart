@@ -193,7 +193,7 @@ Future<T> _showFloatingBottomSheet<T>({
 
       return SafeArea(
         child: Container(
-          margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
+          margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
           padding: const EdgeInsets.fromLTRB(24, 8, 24, 20),
           decoration: BoxDecoration(
             color: BrandColors.gray_0,

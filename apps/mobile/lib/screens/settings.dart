@@ -168,7 +168,7 @@ class SettingsScreen extends ConsumerWidget {
                                 ),
                               ),
                             ),
-                            trailing: SizedBox.shrink(),
+                            trailing: const SizedBox.shrink(),
                             onPressed: () {},
                           );
                         },
@@ -195,14 +195,14 @@ class SettingsScreen extends ConsumerWidget {
                                 .clearAccessToken();
                           });
                         },
-                        trailing: SizedBox.shrink(),
+                        trailing: const SizedBox.shrink(),
                       ),
                       _Item(
                         title: '회원탈퇴',
                         onPressed: () async {
                           if (context.mounted) {
                             await context.router.push(
-                              DeactivateRoute(),
+                              const DeactivateRoute(),
                             );
                           }
                         },

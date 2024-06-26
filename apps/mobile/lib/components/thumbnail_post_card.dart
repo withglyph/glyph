@@ -227,7 +227,7 @@ class ThumbnailPostCard extends ConsumerWidget {
                     const Gap(3),
                     Text(
                       '읽는 시간 ${(((post.publishedRevision!.freeContent?.characters ?? 0) + (post.publishedRevision!.paidContent?.characters ?? 0)) / 800).ceil()}분',
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w500,
                         color: BrandColors.gray_400,

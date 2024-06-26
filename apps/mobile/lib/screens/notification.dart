@@ -54,8 +54,8 @@ class NotificationScreen extends ConsumerWidget {
           return Column(
             children: [
               Container(
-                constraints: BoxConstraints.tight(Size.fromHeight(46)),
-                decoration: BoxDecoration(
+                constraints: BoxConstraints.tight(const Size.fromHeight(46)),
+                decoration: const BoxDecoration(
                   border: Border(
                     bottom: BorderSide(
                       color: BrandColors.gray_100,
@@ -66,10 +66,10 @@ class NotificationScreen extends ConsumerWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: Row(
                         children: [
-                          Text(
+                          const Text(
                             '새소식',
                             style: TextStyle(
                               fontSize: 16,
@@ -79,7 +79,7 @@ class NotificationScreen extends ConsumerWidget {
                           const Gap(4),
                           Text(
                             '${unreadNotifications.length}',
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w700,
                               color: BrandColors.brand_400,
@@ -90,7 +90,7 @@ class NotificationScreen extends ConsumerWidget {
                     ),
                     Pressable(
                       child: Padding(
-                        padding: EdgeInsets.symmetric(
+                        padding: const EdgeInsets.symmetric(
                           horizontal: 20,
                           vertical: 10,
                         ),
@@ -99,7 +99,7 @@ class NotificationScreen extends ConsumerWidget {
                           style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w700,
-                            color: unreadNotifications.length > 0
+                            color: unreadNotifications.isNotEmpty
                                 ? BrandColors.brand_600
                                 : BrandColors.gray_300,
                           ),
@@ -153,13 +153,13 @@ class NotificationScreen extends ConsumerWidget {
                                       decoration: BoxDecoration(
                                         color: notification.when(
                                           commentNotification: (_) =>
-                                              Color(0xFF3196DE),
+                                              const Color(0xFF3196DE),
                                           subscribeNotification: (_) =>
-                                              Color(0xFF3EBBAC),
+                                              const Color(0xFF3EBBAC),
                                           purchaseNotification: (_) =>
                                               BrandColors.brand_400,
                                           emojiReactionNotification: (_) =>
-                                              Color(0xFFFF7FA5),
+                                              const Color(0xFFFF7FA5),
                                           orElse: () => BrandColors.gray_50,
                                         ),
                                         borderRadius: BorderRadius.circular(18),
@@ -282,7 +282,7 @@ class NotificationScreen extends ConsumerWidget {
                   onRefresh: () async {
                     await client.req(GNotificationScreen_QueryReq());
                   },
-                  emptyText: EmptyState(
+                  emptyText: const EmptyState(
                     icon: Tabler.bell_x,
                     title: '아직 알림이 없어요',
                     description: '스페이스를 구독하거나 댓글을 남겨보세요',

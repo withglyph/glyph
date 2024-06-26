@@ -89,18 +89,18 @@ class _PointPurchaseScreenState extends ConsumerState<PointPurchaseScreen> {
       builder: (context, client, data) {
         return SingleChildScrollView(
           physics:
-              AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+              const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: EdgeInsets.all(20),
+                padding: const EdgeInsets.all(20),
                 child: Column(
                   children: [
                     Row(
                       children: [
-                        Text(
+                        const Text(
                           '내 포인트',
                           style: TextStyle(
                             fontSize: 15,
@@ -119,11 +119,11 @@ class _PointPurchaseScreenState extends ConsumerState<PointPurchaseScreen> {
                       ],
                     ),
                     const Gap(10),
-                    HorizontalDivider(color: BrandColors.gray_50),
+                    const HorizontalDivider(color: BrandColors.gray_50),
                     const Gap(10),
                     Row(
                       children: [
-                        Container(
+                        const SizedBox(
                           width: 78,
                           child: Text(
                             '충전한 포인트',
@@ -147,7 +147,7 @@ class _PointPurchaseScreenState extends ConsumerState<PointPurchaseScreen> {
                     const Gap(4),
                     Row(
                       children: [
-                        Container(
+                        const SizedBox(
                           width: 78,
                           child: Text(
                             '무료 포인트',
@@ -187,7 +187,7 @@ class _PointPurchaseScreenState extends ConsumerState<PointPurchaseScreen> {
                         Expanded(
                           child: Text(
                             product.title,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.w700,
                             ),
@@ -257,7 +257,7 @@ class _PointPurchaseScreenState extends ConsumerState<PointPurchaseScreen> {
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(20),
-                color: Color(0xFFFBFBFB),
+                color: const Color(0xFFFBFBFB),
                 child: const Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

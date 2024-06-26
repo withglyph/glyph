@@ -23,7 +23,7 @@ class EmptyState extends StatelessWidget {
           const Gap(16),
           Text(
             title,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w700,
             ),
@@ -31,7 +31,7 @@ class EmptyState extends StatelessWidget {
           const Gap(4),
           Text(
             description,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 14,
               color: BrandColors.gray_500,
             ),
