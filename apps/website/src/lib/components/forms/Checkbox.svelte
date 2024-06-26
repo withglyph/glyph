@@ -46,6 +46,7 @@
         size: '13px',
         borderWidth: '1px',
         borderColor: 'gray.500',
+        borderRadius: '0',
         cursor: 'pointer',
         appearance: 'none',
         transition: 'common',
