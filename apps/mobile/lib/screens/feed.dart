@@ -66,6 +66,19 @@ class _FeedScreenState extends State<FeedScreen> {
           },
         ),
         actions: [
+          if (_selectedFeedType == _FeedType.following)
+            Pressable(
+              child: const Icon(Tabler.settings),
+              onPressed: () async {
+                await context.router.push(
+                  WebViewRoute(
+                    title: '구독 설정',
+                    path: '/me/subscribes',
+                  ),
+                );
+              },
+            ),
+          const Gap(20),
           Pressable(
             child: const Icon(Tabler.bell),
             onPressed: () async {
