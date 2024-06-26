@@ -33,163 +33,176 @@ class SettingsScreen extends ConsumerWidget {
         builder: (context, client, data) {
           return SingleChildScrollView(
             physics: const AlwaysScrollableScrollPhysics(),
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // const _Section('계정'),
-                // _Item(title: '계정 / 정보 관리', onPressed: () {}),
-                // const Gap(40),
-                const _Section('문의 및 안내'),
-                _Item(
-                  title: '고객센터',
-                  onPressed: () async {
-                    await launchUrl(
-                      Uri.parse('https://penxle.channel.io'),
-                      mode: LaunchMode.externalApplication,
-                    );
-                  },
-                ),
-                const Gap(40),
-                const _Section('이벤트 알림 설정'),
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                  child: Row(
+                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            '이벤트 및 글리프 소식 받아보기',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w700,
+                      const _Section('계정 / 정보관리'),
+                      _Item(
+                        title: '이메일 변경',
+                        onPressed: () {},
+                      ),
+                      _Item(
+                        title: '본인인증',
+                        onPressed: () {},
+                      ),
+                    ],
+                  ),
+                ),
+                Container(height: 6, color: BrandColors.gray_50),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const _Section('이벤트 알림 설정'),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 16, 0, 18),
+                        child: Row(
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  '이벤트 및 글리프 소식 받아보기',
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                if (data.me!.marketingConsent != null) ...[
+                                  const Gap(4),
+                                  Text(
+                                    Jiffy.parse(
+                                      data.me!.marketingConsent!.createdAt
+                                          .value,
+                                    ).format(pattern: 'yyyy년 MM월 dd일 수신 동의'),
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      color: BrandColors.gray_500,
+                                    ),
+                                  ),
+                                ],
+                              ],
                             ),
-                          ),
-                          if (data.me!.marketingConsent != null) ...[
-                            const Gap(4),
-                            Text(
-                              Jiffy.parse(
-                                data.me!.marketingConsent!.createdAt.value,
-                              ).format(pattern: 'yyyy년 MM월 dd일 수신 동의'),
-                              style: const TextStyle(
-                                fontSize: 12,
-                                color: BrandColors.gray_500,
-                              ),
+                            const Spacer(),
+                            ToggleSwitch(
+                              value: data.me!.marketingConsent != null,
+                              onChanged: (value) async {
+                                final req =
+                                    GSettingsScreen_UpdateUserMarketingConsent_MutationReq(
+                                  (b) => b..vars.input.consent = value,
+                                );
+                                await client.req(req);
+                              },
                             ),
                           ],
-                        ],
+                        ),
                       ),
-                      const Spacer(),
-                      ToggleSwitch(
-                        value: data.me!.marketingConsent != null,
-                        onChanged: (value) async {
-                          final req =
-                              GSettingsScreen_UpdateUserMarketingConsent_MutationReq(
-                            (b) => b..vars.input.consent = value,
+                    ],
+                  ),
+                ),
+                Container(height: 6, color: BrandColors.gray_50),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const _Section('서비스 정보'),
+                      _Item(
+                        title: '이용약관',
+                        onPressed: () async {
+                          await launchUrl(
+                            Uri.parse('https://help.withglyph.com/legal/terms'),
+                            mode: LaunchMode.externalApplication,
                           );
-                          await client.req(req);
+                        },
+                      ),
+                      _Item(
+                        title: '개인정보처리방침',
+                        onPressed: () async {
+                          await launchUrl(
+                            Uri.parse(
+                                'https://help.withglyph.com/legal/privacy'),
+                            mode: LaunchMode.externalApplication,
+                          );
+                        },
+                      ),
+                      _Item(
+                        title: '사업자 정보',
+                        onPressed: () async {
+                          await launchUrl(
+                            Uri.parse(
+                              'https://www.ftc.go.kr/bizCommPop.do?wrkr_no=6108803078',
+                            ),
+                            mode: LaunchMode.externalApplication,
+                          );
+                        },
+                      ),
+                      _Item(
+                        title: '오픈소스 라이센스',
+                        onPressed: () async {
+                          await context.router.push(const OssLicensesRoute());
+                        },
+                      ),
+                      FutureBuilder(
+                        // ignore: discarded_futures
+                        future: PackageInfo.fromPlatform(),
+                        builder: (context, snapshot) {
+                          return _Item(
+                            title: '버전 정보',
+                            leading: Padding(
+                              padding: const EdgeInsets.only(left: 6),
+                              child: Text(
+                                snapshot.hasData
+                                    ? '${snapshot.requireData.version} (${kReleaseMode ? snapshot.requireData.buildNumber : 'dev'})'
+                                    : '가져오는 중...',
+                                style: const TextStyle(
+                                  fontSize: 13,
+                                  color: BrandColors.gray_500,
+                                ),
+                              ),
+                            ),
+                            trailing: SizedBox.shrink(),
+                            onPressed: () {},
+                          );
                         },
                       ),
                     ],
                   ),
                 ),
-                const Gap(40),
-                const _Section('서비스 정보'),
-                _Item(
-                  title: '이용약관',
-                  onPressed: () async {
-                    await launchUrl(
-                      Uri.parse('https://help.withglyph.com/legal/terms'),
-                      mode: LaunchMode.externalApplication,
-                    );
-                  },
-                ),
-                _Item(
-                  title: '개인정보처리방침',
-                  onPressed: () async {
-                    await launchUrl(
-                      Uri.parse('https://help.withglyph.com/legal/privacy'),
-                      mode: LaunchMode.externalApplication,
-                    );
-                  },
-                ),
-                _Item(
-                  title: '사업자 정보',
-                  onPressed: () async {
-                    await launchUrl(
-                      Uri.parse(
-                        'https://www.ftc.go.kr/bizCommPop.do?wrkr_no=6108803078',
+                Container(height: 6, color: BrandColors.gray_50),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const _Section('계정 / 정보관리'),
+                      _Item(
+                        title: '로그아웃',
+                        onPressed: () async {
+                          await context.loader.run(() async {
+                            await ref
+                                .read(pushNotificationProvider.notifier)
+                                .clearToken();
+                            await ref
+                                .read(authProvider.notifier)
+                                .clearAccessToken();
+                          });
+                        },
+                        trailing: SizedBox.shrink(),
                       ),
-                      mode: LaunchMode.externalApplication,
-                    );
-                  },
-                ),
-                FutureBuilder(
-                  // ignore: discarded_futures
-                  future: PackageInfo.fromPlatform(),
-                  builder: (context, snapshot) {
-                    return _Item(
-                      title: '버전 정보',
-                      leading: Padding(
-                        padding: const EdgeInsets.only(left: 6),
-                        child: Text(
-                          snapshot.hasData
-                              ? '${snapshot.requireData.version} (${kReleaseMode ? snapshot.requireData.buildNumber : 'dev'})'
-                              : '가져오는 중...',
-                          style: const TextStyle(
-                            fontSize: 13,
-                            color: BrandColors.gray_500,
-                          ),
-                        ),
+                      _Item(
+                        title: '회원탈퇴',
+                        onPressed: () {},
                       ),
-                      trailing: const Text(
-                        '최신 버전입니다',
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: BrandColors.gray_500,
-                        ),
-                      ),
-                      onPressed: () {},
-                    );
-                  },
-                ),
-                _Item(
-                  title: '오픈소스 라이센스',
-                  onPressed: () async {
-                    await context.router.push(const OssLicensesRoute());
-                  },
-                ),
-                const Gap(60),
-                Pressable(
-                  child: Container(
-                    height: 50,
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: BrandColors.gray_150,
-                      ),
-                      borderRadius: BorderRadius.circular(2),
-                    ),
-                    child: const Center(
-                      child: Text(
-                        '로그아웃',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
+                    ],
                   ),
-                  onPressed: () async {
-                    await context.loader.run(() async {
-                      await ref
-                          .read(pushNotificationProvider.notifier)
-                          .clearToken();
-                      await ref.read(authProvider.notifier).clearAccessToken();
-                    });
-                  },
                 ),
-                const Gap(60),
               ],
             ),
           );
@@ -235,21 +248,14 @@ class _Item extends StatelessWidget {
     return Pressable(
       onPressed: onPressed,
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 16),
-        decoration: const BoxDecoration(
-          border: Border(
-            bottom: BorderSide(
-              color: BrandColors.gray_50,
-            ),
-          ),
-        ),
+        padding: const EdgeInsets.symmetric(vertical: 18),
         child: Row(
           children: [
             Text(
               title,
               style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w700,
+                fontSize: 15,
+                fontWeight: FontWeight.w600,
               ),
             ),
             if (leading != null) leading!,
@@ -257,7 +263,7 @@ class _Item extends StatelessWidget {
             trailing ??
                 const Icon(
                   Tabler.chevron_right,
-                  size: 20,
+                  size: 16,
                   color: BrandColors.gray_400,
                 ),
           ],

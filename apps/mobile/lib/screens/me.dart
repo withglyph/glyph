@@ -242,7 +242,7 @@ class _MenuItem extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 20),
         child: Row(
           children: [
-            Icon(icon, size: 16),
+            Icon(icon, size: 20),
             const Gap(8),
             Text(
               title,

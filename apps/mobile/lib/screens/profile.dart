@@ -47,7 +47,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           operation: GProfileScreen_QueryReq(),
           builder: (context, client, data) {
             return Padding(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
               child: Column(
                 children: [
                   Center(
