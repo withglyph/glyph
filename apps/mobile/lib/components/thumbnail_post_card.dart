@@ -149,47 +149,26 @@ class ThumbnailPostCard extends ConsumerWidget {
                     fontWeight: FontWeight.w700,
                   ),
                 ),
-                if (post.publishedRevision!.subtitle != null ||
-                    post.publishedRevision!.previewText.isNotEmpty) ...[
-                  const Gap(3),
-                  Row(
-                    children: [
-                      if (post.publishedRevision!.subtitle != null)
-                        Flexible(
-                          child: Text(
-                            post.publishedRevision!.subtitle!,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w500,
-                              color: BrandColors.gray_500,
-                            ),
-                          ),
-                        ),
-                      if (post.publishedRevision!.subtitle != null &&
-                          post.publishedRevision!.previewText.isNotEmpty) ...[
-                        const Gap(4),
-                        Container(
-                          width: 1,
-                          height: 12,
-                          color: BrandColors.gray_100,
-                        ),
-                        const Gap(4),
-                      ],
-                      if (post.publishedRevision!.previewText.isNotEmpty)
-                        Flexible(
-                          child: Text(
-                            post.publishedRevision!.previewText,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              fontSize: 13,
-                              color: BrandColors.gray_500,
-                            ),
-                          ),
-                        ),
-                    ],
+                const Gap(4),
+                if (post.publishedRevision!.subtitle != null)
+                  Text(
+                    post.publishedRevision!.subtitle!,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
+                      color: BrandColors.gray_800,
+                    ),
                   ),
-                ],
+                Text(
+                  post.publishedRevision!.previewText,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: post.publishedRevision?.subtitle == null ? 2 : 1,
+                  style: const TextStyle(
+                    fontSize: 13,
+                    color: BrandColors.gray_500,
+                  ),
+                ),
                 if (post.thumbnail != null) ...[
                   const Gap(12),
                   LayoutBuilder(
@@ -221,7 +200,7 @@ class ThumbnailPostCard extends ConsumerWidget {
                   children: [
                     const Icon(
                       Tabler.clock,
-                      size: 18,
+                      size: 14,
                       color: BrandColors.gray_400,
                     ),
                     const Gap(3),
