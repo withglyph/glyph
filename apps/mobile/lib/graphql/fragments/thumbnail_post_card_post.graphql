@@ -12,6 +12,16 @@ fragment ThumbnailPostCard_post on Post {
     title
     subtitle
     previewText
+    
+    freeContent {
+      id
+      characters
+    }
+
+    paidContent {
+      id
+      characters
+    }
   }
 
   thumbnail {
