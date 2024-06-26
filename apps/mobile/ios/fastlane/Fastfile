@@ -38,10 +38,24 @@ platform :ios do
       skip_package_dependencies_resolution: true,
     )
 
-    firebase_app_distribution(
+    dist = firebase_app_distribution(
       service_credentials_json_data: ENV["GOOGLE_SERVICE_ACCOUNT"],
       app: "1:58678861052:ios:65d590f2311a51d6bd8b79",
-      groups: "ios@team",
+      groups: "ios@team, ios@beta",
+    )
+
+    slack(
+      slack_url: ENV["SLACK_WEBHOOK_URL"],
+      pretext: "새 빌드가 있습니다 :rocket:",
+      default_payloads: [],
+      use_webhook_configured_username_and_icon: true,
+      attachment_properties: {
+        fields: [
+          { title: "플랫폼", value: "iOS", short: true },
+          { title: "빌드", value: "#{dist[:displayVersion]} (#{dist[:buildVersion]})", short: true },
+          { title: "릴리즈 페이지", value: dist[:testingUri] },
+        ],
+      },
     )
   end
 
