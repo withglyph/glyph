@@ -58,12 +58,14 @@ class PullToRefresh extends StatelessWidget {
     required Future<void> Function() onRefresh,
     required int itemCount,
     required NullableIndexedWidgetBuilder itemBuilder,
-    required String emptyText,
+    required IndexedWidgetBuilder separatorBuilder,
+    required Widget emptyText,
   }) {
     return PullToRefreshListView(
       onRefresh: onRefresh,
       itemCount: itemCount,
       itemBuilder: itemBuilder,
+      separatorBuilder: separatorBuilder,
       emptyText: emptyText,
     );
   }
@@ -74,14 +76,16 @@ class PullToRefreshListView extends StatelessWidget {
     required this.onRefresh,
     required this.itemCount,
     required this.itemBuilder,
+    required this.separatorBuilder,
     required this.emptyText,
     super.key,
   });
 
   final Future<void> Function() onRefresh;
   final NullableIndexedWidgetBuilder itemBuilder;
+  final IndexedWidgetBuilder separatorBuilder;
   final int itemCount;
-  final String emptyText;
+  final Widget emptyText;
 
   @override
   Widget build(BuildContext context) {
@@ -96,21 +100,14 @@ class PullToRefreshListView extends StatelessWidget {
                     constraints: BoxConstraints(
                       minHeight: constraints.maxHeight,
                     ),
-                    child: Center(
-                      child: Text(
-                        emptyText,
-                        style: const TextStyle(
-                          fontSize: 15,
-                          color: BrandColors.gray_500,
-                        ),
-                      ),
-                    ),
+                    child: emptyText,
                   ),
                 )
-              : ListView.builder(
+              : ListView.separated(
                   physics: const AlwaysScrollableScrollPhysics(),
                   itemCount: itemCount,
                   itemBuilder: itemBuilder,
+                  separatorBuilder: separatorBuilder,
                 ),
         );
       },

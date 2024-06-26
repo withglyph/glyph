@@ -52,7 +52,6 @@
     align: 'center',
     justify: 'space-between',
     gap: '16px',
-    wrap: { base: 'wrap', sm: 'nowrap' },
   })}
 >
   <div>

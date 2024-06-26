@@ -2,6 +2,8 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
+import 'package:glyph/components/empty_state.dart';
+import 'package:glyph/components/horizontal_divider.dart';
 import 'package:glyph/components/img.dart';
 import 'package:glyph/components/pressable.dart';
 import 'package:glyph/components/pull_to_refresh.dart';
@@ -12,10 +14,10 @@ import 'package:glyph/graphql/__generated__/notification_screen_mark_all_notific
 import 'package:glyph/graphql/__generated__/notification_screen_mark_notification_as_read_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/notification_screen_query.data.gql.dart';
 import 'package:glyph/graphql/__generated__/notification_screen_query.req.gql.dart';
+import 'package:glyph/graphql/__generated__/schema.schema.gql.dart';
 import 'package:glyph/icons/tabler.dart';
 import 'package:glyph/providers/ferry.dart';
 import 'package:glyph/routers/app.gr.dart';
-import 'package:glyph/shells/default.dart';
 import 'package:glyph/themes/colors.dart';
 import 'package:jiffy/jiffy.dart';
 
@@ -25,35 +27,141 @@ class NotificationScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return DefaultShell(
-      title: '알림',
-      actions: [
-        Pressable(
-          child: const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Text(
-              '모두 읽기',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+    return GraphQLOperation(
+      operation: GNotificationScreen_QueryReq(),
+      builder: (context, client, data) {
+        final notifications = data.me!.notifications;
+        final unreadNotifications = notifications
+            .where((n) => n.state == GUserNotificationState.UNREAD);
+
+        return Scaffold(
+          appBar: PreferredSize(
+            preferredSize: Size.fromHeight(100),
+            child: SafeArea(
+              child: Column(
+                children: [
+                  Container(
+                    constraints: BoxConstraints.tight(Size.fromHeight(54)),
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: NavigationToolbar(
+                      leading: AutoLeadingButton(
+                        showIfChildCanPop: false,
+                        builder: (context, leadingType, action) {
+                          if (leadingType == LeadingType.noLeading) {
+                            return const SizedBox.shrink();
+                          }
+
+                          return Pressable(
+                            child: Icon(
+                              switch (leadingType) {
+                                LeadingType.back => Tabler.arrow_left,
+                                LeadingType.close => Tabler.x,
+                                _ => throw UnimplementedError(),
+                              },
+                            ),
+                            onPressed: () => action?.call(),
+                          );
+                        },
+                      ),
+                      middle: Text(
+                        '알림',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Pressable(
+                            child: const Icon(
+                              Tabler.settings,
+                              size: 24,
+                            ),
+                            onPressed: () async {
+                              await context.router.push(
+                                WebViewRoute(
+                                  title: '알림 설정',
+                                  path: '/me/settings/notifications',
+                                ),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Container(
+                    constraints: BoxConstraints.tight(Size.fromHeight(46)),
+                    decoration: BoxDecoration(
+                      border: Border(
+                        bottom: BorderSide(
+                          color: BrandColors.gray_100,
+                        ),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 20),
+                          child: Row(
+                            children: [
+                              Text(
+                                '새소식',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              const Gap(4),
+                              Text(
+                                '${unreadNotifications.length}',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w700,
+                                  color: BrandColors.brand_400,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Pressable(
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 20,
+                              vertical: 10,
+                            ),
+                            child: Text(
+                              '모두 읽기',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w700,
+                                color: unreadNotifications.length > 0
+                                    ? BrandColors.brand_600
+                                    : BrandColors.gray_300,
+                              ),
+                            ),
+                          ),
+                          onPressed: () async {
+                            final client = ref.read(ferryProvider);
+                            final req =
+                                GNotificationScreen_MarkAllNotificationsAsRead_MutationReq();
+                            await client.req(req);
+
+                            if (context.mounted) {
+                              context.toast.show('모든 알림을 읽었어요');
+                            }
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
-          onPressed: () async {
-            final client = ref.read(ferryProvider);
-            final req =
-                GNotificationScreen_MarkAllNotificationsAsRead_MutationReq();
-            await client.req(req);
-
-            if (context.mounted) {
-              context.toast.show('모든 알림을 읽었어요');
-            }
-          },
-        ),
-      ],
-      child: GraphQLOperation(
-        operation: GNotificationScreen_QueryReq(),
-        builder: (context, client, data) {
-          final notifications = data.me!.notifications;
-
-          return PullToRefresh.listView(
+          body: PullToRefresh.listView(
             itemCount: notifications.length,
             itemBuilder: (context, index) {
               final notification = notifications.elementAtOrNull(index);
@@ -62,74 +170,123 @@ class NotificationScreen extends ConsumerWidget {
               }
 
               return Pressable(
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                  child: Row(
-                    children: [
-                      Img(
-                        notification.actor!.avatar,
-                        width: 48,
-                        height: 48,
-                        borderRadius: 24,
-                      ),
-                      const Gap(16),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: notification.state == GUserNotificationState.UNREAD
+                        ? BrandColors.gray_50
+                        : BrandColors.gray_0,
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 18,
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Stack(
                           children: [
-                            Row(
-                              children: [
-                                const Icon(
-                                  Tabler.home,
-                                  size: 14,
-                                  color: BrandColors.gray_500,
+                            SizedBox(
+                              height: 36,
+                              width: 36,
+                              child: DecoratedBox(
+                                decoration: BoxDecoration(
+                                  color: notification.when(
+                                    commentNotification: (_) =>
+                                        Color(0xFF3196DE),
+                                    subscribeNotification: (_) =>
+                                        Color(0xFF3EBBAC),
+                                    purchaseNotification: (_) =>
+                                        BrandColors.brand_400,
+                                    emojiReactionNotification: (_) =>
+                                        Color(0xFFFF7FA5),
+                                    orElse: () => BrandColors.gray_50,
+                                  ),
+                                  borderRadius: BorderRadius.circular(18),
                                 ),
-                                const Gap(4),
-                                Text(
+                                child: Icon(
                                   notification.when(
-                                    commentNotification: (_) => '댓글',
-                                    subscribeNotification: (_) => '스페이스 구독',
-                                    purchaseNotification: (_) => '구매',
-                                    emojiReactionNotification: (_) => '이모지',
-                                    orElse: () => '알 수 없음',
+                                    commentNotification: (_) =>
+                                        Tabler.message_circle_filled,
+                                    subscribeNotification: (_) =>
+                                        Tabler.rosette_discount_check_filled,
+                                    purchaseNotification: (_) =>
+                                        Tabler.coin_filled,
+                                    emojiReactionNotification: (_) =>
+                                        Tabler.mood_smile_filled,
+                                    orElse: () => Tabler.bell_filled,
                                   ),
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                    color: BrandColors.gray_500,
-                                  ),
+                                  size: 20,
+                                  color: BrandColors.gray_0,
                                 ),
-                              ],
-                            ),
-                            const Gap(4),
-                            Text(
-                              notification.when(
-                                commentNotification: (notification) =>
-                                    '${notification.actor!.name}님이 ${_truncate(notification.post.publishedRevision!.title ?? '(제목 없음)')} 포스트에 댓글을 남겼어요',
-                                subscribeNotification: (notification) =>
-                                    '${notification.actor!.name}님이 ${_truncate(notification.space.name)} 스페이스를 구독했어요',
-                                purchaseNotification: (notification) =>
-                                    '${notification.actor!.name}님이 ${_truncate(notification.post.publishedRevision!.title ?? '(제목 없음)')} 포스트를 구매했어요',
-                                emojiReactionNotification: (notification) =>
-                                    '${notification.actor!.name}님이 ${_truncate(notification.post.publishedRevision!.title ?? '(제목 없음)')} 포스트에 ${notification.emoji}를 남겼어요',
-                                orElse: () => '(알 수 없음)',
-                              ),
-                              style: const TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w500,
                               ),
                             ),
-                            const Gap(4),
-                            Text(
-                              Jiffy.parse(notification.createdAt.value)
-                                  .fromNow(),
-                              style:
-                                  const TextStyle(color: BrandColors.gray_400),
+                            Positioned(
+                              bottom: 0,
+                              right: 0,
+                              child: Transform.translate(
+                                offset: const Offset(4, 4),
+                                child: Img(
+                                  notification.actor!.avatar,
+                                  width: 18,
+                                  height: 18,
+                                ),
+                              ),
                             ),
                           ],
                         ),
-                      ),
-                    ],
+                        const Gap(16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                notification.when(
+                                  commentNotification: (_) => '댓글',
+                                  subscribeNotification: (_) => '구독',
+                                  purchaseNotification: (_) => '구매',
+                                  emojiReactionNotification: (_) => '이모지',
+                                  orElse: () => '알 수 없음',
+                                ),
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
+                                  color: BrandColors.gray_500,
+                                ),
+                              ),
+                              const Gap(2),
+                              Text(
+                                notification.when(
+                                  commentNotification: (notification) =>
+                                      '${notification.actor!.name}님이 ${_truncate(notification.post.publishedRevision!.title ?? '(제목 없음)')}에 댓글을 남겼어요',
+                                  subscribeNotification: (notification) =>
+                                      '${notification.actor!.name}님이 ${_truncate(notification.space.name)} 스페이스를 구독했어요',
+                                  purchaseNotification: (notification) =>
+                                      '${notification.actor!.name}님이 ${_truncate(notification.post.publishedRevision!.title ?? '(제목 없음)')} 포스트를 구매했어요',
+                                  emojiReactionNotification: (notification) =>
+                                      '${notification.actor!.name}님이 ${_truncate(notification.post.publishedRevision!.title ?? '(제목 없음)')}에 ${notification.emoji}를 달았어요',
+                                  orElse: () => '(알 수 없음)',
+                                ),
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                  color: BrandColors.gray_600,
+                                ),
+                              ),
+                              const Gap(4),
+                              Text(
+                                Jiffy.parse(notification.createdAt.value)
+                                    .fromNow(),
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  color: BrandColors.gray_400,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 onPressed: () async {
@@ -156,13 +313,23 @@ class NotificationScreen extends ConsumerWidget {
                 },
               );
             },
+            separatorBuilder: (context, index) {
+              return const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: HorizontalDivider(color: BrandColors.gray_50),
+              );
+            },
             onRefresh: () async {
               await client.req(GNotificationScreen_QueryReq());
             },
-            emptyText: '아직 받은 알림이 없어요',
-          );
-        },
-      ),
+            emptyText: EmptyState(
+              icon: Tabler.bell_x,
+              title: '아직 알림이 없어요',
+              description: '스페이스를 구독하거나 댓글을 남겨보세요',
+            ),
+          ),
+        );
+      },
     );
   }
 
