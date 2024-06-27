@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
-import 'package:glyph/components/Img.dart';
+import 'package:glyph/components/img.dart';
 import 'package:glyph/components/pressable.dart';
 import 'package:glyph/components/tag.dart';
 import 'package:glyph/extensions/iterable.dart';
@@ -17,11 +17,13 @@ class PostCard extends ConsumerWidget {
   const PostCard(
     this.post, {
     required this.padding,
+    this.onPressed,
     super.key,
   });
 
   final GPostCard_post post;
   final EdgeInsetsGeometry padding;
+  final Function()? onPressed;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -151,6 +153,11 @@ class PostCard extends ConsumerWidget {
         ),
       ),
       onPressed: () async {
+        if (onPressed != null) {
+          onPressed!();
+          return;
+        }
+
         await context.router.push(PostRoute(permalink: post.permalink));
       },
     );
