@@ -88,8 +88,9 @@ class _PointPurchaseScreenState extends ConsumerState<PointPurchaseScreen> {
       operation: GPointPurchaseScreen_QueryReq(),
       builder: (context, client, data) {
         return SingleChildScrollView(
-          physics:
-              const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+          physics: const AlwaysScrollableScrollPhysics(
+            parent: BouncingScrollPhysics(),
+          ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -103,15 +104,15 @@ class _PointPurchaseScreenState extends ConsumerState<PointPurchaseScreen> {
                         const Text(
                           '내 포인트',
                           style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w700,
+                            fontSize: 17,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                         const Gap(10),
                         Text(
                           '${data.me!.point.comma}P',
                           style: const TextStyle(
-                            fontSize: 15,
+                            fontSize: 17,
                             fontWeight: FontWeight.w900,
                             color: BrandColors.brand_400,
                           ),
@@ -123,9 +124,11 @@ class _PointPurchaseScreenState extends ConsumerState<PointPurchaseScreen> {
                     const Gap(10),
                     Row(
                       children: [
-                        const SizedBox(
-                          width: 78,
-                          child: Text(
+                        ConstrainedBox(
+                          constraints: const BoxConstraints(
+                            minWidth: 78,
+                          ),
+                          child: const Text(
                             '충전한 포인트',
                             style: TextStyle(
                               fontSize: 13,
@@ -147,9 +150,11 @@ class _PointPurchaseScreenState extends ConsumerState<PointPurchaseScreen> {
                     const Gap(4),
                     Row(
                       children: [
-                        const SizedBox(
-                          width: 78,
-                          child: Text(
+                        ConstrainedBox(
+                          constraints: const BoxConstraints(
+                            minWidth: 78,
+                          ),
+                          child: const Text(
                             '무료 포인트',
                             style: TextStyle(
                               fontSize: 13,
@@ -197,7 +202,7 @@ class _PointPurchaseScreenState extends ConsumerState<PointPurchaseScreen> {
                           width: 78,
                           padding: const EdgeInsets.symmetric(vertical: 6),
                           decoration: BoxDecoration(
-                            color: BrandColors.brand_400,
+                            color: BrandColors.gray_900,
                             borderRadius: BorderRadius.circular(2),
                           ),
                           child: Center(
