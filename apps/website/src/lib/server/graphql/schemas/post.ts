@@ -1848,11 +1848,14 @@ builder.mutationFields((t) => ({
           .set({ deviceId: context.deviceId, viewedAt: dayjs() })
           .where(eq(PostViews.id, views[0].id));
       } else {
-        await database.insert(PostViews).values({
-          postId: input.postId,
-          userId: context.session?.userId,
-          deviceId: context.deviceId,
-        });
+        await database
+          .insert(PostViews)
+          .values({
+            postId: input.postId,
+            userId: context.session?.userId,
+            deviceId: context.deviceId,
+          })
+          .onConflictDoNothing();
 
         await redis.incr(`Post:${input.postId}:viewCount`);
       }
