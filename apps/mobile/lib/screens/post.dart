@@ -206,7 +206,7 @@ class _PostScreenState extends ConsumerState<PostScreen>
                       final safeAreaBottomHeight =
                           MediaQuery.of(context).padding.bottom;
                       final floatingFooterPosition =
-                          viewportHeight - 44 - safeAreaBottomHeight;
+                          viewportHeight - 54 - safeAreaBottomHeight;
 
                       if (staticFooterPosition <= floatingFooterPosition) {
                         if (_showFloatingFooter) {
