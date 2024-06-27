@@ -633,7 +633,7 @@ class _PostScreenState extends ConsumerState<PostScreen>
                                               ),
                                             ),
                                             onPressed: () async {
-                                              await context.router.replace(
+                                              await context.router.push(
                                                 PostRoute(
                                                   permalink: data.post
                                                       .previousPost!.permalink,
@@ -712,7 +712,7 @@ class _PostScreenState extends ConsumerState<PostScreen>
                                               ),
                                             ),
                                             onPressed: () async {
-                                              await context.router.replace(
+                                              await context.router.push(
                                                 PostRoute(
                                                   permalink: data
                                                       .post.nextPost!.permalink,
@@ -865,14 +865,8 @@ class _PostScreenState extends ConsumerState<PostScreen>
                               ...data.post.recommendedPosts.map((item) {
                                 return PostCard(
                                   item,
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 18,
-                                  ),
-                                  onPressed: () async {
-                                    await context.router.replace(
-                                      PostRoute(permalink: item.permalink),
-                                    );
-                                  },
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 18),
                                 );
                               }).intersperse(
                                 const HorizontalDivider(
