@@ -5,6 +5,7 @@ import 'package:glyph/ferry/extension.dart';
 import 'package:glyph/graphql/__generated__/push_notification_provider_delete_push_notification_token_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/push_notification_provider_register_push_notification_token_mutation.req.gql.dart';
 import 'package:glyph/providers/ferry.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'push_notification.freezed.dart';
@@ -29,8 +30,8 @@ class PushNotification extends _$PushNotification {
 
   @override
   Future<PushNotificationState> build() async {
-    final settings = await _messaging.requestPermission();
-    if (settings.authorizationStatus != AuthorizationStatus.authorized) {
+    final status = await Permission.notification.request();
+    if (!status.isGranted) {
       return const PushNotificationState.unavailable();
     }
 
