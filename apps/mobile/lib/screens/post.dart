@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -52,9 +54,30 @@ class _PostScreenState extends ConsumerState<PostScreen>
   final _staticFooterKey = GlobalKey();
 
   bool _showBars = true;
-  bool _showFloatingFooter = true;
+  bool _showFloatingFooter = false;
   bool _webViewLoaded = false;
   double _webViewHeight = 1;
+
+  Timer? _floatingFooterVisibilityTimer;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _floatingFooterVisibilityTimer = Timer.periodic(
+      const Duration(milliseconds: 100),
+      (_) {
+        _updateFloatingFooterVisibility();
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    _floatingFooterVisibilityTimer?.cancel();
+
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -196,32 +219,7 @@ class _PostScreenState extends ConsumerState<PostScreen>
               children: [
                 NotificationListener<ScrollNotification>(
                   onNotification: (notification) {
-                    final staticFooterBox = _staticFooterKey.currentContext
-                        ?.findRenderObject() as RenderBox?;
-
-                    if (staticFooterBox != null) {
-                      final staticFooterPosition =
-                          staticFooterBox.localToGlobal(Offset.zero).dy;
-                      final viewportHeight = MediaQuery.of(context).size.height;
-                      final safeAreaBottomHeight =
-                          MediaQuery.of(context).padding.bottom;
-                      final floatingFooterPosition =
-                          viewportHeight - 54 - safeAreaBottomHeight;
-
-                      if (staticFooterPosition <= floatingFooterPosition) {
-                        if (_showFloatingFooter) {
-                          setState(() {
-                            _showFloatingFooter = false;
-                          });
-                        }
-                      } else {
-                        if (!_showFloatingFooter) {
-                          setState(() {
-                            _showFloatingFooter = true;
-                          });
-                        }
-                      }
-                    }
+                    _updateFloatingFooterVisibility();
 
                     if (notification is UserScrollNotification) {
                       if (notification.direction == ScrollDirection.forward) {
@@ -942,6 +940,33 @@ class _PostScreenState extends ConsumerState<PostScreen>
         },
       ),
     );
+  }
+
+  void _updateFloatingFooterVisibility() {
+    final staticFooterBox =
+        _staticFooterKey.currentContext?.findRenderObject() as RenderBox?;
+
+    if (staticFooterBox != null) {
+      final staticFooterPosition =
+          staticFooterBox.localToGlobal(Offset.zero).dy;
+      final viewportHeight = MediaQuery.of(context).size.height;
+      final safeAreaBottomHeight = MediaQuery.of(context).padding.bottom;
+      final floatingFooterPosition = viewportHeight - 54 - safeAreaBottomHeight;
+
+      if (staticFooterPosition <= floatingFooterPosition) {
+        if (_showFloatingFooter) {
+          setState(() {
+            _showFloatingFooter = false;
+          });
+        }
+      } else {
+        if (!_showFloatingFooter) {
+          setState(() {
+            _showFloatingFooter = true;
+          });
+        }
+      }
+    }
   }
 }
 
