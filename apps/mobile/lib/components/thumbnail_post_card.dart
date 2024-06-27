@@ -198,16 +198,19 @@ class ThumbnailPostCard extends ConsumerWidget {
                 const Gap(16),
                 Row(
                   children: [
-                    const Icon(
-                      Tabler.clock,
-                      size: 14,
-                      color: BrandColors.gray_400,
+                    const Padding(
+                      padding: EdgeInsets.only(top: 1),
+                      child: Icon(
+                        Tabler.clock,
+                        size: 14,
+                        color: BrandColors.gray_400,
+                      ),
                     ),
                     const Gap(3),
                     Text(
                       '읽는 시간 ${(((post.publishedRevision!.freeContent?.characters ?? 0) + (post.publishedRevision!.paidContent?.characters ?? 0)) / 800).ceil()}분',
                       style: const TextStyle(
-                        fontSize: 13,
+                        fontSize: 12,
                         fontWeight: FontWeight.w500,
                         color: BrandColors.gray_400,
                       ),
