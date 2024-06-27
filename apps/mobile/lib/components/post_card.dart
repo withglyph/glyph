@@ -46,30 +46,34 @@ class PostCard extends ConsumerWidget {
                         fontWeight: FontWeight.w700,
                       ),
                     ),
-                    SizedBox(
-                      height: 17,
-                      child: post.publishedRevision!.subtitle == null
-                          ? Expanded(
-                              child: Text(
-                                post.publishedRevision!.previewText,
-                                overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(
-                                  fontSize: 13,
-                                  color: BrandColors.gray_500,
-                                ),
-                              ),
-                            )
-                          : Flexible(
-                              child: Text(
-                                post.publishedRevision!.subtitle!,
-                                overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(
-                                  fontSize: 13,
-                                  color: BrandColors.gray_800,
-                                ),
-                              ),
+                    if (post.publishedRevision!.subtitle == null)
+                      Expanded(
+                        child: SizedBox(
+                          height: 17,
+                          child: Text(
+                            post.publishedRevision!.previewText,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontSize: 13,
+                              color: BrandColors.gray_500,
                             ),
-                    ),
+                          ),
+                        ),
+                      )
+                    else
+                      Flexible(
+                        child: SizedBox(
+                          height: 17,
+                          child: Text(
+                            post.publishedRevision!.subtitle!,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontSize: 13,
+                              color: BrandColors.gray_800,
+                            ),
+                          ),
+                        ),
+                      ),
                     const Gap(8),
                     SizedBox(
                       height: 20,
