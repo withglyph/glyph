@@ -58,6 +58,7 @@ dev_dependencies:
   custom_lint: '^0.6.4'
   envied_generator: '^0.5.4+1'
   ferry_generator: '^0.10.0'
+  flutter_launcher_icons: ^0.13.1
   flutter_lints: '^4.0.0'
   flutter_test:
     sdk: flutter
@@ -104,6 +105,15 @@ flutter:
     - family: GlyphIcons
       fonts:
         - asset: assets/fonts/GlyphIcons.ttf
+
+flutter_launcher_icons:
+  image_path: assets/images/icon.png
+
+  android: true
+  adaptive_icon_background: '#171717'
+  adaptive_icon_foreground: assets/images/adaptive_icon_foreground.png
+
+  ios: true
 
 flutter_native_splash:
   color: '#171717'

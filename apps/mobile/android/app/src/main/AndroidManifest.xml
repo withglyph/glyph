@@ -44,6 +44,8 @@
     <meta-data android:name="flutterEmbedding" android:value="2"/>
     <meta-data android:name="io.flutter.embedding.android.EnableImpeller" android:value="true" />
 
+    <meta-data android:name="com.google.firebase.messaging.default_notification_icon" android:resource="@drawable/ic_notification" />
+
     <meta-data android:name="com.naver.sdk.clientId" android:value="D2mh8VeGrpMV5Z8eWRKi"/>
     <meta-data android:name="com.naver.sdk.clientSecret" android:value="66kb3ApsAQ"/>
     <meta-data android:name="com.naver.sdk.clientName" android:value="Glyph"/>
