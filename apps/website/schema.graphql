@@ -625,6 +625,7 @@ type PostRevision {
   paragraphSpacing: Int!
   previewText: String!
   price: Int
+  readingTime: Int!
   subtitle: String
   title: String
   updatedAt: DateTime!

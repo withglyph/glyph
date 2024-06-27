@@ -929,12 +929,9 @@ PostRevision.implement({
 
       resolve: async (revision, _, context) => {
         const loader = context.loader({
-          name: 'PostRevision.previewText',
+          name: 'PostRevisionContents(id)',
           load: async (ids: string[]) => {
-            return await database
-              .select({ id: PostRevisionContents.id, text: PostRevisionContents.text })
-              .from(PostRevisionContents)
-              .where(inArray(PostRevisionContents.id, ids));
+            return await database.select().from(PostRevisionContents).where(inArray(PostRevisionContents.id, ids));
           },
           key: (content) => content.id,
         });
@@ -945,6 +942,26 @@ PostRevision.implement({
       },
 
       scopeError: () => '',
+    }),
+
+    readingTime: t.int({
+      resolve: async (revision, _, context) => {
+        const loader = context.loader({
+          name: 'PostRevisionContents(id)',
+          load: async (ids: string[]) => {
+            return await database.select().from(PostRevisionContents).where(inArray(PostRevisionContents.id, ids));
+          },
+          key: (content) => content.id,
+        });
+
+        const charactersArray = await Promise.all(
+          [revision.freeContentId, revision.paidContentId].map((id) =>
+            id ? loader.load(id).then((v) => v.characters) : 0,
+          ),
+        );
+
+        return Math.ceil((charactersArray.reduce((acc, val) => acc + val, 0) / 700) * 60);
+      },
     }),
   }),
 });
