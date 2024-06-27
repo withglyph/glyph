@@ -29,6 +29,11 @@ class PushNotification extends _$PushNotification {
 
   @override
   Future<PushNotificationState> build() async {
+    final settings = await _messaging.requestPermission();
+    if (settings.authorizationStatus != AuthorizationStatus.authorized) {
+      return const PushNotificationState.unavailable();
+    }
+
     final token = await _messaging.getToken();
     return switch (token) {
       null => const PushNotificationState.unavailable(),
