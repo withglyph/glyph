@@ -11,7 +11,6 @@ class Heading extends StatelessWidget implements PreferredSizeWidget {
     this.leading,
     this.title,
     this.actions,
-    this.leadingColor = BrandColors.gray_900,
     this.backgroundColor = BrandColors.gray_0,
     this.fallbackSystemUiOverlayStyle,
     this.titleOnLeft = false,
@@ -21,7 +20,6 @@ class Heading extends StatelessWidget implements PreferredSizeWidget {
   final Widget? leading;
   final Widget? title;
   final List<Widget>? actions;
-  final Color? leadingColor;
   final Color? backgroundColor;
   final SystemUiOverlayStyle? fallbackSystemUiOverlayStyle;
   final bool titleOnLeft;
@@ -61,26 +59,7 @@ class Heading extends StatelessWidget implements PreferredSizeWidget {
                   : null,
             ),
             child: NavigationToolbar(
-              leading: leading ??
-                  AutoLeadingButton(
-                    builder: (context, leadingType, action) {
-                      if (leadingType == LeadingType.noLeading) {
-                        return const SizedBox.shrink();
-                      }
-
-                      return Pressable(
-                        child: Icon(
-                          switch (leadingType) {
-                            LeadingType.back => Tabler.arrow_left,
-                            LeadingType.close => Tabler.x,
-                            _ => throw UnimplementedError(),
-                          },
-                          color: leadingColor,
-                        ),
-                        onPressed: () => action?.call(),
-                      );
-                    },
-                  ),
+              leading: leading ?? const HeadingAutoLeading(),
               middle: title,
               centerMiddle: !titleOnLeft,
               trailing: actions == null
@@ -152,6 +131,38 @@ class EmptyHeading extends StatelessWidget implements PreferredSizeWidget {
           child: SizedBox.shrink(),
         ),
       ),
+    );
+  }
+}
+
+class HeadingAutoLeading extends StatelessWidget {
+  const HeadingAutoLeading({
+    super.key,
+    this.color = BrandColors.gray_900,
+  });
+
+  final Color? color;
+
+  @override
+  Widget build(BuildContext context) {
+    return AutoLeadingButton(
+      builder: (context, leadingType, action) {
+        if (leadingType == LeadingType.noLeading) {
+          return const SizedBox.shrink();
+        }
+
+        return Pressable(
+          child: Icon(
+            switch (leadingType) {
+              LeadingType.back => Tabler.arrow_left,
+              LeadingType.close => Tabler.x,
+              _ => throw UnimplementedError(),
+            },
+            color: color,
+          ),
+          onPressed: () => action?.call(),
+        );
+      },
     );
   }
 }

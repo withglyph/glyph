@@ -77,7 +77,9 @@ class _TagScreenState extends State<TagScreen>
                   bottomBorder: _showTitle,
                   titleOnLeft: true,
                   fallbackSystemUiOverlayStyle: SystemUiOverlayStyle.light,
-                  leadingColor: _appBarForegroundColorAnimation.value,
+                  leading: HeadingAutoLeading(
+                    color: _appBarForegroundColorAnimation.value,
+                  ),
                   title: _showTitle
                       ? Text(
                           '#${data.tag.name}',

@@ -14,6 +14,8 @@ class Img extends StatelessWidget {
     this.height,
     this.aspectRatio,
     this.quality = 75,
+    this.borderWidth = 0.0,
+    this.borderColor = BrandColors.gray_50,
     this.borderRadius = 2,
     this.fit = BoxFit.cover,
   });
@@ -23,6 +25,8 @@ class Img extends StatelessWidget {
   final double? height;
   final double? aspectRatio;
   final double? quality;
+  final Color borderColor;
+  final double borderWidth;
   final double borderRadius;
   final BoxFit fit;
 
@@ -64,15 +68,24 @@ class Img extends StatelessWidget {
         ),
       );
     } else {
-      return ClipRRect(
-        borderRadius: BorderRadius.circular(borderRadius),
-        child: FadeInImage.memoryNetwork(
-          placeholder: kTransparentImage,
-          image: '${image!.url}?s=$effectiveSize&q=$quality',
-          width: effectiveWidth,
-          height: effectiveHeight,
-          fit: fit,
-          fadeInDuration: const Duration(milliseconds: 150),
+      return Container(
+        width: effectiveWidth,
+        height: effectiveHeight,
+        padding: EdgeInsets.all(borderWidth),
+        decoration: BoxDecoration(
+          color: borderColor,
+          borderRadius: BorderRadius.circular(borderRadius),
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(borderRadius),
+          child: FadeInImage.memoryNetwork(
+            placeholder: kTransparentImage,
+            image: '${image!.url}?s=$effectiveSize&q=$quality',
+            width: effectiveWidth,
+            height: effectiveHeight,
+            fit: fit,
+            fadeInDuration: const Duration(milliseconds: 150),
+          ),
         ),
       );
     }
