@@ -189,8 +189,19 @@
           class={flex({
             justify: 'flex-end',
             marginTop: '8px',
+            gap: '8px',
           })}
         >
+          <Button
+            style={css.raw({ backgroundColor: 'gray.0', width: '160px' })}
+            href={`https://docs.google.com/forms/d/e/1FAIpQLSc3kPM7EgAx9kbeDY_6W4jLqXo_IEEehjS8G2nDsS8qOkvO5w/viewform?usp=pp_url&entry.233113415=${$query.redeemCodeGroup.id}`}
+            rel="noopener noreferrer"
+            target="_blank"
+            type="link"
+            variant="gray-outline"
+          >
+            실물 쿠폰 신청
+          </Button>
           <Button
             style={css.raw({ backgroundColor: 'gray.0', width: '160px' })}
             variant="red-outline"
