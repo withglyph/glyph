@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:glyph/components/button.dart';
 import 'package:glyph/themes/colors.dart';
 
 extension BottomSheetX on BuildContext {

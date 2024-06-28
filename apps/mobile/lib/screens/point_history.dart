@@ -53,12 +53,14 @@ class _PointHistoryState extends ConsumerState<PointHistoryScreen> {
   @override
   Widget build(BuildContext context) {
     return GraphQLOperation(
-      operation: GPointHistoryScreen_QueryReq((b) => b
-        ..vars.amountFilter = switch (_selectedFeedType) {
-          _PointFilter.total => 0,
-          _PointFilter.charge => -1,
-          _PointFilter.usage => 1,
-        }),
+      operation: GPointHistoryScreen_QueryReq(
+        (b) => b
+          ..vars.amountFilter = switch (_selectedFeedType) {
+            _PointFilter.total => 0,
+            _PointFilter.charge => -1,
+            _PointFilter.usage => 1,
+          },
+      ),
       builder: (context, client, data) {
         final points = data.me!.points;
 
@@ -144,15 +146,11 @@ class _PointHistoryState extends ConsumerState<PointHistoryScreen> {
                                 const Gap(4),
                                 Text(
                                   point.maybeWhen(
-                                    unlockContentPointTransaction:
-                                        (transaction) =>
-                                            transaction.post.publishedRevision
-                                                ?.title ??
-                                            '제목 없음',
+                                    unlockContentPointTransaction: (transaction) =>
+                                        transaction.post.publishedRevision?.title ?? '제목 없음',
                                     purchasePointTransaction: (transaction) =>
                                         '${_pointPurchasePaymentMethod[transaction.purchase.paymentMethod]}',
-                                    orElse: () =>
-                                        '${_pointTransactionCause[point.cause]}',
+                                    orElse: () => '${_pointTransactionCause[point.cause]}',
                                   ),
                                   overflow: TextOverflow.ellipsis,
                                   style: const TextStyle(
@@ -166,8 +164,7 @@ class _PointHistoryState extends ConsumerState<PointHistoryScreen> {
                                   '${point.amount}P',
                                   style: TextStyle(
                                     fontWeight: FontWeight.w800,
-                                    color: point.G__typename ==
-                                            'UnlockContentPointTransaction'
+                                    color: point.G__typename == 'UnlockContentPointTransaction'
                                         ? BrandColors.gray_900
                                         : BrandColors.brand_400,
                                   ),
@@ -175,8 +172,7 @@ class _PointHistoryState extends ConsumerState<PointHistoryScreen> {
                               ],
                             ),
                           ),
-                          if (point.G__typename ==
-                              'UnlockContentPointTransaction') ...[
+                          if (point.G__typename == 'UnlockContentPointTransaction') ...[
                             const Gap(18),
                             // ignore: use_decorated_box
                             Container(
@@ -189,9 +185,7 @@ class _PointHistoryState extends ConsumerState<PointHistoryScreen> {
                               ),
                               child: Img(
                                 point.maybeWhen(
-                                  unlockContentPointTransaction:
-                                      (transaction) =>
-                                          transaction.post.thumbnail,
+                                  unlockContentPointTransaction: (transaction) => transaction.post.thumbnail,
                                   orElse: () => null,
                                 ),
                                 width: 78,
@@ -204,13 +198,11 @@ class _PointHistoryState extends ConsumerState<PointHistoryScreen> {
                       ),
                     ),
                     onPressed: () async {
-                      if (point.G__typename ==
-                          'UnlockContentPointTransaction') {
+                      if (point.G__typename == 'UnlockContentPointTransaction') {
                         await context.router.push(
                           PostRoute(
                             permalink: point.maybeWhen(
-                              unlockContentPointTransaction: (transaction) =>
-                                  transaction.post.permalink,
+                              unlockContentPointTransaction: (transaction) => transaction.post.permalink,
                               orElse: () => '',
                             ),
                           ),

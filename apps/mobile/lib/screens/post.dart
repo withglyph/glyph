@@ -10,7 +10,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:get_it/get_it.dart';
 import 'package:glyph/components/button.dart';
-import 'package:glyph/components/button.dart' as GlyphButton;
 import 'package:glyph/components/dot.dart';
 import 'package:glyph/components/heading.dart';
 import 'package:glyph/components/horizontal_divider.dart';
@@ -21,6 +20,7 @@ import 'package:glyph/components/webview.dart';
 import 'package:glyph/context/bottom_menu.dart';
 import 'package:glyph/context/bottom_sheet.dart';
 import 'package:glyph/context/modal.dart';
+import 'package:glyph/extensions/build_context.dart';
 import 'package:glyph/extensions/int.dart';
 import 'package:glyph/extensions/iterable.dart';
 import 'package:glyph/ferry/extension.dart';
@@ -241,8 +241,6 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
               ],
             ),
           );
-
-          final purchasable = data.me!.point >= data.post.publishedRevision!.price!;
 
           return SizedBox.expand(
             child: Stack(
@@ -491,18 +489,20 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                                 await context.showBottomSheet(
                                   title: '포스트 구매',
                                   builder: (context) {
+                                    final purchasable = data.me!.point >= data.post.publishedRevision!.price!;
+
                                     return Padding(
-                                      padding: EdgeInsets.symmetric(horizontal: 20),
+                                      padding: const EdgeInsets.symmetric(horizontal: 20),
                                       child: Column(
                                         children: [
                                           Padding(
-                                            padding: EdgeInsets.symmetric(vertical: 20),
+                                            padding: const EdgeInsets.symmetric(vertical: 20),
                                             child: Column(
                                               crossAxisAlignment: CrossAxisAlignment.stretch,
                                               children: [
                                                 Row(
                                                   children: [
-                                                    Icon(Tabler.notes, size: 16),
+                                                    const Icon(Tabler.notes, size: 16),
                                                     const Gap(3),
                                                     Text(
                                                       data.post.publishedRevision!.title ?? '(제목 없음)',
@@ -534,7 +534,7 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                                               children: [
                                                 const Text(
                                                   '보유 포인트',
-                                                  style: const TextStyle(
+                                                  style: TextStyle(
                                                     fontWeight: FontWeight.w600,
                                                     color: BrandColors.gray_900,
                                                   ),
@@ -558,14 +558,14 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                                               children: [
                                                 const Text(
                                                   '사용할 포인트',
-                                                  style: const TextStyle(
+                                                  style: TextStyle(
                                                     fontWeight: FontWeight.w600,
                                                     color: BrandColors.gray_900,
                                                   ),
                                                 ),
                                                 const Spacer(),
                                                 Text(
-                                                  '${data.post.publishedRevision!.price?.comma}P',
+                                                  '${data.post.publishedRevision!.price!.comma}P',
                                                   style: TextStyle(
                                                     fontWeight: FontWeight.w800,
                                                     color: (purchasable ? BrandColors.brand_400 : BrandColors.gray_400),
@@ -578,7 +578,7 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                                             const Gap(24),
                                             Button(
                                               '구매하기',
-                                              theme: GlyphButton.ButtonTheme.Accent,
+                                              kind: ButtonKind.accent,
                                               onPressed: () async {
                                                 await reply({
                                                   'type': 'purchase:proceed',
@@ -598,7 +598,7 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                                                 children: [
                                                   const Text(
                                                     '필요한 포인트',
-                                                    style: const TextStyle(
+                                                    style: TextStyle(
                                                       fontWeight: FontWeight.w600,
                                                       color: BrandColors.brand_400,
                                                     ),
@@ -647,9 +647,7 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                                             Button(
                                               '충전하기',
                                               onPressed: () async {
-                                                await context.router.popAndPush(
-                                                  const PointPurchaseRoute(),
-                                                );
+                                                await context.popWaitAndPush(const PointPurchaseRoute());
                                               },
                                             ),
                                           ],
