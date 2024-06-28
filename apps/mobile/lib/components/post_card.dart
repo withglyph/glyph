@@ -69,6 +69,7 @@ class PostCard extends ConsumerWidget {
                             overflow: TextOverflow.ellipsis,
                             style: const TextStyle(
                               fontSize: 13,
+                              fontWeight: FontWeight.w500,
                               color: BrandColors.gray_800,
                             ),
                           ),

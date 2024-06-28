@@ -160,15 +160,16 @@ class ThumbnailPostCard extends ConsumerWidget {
                       color: BrandColors.gray_800,
                     ),
                   ),
-                Text(
-                  post.publishedRevision!.previewText,
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: post.publishedRevision?.subtitle == null ? 2 : 1,
-                  style: const TextStyle(
-                    fontSize: 13,
-                    color: BrandColors.gray_500,
+                if (post.publishedRevision!.previewText != '')
+                  Text(
+                    post.publishedRevision!.previewText,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: post.publishedRevision?.subtitle == null ? 2 : 1,
+                    style: const TextStyle(
+                      fontSize: 13,
+                      color: BrandColors.gray_500,
+                    ),
                   ),
-                ),
                 if (post.thumbnail != null) ...[
                   const Gap(12),
                   LayoutBuilder(
