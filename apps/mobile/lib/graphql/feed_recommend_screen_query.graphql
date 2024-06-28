@@ -1,0 +1,8 @@
+# import './fragments/thumbnail_post_card_post.graphql';
+
+query FeedRecommendScreen_Query {
+  recommendFeed {
+    id
+    ...ThumbnailPostCard_post
+  }
+}

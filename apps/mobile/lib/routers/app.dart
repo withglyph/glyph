@@ -40,7 +40,14 @@ class AppRouter extends $AppRouter {
               page: LobbyShell.page,
               initial: true,
               children: [
-                AutoRoute(page: FeedRoute.page, initial: true),
+                AutoRoute(
+                  page: FeedRoute.page,
+                  children: [
+                    AutoRoute(page: FeedRecommendRoute.page),
+                    AutoRoute(page: FeedFollowingRoute.page),
+                    AutoRoute(page: FeedChallengeRoute.page),
+                  ],
+                ),
                 AutoRoute(page: SearchRoute.page, path: 'search'),
                 AutoRoute(
                   page: ArchiveRoute.page,
