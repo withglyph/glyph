@@ -62,9 +62,7 @@ class Heading extends StatelessWidget implements PreferredSizeWidget {
               leading: leading ?? const HeadingAutoLeading(),
               middle: title,
               centerMiddle: !titleOnLeft,
-              trailing: actions == null
-                  ? null
-                  : Row(mainAxisSize: MainAxisSize.min, children: actions!),
+              trailing: actions == null ? null : Row(mainAxisSize: MainAxisSize.min, children: actions!),
             ),
           ),
         ),
@@ -125,8 +123,8 @@ class EmptyHeading extends StatelessWidget implements PreferredSizeWidget {
       value: baseSystemUiOverlayStyle.copyWith(
         statusBarColor: backgroundColor,
       ),
-      child: ColoredBox(
-        color: backgroundColor ?? BrandColors.gray_0,
+      child: Container(
+        color: backgroundColor,
         child: const SafeArea(
           child: SizedBox.shrink(),
         ),

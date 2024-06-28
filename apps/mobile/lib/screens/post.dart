@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
@@ -34,7 +36,6 @@ import 'package:glyph/graphql/__generated__/post_screen_update_post_view_mutatio
 import 'package:glyph/graphql/__generated__/schema.schema.gql.dart';
 import 'package:glyph/icons/tabler.dart';
 import 'package:glyph/routers/app.gr.dart';
-import 'package:glyph/shells/default.dart';
 import 'package:glyph/themes/colors.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
@@ -55,11 +56,15 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
   final _browser = ChromeSafariBrowser();
 
   final _staticFooterKey = GlobalKey();
+  final _thumbnailKey = GlobalKey();
 
   bool _showBars = true;
   bool _showFloatingFooter = false;
   bool _webViewLoaded = false;
   double _webViewHeight = 1;
+
+  bool _isOverThumbnail = true;
+  double _thumbnailScale = 1;
 
   Timer? _floatingFooterVisibilityTimer;
 
@@ -84,9 +89,8 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
 
   @override
   Widget build(BuildContext context) {
-    return DefaultShell(
-      appBar: Heading.empty(),
-      child: GraphQLOperation(
+    return Scaffold(
+      body: GraphQLOperation(
         operation: GPostScreen_QueryReq(
           (b) => b..vars.permalink = widget.permalink,
         ),
@@ -104,6 +108,53 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
           await client.req(req);
         },
         builder: (context, client, data) {
+          final hasThumbnail = data.post.thumbnail != null;
+          final safeAreaTopHeight = MediaQuery.of(context).padding.top;
+
+          final heading = Heading(
+            backgroundColor: hasThumbnail && _isOverThumbnail ? null : BrandColors.gray_0,
+            fallbackSystemUiOverlayStyle: hasThumbnail && _isOverThumbnail ? SystemUiOverlayStyle.light : null,
+            bottomBorder: !(hasThumbnail && _isOverThumbnail),
+            leading: Row(
+              children: [
+                HeadingAutoLeading(
+                  color: hasThumbnail && _isOverThumbnail ? BrandColors.gray_0 : BrandColors.gray_900,
+                ),
+                const Gap(16),
+                Pressable(
+                  child: Icon(
+                    Tabler.home,
+                    color: hasThumbnail && _isOverThumbnail ? BrandColors.gray_0 : BrandColors.gray_900,
+                  ),
+                  onPressed: () {
+                    context.router.popUntilRoot();
+                  },
+                ),
+              ],
+            ),
+            actions: [
+              Pressable(
+                child: Icon(
+                  Tabler.dots_vertical,
+                  color: hasThumbnail && _isOverThumbnail ? BrandColors.gray_0 : BrandColors.gray_900,
+                ),
+                onPressed: () async {
+                  await context.showBottomMenu(
+                    title: '포스트',
+                    items: [
+                      BottomMenuItem(
+                        icon: Tabler.volume_3,
+                        title: '스페이스 뮤트',
+                        color: BrandColors.red_600,
+                        onTap: () {},
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ],
+          );
+
           final footer = Container(
             height: 54,
             padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -201,6 +252,35 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                   onNotification: (notification) {
                     _updateFloatingFooterVisibility();
 
+                    final thumbnailBox = _thumbnailKey.currentContext?.findRenderObject() as RenderBox?;
+                    if (thumbnailBox != null) {
+                      final pos = thumbnailBox.localToGlobal(Offset.zero).dy + thumbnailBox.size.height;
+                      final threshhold = safeAreaTopHeight + 54;
+
+                      final isScrollTop = pos >= threshhold;
+                      if (isScrollTop != _isOverThumbnail) {
+                        setState(() {
+                          _isOverThumbnail = isScrollTop;
+                        });
+                      }
+
+                      final overscrollHeight = -notification.metrics.pixels;
+                      final scale = 1.0 + max(0.0, overscrollHeight / thumbnailBox.size.height);
+                      if (scale != _thumbnailScale) {
+                        setState(() {
+                          _thumbnailScale = scale;
+                        });
+                      }
+                    }
+
+                    if (notification.metrics.pixels <= 0) {
+                      if (!_showBars) {
+                        setState(() {
+                          _showBars = true;
+                        });
+                      }
+                    }
+
                     if (notification is UserScrollNotification) {
                       if (notification.direction == ScrollDirection.forward) {
                         if (!_showBars) {
@@ -234,12 +314,41 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        if (data.post.thumbnail != null)
+                          Transform.scale(
+                            key: _thumbnailKey,
+                            scale: _thumbnailScale,
+                            alignment: Alignment.bottomCenter,
+                            child: Stack(
+                              children: [
+                                Img(
+                                  data.post.thumbnail,
+                                  width: MediaQuery.of(context).size.width,
+                                  aspectRatio: 16 / 10,
+                                ),
+                                Positioned.fill(
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        colors: [
+                                          BrandColors.gray_900.withOpacity(0.6),
+                                          BrandColors.gray_900.withOpacity(0),
+                                        ],
+                                        begin: Alignment.topCenter,
+                                        end: Alignment.bottomCenter,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         Padding(
                           padding: const EdgeInsets.all(20),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Gap(54),
+                              if (data.post.thumbnail == null) Gap(safeAreaTopHeight + 54),
                               Text(
                                 data.post.publishedRevision!.title ?? '(제목 없음)',
                                 style: const TextStyle(
@@ -674,8 +783,11 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                                                 ),
                                                 child: Row(
                                                   children: [
-                                                    const Icon(Tabler.arrow_left,
-                                                        size: 16, color: BrandColors.gray_800),
+                                                    const Icon(
+                                                      Tabler.arrow_left,
+                                                      size: 16,
+                                                      color: BrandColors.gray_800,
+                                                    ),
                                                     const Gap(8),
                                                     Expanded(
                                                       child: Column(
@@ -776,8 +888,11 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                                                       ),
                                                     ),
                                                     const Gap(8),
-                                                    const Icon(Tabler.arrow_right,
-                                                        size: 16, color: BrandColors.gray_800),
+                                                    const Icon(
+                                                      Tabler.arrow_right,
+                                                      size: 16,
+                                                      color: BrandColors.gray_800,
+                                                    ),
                                                   ],
                                                 ),
                                               ),
@@ -936,44 +1051,16 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                     ),
                   ),
                 ),
-                if (_showBars)
-                  Positioned(
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    child: Heading(
-                      leading: Row(
-                        children: [
-                          const HeadingAutoLeading(),
-                          const Gap(16),
-                          Pressable(
-                            child: const Icon(Tabler.home),
-                            onPressed: () {
-                              context.router.popUntilRoot();
-                            },
-                          ),
-                        ],
-                      ),
-                      actions: [
-                        Pressable(
-                          child: const Icon(Tabler.dots_vertical),
-                          onPressed: () async {
-                            await context.showBottomMenu(
-                              title: '포스트',
-                              items: [
-                                BottomMenuItem(
-                                  icon: Tabler.volume_3,
-                                  title: '스페이스 뮤트',
-                                  color: BrandColors.red_600,
-                                  onTap: () {},
-                                ),
-                              ],
-                            );
-                          },
+                Positioned(
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  child: _showBars || (hasThumbnail && _isOverThumbnail)
+                      ? heading
+                      : Heading.empty(
+                          systemUiOverlayStyle: SystemUiOverlayStyle.dark,
                         ),
-                      ],
-                    ),
-                  ),
+                ),
                 if (_showBars && _showFloatingFooter)
                   Positioned(
                     bottom: 0,
@@ -989,6 +1076,7 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                         ),
                       ),
                       child: SafeArea(
+                        top: false,
                         child: footer,
                       ),
                     ),

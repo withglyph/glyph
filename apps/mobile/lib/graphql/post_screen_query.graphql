@@ -50,6 +50,11 @@ query PostScreen_Query($permalink: String!) {
       price
     }
 
+    thumbnail {
+      id
+      ...Img_image
+    }
+
     bookmarkGroups {
       id
     }
