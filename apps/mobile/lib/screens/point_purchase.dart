@@ -10,6 +10,7 @@ import 'package:gap/gap.dart';
 import 'package:get_it/get_it.dart';
 import 'package:glyph/components/horizontal_divider.dart';
 import 'package:glyph/components/pressable.dart';
+import 'package:glyph/context/bottom_sheet.dart';
 import 'package:glyph/context/loader.dart';
 import 'package:glyph/extensions/int.dart';
 import 'package:glyph/extensions/iterable.dart';
@@ -19,6 +20,7 @@ import 'package:glyph/graphql/__generated__/point_purchase_screen_in_app_purchas
 import 'package:glyph/graphql/__generated__/point_purchase_screen_purchase_point_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/point_purchase_screen_query.req.gql.dart';
 import 'package:glyph/graphql/__generated__/schema.schema.gql.dart';
+import 'package:glyph/icons/tabler.dart';
 import 'package:glyph/providers/ferry.dart';
 import 'package:glyph/themes/colors.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
@@ -43,8 +45,7 @@ class _PointPurchaseScreenState extends ConsumerState<PointPurchaseScreen> {
 
     unawaited(_fetchProducts());
 
-    _purchaseStreamSubscription =
-        _iap.purchaseStream.listen((purchaseDetailsList) async {
+    _purchaseStreamSubscription = _iap.purchaseStream.listen((purchaseDetailsList) async {
       for (final purchaseDetails in purchaseDetailsList) {
         if (purchaseDetails.status == PurchaseStatus.pending) {
         } else {
@@ -56,19 +57,27 @@ class _PointPurchaseScreenState extends ConsumerState<PointPurchaseScreen> {
             final client = ref.read(ferryProvider);
             final req = GPurchasePointScreen_InAppPurchasePoint_MutationReq(
               (b) => b
-                ..vars.input.store = Platform.isIOS
-                    ? GStoreKind.APP_STORE
-                    : GStoreKind.PLAY_STORE
+                ..vars.input.store = Platform.isIOS ? GStoreKind.APP_STORE : GStoreKind.PLAY_STORE
                 ..vars.input.productId = purchaseDetails.productID
-                ..vars.input.data =
-                    purchaseDetails.verificationData.serverVerificationData,
+                ..vars.input.data = purchaseDetails.verificationData.serverVerificationData,
             );
-            await client.req(req);
+            final resp = await client.req(req);
             client.requestController.add(GPointPurchaseScreen_QueryReq());
-          }
 
-          if (mounted) {
-            context.loader.dismiss();
+            if (mounted) {
+              context.loader.dismiss();
+              await context.showBottomSheet(
+                builder: (context) {
+                  return _PurchaseCompleteBottomSheet(
+                    pointAmount: resp.inAppPurchasePoint.pointAmount,
+                  );
+                },
+              );
+            }
+          } else {
+            if (mounted) {
+              context.loader.dismiss();
+            }
           }
         }
       }
@@ -222,15 +231,14 @@ class _PointPurchaseScreenState extends ConsumerState<PointPurchaseScreen> {
                   onPressed: () async {
                     context.loader.show();
 
+                    final pointAmount = int.parse(product.id.split('_').last);
+
                     final client = ref.read(ferryProvider);
                     final req = GPurchasePointScreen_PurchasePoint_MutationReq(
                       (b) => b
-                        ..vars.input.paymentMethod = kReleaseMode
-                            ? GPaymentMethod.IN_APP_PURCHASE
-                            : GPaymentMethod.DUMMY
-                        ..vars.input.pointAmount = int.parse(
-                          product.id.split('_').last,
-                        )
+                        ..vars.input.paymentMethod =
+                            kReleaseMode ? GPaymentMethod.IN_APP_PURCHASE : GPaymentMethod.DUMMY
+                        ..vars.input.pointAmount = pointAmount
                         ..vars.input.pointAgreement = true,
                     );
                     final resp = await client.req(req);
@@ -239,17 +247,22 @@ class _PointPurchaseScreenState extends ConsumerState<PointPurchaseScreen> {
                       await _iap.buyConsumable(
                         purchaseParam: PurchaseParam(
                           productDetails: product,
-                          applicationUserName:
-                              resp.purchasePoint.paymentData.asMap['uuid'],
+                          applicationUserName: resp.purchasePoint.paymentData.asMap['uuid'],
                         ),
                       );
                     } else {
+                      client.requestController.add(GPointPurchaseScreen_QueryReq());
+
                       if (context.mounted) {
                         context.loader.dismiss();
+                        await context.showBottomSheet(
+                          builder: (context) {
+                            return _PurchaseCompleteBottomSheet(
+                              pointAmount: resp.purchasePoint.pointAmount,
+                            );
+                          },
+                        );
                       }
-
-                      client.requestController
-                          .add(GPointPurchaseScreen_QueryReq());
                     }
                   },
                 );
@@ -315,5 +328,67 @@ class _PointPurchaseScreenState extends ConsumerState<PointPurchaseScreen> {
         resp.productDetails.sorted((a, b) => a.rawPrice.compareTo(b.rawPrice)),
       );
     });
+  }
+}
+
+class _PurchaseCompleteBottomSheet extends StatelessWidget {
+  const _PurchaseCompleteBottomSheet({
+    required this.pointAmount,
+  });
+
+  final int pointAmount;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+      child: Column(
+        children: [
+          const Icon(Tabler.circle_check_filled, size: 38),
+          const Gap(14),
+          Text(
+            '${pointAmount.comma}P 충전 완료',
+            style: const TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+          const Gap(2),
+          const Text(
+            '충전이 완료되었어요\n글리프의 다양한 작품을 감상해보세요',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+              color: BrandColors.gray_500,
+            ),
+          ),
+          const Gap(40),
+          Pressable(
+            child: Container(
+              width: double.infinity,
+              height: 53,
+              decoration: BoxDecoration(
+                color: BrandColors.gray_900,
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: const Center(
+                child: Text(
+                  '확인',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    color: BrandColors.gray_0,
+                  ),
+                ),
+              ),
+            ),
+            onPressed: () async {
+              await context.router.maybePop();
+            },
+          ),
+        ],
+      ),
+    );
   }
 }
