@@ -1,0 +1,30 @@
+import 'package:flutter/material.dart';
+import 'package:glyph/themes/colors.dart';
+
+extension ModalX on BuildContext {
+  Future<T> showModal<T>({
+    required WidgetBuilder builder,
+  }) async {
+    return await showModalBottomSheet(
+      context: this,
+      backgroundColor: BrandColors.gray_0,
+      elevation: 0,
+      isScrollControlled: true,
+      useSafeArea: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(8),
+          topRight: Radius.circular(8),
+        ),
+      ),
+      clipBehavior: Clip.antiAlias,
+      builder: (context) {
+        final child = builder(context);
+
+        return SafeArea(
+          child: child,
+        );
+      },
+    );
+  }
+}

@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:get_it/get_it.dart';
 import 'package:glyph/components/button.dart';
+import 'package:glyph/components/button.dart' as GlyphButton;
 import 'package:glyph/components/dot.dart';
 import 'package:glyph/components/heading.dart';
 import 'package:glyph/components/horizontal_divider.dart';
@@ -17,6 +18,8 @@ import 'package:glyph/components/pressable.dart';
 import 'package:glyph/components/webview.dart';
 import 'package:glyph/context/bottom_menu.dart';
 import 'package:glyph/context/bottom_sheet.dart';
+import 'package:glyph/context/modal.dart';
+import 'package:glyph/extensions/int.dart';
 import 'package:glyph/extensions/iterable.dart';
 import 'package:glyph/ferry/extension.dart';
 import 'package:glyph/ferry/widget.dart';
@@ -140,7 +143,7 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                     ],
                   ),
                   onPressed: () async {
-                    await context.showBottomSheet(
+                    await context.showModal(
                       builder: (context) {
                         return _Comments(
                           permalink: widget.permalink,
@@ -187,6 +190,8 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
               ],
             ),
           );
+
+          final purchasable = data.me!.point >= data.post.publishedRevision!.price!;
 
           return SizedBox.expand(
             child: Stack(
@@ -375,34 +380,96 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                                 }
                               } else if (message['type'] == 'purchase') {
                                 await context.showBottomSheet(
+                                  title: '포스트 구매',
                                   builder: (context) {
                                     return Padding(
-                                      padding: const EdgeInsets.all(20),
+                                      padding: EdgeInsets.symmetric(horizontal: 20),
                                       child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        crossAxisAlignment: CrossAxisAlignment.stretch,
                                         children: [
-                                          Text(
-                                            '현재 보유 포인트: ${data.me!.point}P',
-                                            style: const TextStyle(fontSize: 16),
+                                          Padding(
+                                            padding: EdgeInsets.symmetric(vertical: 20),
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    Icon(Tabler.notes, size: 16),
+                                                    const Gap(3),
+                                                    Text(
+                                                      data.post.publishedRevision!.title ?? '(제목 없음)',
+                                                      overflow: TextOverflow.ellipsis,
+                                                      style: const TextStyle(
+                                                        color: BrandColors.gray_500,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                const Gap(4),
+                                                Text(
+                                                  '${data.post.publishedRevision!.price?.comma}P',
+                                                  style: const TextStyle(
+                                                    fontSize: 18,
+                                                    fontWeight: FontWeight.w800,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
                                           ),
-                                          Text(
-                                            '필요 포인트: ${data.post.publishedRevision!.price}P',
-                                            style: const TextStyle(fontSize: 16),
+                                          const HorizontalDivider(),
+                                          const Gap(8),
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                              vertical: 12,
+                                            ),
+                                            child: Row(
+                                              children: [
+                                                const Text(
+                                                  '보유 포인트',
+                                                  style: const TextStyle(
+                                                    fontWeight: FontWeight.w600,
+                                                    color: BrandColors.gray_900,
+                                                  ),
+                                                ),
+                                                const Spacer(),
+                                                Text(
+                                                  '${data.me!.point.comma}P',
+                                                  style: const TextStyle(
+                                                    fontWeight: FontWeight.w800,
+                                                    color: BrandColors.gray_400,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
                                           ),
-                                          const Gap(16),
-                                          if (data.me!.point < data.post.publishedRevision!.price!)
-                                            Button(
-                                              '충전하기',
-                                              onPressed: () async {
-                                                await context.router.popAndPush(
-                                                  const PointPurchaseRoute(),
-                                                );
-                                              },
-                                            )
-                                          else
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                              vertical: 12,
+                                            ),
+                                            child: Row(
+                                              children: [
+                                                const Text(
+                                                  '사용할 포인트',
+                                                  style: const TextStyle(
+                                                    fontWeight: FontWeight.w600,
+                                                    color: BrandColors.gray_900,
+                                                  ),
+                                                ),
+                                                const Spacer(),
+                                                Text(
+                                                  '${data.post.publishedRevision!.price?.comma}P',
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.w800,
+                                                    color: (purchasable ? BrandColors.brand_400 : BrandColors.gray_400),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          if (purchasable) ...[
+                                            const Gap(24),
                                             Button(
                                               '구매하기',
+                                              theme: GlyphButton.ButtonTheme.Accent,
                                               onPressed: () async {
                                                 await reply({
                                                   'type': 'purchase:proceed',
@@ -413,6 +480,70 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                                                 }
                                               },
                                             ),
+                                          ] else ...[
+                                            Padding(
+                                              padding: const EdgeInsets.symmetric(
+                                                vertical: 12,
+                                              ),
+                                              child: Row(
+                                                children: [
+                                                  const Text(
+                                                    '필요한 포인트',
+                                                    style: const TextStyle(
+                                                      fontWeight: FontWeight.w600,
+                                                      color: BrandColors.brand_400,
+                                                    ),
+                                                  ),
+                                                  const Spacer(),
+                                                  Text(
+                                                    '${(data.post.publishedRevision!.price! - data.me!.point).comma}P',
+                                                    style: const TextStyle(
+                                                      fontWeight: FontWeight.w800,
+                                                      color: BrandColors.brand_400,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            const Gap(8),
+                                            const DecoratedBox(
+                                              decoration: BoxDecoration(
+                                                color: BrandColors.gray_50,
+                                                borderRadius: BorderRadius.all(
+                                                  Radius.circular(4),
+                                                ),
+                                              ),
+                                              child: Padding(
+                                                padding: EdgeInsets.all(10),
+                                                child: Row(
+                                                  children: [
+                                                    Icon(
+                                                      Tabler.coin_filled,
+                                                      size: 16,
+                                                      color: Color(0xFFFCC04B),
+                                                    ),
+                                                    Gap(4),
+                                                    Text(
+                                                      '해당 포스트를 구매하려면 포인트가 필요해요',
+                                                      style: TextStyle(
+                                                        color: BrandColors.gray_800,
+                                                        fontSize: 12,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                            const Gap(24),
+                                            Button(
+                                              '충전하기',
+                                              onPressed: () async {
+                                                await context.router.popAndPush(
+                                                  const PointPurchaseRoute(),
+                                                );
+                                              },
+                                            ),
+                                          ],
                                         ],
                                       ),
                                     );
