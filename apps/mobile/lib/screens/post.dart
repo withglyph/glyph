@@ -242,845 +242,840 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
             ),
           );
 
-          return SizedBox.expand(
-            child: Stack(
-              fit: StackFit.passthrough,
-              children: [
-                NotificationListener<ScrollNotification>(
-                  onNotification: (notification) {
-                    _updateFloatingFooterVisibility();
+          return Stack(
+            fit: StackFit.passthrough,
+            children: [
+              NotificationListener<ScrollNotification>(
+                onNotification: (notification) {
+                  _updateFloatingFooterVisibility();
 
-                    final thumbnailBox = _thumbnailKey.currentContext?.findRenderObject() as RenderBox?;
-                    if (thumbnailBox != null) {
-                      final pos = thumbnailBox.localToGlobal(Offset.zero).dy + thumbnailBox.size.height;
-                      final threshhold = safeAreaTopHeight + 54;
+                  final thumbnailBox = _thumbnailKey.currentContext?.findRenderObject() as RenderBox?;
+                  if (thumbnailBox != null) {
+                    final pos = thumbnailBox.localToGlobal(Offset.zero).dy + thumbnailBox.size.height;
+                    final threshhold = safeAreaTopHeight + 54;
 
-                      final isScrollTop = pos >= threshhold;
-                      if (isScrollTop != _isOverThumbnail) {
-                        setState(() {
-                          _isOverThumbnail = isScrollTop;
-                        });
-                      }
-
-                      final overscrollHeight = -notification.metrics.pixels;
-                      final scale = 1.0 + max(0.0, overscrollHeight / thumbnailBox.size.height);
-                      if (scale != _thumbnailScale) {
-                        setState(() {
-                          _thumbnailScale = scale;
-                        });
-                      }
+                    final isScrollTop = pos >= threshhold;
+                    if (isScrollTop != _isOverThumbnail) {
+                      setState(() {
+                        _isOverThumbnail = isScrollTop;
+                      });
                     }
 
-                    if (notification.metrics.pixels <= 0) {
+                    final overscrollHeight = -notification.metrics.pixels;
+                    final scale = 1.0 + max(0.0, overscrollHeight / thumbnailBox.size.height);
+                    if (scale != _thumbnailScale) {
+                      setState(() {
+                        _thumbnailScale = scale;
+                      });
+                    }
+                  }
+
+                  if (notification.metrics.pixels <= 0) {
+                    if (!_showBars) {
+                      setState(() {
+                        _showBars = true;
+                      });
+                    }
+                  }
+
+                  if (notification is UserScrollNotification) {
+                    if (notification.direction == ScrollDirection.forward) {
                       if (!_showBars) {
                         setState(() {
                           _showBars = true;
                         });
                       }
-                    }
-
-                    if (notification is UserScrollNotification) {
-                      if (notification.direction == ScrollDirection.forward) {
+                    } else if (notification.direction == ScrollDirection.reverse) {
+                      if (_showBars) {
+                        setState(() {
+                          _showBars = false;
+                        });
+                      }
+                    } else if (notification.direction == ScrollDirection.idle) {
+                      if (notification.metrics.pixels <= 0) {
                         if (!_showBars) {
                           setState(() {
                             _showBars = true;
                           });
                         }
-                      } else if (notification.direction == ScrollDirection.reverse) {
-                        if (_showBars) {
-                          setState(() {
-                            _showBars = false;
-                          });
-                        }
-                      } else if (notification.direction == ScrollDirection.idle) {
-                        if (notification.metrics.pixels <= 0) {
-                          if (!_showBars) {
-                            setState(() {
-                              _showBars = true;
-                            });
-                          }
-                        }
                       }
                     }
+                  }
 
-                    return false;
-                  },
-                  child: SingleChildScrollView(
-                    physics: const AlwaysScrollableScrollPhysics(
-                      parent: BouncingScrollPhysics(),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        if (data.post.thumbnail != null)
-                          Transform.scale(
-                            key: _thumbnailKey,
-                            scale: _thumbnailScale,
-                            alignment: Alignment.bottomCenter,
-                            child: Stack(
-                              children: [
-                                Img(
-                                  data.post.thumbnail,
-                                  width: MediaQuery.of(context).size.width,
-                                  aspectRatio: 16 / 10,
-                                ),
-                                Positioned.fill(
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      gradient: LinearGradient(
-                                        colors: [
-                                          BrandColors.gray_900.withOpacity(0.6),
-                                          BrandColors.gray_900.withOpacity(0),
-                                        ],
-                                        begin: Alignment.topCenter,
-                                        end: Alignment.bottomCenter,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        Padding(
-                          padding: const EdgeInsets.all(20),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                  return false;
+                },
+                child: SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(
+                    parent: BouncingScrollPhysics(),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (data.post.thumbnail != null)
+                        Transform.scale(
+                          key: _thumbnailKey,
+                          scale: _thumbnailScale,
+                          alignment: Alignment.bottomCenter,
+                          child: Stack(
                             children: [
-                              if (data.post.thumbnail == null) Gap(safeAreaTopHeight + 54),
-                              Text(
-                                data.post.publishedRevision!.title ?? '(제목 없음)',
-                                style: const TextStyle(
-                                  height: 1.3,
-                                  fontSize: 23,
-                                  fontWeight: FontWeight.w700,
-                                ),
+                              Img(
+                                data.post.thumbnail,
+                                width: MediaQuery.of(context).size.width,
+                                aspectRatio: 16 / 10,
                               ),
-                              if (data.post.publishedRevision!.subtitle != null) ...[
-                                const Gap(4),
-                                Text(
-                                  data.post.publishedRevision!.subtitle!,
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ],
-                              const Gap(12),
-                              Row(
-                                children: [
-                                  Stack(
-                                    children: [
-                                      Img(
-                                        data.post.space!.icon,
-                                        width: 30,
-                                        height: 30,
-                                        borderWidth: 1,
-                                      ),
-                                      Positioned(
-                                        bottom: 0,
-                                        right: 0,
-                                        child: Transform.translate(
-                                          offset: const Offset(4, 4),
-                                          child: Img(
-                                            data.post.member!.profile.avatar,
-                                            width: 20,
-                                            height: 20,
-                                            borderWidth: 1,
-                                            borderRadius: 10,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const Gap(12),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          data.post.space!.name,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: const TextStyle(
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.w700,
-                                          ),
-                                        ),
-                                        Text(
-                                          'by ${data.post.member!.profile.name}',
-                                          overflow: TextOverflow.ellipsis,
-                                          style: const TextStyle(
-                                            fontSize: 13,
-                                            fontWeight: FontWeight.w500,
-                                            color: BrandColors.gray_500,
-                                          ),
-                                        ),
+                              Positioned.fill(
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      colors: [
+                                        BrandColors.gray_900.withOpacity(0.6),
+                                        BrandColors.gray_900.withOpacity(0),
                                       ],
+                                      begin: Alignment.topCenter,
+                                      end: Alignment.bottomCenter,
                                     ),
                                   ),
-                                ],
+                                ),
                               ),
-                              const Gap(10),
-                              Row(
-                                children: [
-                                  Text(
-                                    Jiffy.parse(
-                                      data.post.publishedAt!.value,
-                                    ).format(
-                                      pattern: 'yyyy.MM.dd',
-                                    ),
-                                    style: const TextStyle(
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.w500,
-                                      color: BrandColors.gray_400,
-                                    ),
-                                  ),
-                                  const Gap(6),
-                                  const Dot(),
-                                  const Gap(6),
-                                  const Text(
-                                    '읽는 시간 7분',
-                                    style: TextStyle(
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.w500,
-                                      color: BrandColors.gray_400,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const Gap(20),
-                              const HorizontalDivider(),
                             ],
                           ),
                         ),
-                        if (!_webViewLoaded)
-                          const Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 20),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                _Skeleton(widthFactor: 1.0),
-                                Gap(20),
-                                _Skeleton(widthFactor: 1.0),
-                                Gap(20),
-                                _Skeleton(widthFactor: 1.0),
-                                Gap(20),
-                                _Skeleton(widthFactor: 0.4),
-                              ],
+                      Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            if (data.post.thumbnail == null) Gap(safeAreaTopHeight + 54),
+                            Text(
+                              data.post.publishedRevision!.title ?? '(제목 없음)',
+                              style: const TextStyle(
+                                height: 1.3,
+                                fontSize: 23,
+                                fontWeight: FontWeight.w700,
+                              ),
                             ),
-                          ),
-                        SizedBox(
-                          height: _webViewHeight,
-                          child: WebView(
-                            path: '/_webview/post-view/${widget.permalink}',
-                            onJsMessage: (message, reply) async {
-                              if (message['type'] == 'resize') {
-                                final height = (message['height'] as num).toDouble();
-                                if (height != _webViewHeight) {
-                                  setState(() {
-                                    _webViewHeight = height;
-                                  });
-                                }
-                                if (!_webViewLoaded) {
-                                  setState(() {
-                                    _webViewLoaded = true;
-                                  });
-                                }
-                              } else if (message['type'] == 'purchase') {
-                                await context.showBottomSheet(
-                                  title: '포스트 구매',
-                                  builder: (context) {
-                                    final purchasable = data.me!.point >= data.post.publishedRevision!.price!;
-
-                                    return Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                                      child: Column(
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.symmetric(vertical: 20),
-                                            child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                                              children: [
-                                                Row(
-                                                  children: [
-                                                    const Icon(Tabler.notes, size: 16),
-                                                    const Gap(3),
-                                                    Text(
-                                                      data.post.publishedRevision!.title ?? '(제목 없음)',
-                                                      overflow: TextOverflow.ellipsis,
-                                                      style: const TextStyle(
-                                                        color: BrandColors.gray_500,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                                const Gap(4),
-                                                Text(
-                                                  '${data.post.publishedRevision!.price?.comma}P',
-                                                  style: const TextStyle(
-                                                    fontSize: 18,
-                                                    fontWeight: FontWeight.w800,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          const HorizontalDivider(),
-                                          const Gap(8),
-                                          Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                              vertical: 12,
-                                            ),
-                                            child: Row(
-                                              children: [
-                                                const Text(
-                                                  '보유 포인트',
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.w600,
-                                                    color: BrandColors.gray_900,
-                                                  ),
-                                                ),
-                                                const Spacer(),
-                                                Text(
-                                                  '${data.me!.point.comma}P',
-                                                  style: const TextStyle(
-                                                    fontWeight: FontWeight.w800,
-                                                    color: BrandColors.gray_400,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                              vertical: 12,
-                                            ),
-                                            child: Row(
-                                              children: [
-                                                const Text(
-                                                  '사용할 포인트',
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.w600,
-                                                    color: BrandColors.gray_900,
-                                                  ),
-                                                ),
-                                                const Spacer(),
-                                                Text(
-                                                  '${data.post.publishedRevision!.price!.comma}P',
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.w800,
-                                                    color: (purchasable ? BrandColors.brand_400 : BrandColors.gray_400),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          if (purchasable) ...[
-                                            const Gap(24),
-                                            Button(
-                                              '구매하기',
-                                              kind: ButtonKind.accent,
-                                              onPressed: () async {
-                                                await reply({
-                                                  'type': 'purchase:proceed',
-                                                });
-
-                                                if (context.mounted) {
-                                                  await context.router.maybePop();
-                                                }
-                                              },
-                                            ),
-                                          ] else ...[
-                                            Padding(
-                                              padding: const EdgeInsets.symmetric(
-                                                vertical: 12,
-                                              ),
-                                              child: Row(
-                                                children: [
-                                                  const Text(
-                                                    '필요한 포인트',
-                                                    style: TextStyle(
-                                                      fontWeight: FontWeight.w600,
-                                                      color: BrandColors.brand_400,
-                                                    ),
-                                                  ),
-                                                  const Spacer(),
-                                                  Text(
-                                                    '${(data.post.publishedRevision!.price! - data.me!.point).comma}P',
-                                                    style: const TextStyle(
-                                                      fontWeight: FontWeight.w800,
-                                                      color: BrandColors.brand_400,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            const Gap(8),
-                                            const DecoratedBox(
-                                              decoration: BoxDecoration(
-                                                color: BrandColors.gray_50,
-                                                borderRadius: BorderRadius.all(
-                                                  Radius.circular(4),
-                                                ),
-                                              ),
-                                              child: Padding(
-                                                padding: EdgeInsets.all(10),
-                                                child: Row(
-                                                  children: [
-                                                    Icon(
-                                                      Tabler.coin_filled,
-                                                      size: 16,
-                                                      color: Color(0xFFFCC04B),
-                                                    ),
-                                                    Gap(4),
-                                                    Text(
-                                                      '해당 포스트를 구매하려면 포인트가 필요해요',
-                                                      style: TextStyle(
-                                                        color: BrandColors.gray_800,
-                                                        fontSize: 12,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                            const Gap(24),
-                                            Button(
-                                              '충전하기',
-                                              onPressed: () async {
-                                                await context.popWaitAndPush(const PointPurchaseRoute());
-                                              },
-                                            ),
-                                          ],
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                );
-                              }
-                            },
-                            onNavigate: (controller, navigationAction) async {
-                              if (navigationAction.navigationType == NavigationType.LINK_ACTIVATED) {
-                                await _browser.open(
-                                  url: navigationAction.request.url,
-                                  settings: ChromeSafariBrowserSettings(
-                                    barCollapsingEnabled: true,
-                                    dismissButtonStyle: DismissButtonStyle.CLOSE,
-                                    enableUrlBarHiding: true,
-                                  ),
-                                );
-
-                                return NavigationActionPolicy.CANCEL;
-                              }
-
-                              return NavigationActionPolicy.ALLOW;
-                            },
-                          ),
-                        ),
-                        const Gap(20),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                '태그',
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w700,
-                                  color: BrandColors.gray_400,
+                            if (data.post.publishedRevision!.subtitle != null) ...[
+                              const Gap(4),
+                              Text(
+                                data.post.publishedRevision!.subtitle!,
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
                                 ),
-                              ),
-                              const Gap(12),
-                              Wrap(
-                                spacing: 8,
-                                runSpacing: 10,
-                                children: [
-                                  _Tag(
-                                    kind: '카테고리',
-                                    name: switch (data.post.category) {
-                                      GPostCategory.ORIGINAL => '오리지널',
-                                      GPostCategory.FANFICTION => '2차창작',
-                                      GPostCategory.NONFICTION => '비문학',
-                                      GPostCategory.OTHER => '기타',
-                                      _ => throw UnimplementedError(),
-                                    },
-                                  ),
-                                  ...data.post.tags.map((item) {
-                                    return _Tag(
-                                      kind: switch (item.kind) {
-                                        GPostTagKind.TITLE => '작품',
-                                        GPostTagKind.CHARACTER => '캐릭터',
-                                        GPostTagKind.COUPLING => '커플링',
-                                        GPostTagKind.EXTRA => '기타',
-                                        GPostTagKind.TRIGGER => '트리거',
-                                        GPostTagKind.CHALLENGE => '챌린지',
-                                        _ => throw UnimplementedError(),
-                                      },
-                                      name: item.tag.name,
-                                    );
-                                  }),
-                                ],
                               ),
                             ],
-                          ),
-                        ),
-                        const Gap(24),
-                        Container(
-                          key: _staticFooterKey,
-                          child: footer,
-                        ),
-                        const HorizontalDivider(),
-                        const Gap(32),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                '이전 포스트 / 다음 포스트',
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w700,
-                                  color: BrandColors.gray_400,
-                                ),
-                              ),
-                              const Gap(12),
-                              IntrinsicHeight(
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                            const Gap(12),
+                            Row(
+                              children: [
+                                Stack(
                                   children: [
-                                    Expanded(
-                                      child: data.post.previousPost == null
-                                          ? Container(
-                                              padding: const EdgeInsets.fromLTRB(12, 10, 10, 10),
-                                              decoration: BoxDecoration(
-                                                border: Border.all(color: BrandColors.gray_50),
-                                                borderRadius: BorderRadius.circular(4),
-                                              ),
-                                              child: const Row(
-                                                children: [
-                                                  Icon(Tabler.arrow_left, size: 16, color: BrandColors.gray_300),
-                                                  Gap(8),
-                                                  Text(
-                                                    '이전 포스트가 없습니다',
-                                                    style: TextStyle(
-                                                      fontSize: 13,
-                                                      fontWeight: FontWeight.w700,
-                                                      color: BrandColors.gray_300,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            )
-                                          : Pressable(
-                                              child: Container(
-                                                padding: const EdgeInsets.fromLTRB(12, 10, 10, 10),
-                                                decoration: BoxDecoration(
-                                                  color: BrandColors.gray_50,
-                                                  borderRadius: BorderRadius.circular(4),
-                                                ),
-                                                child: Row(
-                                                  children: [
-                                                    const Icon(
-                                                      Tabler.arrow_left,
-                                                      size: 16,
-                                                      color: BrandColors.gray_800,
-                                                    ),
-                                                    const Gap(8),
-                                                    Expanded(
-                                                      child: Column(
-                                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                                        children: [
-                                                          Text(
-                                                            data.post.previousPost!.publishedRevision!.title ??
-                                                                '(제목 없음)',
-                                                            overflow: TextOverflow.ellipsis,
-                                                            style: const TextStyle(
-                                                              fontSize: 13,
-                                                              fontWeight: FontWeight.w700,
-                                                              color: BrandColors.gray_800,
-                                                            ),
-                                                          ),
-                                                          const Gap(1),
-                                                          Text(
-                                                            data.post.previousPost!.publishedRevision!.subtitle ?? '',
-                                                            overflow: TextOverflow.ellipsis,
-                                                            style: const TextStyle(
-                                                              fontSize: 11,
-                                                              fontWeight: FontWeight.w500,
-                                                              color: BrandColors.gray_500,
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                              onPressed: () async {
-                                                await context.router.push(
-                                                  PostRoute(
-                                                    permalink: data.post.previousPost!.permalink,
-                                                  ),
-                                                );
-                                              },
-                                            ),
+                                    Img(
+                                      data.post.space!.icon,
+                                      width: 30,
+                                      height: 30,
+                                      borderWidth: 1,
                                     ),
-                                    const Gap(10),
-                                    Expanded(
-                                      child: data.post.nextPost == null
-                                          ? Container(
-                                              padding: const EdgeInsets.fromLTRB(12, 10, 10, 10),
-                                              decoration: BoxDecoration(
-                                                border: Border.all(color: BrandColors.gray_50),
-                                                borderRadius: BorderRadius.circular(4),
-                                              ),
-                                              child: const Row(
-                                                children: [
-                                                  Text(
-                                                    '다음 포스트가 없습니다',
-                                                    style: TextStyle(
-                                                      fontSize: 13,
-                                                      fontWeight: FontWeight.w700,
-                                                      color: BrandColors.gray_300,
-                                                    ),
-                                                  ),
-                                                  Gap(8),
-                                                  Icon(Tabler.arrow_right, size: 16, color: BrandColors.gray_300),
-                                                ],
-                                              ),
-                                            )
-                                          : Pressable(
-                                              child: Container(
-                                                padding: const EdgeInsets.fromLTRB(12, 10, 10, 10),
-                                                decoration: BoxDecoration(
-                                                  color: BrandColors.gray_50,
-                                                  borderRadius: BorderRadius.circular(4),
-                                                ),
-                                                child: Row(
-                                                  children: [
-                                                    Expanded(
-                                                      child: Column(
-                                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                                        children: [
-                                                          Text(
-                                                            data.post.nextPost!.publishedRevision!.title ?? '(제목 없음)',
-                                                            overflow: TextOverflow.ellipsis,
-                                                            style: const TextStyle(
-                                                              fontSize: 13,
-                                                              fontWeight: FontWeight.w700,
-                                                              color: BrandColors.gray_800,
-                                                            ),
-                                                          ),
-                                                          const Gap(1),
-                                                          Text(
-                                                            data.post.nextPost!.publishedRevision!.subtitle ?? '',
-                                                            overflow: TextOverflow.ellipsis,
-                                                            style: const TextStyle(
-                                                              fontSize: 11,
-                                                              fontWeight: FontWeight.w500,
-                                                              color: BrandColors.gray_500,
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                    const Gap(8),
-                                                    const Icon(
-                                                      Tabler.arrow_right,
-                                                      size: 16,
-                                                      color: BrandColors.gray_800,
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                              onPressed: () async {
-                                                await context.router.push(
-                                                  PostRoute(
-                                                    permalink: data.post.nextPost!.permalink,
-                                                  ),
-                                                );
-                                              },
-                                            ),
+                                    Positioned(
+                                      bottom: 0,
+                                      right: 0,
+                                      child: Transform.translate(
+                                        offset: const Offset(4, 4),
+                                        child: Img(
+                                          data.post.member!.profile.avatar,
+                                          width: 20,
+                                          height: 20,
+                                          borderWidth: 1,
+                                          borderRadius: 10,
+                                        ),
+                                      ),
                                     ),
                                   ],
                                 ),
-                              ),
-                              const Gap(32),
-                              const HorizontalDivider(
-                                color: BrandColors.gray_50,
-                              ),
-                              const Gap(32),
-                              const Text(
-                                '스페이스',
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w700,
-                                  color: BrandColors.gray_400,
-                                ),
-                              ),
-                              const Gap(12),
-                              Row(
-                                children: [
-                                  Stack(
+                                const Gap(12),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Img(
-                                        data.post.space!.icon,
-                                        width: 38,
-                                        height: 38,
-                                        borderWidth: 1,
+                                      Text(
+                                        data.post.space!.name,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: const TextStyle(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w700,
+                                        ),
                                       ),
-                                      Positioned(
-                                        bottom: 0,
-                                        right: 0,
-                                        child: Transform.translate(
-                                          offset: const Offset(4, 4),
-                                          child: Img(
-                                            data.post.member!.profile.avatar,
-                                            width: 24,
-                                            height: 24,
-                                            borderWidth: 1,
-                                            borderRadius: 12,
-                                          ),
+                                      Text(
+                                        'by ${data.post.member!.profile.name}',
+                                        overflow: TextOverflow.ellipsis,
+                                        style: const TextStyle(
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.w500,
+                                          color: BrandColors.gray_500,
                                         ),
                                       ),
                                     ],
                                   ),
-                                  const Gap(12),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          data.post.space!.name,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: const TextStyle(
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.w700,
-                                          ),
-                                        ),
-                                        Text(
-                                          'by ${data.post.member!.profile.name}',
-                                          overflow: TextOverflow.ellipsis,
-                                          style: const TextStyle(
-                                            fontSize: 13,
-                                            fontWeight: FontWeight.w500,
-                                            color: BrandColors.gray_500,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              if (data.post.space!.description != null) ...[
-                                const Gap(10),
+                                ),
+                              ],
+                            ),
+                            const Gap(10),
+                            Row(
+                              children: [
                                 Text(
-                                  data.post.space!.description!,
+                                  Jiffy.parse(
+                                    data.post.publishedAt!.value,
+                                  ).format(
+                                    pattern: 'yyyy.MM.dd',
+                                  ),
                                   style: const TextStyle(
-                                    fontSize: 12,
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w500,
+                                    color: BrandColors.gray_400,
+                                  ),
+                                ),
+                                const Gap(6),
+                                const Dot(),
+                                const Gap(6),
+                                const Text(
+                                  '읽는 시간 7분',
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w500,
                                     color: BrandColors.gray_400,
                                   ),
                                 ),
                               ],
-                              const Gap(18),
-                              Pressable(
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 16,
-                                    vertical: 10,
+                            ),
+                            const Gap(20),
+                            const HorizontalDivider(),
+                          ],
+                        ),
+                      ),
+                      if (!_webViewLoaded)
+                        const Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 20),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              _Skeleton(widthFactor: 1.0),
+                              Gap(20),
+                              _Skeleton(widthFactor: 1.0),
+                              Gap(20),
+                              _Skeleton(widthFactor: 1.0),
+                              Gap(20),
+                              _Skeleton(widthFactor: 0.4),
+                            ],
+                          ),
+                        ),
+                      SizedBox(
+                        height: _webViewHeight,
+                        child: WebView(
+                          path: '/_webview/post-view/${widget.permalink}',
+                          onJsMessage: (message, reply) async {
+                            if (message['type'] == 'resize') {
+                              final height = (message['height'] as num).toDouble();
+                              if (height != _webViewHeight) {
+                                setState(() {
+                                  _webViewHeight = height;
+                                });
+                              }
+                              if (!_webViewLoaded) {
+                                setState(() {
+                                  _webViewLoaded = true;
+                                });
+                              }
+                            } else if (message['type'] == 'purchase') {
+                              await context.showBottomSheet(
+                                title: '포스트 구매',
+                                builder: (context) {
+                                  final purchasable = data.me!.point >= data.post.publishedRevision!.price!;
+
+                                  return Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                                    child: Column(
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(vertical: 20),
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  const Icon(Tabler.notes, size: 16),
+                                                  const Gap(3),
+                                                  Text(
+                                                    data.post.publishedRevision!.title ?? '(제목 없음)',
+                                                    overflow: TextOverflow.ellipsis,
+                                                    style: const TextStyle(
+                                                      color: BrandColors.gray_500,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              const Gap(4),
+                                              Text(
+                                                '${data.post.publishedRevision!.price?.comma}P',
+                                                style: const TextStyle(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.w800,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        const HorizontalDivider(),
+                                        const Gap(8),
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                            vertical: 12,
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              const Text(
+                                                '보유 포인트',
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.w600,
+                                                  color: BrandColors.gray_900,
+                                                ),
+                                              ),
+                                              const Spacer(),
+                                              Text(
+                                                '${data.me!.point.comma}P',
+                                                style: const TextStyle(
+                                                  fontWeight: FontWeight.w800,
+                                                  color: BrandColors.gray_400,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                            vertical: 12,
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              const Text(
+                                                '사용할 포인트',
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.w600,
+                                                  color: BrandColors.gray_900,
+                                                ),
+                                              ),
+                                              const Spacer(),
+                                              Text(
+                                                '${data.post.publishedRevision!.price!.comma}P',
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.w800,
+                                                  color: (purchasable ? BrandColors.brand_400 : BrandColors.gray_400),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        if (purchasable) ...[
+                                          const Gap(24),
+                                          Button(
+                                            '구매하기',
+                                            kind: ButtonKind.accent,
+                                            onPressed: () async {
+                                              await reply({
+                                                'type': 'purchase:proceed',
+                                              });
+
+                                              if (context.mounted) {
+                                                await context.router.maybePop();
+                                              }
+                                            },
+                                          ),
+                                        ] else ...[
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                              vertical: 12,
+                                            ),
+                                            child: Row(
+                                              children: [
+                                                const Text(
+                                                  '필요한 포인트',
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.w600,
+                                                    color: BrandColors.brand_400,
+                                                  ),
+                                                ),
+                                                const Spacer(),
+                                                Text(
+                                                  '${(data.post.publishedRevision!.price! - data.me!.point).comma}P',
+                                                  style: const TextStyle(
+                                                    fontWeight: FontWeight.w800,
+                                                    color: BrandColors.brand_400,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          const Gap(8),
+                                          const DecoratedBox(
+                                            decoration: BoxDecoration(
+                                              color: BrandColors.gray_50,
+                                              borderRadius: BorderRadius.all(
+                                                Radius.circular(4),
+                                              ),
+                                            ),
+                                            child: Padding(
+                                              padding: EdgeInsets.all(10),
+                                              child: Row(
+                                                children: [
+                                                  Icon(
+                                                    Tabler.coin_filled,
+                                                    size: 16,
+                                                    color: Color(0xFFFCC04B),
+                                                  ),
+                                                  Gap(4),
+                                                  Text(
+                                                    '해당 포스트를 구매하려면 포인트가 필요해요',
+                                                    style: TextStyle(
+                                                      color: BrandColors.gray_800,
+                                                      fontSize: 12,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                          const Gap(24),
+                                          Button(
+                                            '충전하기',
+                                            onPressed: () async {
+                                              await context.popWaitAndPush(const PointPurchaseRoute());
+                                            },
+                                          ),
+                                        ],
+                                      ],
+                                    ),
+                                  );
+                                },
+                              );
+                            }
+                          },
+                          onNavigate: (controller, navigationAction) async {
+                            if (navigationAction.navigationType == NavigationType.LINK_ACTIVATED) {
+                              await _browser.open(
+                                url: navigationAction.request.url,
+                                settings: ChromeSafariBrowserSettings(
+                                  barCollapsingEnabled: true,
+                                  dismissButtonStyle: DismissButtonStyle.CLOSE,
+                                  enableUrlBarHiding: true,
+                                ),
+                              );
+
+                              return NavigationActionPolicy.CANCEL;
+                            }
+
+                            return NavigationActionPolicy.ALLOW;
+                          },
+                        ),
+                      ),
+                      const Gap(20),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              '태그',
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w700,
+                                color: BrandColors.gray_400,
+                              ),
+                            ),
+                            const Gap(12),
+                            Wrap(
+                              spacing: 8,
+                              runSpacing: 10,
+                              children: [
+                                _Tag(
+                                  kind: '카테고리',
+                                  name: switch (data.post.category) {
+                                    GPostCategory.ORIGINAL => '오리지널',
+                                    GPostCategory.FANFICTION => '2차창작',
+                                    GPostCategory.NONFICTION => '비문학',
+                                    GPostCategory.OTHER => '기타',
+                                    _ => throw UnimplementedError(),
+                                  },
+                                ),
+                                ...data.post.tags.map((item) {
+                                  return _Tag(
+                                    kind: switch (item.kind) {
+                                      GPostTagKind.TITLE => '작품',
+                                      GPostTagKind.CHARACTER => '캐릭터',
+                                      GPostTagKind.COUPLING => '커플링',
+                                      GPostTagKind.EXTRA => '기타',
+                                      GPostTagKind.TRIGGER => '트리거',
+                                      GPostTagKind.CHALLENGE => '챌린지',
+                                      _ => throw UnimplementedError(),
+                                    },
+                                    name: item.tag.name,
+                                  );
+                                }),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      const Gap(24),
+                      Container(
+                        key: _staticFooterKey,
+                        child: footer,
+                      ),
+                      const HorizontalDivider(),
+                      const Gap(32),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              '이전 포스트 / 다음 포스트',
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w700,
+                                color: BrandColors.gray_400,
+                              ),
+                            ),
+                            const Gap(12),
+                            IntrinsicHeight(
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  Expanded(
+                                    child: data.post.previousPost == null
+                                        ? Container(
+                                            padding: const EdgeInsets.fromLTRB(12, 10, 10, 10),
+                                            decoration: BoxDecoration(
+                                              border: Border.all(color: BrandColors.gray_50),
+                                              borderRadius: BorderRadius.circular(4),
+                                            ),
+                                            child: const Row(
+                                              children: [
+                                                Icon(Tabler.arrow_left, size: 16, color: BrandColors.gray_300),
+                                                Gap(8),
+                                                Text(
+                                                  '이전 포스트가 없습니다',
+                                                  style: TextStyle(
+                                                    fontSize: 13,
+                                                    fontWeight: FontWeight.w700,
+                                                    color: BrandColors.gray_300,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          )
+                                        : Pressable(
+                                            child: Container(
+                                              padding: const EdgeInsets.fromLTRB(12, 10, 10, 10),
+                                              decoration: BoxDecoration(
+                                                color: BrandColors.gray_50,
+                                                borderRadius: BorderRadius.circular(4),
+                                              ),
+                                              child: Row(
+                                                children: [
+                                                  const Icon(
+                                                    Tabler.arrow_left,
+                                                    size: 16,
+                                                    color: BrandColors.gray_800,
+                                                  ),
+                                                  const Gap(8),
+                                                  Expanded(
+                                                    child: Column(
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      children: [
+                                                        Text(
+                                                          data.post.previousPost!.publishedRevision!.title ?? '(제목 없음)',
+                                                          overflow: TextOverflow.ellipsis,
+                                                          style: const TextStyle(
+                                                            fontSize: 13,
+                                                            fontWeight: FontWeight.w700,
+                                                            color: BrandColors.gray_800,
+                                                          ),
+                                                        ),
+                                                        const Gap(1),
+                                                        Text(
+                                                          data.post.previousPost!.publishedRevision!.subtitle ?? '',
+                                                          overflow: TextOverflow.ellipsis,
+                                                          style: const TextStyle(
+                                                            fontSize: 11,
+                                                            fontWeight: FontWeight.w500,
+                                                            color: BrandColors.gray_500,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            onPressed: () async {
+                                              await context.router.push(
+                                                PostRoute(
+                                                  permalink: data.post.previousPost!.permalink,
+                                                ),
+                                              );
+                                            },
+                                          ),
                                   ),
-                                  decoration: BoxDecoration(
-                                    color: BrandColors.gray_900,
-                                    borderRadius: BorderRadius.circular(2),
+                                  const Gap(10),
+                                  Expanded(
+                                    child: data.post.nextPost == null
+                                        ? Container(
+                                            padding: const EdgeInsets.fromLTRB(12, 10, 10, 10),
+                                            decoration: BoxDecoration(
+                                              border: Border.all(color: BrandColors.gray_50),
+                                              borderRadius: BorderRadius.circular(4),
+                                            ),
+                                            child: const Row(
+                                              children: [
+                                                Text(
+                                                  '다음 포스트가 없습니다',
+                                                  style: TextStyle(
+                                                    fontSize: 13,
+                                                    fontWeight: FontWeight.w700,
+                                                    color: BrandColors.gray_300,
+                                                  ),
+                                                ),
+                                                Gap(8),
+                                                Icon(Tabler.arrow_right, size: 16, color: BrandColors.gray_300),
+                                              ],
+                                            ),
+                                          )
+                                        : Pressable(
+                                            child: Container(
+                                              padding: const EdgeInsets.fromLTRB(12, 10, 10, 10),
+                                              decoration: BoxDecoration(
+                                                color: BrandColors.gray_50,
+                                                borderRadius: BorderRadius.circular(4),
+                                              ),
+                                              child: Row(
+                                                children: [
+                                                  Expanded(
+                                                    child: Column(
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      children: [
+                                                        Text(
+                                                          data.post.nextPost!.publishedRevision!.title ?? '(제목 없음)',
+                                                          overflow: TextOverflow.ellipsis,
+                                                          style: const TextStyle(
+                                                            fontSize: 13,
+                                                            fontWeight: FontWeight.w700,
+                                                            color: BrandColors.gray_800,
+                                                          ),
+                                                        ),
+                                                        const Gap(1),
+                                                        Text(
+                                                          data.post.nextPost!.publishedRevision!.subtitle ?? '',
+                                                          overflow: TextOverflow.ellipsis,
+                                                          style: const TextStyle(
+                                                            fontSize: 11,
+                                                            fontWeight: FontWeight.w500,
+                                                            color: BrandColors.gray_500,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  const Gap(8),
+                                                  const Icon(
+                                                    Tabler.arrow_right,
+                                                    size: 16,
+                                                    color: BrandColors.gray_800,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            onPressed: () async {
+                                              await context.router.push(
+                                                PostRoute(
+                                                  permalink: data.post.nextPost!.permalink,
+                                                ),
+                                              );
+                                            },
+                                          ),
                                   ),
-                                  child: const Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
+                                ],
+                              ),
+                            ),
+                            const Gap(32),
+                            const HorizontalDivider(
+                              color: BrandColors.gray_50,
+                            ),
+                            const Gap(32),
+                            const Text(
+                              '스페이스',
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w700,
+                                color: BrandColors.gray_400,
+                              ),
+                            ),
+                            const Gap(12),
+                            Row(
+                              children: [
+                                Stack(
+                                  children: [
+                                    Img(
+                                      data.post.space!.icon,
+                                      width: 38,
+                                      height: 38,
+                                      borderWidth: 1,
+                                    ),
+                                    Positioned(
+                                      bottom: 0,
+                                      right: 0,
+                                      child: Transform.translate(
+                                        offset: const Offset(4, 4),
+                                        child: Img(
+                                          data.post.member!.profile.avatar,
+                                          width: 24,
+                                          height: 24,
+                                          borderWidth: 1,
+                                          borderRadius: 12,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const Gap(12),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Icon(Tabler.plus, size: 16, color: BrandColors.gray_0),
-                                      Gap(3),
                                       Text(
-                                        '스페이스 구독',
-                                        style: TextStyle(
-                                          fontSize: 13,
+                                        data.post.space!.name,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: const TextStyle(
+                                          fontSize: 15,
                                           fontWeight: FontWeight.w700,
-                                          color: BrandColors.gray_0,
+                                        ),
+                                      ),
+                                      Text(
+                                        'by ${data.post.member!.profile.name}',
+                                        overflow: TextOverflow.ellipsis,
+                                        style: const TextStyle(
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.w500,
+                                          color: BrandColors.gray_500,
                                         ),
                                       ),
                                     ],
                                   ),
                                 ),
-                                onPressed: () {},
-                              ),
-                            ],
-                          ),
-                        ),
-                        const Gap(32),
-                        const HorizontalDivider(height: 10, color: BrandColors.gray_50),
-                        const Gap(22),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                '추천',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                              const Gap(3),
-                              ...data.post.recommendedPosts.map((item) {
-                                return PostCard(
-                                  item,
-                                  padding: const EdgeInsets.symmetric(vertical: 18),
-                                );
-                              }).intersperse(
-                                const HorizontalDivider(
-                                  color: BrandColors.gray_50,
+                              ],
+                            ),
+                            if (data.post.space!.description != null) ...[
+                              const Gap(10),
+                              Text(
+                                data.post.space!.description!,
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  color: BrandColors.gray_400,
                                 ),
                               ),
                             ],
-                          ),
+                            const Gap(18),
+                            Pressable(
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 10,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: BrandColors.gray_900,
+                                  borderRadius: BorderRadius.circular(2),
+                                ),
+                                child: const Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(Tabler.plus, size: 16, color: BrandColors.gray_0),
+                                    Gap(3),
+                                    Text(
+                                      '스페이스 구독',
+                                      style: TextStyle(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w700,
+                                        color: BrandColors.gray_0,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              onPressed: () {},
+                            ),
+                          ],
                         ),
-                        const Gap(100),
-                      ],
-                    ),
+                      ),
+                      const Gap(32),
+                      const HorizontalDivider(height: 10, color: BrandColors.gray_50),
+                      const Gap(22),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              '추천',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                            const Gap(3),
+                            ...data.post.recommendedPosts.map((item) {
+                              return PostCard(
+                                item,
+                                padding: const EdgeInsets.symmetric(vertical: 18),
+                              );
+                            }).intersperse(
+                              const HorizontalDivider(
+                                color: BrandColors.gray_50,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const Gap(100),
+                    ],
                   ),
                 ),
+              ),
+              Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                child: _showBars || (hasThumbnail && _isOverThumbnail)
+                    ? heading
+                    : Heading.empty(systemUiOverlayStyle: SystemUiOverlayStyle.dark),
+              ),
+              if (_showBars && _showFloatingFooter)
                 Positioned(
-                  top: 0,
+                  bottom: 0,
                   left: 0,
                   right: 0,
-                  child: _showBars || (hasThumbnail && _isOverThumbnail)
-                      ? heading
-                      : Heading.empty(
-                          systemUiOverlayStyle: SystemUiOverlayStyle.dark,
+                  child: DecoratedBox(
+                    decoration: const BoxDecoration(
+                      color: BrandColors.gray_0,
+                      border: Border(
+                        top: BorderSide(
+                          color: BrandColors.gray_100,
                         ),
-                ),
-                if (_showBars && _showFloatingFooter)
-                  Positioned(
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                    child: DecoratedBox(
-                      decoration: const BoxDecoration(
-                        color: BrandColors.gray_0,
-                        border: Border(
-                          top: BorderSide(
-                            color: BrandColors.gray_100,
-                          ),
-                        ),
-                      ),
-                      child: SafeArea(
-                        top: false,
-                        child: footer,
                       ),
                     ),
+                    child: SafeArea(
+                      top: false,
+                      child: footer,
+                    ),
                   ),
-              ],
-            ),
+                ),
+            ],
           );
         },
       ),

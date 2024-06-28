@@ -40,7 +40,9 @@ class DefaultShell extends StatelessWidget {
             actions: actions,
             bottomBorder: bottomBorder,
           ),
-      body: useSafeArea ? SafeArea(child: child) : child,
+      body: SizedBox.expand(
+        child: useSafeArea ? SafeArea(child: child) : child,
+      ),
     );
   }
 }

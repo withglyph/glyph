@@ -9,6 +9,7 @@ import 'package:glyph/context/bottom_menu.dart';
 import 'package:glyph/ferry/widget.dart';
 import 'package:glyph/graphql/__generated__/feed_screen_query.req.gql.dart';
 import 'package:glyph/icons/tabler.dart';
+import 'package:glyph/icons/tabler_bold.dart';
 import 'package:glyph/routers/app.gr.dart';
 import 'package:glyph/shells/default.dart';
 import 'package:glyph/themes/colors.dart';
@@ -45,7 +46,7 @@ class _FeedScreenState extends State<FeedScreen> {
                 ),
               ),
               const Gap(4),
-              const Icon(Tabler.chevron_down, size: 16),
+              const Icon(TablerBold.chevron_down, size: 16),
             ],
           ),
           onPressed: () async {
