@@ -38,9 +38,7 @@ class PullToRefresh extends StatelessWidget {
                   return Opacity(
                     opacity: controller.value.clamp(0, 1),
                     child: LinearProgressIndicator(
-                      value: controller.isDragging || controller.isArmed
-                          ? controller.value.clamp(0, 1)
-                          : null,
+                      value: controller.isDragging || controller.isArmed ? controller.value.clamp(0, 1) : null,
                       backgroundColor: BrandColors.gray_150,
                       color: BrandColors.gray_900,
                     ),
@@ -96,10 +94,8 @@ class PullToRefreshListView extends StatelessWidget {
           child: itemCount == 0
               ? SingleChildScrollView(
                   physics: const AlwaysScrollableScrollPhysics(),
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(
-                      minHeight: constraints.maxHeight,
-                    ),
+                  child: SizedBox(
+                    height: constraints.maxHeight,
                     child: emptyText,
                   ),
                 )

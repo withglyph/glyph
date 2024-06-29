@@ -20,7 +20,7 @@ class _FeedChallengeScreenState extends State<FeedChallengeScreen> {
   @override
   Widget build(BuildContext context) {
     return const EmptyState(
-      icon: TablerBold.notes_off,
+      icon: TablerBold.trophy_off,
       title: '지금은 진행중인 챌린지가 없어요',
       description: '다음 챌린지를 기대해주세요!',
     );

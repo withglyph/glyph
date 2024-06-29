@@ -16,6 +16,7 @@ import 'package:glyph/graphql/__generated__/notification_screen_query.data.gql.d
 import 'package:glyph/graphql/__generated__/notification_screen_query.req.gql.dart';
 import 'package:glyph/graphql/__generated__/schema.schema.gql.dart';
 import 'package:glyph/icons/tabler.dart';
+import 'package:glyph/icons/tabler_bold.dart';
 import 'package:glyph/providers/ferry.dart';
 import 'package:glyph/routers/app.gr.dart';
 import 'package:glyph/shells/default.dart';
@@ -48,8 +49,7 @@ class NotificationScreen extends ConsumerWidget {
         operation: GNotificationScreen_QueryReq(),
         builder: (context, client, data) {
           final notifications = data.me!.notifications;
-          final unreadNotifications = notifications
-              .where((n) => n.state == GUserNotificationState.UNREAD);
+          final unreadNotifications = notifications.where((n) => n.state == GUserNotificationState.UNREAD);
 
           return Column(
             children: [
@@ -99,16 +99,13 @@ class NotificationScreen extends ConsumerWidget {
                           style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w700,
-                            color: unreadNotifications.isNotEmpty
-                                ? BrandColors.brand_600
-                                : BrandColors.gray_300,
+                            color: unreadNotifications.isNotEmpty ? BrandColors.brand_600 : BrandColors.gray_300,
                           ),
                         ),
                       ),
                       onPressed: () async {
                         final client = ref.read(ferryProvider);
-                        final req =
-                            GNotificationScreen_MarkAllNotificationsAsRead_MutationReq();
+                        final req = GNotificationScreen_MarkAllNotificationsAsRead_MutationReq();
                         await client.req(req);
 
                         if (context.mounted) {
@@ -123,16 +120,12 @@ class NotificationScreen extends ConsumerWidget {
                 child: PullToRefresh.listView(
                   itemCount: notifications.length,
                   itemBuilder: (context, index) {
-                    final notification = notifications.elementAtOrNull(index);
-                    if (notification == null) {
-                      return null;
-                    }
+                    final notification = notifications[index];
 
                     return Pressable(
                       child: DecoratedBox(
                         decoration: BoxDecoration(
-                          color: notification.state ==
-                                  GUserNotificationState.UNREAD
+                          color: notification.state == GUserNotificationState.UNREAD
                               ? BrandColors.gray_50
                               : BrandColors.gray_0,
                         ),
@@ -152,28 +145,20 @@ class NotificationScreen extends ConsumerWidget {
                                     child: DecoratedBox(
                                       decoration: BoxDecoration(
                                         color: notification.when(
-                                          commentNotification: (_) =>
-                                              const Color(0xFF3196DE),
-                                          subscribeNotification: (_) =>
-                                              const Color(0xFF3EBBAC),
-                                          purchaseNotification: (_) =>
-                                              BrandColors.brand_400,
-                                          emojiReactionNotification: (_) =>
-                                              const Color(0xFFFF7FA5),
+                                          commentNotification: (_) => const Color(0xFF3196DE),
+                                          subscribeNotification: (_) => const Color(0xFF3EBBAC),
+                                          purchaseNotification: (_) => BrandColors.brand_400,
+                                          emojiReactionNotification: (_) => const Color(0xFFFF7FA5),
                                           orElse: () => BrandColors.gray_50,
                                         ),
                                         borderRadius: BorderRadius.circular(18),
                                       ),
                                       child: Icon(
                                         notification.when(
-                                          commentNotification: (_) =>
-                                              Tabler.message_circle_filled,
-                                          subscribeNotification: (_) => Tabler
-                                              .rosette_discount_check_filled,
-                                          purchaseNotification: (_) =>
-                                              Tabler.coin_filled,
-                                          emojiReactionNotification: (_) =>
-                                              Tabler.mood_smile_filled,
+                                          commentNotification: (_) => Tabler.message_circle_filled,
+                                          subscribeNotification: (_) => Tabler.rosette_discount_check_filled,
+                                          purchaseNotification: (_) => Tabler.coin_filled,
+                                          emojiReactionNotification: (_) => Tabler.mood_smile_filled,
                                           orElse: () => Tabler.bell_filled,
                                         ),
                                         size: 20,
@@ -235,8 +220,7 @@ class NotificationScreen extends ConsumerWidget {
                                     ),
                                     const Gap(4),
                                     Text(
-                                      Jiffy.parse(notification.createdAt.value)
-                                          .fromNow(),
+                                      Jiffy.parse(notification.createdAt.value).fromNow(),
                                       style: const TextStyle(
                                         fontSize: 12,
                                         color: BrandColors.gray_400,
@@ -250,18 +234,15 @@ class NotificationScreen extends ConsumerWidget {
                         ),
                       ),
                       onPressed: () async {
-                        final req =
-                            GNotificationScreen_MarkNotificationAsRead_MutationReq(
+                        final req = GNotificationScreen_MarkNotificationAsRead_MutationReq(
                           (b) => b..vars.input.notificationId = notification.id,
                         );
                         await client.req(req);
 
                         final route = notification.when(
-                          commentNotification: (notification) =>
-                              PostRoute(permalink: notification.post.permalink),
+                          commentNotification: (notification) => PostRoute(permalink: notification.post.permalink),
                           subscribeNotification: (notification) => null,
-                          purchaseNotification: (notification) =>
-                              PostRoute(permalink: notification.post.permalink),
+                          purchaseNotification: (notification) => PostRoute(permalink: notification.post.permalink),
                           emojiReactionNotification: (notification) =>
                               PostRoute(permalink: notification.post.permalink),
                           orElse: () => null,
@@ -283,7 +264,7 @@ class NotificationScreen extends ConsumerWidget {
                     await client.req(GNotificationScreen_QueryReq());
                   },
                   emptyText: const EmptyState(
-                    icon: Tabler.bell_x,
+                    icon: TablerBold.bell_x,
                     title: '아직 알림이 없어요',
                     description: '스페이스를 구독하거나 댓글을 남겨보세요',
                   ),
