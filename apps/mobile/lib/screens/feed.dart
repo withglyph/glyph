@@ -104,8 +104,8 @@ class _FeedScreenState extends State<FeedScreen> {
 
               return false;
             },
-            child: child,
-          ),
+              child: child,
+            ),
         );
       },
     );

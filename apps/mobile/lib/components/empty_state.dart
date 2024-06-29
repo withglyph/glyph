@@ -7,35 +7,39 @@ class EmptyState extends StatelessWidget {
     required this.icon,
     required this.title,
     super.key,
-    this.description = '',
+    this.description,
   });
 
   final IconData icon;
   final String title;
-  final String description;
+  final String? description;
 
   @override
   Widget build(BuildContext context) {
     return Center(
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon, size: 40),
+          Icon(icon, size: 40, color: BrandColors.gray_800),
           const Gap(16),
           Text(
             title,
             style: const TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w700,
+              color: BrandColors.gray_800,
             ),
           ),
-          const Gap(4),
-          Text(
-            description,
-            style: const TextStyle(
-              fontSize: 14,
-              color: BrandColors.gray_500,
+          if (description != null) ...[
+            const Gap(4),
+            Text(
+              description!,
+              style: const TextStyle(
+                fontSize: 14,
+                color: BrandColors.gray_500,
+              ),
             ),
-          ),
+          ],
         ],
       ),
     );
