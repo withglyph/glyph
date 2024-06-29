@@ -17,8 +17,7 @@ class ToggleSwitch extends StatefulWidget {
   createState() => _ToggleSwitchState();
 }
 
-class _ToggleSwitchState extends State<ToggleSwitch>
-    with SingleTickerProviderStateMixin {
+class _ToggleSwitchState extends State<ToggleSwitch> with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<Color?> _thumbColorAnimation;
   late Animation<AlignmentGeometry> _thumbAlignmentAnimation;

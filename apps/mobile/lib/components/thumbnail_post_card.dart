@@ -83,23 +83,19 @@ class ThumbnailPostCard extends ConsumerWidget {
                       title: '포스트',
                       items: [
                         BottomMenuItem(
-                          icon:
-                              post.space!.followed ? Tabler.minus : Tabler.plus,
+                          icon: post.space!.followed ? Tabler.minus : Tabler.plus,
                           iconColor: BrandColors.gray_600,
-                          title:
-                              post.space!.followed ? '스페이스 구독 해제' : '스페이스 구독',
+                          title: post.space!.followed ? '스페이스 구독 해제' : '스페이스 구독',
                           color: BrandColors.gray_600,
                           onTap: () async {
                             final client = ref.read(ferryProvider);
                             if (post.space!.followed) {
-                              final req =
-                                  GThumbnailPostCard_UnfollowSpace_MutationReq(
+                              final req = GThumbnailPostCard_UnfollowSpace_MutationReq(
                                 (b) => b..vars.input.spaceId = post.space!.id,
                               );
                               await client.req(req);
                             } else {
-                              final req =
-                                  GThumbnailPostCard_FollowSpace_MutationReq(
+                              final req = GThumbnailPostCard_FollowSpace_MutationReq(
                                 (b) => b..vars.input.spaceId = post.space!.id,
                               );
                               await client.req(req);
@@ -109,20 +105,16 @@ class ThumbnailPostCard extends ConsumerWidget {
                         BottomMenuItem(
                           icon: Tabler.volume_3,
                           title: post.space!.muted ? '스페이스 뮤트 해제' : '스페이스 뮤트',
-                          color: post.space!.muted
-                              ? BrandColors.gray_900
-                              : BrandColors.red_600,
+                          color: post.space!.muted ? BrandColors.gray_900 : BrandColors.red_600,
                           onTap: () async {
                             final client = ref.read(ferryProvider);
                             if (post.space!.muted) {
-                              final req =
-                                  GThumbnailPostCard_UnmuteSpace_MutationReq(
+                              final req = GThumbnailPostCard_UnmuteSpace_MutationReq(
                                 (b) => b..vars.input.spaceId = post.space!.id,
                               );
                               await client.req(req);
                             } else {
-                              final req =
-                                  GThumbnailPostCard_MuteSpace_MutationReq(
+                              final req = GThumbnailPostCard_MuteSpace_MutationReq(
                                 (b) => b..vars.input.spaceId = post.space!.id,
                               );
                               await client.req(req);
@@ -189,10 +181,7 @@ class ThumbnailPostCard extends ConsumerWidget {
                     clipBehavior: Clip.hardEdge,
                     alignment: Alignment.centerLeft,
                     child: Row(
-                      children: post.tags
-                          .map((tag) => Tag(tag.tag))
-                          .intersperse(const Gap(4))
-                          .toList(),
+                      children: post.tags.map((tag) => Tag(tag.tag)).intersperse(const Gap(4)).toList(),
                     ),
                   ),
                 ],
@@ -234,29 +223,22 @@ class ThumbnailPostCard extends ConsumerWidget {
                     const Gap(20),
                     Pressable(
                       child: Icon(
-                        post.bookmarkGroups.isEmpty
-                            ? Tabler.bookmark
-                            : Tabler.bookmark_filled,
+                        post.bookmarkGroups.isEmpty ? Tabler.bookmark : Tabler.bookmark_filled,
                         size: 20,
-                        color: post.bookmarkGroups.isEmpty
-                            ? BrandColors.gray_500
-                            : BrandColors.gray_900,
+                        color: post.bookmarkGroups.isEmpty ? BrandColors.gray_500 : BrandColors.gray_900,
                       ),
                       onPressed: () async {
                         final client = ref.read(ferryProvider);
                         if (post.bookmarkGroups.isEmpty) {
-                          final req =
-                              GThumbnailPostCard_BookmarkPost_MutationReq(
+                          final req = GThumbnailPostCard_BookmarkPost_MutationReq(
                             (b) => b..vars.input.postId = post.id,
                           );
                           await client.req(req);
                         } else {
-                          final req =
-                              GThumbnailPostCard_UnbookmarkPost_MutationReq(
+                          final req = GThumbnailPostCard_UnbookmarkPost_MutationReq(
                             (b) => b
                               ..vars.input.postId = post.id
-                              ..vars.input.bookmarkGroupId =
-                                  post.bookmarkGroups.first.id,
+                              ..vars.input.bookmarkGroupId = post.bookmarkGroups.first.id,
                           );
                           await client.req(req);
                         }

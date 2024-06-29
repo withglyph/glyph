@@ -22,9 +22,7 @@ class _OssLicensesScreenState extends State<OssLicensesScreen> {
 
     for (final entry in entries) {
       for (final package in entry.packages) {
-        licenses
-            .putIfAbsent(package, () => [])
-            .addAll(entry.paragraphs.map((v) => v.text));
+        licenses.putIfAbsent(package, () => []).addAll(entry.paragraphs.map((v) => v.text));
       }
     }
 

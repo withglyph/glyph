@@ -85,8 +85,7 @@ class _WebviewState extends ConsumerState<WebView> {
             WebMessageListener(
               jsObjectName: 'flutter',
               allowedOriginRules: {'*'},
-              onPostMessage:
-                  (message, sourceOrigin, isMainFrame, replyProxy) async {
+              onPostMessage: (message, sourceOrigin, isMainFrame, replyProxy) async {
                 await widget.onJsMessage?.call(
                   json.decode(utf8.decode(base64.decode(message!.data))),
                   (data) => replyProxy.postMessage(

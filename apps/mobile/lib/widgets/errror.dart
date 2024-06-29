@@ -26,8 +26,7 @@ class AppErrorWidget extends StatelessWidget {
                 decoration: const BoxDecoration(
                   color: BrandColors.gray_900,
                 ),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 child: const Text(
                   '뒤로 가기',
                   style: TextStyle(

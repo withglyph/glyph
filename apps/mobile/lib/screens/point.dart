@@ -86,8 +86,7 @@ class _TabItem extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
-                    color:
-                        isActive ? BrandColors.gray_900 : BrandColors.gray_400,
+                    color: isActive ? BrandColors.gray_900 : BrandColors.gray_400,
                   ),
                 ),
               ),

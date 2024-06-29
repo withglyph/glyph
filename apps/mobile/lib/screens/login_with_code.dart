@@ -25,8 +25,7 @@ class LoginWithCodeScreen extends ConsumerStatefulWidget {
   final String email;
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() =>
-      _LoginWithCodeScreenState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _LoginWithCodeScreenState();
 }
 
 class _LoginWithCodeScreenState extends ConsumerState<LoginWithCodeScreen> {
@@ -143,25 +142,19 @@ class _LoginWithCodeScreenState extends ConsumerState<LoginWithCodeScreen> {
                 final client = ref.read(ferryProvider);
 
                 try {
-                  final req1 =
-                      GLoginWithEmailNextScreen_IssueUserEmailAuthorizationToken_MutationReq(
+                  final req1 = GLoginWithEmailNextScreen_IssueUserEmailAuthorizationToken_MutationReq(
                     (b) => b
                       ..vars.input.email = widget.email
                       ..vars.input.code = value,
                   );
                   final resp1 = await client.req(req1);
 
-                  final req2 =
-                      GLoginWithEmailNextScreen_AuthorizeUserEmailToken_MutationReq(
-                    (b) => b
-                      ..vars.input.token =
-                          resp1.issueUserEmailAuthorizationToken.token,
+                  final req2 = GLoginWithEmailNextScreen_AuthorizeUserEmailToken_MutationReq(
+                    (b) => b..vars.input.token = resp1.issueUserEmailAuthorizationToken.token,
                   );
                   final resp2 = await client.req(req2);
 
-                  await ref
-                      .read(authProvider.notifier)
-                      .setAccessToken(resp2.authorizeUserEmailToken.token);
+                  await ref.read(authProvider.notifier).setAccessToken(resp2.authorizeUserEmailToken.token);
                 } on IntentionalError catch (_) {
                   setState(() {
                     _hasError = true;

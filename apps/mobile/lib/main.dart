@@ -45,8 +45,7 @@ Future<void> main() async {
 
   PlatformInAppWebViewController.debugLoggingSettings.enabled = false;
 
-  final mixpanel =
-      await Mixpanel.init(Env.mixpanelToken, trackAutomaticEvents: false);
+  final mixpanel = await Mixpanel.init(Env.mixpanelToken, trackAutomaticEvents: false);
 
   GetIt.I.registerSingleton<FlutterSecureStorage>(const FlutterSecureStorage());
   GetIt.I.registerSingleton<FirebaseMessaging>(FirebaseMessaging.instance);

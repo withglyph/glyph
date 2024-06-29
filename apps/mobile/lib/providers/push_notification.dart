@@ -53,8 +53,7 @@ class PushNotification extends _$PushNotification {
       return;
     }
 
-    final req =
-        GPushNotificationProvider_RegisterPushNotificationToken_MutationReq(
+    final req = GPushNotificationProvider_RegisterPushNotificationToken_MutationReq(
       (b) => b..vars.input.token = token,
     );
     await ref.read(ferryProvider).req(req);
@@ -75,8 +74,7 @@ class PushNotification extends _$PushNotification {
       return;
     }
 
-    final req =
-        GPushNotificationProvider_DeletePushNotificationToken_MutationReq(
+    final req = GPushNotificationProvider_DeletePushNotificationToken_MutationReq(
       (b) => b..vars.input.token = token,
     );
     await ref.read(ferryProvider).req(req);

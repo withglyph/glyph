@@ -82,10 +82,7 @@ class PostCard extends ConsumerWidget {
                         clipBehavior: Clip.hardEdge,
                         alignment: Alignment.centerLeft,
                         child: Row(
-                          children: post.tags
-                              .map((tag) => Tag(tag.tag))
-                              .intersperse(const Gap(4))
-                              .toList(),
+                          children: post.tags.map((tag) => Tag(tag.tag)).intersperse(const Gap(4)).toList(),
                         ),
                       ),
                     ),
@@ -112,8 +109,7 @@ class PostCard extends ConsumerWidget {
                         ),
                         const Gap(6),
                         Text(
-                          Jiffy.parse(post.publishedAt!.value)
-                              .format(pattern: 'yyyy.MM.dd'),
+                          Jiffy.parse(post.publishedAt!.value).format(pattern: 'yyyy.MM.dd'),
                           style: const TextStyle(
                             fontSize: 12,
                             color: BrandColors.gray_500,

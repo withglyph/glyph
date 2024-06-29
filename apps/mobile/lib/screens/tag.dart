@@ -28,8 +28,7 @@ class TagScreen extends StatefulWidget {
   createState() => _TagScreenState();
 }
 
-class _TagScreenState extends State<TagScreen>
-    with SingleTickerProviderStateMixin {
+class _TagScreenState extends State<TagScreen> with SingleTickerProviderStateMixin {
   late AnimationController _appBarAnimationController;
   late Animation<Color?> _appBarBackgroundColorAnimation;
   late Animation<Color?> _appBarForegroundColorAnimation;
@@ -112,17 +111,13 @@ class _TagScreenState extends State<TagScreen>
                                   Pressable(
                                     onPressed: () async {
                                       if (data.tag.muted) {
-                                        final req =
-                                            GTagScreen_UnmuteTag_MutationReq(
-                                          (b) =>
-                                              b..vars.input.tagId = data.tag.id,
+                                        final req = GTagScreen_UnmuteTag_MutationReq(
+                                          (b) => b..vars.input.tagId = data.tag.id,
                                         );
                                         await client.req(req);
                                       } else {
-                                        final req =
-                                            GTagScreen_MuteTag_MutationReq(
-                                          (b) =>
-                                              b..vars.input.tagId = data.tag.id,
+                                        final req = GTagScreen_MuteTag_MutationReq(
+                                          (b) => b..vars.input.tagId = data.tag.id,
                                         );
                                         await client.req(req);
                                       }
@@ -141,9 +136,7 @@ class _TagScreenState extends State<TagScreen>
                                           Icon(
                                             Tabler.volume_3,
                                             size: 16,
-                                            color: data.tag.muted
-                                                ? BrandColors.gray_900
-                                                : BrandColors.red_600,
+                                            color: data.tag.muted ? BrandColors.gray_900 : BrandColors.red_600,
                                           ),
                                           const Gap(16),
                                           Text(
@@ -151,9 +144,7 @@ class _TagScreenState extends State<TagScreen>
                                             style: TextStyle(
                                               fontSize: 16,
                                               fontWeight: FontWeight.w500,
-                                              color: data.tag.muted
-                                                  ? BrandColors.gray_900
-                                                  : BrandColors.red_600,
+                                              color: data.tag.muted ? BrandColors.gray_900 : BrandColors.red_600,
                                             ),
                                           ),
                                         ],
@@ -179,13 +170,11 @@ class _TagScreenState extends State<TagScreen>
               onNotification: (notification) {
                 if (_key.currentContext == null) return false;
 
-                final box =
-                    _key.currentContext!.findRenderObject()! as RenderBox;
+                final box = _key.currentContext!.findRenderObject()! as RenderBox;
                 final offset = box.localToGlobal(Offset.zero);
                 final safeAreaHeight = MediaQuery.of(context).padding.top;
                 final spaceHeaderTopPosition = offset.dy - safeAreaHeight - 44;
-                final value =
-                    clampDouble((-spaceHeaderTopPosition + 50) / 50, 0, 1);
+                final value = clampDouble((-spaceHeaderTopPosition + 50) / 50, 0, 1);
 
                 _appBarAnimationController.animateTo(value);
 
@@ -260,8 +249,7 @@ class _TagScreenState extends State<TagScreen>
                                           width: 29,
                                           height: 29,
                                           decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(2),
+                                            borderRadius: BorderRadius.circular(2),
                                             color: BrandColors.red_200,
                                           ),
                                           child: const Center(
@@ -273,10 +261,8 @@ class _TagScreenState extends State<TagScreen>
                                           ),
                                         ),
                                         onPressed: () async {
-                                          final req =
-                                              GTagScreen_UnmuteTag_MutationReq(
-                                            (b) => b
-                                              ..vars.input.tagId = data.tag.id,
+                                          final req = GTagScreen_UnmuteTag_MutationReq(
+                                            (b) => b..vars.input.tagId = data.tag.id,
                                           );
                                           await client.req(req);
                                         },
@@ -287,19 +273,13 @@ class _TagScreenState extends State<TagScreen>
                                           ? null
                                           : () async {
                                               if (data.tag.followed) {
-                                                final req =
-                                                    GTagScreen_UnfollowTag_MutationReq(
-                                                  (b) => b
-                                                    ..vars.input.tagId =
-                                                        data.tag.id,
+                                                final req = GTagScreen_UnfollowTag_MutationReq(
+                                                  (b) => b..vars.input.tagId = data.tag.id,
                                                 );
                                                 await client.req(req);
                                               } else {
-                                                final req =
-                                                    GTagScreen_FollowTag_MutationReq(
-                                                  (b) => b
-                                                    ..vars.input.tagId =
-                                                        data.tag.id,
+                                                final req = GTagScreen_FollowTag_MutationReq(
+                                                  (b) => b..vars.input.tagId = data.tag.id,
                                                 );
                                                 await client.req(req);
                                               }
@@ -311,8 +291,7 @@ class _TagScreenState extends State<TagScreen>
                                           vertical: 6,
                                         ),
                                         decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(2),
+                                          borderRadius: BorderRadius.circular(2),
                                           color: data.tag.muted
                                               ? BrandColors.gray_150
                                               : data.tag.followed

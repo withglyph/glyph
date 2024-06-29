@@ -64,11 +64,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   width: 98,
                                   height: 98,
                                   placeholder: MemoryImage(kTransparentImage),
-                                  image: _avatarProvider ??
-                                      NetworkImage(data.me!.profile.avatar.url),
+                                  image: _avatarProvider ?? NetworkImage(data.me!.profile.avatar.url),
                                   fit: BoxFit.cover,
-                                  fadeInDuration:
-                                      const Duration(milliseconds: 150),
+                                  fadeInDuration: const Duration(milliseconds: 150),
                                 ),
                               ),
                             ),

@@ -90,8 +90,7 @@ final _carousels = <_CarouselData>[
     title: '트위터 프로필 연동하고\n포인트 받아가세요',
     subtitle: '2000P 적립 이벤트',
     color: '#124B8E',
-    backgroundImageUrl:
-        'https://glyph.pub/images/_/banner_twitter_events_2.png',
+    backgroundImageUrl: 'https://glyph.pub/images/_/banner_twitter_events_2.png',
     route: PostRoute(permalink: '677483040'),
   ),
 ];

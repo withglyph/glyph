@@ -36,9 +36,8 @@ class Auth extends _$Auth {
   Future<AuthState> build() async {
     final accessToken = await _storage.read(key: _storageKey);
 
-    final state = accessToken == null
-        ? const AuthState.unauthenticated()
-        : await _validateTokenAndCreateState(accessToken);
+    final state =
+        accessToken == null ? const AuthState.unauthenticated() : await _validateTokenAndCreateState(accessToken);
 
     FlutterNativeSplash.remove();
 
@@ -73,8 +72,7 @@ class Auth extends _$Auth {
   Future<AuthState> _validateTokenAndCreateState(String accessToken) async {
     final ferry = createFerryClient(accessToken);
     final req = GAuthProvider_QueryReq();
-    final resp =
-        await ferry.request(req).firstWhere((resp) => resp.data != null);
+    final resp = await ferry.request(req).firstWhere((resp) => resp.data != null);
 
     if (resp.data!.me == null) {
       await _storage.delete(key: _storageKey);

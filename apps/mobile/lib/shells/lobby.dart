@@ -128,9 +128,7 @@ class LobbyShell extends ConsumerWidget {
                 child: Padding(
                   padding: const EdgeInsets.all(1), // Border radius
                   child: ClipOval(
-                    child: me == null
-                        ? null
-                        : Image.network(me.profile.avatar.url),
+                    child: me == null ? null : Image.network(me.profile.avatar.url),
                   ),
                 ),
               ),
@@ -141,9 +139,7 @@ class LobbyShell extends ConsumerWidget {
                 child: Padding(
                   padding: const EdgeInsets.all(1), // Border radius
                   child: ClipOval(
-                    child: me == null
-                        ? null
-                        : Image.network(me.profile.avatar.url),
+                    child: me == null ? null : Image.network(me.profile.avatar.url),
                   ),
                 ),
               ),

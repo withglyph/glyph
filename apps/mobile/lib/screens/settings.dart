@@ -78,8 +78,7 @@ class SettingsScreen extends ConsumerWidget {
                                   const Gap(4),
                                   Text(
                                     Jiffy.parse(
-                                      data.me!.marketingConsent!.createdAt
-                                          .value,
+                                      data.me!.marketingConsent!.createdAt.value,
                                     ).format(pattern: 'yyyy년 MM월 dd일 수신 동의'),
                                     style: const TextStyle(
                                       fontSize: 12,
@@ -93,8 +92,7 @@ class SettingsScreen extends ConsumerWidget {
                             ToggleSwitch(
                               value: data.me!.marketingConsent != null,
                               onChanged: (value) async {
-                                final req =
-                                    GSettingsScreen_UpdateUserMarketingConsent_MutationReq(
+                                final req = GSettingsScreen_UpdateUserMarketingConsent_MutationReq(
                                   (b) => b..vars.input.consent = value,
                                 );
                                 await client.req(req);
@@ -187,12 +185,8 @@ class SettingsScreen extends ConsumerWidget {
                         title: '로그아웃',
                         onPressed: () async {
                           await context.loader.run(() async {
-                            await ref
-                                .read(pushNotificationProvider.notifier)
-                                .clearToken();
-                            await ref
-                                .read(authProvider.notifier)
-                                .clearAccessToken();
+                            await ref.read(pushNotificationProvider.notifier).clearToken();
+                            await ref.read(authProvider.notifier).clearAccessToken();
                           });
                         },
                         trailing: const SizedBox.shrink(),
