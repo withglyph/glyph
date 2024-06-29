@@ -14,11 +14,9 @@ class RootRouter extends ConsumerWidget implements AutoRouteWrapper {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final pushNotificationNotifier =
-        ref.watch(pushNotificationProvider.notifier);
+    final pushNotificationNotifier = ref.watch(pushNotificationProvider.notifier);
     final isAuthenticated = ref.watch(
-      authProvider
-          .select((value) => value.whenData((value) => value.isAuthenticated)),
+      authProvider.select((value) => value.whenData((value) => value.isAuthenticated)),
     );
 
     if (isAuthenticated.valueOrNull == true) {

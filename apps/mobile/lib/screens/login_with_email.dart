@@ -4,8 +4,8 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:gap/gap.dart';
+import 'package:glyph/components/button.dart';
 import 'package:glyph/components/forms/form_text_field.dart';
-import 'package:glyph/components/pressable.dart';
 import 'package:glyph/context/dialog.dart';
 import 'package:glyph/ferry/error.dart';
 import 'package:glyph/ferry/extension.dart';
@@ -13,7 +13,6 @@ import 'package:glyph/graphql/__generated__/login_with_email_screen_login_user_m
 import 'package:glyph/providers/ferry.dart';
 import 'package:glyph/routers/app.gr.dart';
 import 'package:glyph/shells/default.dart';
-import 'package:glyph/themes/colors.dart';
 
 @RoutePage()
 class LoginWithEmailScreen extends ConsumerStatefulWidget {
@@ -24,95 +23,53 @@ class LoginWithEmailScreen extends ConsumerStatefulWidget {
 }
 
 class _LoginWithEmailScreenState extends ConsumerState<LoginWithEmailScreen> {
-  final _focusNode = FocusNode();
-  final _textController = TextEditingController();
-
   final _formKey = GlobalKey<FormBuilderState>();
 
   bool _isFormValid = false;
 
   @override
-  void dispose() {
-    _focusNode.dispose();
-    _textController.dispose();
-
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return DefaultShell(
       bottomBorder: false,
+      useSafeArea: true,
       child: FormBuilder(
         key: _formKey,
         onChanged: _validate,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    '이메일로 시작하기',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  const Gap(24),
-                  FormTextField(
-                    name: 'email',
-                    controller: _textController,
-                    focusNode: _focusNode,
-                    autofocus: true,
-                    keyboardType: TextInputType.emailAddress,
-                    textInputAction: TextInputAction.done,
-                    labelText: '이메일',
-                    hintText: 'hello@example.com',
-                    validators: [
-                      FormBuilderValidators.required(),
-                      FormBuilderValidators.email(),
-                    ],
-                    onSubmitted: (value) async => _submit(),
-                  ),
-                ],
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const Text(
+                '로그인에 사용할\n이메일을 입력해주세요',
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
-            ),
-            const Spacer(),
-            Pressable(
-              onPressed: _submit,
-              child: Column(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    color: _isFormValid
-                        ? BrandColors.brand_400
-                        : BrandColors.gray_100,
-                    child: Center(
-                      child: Text(
-                        '다음',
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w700,
-                          color: _isFormValid
-                              ? BrandColors.gray_0
-                              : BrandColors.gray_300,
-                        ),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    height: MediaQuery.of(context).padding.bottom,
-                    color: _isFormValid
-                        ? BrandColors.brand_400
-                        : BrandColors.gray_100,
-                  ),
+              const Gap(32),
+              FormTextField(
+                name: 'email',
+                autofocus: true,
+                keyboardType: TextInputType.emailAddress,
+                textInputAction: TextInputAction.done,
+                labelText: '이메일',
+                hintText: 'hello@example.com',
+                validators: [
+                  FormBuilderValidators.required(errorText: '이메일을 입력해주세요'),
+                  FormBuilderValidators.email(errorText: '올바른 이메일을 입력해주세요'),
                 ],
+                onSubmitted: (value) async => _submit(),
               ),
-            ),
-          ],
+              const Spacer(),
+              Button(
+                '다음',
+                size: ButtonSize.large,
+                enabled: _isFormValid,
+                onPressed: _submit,
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -40,8 +40,7 @@ class FormTextField extends StatefulWidget {
   createState() => _FormTextFieldState();
 }
 
-class _FormTextFieldState extends State<FormTextField>
-    with SingleTickerProviderStateMixin {
+class _FormTextFieldState extends State<FormTextField> with SingleTickerProviderStateMixin {
   late TextEditingController _controller;
   late FocusNode _focusNode;
 
@@ -77,12 +76,12 @@ class _FormTextFieldState extends State<FormTextField>
 
     _labelColorAnimation = ColorTween(
       begin: BrandColors.gray_500,
-      end: BrandColors.brand_400,
+      end: BrandColors.gray_900,
     ).animate(_animationController);
 
     _borderColorAnimation = ColorTween(
       begin: BrandColors.gray_200,
-      end: BrandColors.brand_400,
+      end: BrandColors.gray_900,
     ).animate(_animationController);
 
     _focusNode.addListener(() {
@@ -123,9 +122,7 @@ class _FormTextFieldState extends State<FormTextField>
       name: widget.name,
       focusNode: _focusNode,
       initialValue: widget.initialValue,
-      validator: widget.validators != null
-          ? FormBuilderValidators.compose(widget.validators!)
-          : null,
+      validator: widget.validators != null ? FormBuilderValidators.compose(widget.validators!) : null,
       builder: (field) {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -139,14 +136,12 @@ class _FormTextFieldState extends State<FormTextField>
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
-                      color: field.hasError
-                          ? BrandColors.red_600
-                          : _labelColorAnimation.value,
+                      color: field.hasError ? BrandColors.red_600 : _labelColorAnimation.value,
                     ),
                   );
                 },
               ),
-              const Gap(14),
+              const Gap(13),
             ],
             TextField(
               controller: _controller,
@@ -165,11 +160,10 @@ class _FormTextFieldState extends State<FormTextField>
                   color: BrandColors.gray_400,
                 ),
               ),
-              cursorColor: BrandColors.brand_400,
+              cursorColor: BrandColors.gray_900,
               style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w700,
-                color: BrandColors.gray_900,
               ),
               onChanged: (value) {
                 field
@@ -178,20 +172,18 @@ class _FormTextFieldState extends State<FormTextField>
               },
               onSubmitted: widget.onSubmitted,
             ),
-            const Gap(3),
+            const Gap(4),
             AnimatedBuilder(
               animation: _animationController,
               builder: (context, child) {
                 return Container(
                   height: 1.5,
-                  color: field.hasError
-                      ? BrandColors.red_600
-                      : _borderColorAnimation.value,
+                  color: field.hasError ? BrandColors.red_600 : _borderColorAnimation.value,
                 );
               },
             ),
             if (field.hasError) ...[
-              const Gap(6),
+              const Gap(6.5),
               Text(
                 field.errorText!,
                 style: const TextStyle(
