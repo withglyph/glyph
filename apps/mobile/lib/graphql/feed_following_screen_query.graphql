@@ -1,7 +1,7 @@
 # import './fragments/thumbnail_post_card_post.graphql';
 
-query FeedFollowingScreen_Query {
-  followingFeed {
+query FeedFollowingScreen_Query($page: Int!, $take: Int!) {
+  followingFeed(page: $page, take: $take) {
     id
     ...ThumbnailPostCard_post
   }

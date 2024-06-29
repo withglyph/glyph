@@ -17,20 +17,14 @@ class GraphQLOperation<TData, TVars> extends ConsumerStatefulWidget {
   });
 
   final OperationRequest<TData, TVars> operation;
-  final Widget Function(BuildContext context, Client client, TData data)
-      builder;
-  final FutureOr<void> Function(
-    BuildContext context,
-    Client client,
-    TData data,
-  )? onDataLoaded;
+  final Widget Function(BuildContext context, Client client, TData data) builder;
+  final FutureOr<void> Function(BuildContext context, Client client, TData data)? onDataLoaded;
 
   @override
   createState() => _GraphQLOperationState<TData, TVars>();
 }
 
-class _GraphQLOperationState<TData, TVars>
-    extends ConsumerState<GraphQLOperation<TData, TVars>> {
+class _GraphQLOperationState<TData, TVars> extends ConsumerState<GraphQLOperation<TData, TVars>> {
   bool _loaded = false;
 
   @override
@@ -56,10 +50,7 @@ class _GraphQLOperationState<TData, TVars>
             'IntentionalError' => AppError.intentional(error.message),
             'PermissionDeniedError' => const AppError.permissionDenied(),
             'NotFoundError' => const AppError.notFound(),
-            'FormValidationError' => AppError.formValidation(
-                appExtension['extra']['field'],
-                error.message,
-              ),
+            'FormValidationError' => AppError.formValidation(appExtension['extra']['field'], error.message),
             _ => OperationError.graphql(error),
           };
         }
