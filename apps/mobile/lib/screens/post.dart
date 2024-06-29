@@ -1160,15 +1160,18 @@ class _Tag extends StatelessWidget {
               ),
             ),
           ),
-          Container(
-            color: const Color(0xFFF3F3F3),
-            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-            child: Text(
-              '#$name',
-              style: const TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w500,
-                color: BrandColors.gray_600,
+          Flexible(
+            child: Container(
+              color: const Color(0xFFF3F3F3),
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+              child: Text(
+                '#$name',
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w500,
+                  color: BrandColors.gray_600,
+                ),
               ),
             ),
           ),
