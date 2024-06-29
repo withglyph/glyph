@@ -50,13 +50,11 @@ class Heading extends StatelessWidget implements PreferredSizeWidget {
             constraints: BoxConstraints.tight(_preferredSize),
             padding: const EdgeInsets.symmetric(horizontal: 20),
             decoration: BoxDecoration(
-              border: bottomBorder
-                  ? const Border(
-                      bottom: BorderSide(
-                        color: BrandColors.gray_100,
-                      ),
-                    )
-                  : null,
+              border: Border(
+                bottom: BorderSide(
+                  color: bottomBorder ? BrandColors.gray_100 : Colors.transparent,
+                ),
+              ),
             ),
             child: NavigationToolbar(
               leading: leading ?? const HeadingAutoLeading(),
