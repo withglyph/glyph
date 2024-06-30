@@ -56,7 +56,7 @@ class _LoginWithEmailScreenState extends ConsumerState<LoginWithEmailScreen> {
                 labelText: '이메일',
                 hintText: 'hello@example.com',
                 validators: [
-                  FormBuilderValidators.required(errorText: '이메일을 입력해주세요'),
+                  FormBuilderValidators.required(errorText: '이메일 주소를 입력해주세요'),
                   FormBuilderValidators.email(errorText: '올바른 이메일을 입력해주세요'),
                 ],
                 onSubmitted: (value) async => _submit(),

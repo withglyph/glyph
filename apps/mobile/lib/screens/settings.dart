@@ -44,7 +44,9 @@ class SettingsScreen extends ConsumerWidget {
                       const _Section('계정 / 정보관리'),
                       _Item(
                         title: '이메일 변경',
-                        onPressed: () {},
+                        onPressed: () async {
+                          await context.router.push(const EmailRoute());
+                        },
                       ),
                       _Item(
                         title: '본인인증',
@@ -180,7 +182,7 @@ class SettingsScreen extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const _Section('계정 / 정보관리'),
+                      const _Section('기타'),
                       _Item(
                         title: '로그아웃',
                         onPressed: () async {

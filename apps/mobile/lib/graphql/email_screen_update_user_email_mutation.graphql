@@ -1,0 +1,3 @@
+mutation EmailScreen_UpdateUserEmail_Mutation($input: UpdateUserEmailInput!) {
+  updateUserEmail(input: $input)
+}

@@ -74,6 +74,7 @@ class AppRouter extends $AppRouter {
             AutoRoute(page: NotificationRoute.page),
             AutoRoute(page: SettingsRoute.page),
             AutoRoute(page: ProfileRoute.page),
+            AutoRoute(page: EmailRoute.page),
             AutoRoute(
               page: PointRoute.page,
               children: [
