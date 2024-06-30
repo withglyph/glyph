@@ -41,7 +41,7 @@ platform :ios do
     dist = firebase_app_distribution(
       service_credentials_json_data: ENV["GOOGLE_SERVICE_ACCOUNT"],
       app: "1:58678861052:ios:65d590f2311a51d6bd8b79",
-      groups: "ios@team, ios@beta",
+      groups: "ios@team",
     )
 
     slack(

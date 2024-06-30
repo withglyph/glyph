@@ -8,7 +8,7 @@ import 'package:glyph/themes/colors.dart';
 extension BottomMenuX on BuildContext {
   Future<void> showBottomMenu<T>({
     required String title,
-    required List<BottomMenuItem> items,
+    required List<RawBottomMenuItem> items,
   }) async {
     await _showFloatingBottomSheet(
       context: this,
@@ -41,20 +41,47 @@ extension BottomMenuX on BuildContext {
   }
 }
 
-class BottomMenuItem {
-  BottomMenuItem({
-    required this.icon,
-    required this.title,
+class RawBottomMenuItem {
+  RawBottomMenuItem({
+    required this.child,
     required this.onTap,
-    this.color,
-    this.iconColor,
   });
 
-  final IconData icon;
-  final String title;
-  final Color? color;
-  final Color? iconColor;
+  final Widget child;
   final void Function() onTap;
+}
+
+class BottomMenuItem extends RawBottomMenuItem {
+  BottomMenuItem({
+    required IconData icon,
+    required String title,
+    required super.onTap,
+    Color? color,
+    Color? iconColor,
+  }) : super(
+          child: Row(
+            children: [
+              Container(
+                width: 22,
+                height: 22,
+                decoration: const BoxDecoration(
+                  color: BrandColors.gray_50,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(icon, size: 12, color: iconColor ?? color),
+              ),
+              const Gap(14),
+              Text(
+                title,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: color,
+                ),
+              ),
+            ],
+          ),
+        );
 }
 
 class _BottomMenu extends StatelessWidget {
@@ -62,7 +89,7 @@ class _BottomMenu extends StatelessWidget {
     required this.items,
   });
 
-  final List<BottomMenuItem> items;
+  final List<RawBottomMenuItem> items;
 
   @override
   Widget build(BuildContext context) {
@@ -72,35 +99,8 @@ class _BottomMenu extends StatelessWidget {
       children: items.map((item) {
         return Pressable(
           child: Padding(
-            padding: const EdgeInsets.symmetric(
-              vertical: 16,
-            ),
-            child: Row(
-              children: [
-                Container(
-                  width: 22,
-                  height: 22,
-                  decoration: const BoxDecoration(
-                    color: BrandColors.gray_50,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(
-                    item.icon,
-                    size: 12,
-                    color: item.iconColor ?? item.color,
-                  ),
-                ),
-                const Gap(14),
-                Text(
-                  item.title,
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: item.color,
-                  ),
-                ),
-              ],
-            ),
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            child: item.child,
           ),
           onPressed: () async {
             await context.router.maybePop();

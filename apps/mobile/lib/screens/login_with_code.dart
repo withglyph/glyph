@@ -25,7 +25,7 @@ class LoginWithCodeScreen extends ConsumerStatefulWidget {
   final String email;
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _LoginWithCodeScreenState();
+  createState() => _LoginWithCodeScreenState();
 }
 
 class _LoginWithCodeScreenState extends ConsumerState<LoginWithCodeScreen> {
@@ -58,8 +58,8 @@ class _LoginWithCodeScreenState extends ConsumerState<LoginWithCodeScreen> {
   @override
   Widget build(BuildContext context) {
     const defaultPinTheme = PinTheme(
-      width: 56,
-      height: 56,
+      width: 50,
+      height: 50,
       textStyle: TextStyle(
         fontSize: 24,
         fontWeight: FontWeight.w700,
@@ -67,6 +67,7 @@ class _LoginWithCodeScreenState extends ConsumerState<LoginWithCodeScreen> {
       decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(
+            width: 1.5,
             color: BrandColors.gray_200,
           ),
         ),
@@ -76,27 +77,23 @@ class _LoginWithCodeScreenState extends ConsumerState<LoginWithCodeScreen> {
     return DefaultShell(
       bottomBorder: false,
       child: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             const Text(
-              '코드 입력',
+              '이메일로 전송된\n6자리 숫자를 입력해주세요',
               style: TextStyle(
-                fontSize: 24,
+                fontSize: 22,
                 fontWeight: FontWeight.w700,
               ),
             ),
-            const Gap(24),
+            const Gap(5),
             Text(
-              '인증 메일이 ${widget.email}으로 전송되었어요.',
-              style: const TextStyle(fontSize: 16),
+              '인증 이메일이 ${widget.email}로 전송되었어요.',
+              style: const TextStyle(fontSize: 14, color: BrandColors.gray_600),
             ),
-            const Text(
-              '받으신 이메일에 있는 코드 6자리를 입력해주세요.',
-              style: TextStyle(fontSize: 16),
-            ),
-            const Gap(32),
+            const Gap(48),
             Pinput(
               controller: _pinController,
               focusNode: _pinFocusNode,
@@ -105,23 +102,24 @@ class _LoginWithCodeScreenState extends ConsumerState<LoginWithCodeScreen> {
               showCursor: false,
               forceErrorState: _hasError,
               defaultPinTheme: defaultPinTheme,
+              separatorBuilder: (index) => const Gap(8),
               submittedPinTheme: defaultPinTheme.copyBorderWith(
                 border: const Border(
-                  bottom: BorderSide(color: BrandColors.gray_400),
+                  bottom: BorderSide(width: 1.5, color: BrandColors.gray_900),
                 ),
               ),
               focusedPinTheme: defaultPinTheme.copyBorderWith(
                 border: const Border(
-                  bottom: BorderSide(color: BrandColors.brand_400),
+                  bottom: BorderSide(width: 1.5, color: BrandColors.gray_900),
                 ),
               ),
               errorPinTheme: defaultPinTheme.copyWith(
                 textStyle: defaultPinTheme.textStyle!.copyWith(
-                  color: Colors.red,
+                  color: BrandColors.red_600,
                 ),
                 decoration: const BoxDecoration(
                   border: Border(
-                    bottom: BorderSide(color: Colors.red),
+                    bottom: BorderSide(width: 1.5, color: BrandColors.red_600),
                   ),
                 ),
               ),
