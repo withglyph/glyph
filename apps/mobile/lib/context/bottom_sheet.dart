@@ -10,6 +10,7 @@ extension BottomSheetX on BuildContext {
     return await showModalBottomSheet(
       context: this,
       backgroundColor: BrandColors.gray_0,
+      barrierColor: Colors.black.withOpacity(0.45),
       elevation: 0,
       isScrollControlled: true,
       useSafeArea: true,
