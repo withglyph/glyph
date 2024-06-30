@@ -1,0 +1,10 @@
+query IdentificationScreen_Query {
+  me {
+    id
+
+    personalIdentity {
+      id
+      name
+    }
+  }
+}

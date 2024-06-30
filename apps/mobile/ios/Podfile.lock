@@ -1,4 +1,6 @@
 PODS:
+  - app_links (0.0.1):
+    - Flutter
   - AppAuth (1.7.5):
     - AppAuth/Core (= 1.7.5)
     - AppAuth/ExternalUserAgent (= 1.7.5)
@@ -104,6 +106,10 @@ PODS:
   - GTMSessionFetcher/Core (3.4.1)
   - GTMSessionFetcher/Full (3.4.1):
     - GTMSessionFetcher/Core
+  - iamport_flutter (0.0.1):
+    - Flutter
+  - iamport_webview_flutter (0.0.1):
+    - Flutter
   - image_picker_ios (0.0.1):
     - Flutter
   - in_app_purchase_storekit (0.0.1):
@@ -139,6 +145,7 @@ PODS:
     - Flutter
 
 DEPENDENCIES:
+  - app_links (from `.symlinks/plugins/app_links/ios`)
   - external_app_launcher (from `.symlinks/plugins/external_app_launcher/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - firebase_messaging (from `.symlinks/plugins/firebase_messaging/ios`)
@@ -149,6 +156,8 @@ DEPENDENCIES:
   - flutter_secure_storage (from `.symlinks/plugins/flutter_secure_storage/ios`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
   - google_sign_in_ios (from `.symlinks/plugins/google_sign_in_ios/darwin`)
+  - iamport_flutter (from `.symlinks/plugins/iamport_flutter/ios`)
+  - iamport_webview_flutter (from `.symlinks/plugins/iamport_webview_flutter/ios`)
   - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
   - in_app_purchase_storekit (from `.symlinks/plugins/in_app_purchase_storekit/darwin`)
   - mixpanel_flutter (from `.symlinks/plugins/mixpanel_flutter/ios`)
@@ -180,6 +189,8 @@ SPEC REPOS:
     - Toast
 
 EXTERNAL SOURCES:
+  app_links:
+    :path: ".symlinks/plugins/app_links/ios"
   external_app_launcher:
     :path: ".symlinks/plugins/external_app_launcher/ios"
   firebase_core:
@@ -200,6 +211,10 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/fluttertoast/ios"
   google_sign_in_ios:
     :path: ".symlinks/plugins/google_sign_in_ios/darwin"
+  iamport_flutter:
+    :path: ".symlinks/plugins/iamport_flutter/ios"
+  iamport_webview_flutter:
+    :path: ".symlinks/plugins/iamport_webview_flutter/ios"
   image_picker_ios:
     :path: ".symlinks/plugins/image_picker_ios/ios"
   in_app_purchase_storekit:
@@ -220,6 +235,7 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/url_launcher_ios/ios"
 
 SPEC CHECKSUMS:
+  app_links: e70ca16b4b0f88253b3b3660200d4a10b4ea9795
   AppAuth: 501c04eda8a8d11f179dbe8637b7a91bb7e5d2fa
   external_app_launcher: ad55ac844aa21f2d2197d7cec58ff0d0dc40bbc0
   Firebase: 26b040b20866a55f55eb3611b9fcf3ae64816b86
@@ -241,6 +257,8 @@ SPEC CHECKSUMS:
   GoogleUtilities: ea963c370a38a8069cc5f7ba4ca849a60b6d7d15
   GTMAppAuth: f69bd07d68cd3b766125f7e072c45d7340dea0de
   GTMSessionFetcher: 8000756fc1c19d2e5697b90311f7832d2e33f6cd
+  iamport_flutter: f698983444b7c0f83e356407631cfeec77a776bf
+  iamport_webview_flutter: 70dbc31045e4cf7a0c829b76c6f8319dc94b299e
   image_picker_ios: c560581cceedb403a6ff17f2f816d7fea1421fc1
   in_app_purchase_storekit: 8c3b0b3eb1b0f04efbff401c3de6266d4258d433
   Mixpanel-swift: e5dd85295923e6a875acf17ccbab8d2ecb10ea65

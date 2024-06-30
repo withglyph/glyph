@@ -50,7 +50,9 @@ class SettingsScreen extends ConsumerWidget {
                       ),
                       _Item(
                         title: '본인인증',
-                        onPressed: () {},
+                        onPressed: () async {
+                          await context.router.push(const IdentificationRoute());
+                        },
                       ),
                     ],
                   ),
