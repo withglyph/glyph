@@ -1,0 +1,6 @@
+mutation ProfileScreen_PrepareImageUpload_Mutation {
+  prepareImageUpload {
+    key
+    presignedUrl
+  }
+}

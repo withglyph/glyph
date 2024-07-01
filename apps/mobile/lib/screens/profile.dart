@@ -1,4 +1,7 @@
+import 'dart:typed_data';
+
 import 'package:auto_route/auto_route.dart';
+import 'package:built_value/json_object.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
@@ -9,11 +12,14 @@ import 'package:glyph/components/pressable.dart';
 import 'package:glyph/context/toast.dart';
 import 'package:glyph/ferry/extension.dart';
 import 'package:glyph/ferry/widget.dart';
+import 'package:glyph/graphql/__generated__/profile_screen_finalize_image_upload_mutation.req.gql.dart';
+import 'package:glyph/graphql/__generated__/profile_screen_prepare_image_upload_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/profile_screen_query.req.gql.dart';
 import 'package:glyph/graphql/__generated__/profile_screen_update_user_profile_mutation.req.gql.dart';
 import 'package:glyph/icons/tabler.dart';
 import 'package:glyph/shells/default.dart';
 import 'package:glyph/themes/colors.dart';
+import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:transparent_image/transparent_image.dart';
@@ -30,7 +36,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final _formKey = GlobalKey<FormBuilderState>();
   final _imagePicker = ImagePicker();
 
-  ImageProvider? _avatarProvider;
+  String? _avatarFilename;
+  Uint8List? _avatarBytes;
+  Rect? _avatarBounds;
   bool _isFormValid = true;
 
   @override
@@ -67,7 +75,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   width: 98,
                                   height: 98,
                                   placeholder: MemoryImage(kTransparentImage),
-                                  image: _avatarProvider ?? NetworkImage(data.me!.profile.avatar.url),
+                                  image: _avatarBytes == null
+                                      ? NetworkImage(data.me!.profile.avatar.url)
+                                      : MemoryImage(_avatarBytes!),
                                   fit: BoxFit.cover,
                                   fadeInDuration: const Duration(milliseconds: 150),
                                 ),
@@ -89,9 +99,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             }
 
                             final bytes = await file.readAsBytes();
+                            final image = await decodeImageFromList(bytes);
+                            final imageSize = Size(image.width.toDouble(), image.height.toDouble());
 
                             setState(() {
-                              _avatarProvider = MemoryImage(bytes);
+                              _avatarFilename = file.name;
+                              _avatarBytes = bytes;
+                              _avatarBounds = Rect.fromCenter(
+                                center: imageSize.center(Offset.zero),
+                                width: imageSize.shortestSide,
+                                height: imageSize.shortestSide,
+                              );
                             });
                           },
                         ),
@@ -125,13 +143,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     hintText: '프로필 이름을 입력해주세요',
                     initialValue: data.me!.profile.name,
                     validators: [
-                      FormBuilderValidators.required(
-                        errorText: '프로필 이름을 입력해주세요',
-                      ),
-                      FormBuilderValidators.maxLength(
-                        20,
-                        errorText: '프로필 이름은 20글자를 넘을 수 없어요',
-                      ),
+                      FormBuilderValidators.required(errorText: '프로필 이름을 입력해주세요'),
+                      FormBuilderValidators.maxLength(20, errorText: '프로필 이름은 20글자를 넘을 수 없어요'),
                     ],
                   ),
                   const Spacer(),
@@ -146,9 +159,33 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                       final values = _formKey.currentState!.value;
 
+                      var avatarId = data.me!.profile.avatar.id;
+
+                      if (_avatarBytes != null) {
+                        final req1 = GProfileScreen_PrepareImageUpload_MutationReq();
+                        final resp1 = await client.req(req1);
+
+                        await http.put(Uri.parse(resp1.prepareImageUpload.presignedUrl), body: _avatarBytes);
+
+                        final req2 = GProfileScreen_FinalizeImageUpload_MutationReq(
+                          (b) => b
+                            ..vars.input.key = resp1.prepareImageUpload.key
+                            ..vars.input.name = _avatarFilename
+                            ..vars.input.bounds = JsonObject({
+                              'left': _avatarBounds!.left,
+                              'top': _avatarBounds!.top,
+                              'width': _avatarBounds!.width,
+                              'height': _avatarBounds!.height,
+                            }),
+                        );
+                        final resp2 = await client.req(req2);
+
+                        avatarId = resp2.finalizeImageUpload.id;
+                      }
+
                       final req = GProfileScreen_UpdateUserProfile_MutationReq(
                         (b) => b
-                          ..vars.input.avatarId = data.me!.profile.avatar.id
+                          ..vars.input.avatarId = avatarId
                           ..vars.input.name = values['name'],
                       );
 

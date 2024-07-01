@@ -1,0 +1,5 @@
+mutation ProfileScreen_FinalizeImageUpload_Mutation($input: FinalizeImageUploadInput!) {
+  finalizeImageUpload(input: $input) {
+    id
+  }
+}
