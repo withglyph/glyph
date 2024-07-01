@@ -4,6 +4,7 @@
   import IconCoin from '~icons/tabler/coin';
   import { graphql } from '$glitch';
   import { Helmet, Icon, Image } from '$lib/components';
+  import { isWebView, postFlutterMessage } from '$lib/flutter';
   import { comma } from '$lib/utils';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
@@ -73,9 +74,19 @@
           paddingY: { base: '15px', sm: '14px' },
         })}
       >
-        <a
+        <svelte:element
+          this={$isWebView ? 'button' : 'a'}
           class={flex({ align: 'center', justify: 'space-between', width: 'full', truncate: true })}
-          href={`/${redemption.postPurchase.post.space.slug}/${redemption.postPurchase.post.permalink}`}
+          href={$isWebView
+            ? undefined
+            : `/${redemption.postPurchase.post.space.slug}/${redemption.postPurchase.post.permalink}`}
+          role={$isWebView ? 'button' : 'a'}
+          on:click={() => {
+            if ($isWebView) {
+              postFlutterMessage({ type: 'post:view', permalink: redemption.postPurchase.post.permalink });
+              return;
+            }
+          }}
         >
           <div class={flex({ align: 'center', gap: { base: '8px', sm: '12px' }, width: 'full', truncate: true })}>
             <Image
@@ -115,7 +126,7 @@
             </div>
           </div>
           <Icon style={css.raw({ color: 'gray.400', hideBelow: 'sm' })} icon={IconChevronRight} size={24} />
-        </a>
+        </svelte:element>
         <hr
           class={css({ marginY: '16px', border: 'none', width: 'full', height: '1px', backgroundColor: 'gray.100' })}
         />

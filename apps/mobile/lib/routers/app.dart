@@ -63,6 +63,7 @@ class AppRouter extends $AppRouter {
                 AutoRoute(page: MeRoute.page, path: 'me'),
               ],
             ),
+            AutoRoute(page: RedeemRoute.page),
             AutoRoute(page: DeactivateRoute.page),
             AutoRoute(
               page: EditorRoute.page,

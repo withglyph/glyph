@@ -280,7 +280,11 @@ class _MeScreenState extends ConsumerState<MeScreen> {
                     _MenuItem(
                       icon: Tabler.scan,
                       title: '리딤코드',
-                      onPressed: () {},
+                      onPressed: () async {
+                        await context.router.push(
+                          const RedeemRoute(),
+                        );
+                      },
                     ),
                   ],
                 ),
