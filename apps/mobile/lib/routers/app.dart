@@ -101,6 +101,14 @@ class AppRouter extends $AppRouter {
               path: ':space/:permalink',
               usesPathAsKey: true,
             ),
+            AutoRoute(
+              page: SpaceRoute.page,
+              path: ':slug',
+              children: [
+                AutoRoute(page: SpacePostsRoute.page),
+                AutoRoute(page: SpaceCollectionsRoute.page),
+              ],
+            ),
           ],
         ),
       ],

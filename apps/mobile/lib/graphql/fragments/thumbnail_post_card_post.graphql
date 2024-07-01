@@ -22,6 +22,7 @@ fragment ThumbnailPostCard_post on Post {
 
   space {
     id
+    slug
     name
     followed
     muted

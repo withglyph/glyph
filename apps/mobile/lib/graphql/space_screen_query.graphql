@@ -1,0 +1,47 @@
+# import './fragments/img_image.graphql'
+# import './fragments/post_card_post.graphql'
+
+query SpaceScreen_Query($slug: String!) {
+  space(slug: $slug) {
+    id
+    slug
+    name
+    description
+    followerCount
+    postCount
+    followed
+    muted
+
+    icon {
+      id
+      ...Img_image
+    }
+
+    members {
+      id
+
+      profile {
+        id
+        name
+
+        avatar {
+          id
+          ...Img_image
+        }
+      }
+    }
+
+    meAsMember {
+      id
+    }
+
+    posts {
+      id
+      ...PostCard_post
+    }
+
+    collections {
+      id
+    }
+  }
+}

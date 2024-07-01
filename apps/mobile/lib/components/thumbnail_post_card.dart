@@ -42,20 +42,30 @@ class ThumbnailPostCard extends ConsumerWidget {
           Pressable(
             child: Row(
               children: [
-                Img(
-                  post.space?.icon,
-                  width: 20,
-                  height: 20,
-                  aspectRatio: 1 / 1,
-                ),
-                const Gap(4),
-                Text(
-                  post.space!.name,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w500,
+                Pressable(
+                  child: Row(
+                    children: [
+                      Img(
+                        post.space?.icon,
+                        width: 20,
+                        height: 20,
+                        aspectRatio: 1 / 1,
+                      ),
+                      const Gap(4),
+                      Text(
+                        post.space!.name,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
                   ),
+                  onPressed: () async {
+                    await context.router
+                        .push(SpaceRoute(slug: post.space!.slug));
+                  },
                 ),
                 const Gap(6),
                 Container(

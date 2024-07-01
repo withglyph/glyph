@@ -1,0 +1,6 @@
+mutation SpaceScreen_CreatePost_Mutation($input: CreatePostInput!) {
+  createPost(input: $input) {
+    id
+    permalink
+  }
+}

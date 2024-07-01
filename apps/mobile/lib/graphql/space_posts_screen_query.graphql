@@ -1,0 +1,13 @@
+# import './fragments/thumbnail_post_card_post.graphql'
+
+query SpacePostsScreen_Query($slug: String!) {
+  space(slug: $slug) {
+    id
+    postCount
+
+    posts {
+      id
+      ...ThumbnailPostCard_post
+    }
+  }
+}
