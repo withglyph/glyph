@@ -27,6 +27,16 @@ query PostScreen_Query($permalink: String!) {
         id
         ...Img_image
       }
+
+      posts {
+        id
+        permalink
+
+        publishedRevision {
+          id
+          title
+        }
+      }
     }
 
     member {

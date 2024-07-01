@@ -19,6 +19,7 @@ import 'package:glyph/components/pressable.dart';
 import 'package:glyph/components/webview.dart';
 import 'package:glyph/context/bottom_menu.dart';
 import 'package:glyph/context/bottom_sheet.dart';
+import 'package:glyph/context/floating_bottom_sheet.dart';
 import 'package:glyph/context/modal.dart';
 import 'package:glyph/extensions/build_context.dart';
 import 'package:glyph/extensions/int.dart';
@@ -35,6 +36,7 @@ import 'package:glyph/graphql/__generated__/post_screen_unbookmark_post_mutation
 import 'package:glyph/graphql/__generated__/post_screen_update_post_view_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/schema.schema.gql.dart';
 import 'package:glyph/icons/tabler.dart';
+import 'package:glyph/icons/tabler_bold.dart';
 import 'package:glyph/routers/app.gr.dart';
 import 'package:glyph/themes/colors.dart';
 import 'package:jiffy/jiffy.dart';
@@ -236,7 +238,139 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                 const Gap(20),
                 Pressable(
                   child: const Icon(Tabler.list),
-                  onPressed: () {},
+                  onPressed: () async {
+                    final controller = ScrollController();
+                    final postOrder = data.post.space!.posts.indexWhere((post) => post.id == data.post.id);
+
+                    var isScrolled = false;
+
+                    await context.showFloatingBottomSheet(
+                      title: '스페이스 목차',
+                      builder: (context) {
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          if (controller.hasClients && !isScrolled && data.post.space!.posts.length > 1) {
+                            controller.jumpTo(
+                              controller.position.maxScrollExtent * (postOrder / (data.post.space!.posts.length - 1)),
+                            );
+                            isScrolled = true;
+                          }
+                        });
+
+                        return Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 8, 0, 16),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Stack(
+                                    children: [
+                                      Img(
+                                        data.post.space!.icon,
+                                        width: 38,
+                                        height: 38,
+                                        borderWidth: 1,
+                                      ),
+                                      Positioned(
+                                        bottom: 0,
+                                        right: 0,
+                                        child: Transform.translate(
+                                          offset: const Offset(4, 4),
+                                          child: Img(
+                                            data.post.member!.profile.avatar,
+                                            width: 24,
+                                            height: 24,
+                                            borderWidth: 1,
+                                            borderRadius: 12,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const Gap(12),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        data.post.space!.name,
+                                        style: const TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w700,
+                                          color: BrandColors.gray_800,
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      Text(
+                                        data.post.space!.description ?? '',
+                                        style: TextStyle(
+                                          fontSize: 11,
+                                          color: BrandColors.gray_800.withOpacity(0.8),
+                                        ),
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      const Gap(6),
+                                      Text(
+                                        '총 ${data.post.space!.posts.length}개',
+                                        style: TextStyle(
+                                          fontSize: 11,
+                                          fontWeight: FontWeight.w400,
+                                          color: BrandColors.gray_400.withOpacity(0.8),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const HorizontalDivider(),
+                            Flexible(
+                              child: SingleChildScrollView(
+                                controller: controller,
+                                child: Column(
+                                  children: data.post.space!.posts
+                                      .map(
+                                        (post) => Pressable(
+                                          onPressed: () => context.router.push(
+                                            PostRoute(
+                                              permalink: post.permalink,
+                                            ),
+                                          ),
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(vertical: 15),
+                                            child: Row(
+                                              children: [
+                                                Flexible(
+                                                  fit: FlexFit.tight,
+                                                  child: Text(
+                                                    post.publishedRevision!.title ?? '(제목 없음)',
+                                                    overflow: TextOverflow.ellipsis,
+                                                    style: const TextStyle(
+                                                      fontSize: 16,
+                                                      fontWeight: FontWeight.w600,
+                                                      color: BrandColors.gray_600,
+                                                    ),
+                                                  ),
+                                                ),
+                                                if (post.id == data.post.id) ...const [
+                                                  Gap(18),
+                                                  Icon(TablerBold.check, size: 16, color: BrandColors.brand_400),
+                                                ],
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                      .toList(),
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
                 ),
               ],
             ),
