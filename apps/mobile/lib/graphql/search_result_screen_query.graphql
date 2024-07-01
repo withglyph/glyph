@@ -1,0 +1,19 @@
+# import './fragments/post_card_post.graphql';
+
+query SearchResultScreen_Query($query: String!, $includeTags: [String!]! = [], $excludeTags: [String!]! = [], $adultFilter: Boolean, $orderBy: SearchOrderByKind, $page: Int! = 1) {
+  searchPosts(
+    query: $query
+    includeTags: $includeTags
+    excludeTags: $excludeTags
+    adultFilter: $adultFilter
+    orderBy: $orderBy
+    page: $page
+  ) {
+    count
+
+    posts {
+      id
+      ...PostCard_post,
+    }
+  }
+}

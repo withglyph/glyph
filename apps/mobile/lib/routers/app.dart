@@ -48,7 +48,10 @@ class AppRouter extends $AppRouter {
                     AutoRoute(page: FeedChallengeRoute.page),
                   ],
                 ),
-                AutoRoute(page: SearchRoute.page, path: 'search'),
+                AutoRoute(
+                  page: SearchRoute.page,
+                  path: 'search',
+                ),
                 AutoRoute(
                   page: ArchiveRoute.page,
                   path: 'archive',
@@ -109,6 +112,11 @@ class AppRouter extends $AppRouter {
                 AutoRoute(page: SpacePostsRoute.page),
                 AutoRoute(page: SpaceCollectionsRoute.page),
               ],
+            ),
+            AutoRoute(
+              page: SearchResultRoute.page,
+              path: 'search-result/:query',
+              usesPathAsKey: true,
             ),
           ],
         ),

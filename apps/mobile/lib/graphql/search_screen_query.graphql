@@ -1,0 +1,16 @@
+query SearchScreen_Query {
+  recommendedTags {
+    id
+    name
+  }
+  featuredTagFeed {
+    __typename
+    
+    ... on FeaturedTag {
+      tag {
+        id
+        name
+      }
+    }
+  }
+}

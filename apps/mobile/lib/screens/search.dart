@@ -4,8 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:glyph/components/heading.dart';
+import 'package:glyph/components/pressable.dart';
+import 'package:glyph/components/search_input.dart';
 import 'package:glyph/extensions/color.dart';
+import 'package:glyph/ferry/widget.dart';
+import 'package:glyph/graphql/__generated__/search_screen_query.data.gql.dart';
+import 'package:glyph/graphql/__generated__/search_screen_query.req.gql.dart';
 import 'package:glyph/icons/glyph.dart';
+import 'package:glyph/icons/tabler.dart';
 import 'package:glyph/routers/app.gr.dart';
 import 'package:glyph/shells/default.dart';
 import 'package:glyph/themes/colors.dart';
@@ -23,40 +29,101 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   @override
   Widget build(BuildContext context) {
     return DefaultShell(
+      useSafeArea: true,
       appBar: Heading.empty(),
       child: Column(
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-            child: TextField(
-              textInputAction: TextInputAction.search,
-              decoration: InputDecoration(
-                isDense: true,
-                filled: true,
-                fillColor: BrandColors.gray_50,
-                hintText: '검색어를 입력해주세요',
-                hintStyle: const TextStyle(color: BrandColors.gray_400),
-                prefixIcon: const Padding(
-                  padding: EdgeInsets.fromLTRB(12, 11, 6, 11),
-                  child: Icon(
-                    Glyph.search,
-                    size: 16,
-                    color: BrandColors.gray_400,
-                  ),
-                ),
-                prefixIconConstraints: BoxConstraints.tight(const Size(34, 38)),
-                contentPadding: const EdgeInsets.symmetric(vertical: 8),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(30),
-                  borderSide: BorderSide.none,
-                ),
-              ),
-              style: const TextStyle(fontSize: 15),
+            child: SearchInput(
+              onSearch: (value, controller) async {
+                if (value.isNotEmpty) {
+                  await context.router.push(SearchResultRoute(query: value));
+                  controller.clear();
+                }
+              },
             ),
           ),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-            child: _Carousel(),
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                    child: _Carousel(),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                    child: GraphQLOperation(
+                      operation: GSearchScreen_QueryReq(),
+                      builder: (context, client, data) {
+                        final recommendedTags = data.recommendedTags;
+                        final featuredTags = data.featuredTagFeed
+                            .where((tag) => tag.G__typename == 'FeaturedTag')
+                            .whereType<GSearchScreen_QueryData_featuredTagFeed__asFeaturedTag>()
+                            .map((tag) => tag.tag);
+
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 10),
+                              child: Text(
+                                '추천 태그',
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w700,
+                                  color: BrandColors.gray_400,
+                                ),
+                                textAlign: TextAlign.start,
+                              ),
+                            ),
+                            Wrap(
+                              spacing: 8,
+                              runSpacing: 10,
+                              children: recommendedTags
+                                  .map(
+                                    (tag) => _TagButton(
+                                      id: tag.id,
+                                      name: tag.name,
+                                    ),
+                                  )
+                                  .toList(),
+                            ),
+                            const Gap(32),
+                            const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 10),
+                              child: Text(
+                                '지금 뜨는 태그',
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w700,
+                                  color: BrandColors.gray_400,
+                                ),
+                                textAlign: TextAlign.start,
+                              ),
+                            ),
+                            Wrap(
+                              spacing: 8,
+                              runSpacing: 10,
+                              children: featuredTags
+                                  .map(
+                                    (tag) => _TagButton(
+                                      id: tag.id,
+                                      name: tag.name,
+                                    ),
+                                  )
+                                  .toList(),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
         ],
       ),
@@ -239,4 +306,46 @@ class _CarouselData {
   final String color;
   final String backgroundImageUrl;
   final PageRouteInfo route;
+}
+
+class _TagButton extends StatelessWidget {
+  const _TagButton({
+    required this.id,
+    required this.name,
+  });
+
+  final String id;
+  final String name;
+
+  @override
+  Widget build(BuildContext context) {
+    return Pressable(
+      onPressed: () async {
+        await context.router.push(TagRoute(name: name));
+      },
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          border: Border.all(color: const Color(0xFFF5F5F5)),
+          borderRadius: BorderRadius.circular(3),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              color: const Color(0xFFF3F3F3),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+              child: Text(
+                '#$name',
+                style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                  color: BrandColors.gray_800,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
