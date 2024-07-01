@@ -21,13 +21,13 @@ export const finalizeImage = async (source: ImageSource, bounds?: ImageBounds) =
   let image = sharp(source, { failOn: 'none', animated: true });
   let singleImage = sharp(source, { failOn: 'none' });
 
+  image = image.rotate();
+  singleImage = singleImage.rotate();
+
   if (bounds) {
     image = image.extract(bounds);
     singleImage = singleImage.extract(bounds);
   }
-
-  image = image.rotate();
-  singleImage = singleImage.rotate();
 
   const getOutput = async () => {
     return await image.clone().toBuffer();
