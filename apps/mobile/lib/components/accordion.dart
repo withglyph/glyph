@@ -4,8 +4,8 @@ import 'package:glyph/components/pressable.dart';
 import 'package:glyph/icons/tabler.dart';
 import 'package:glyph/themes/colors.dart';
 
-class Arcodion extends StatefulWidget {
-  Arcodion({
+class Accordion extends StatefulWidget {
+  const Accordion({
     required this.title,
     required this.child,
     super.key,
@@ -17,10 +17,10 @@ class Arcodion extends StatefulWidget {
   final bool initiallyExpanded;
 
   @override
-  createState() => _ArcodionState();
+  createState() => _AccordionState();
 }
 
-class _ArcodionState extends State<Arcodion> with SingleTickerProviderStateMixin {
+class _AccordionState extends State<Accordion> with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _heightAnimation;
 
@@ -50,7 +50,7 @@ class _ArcodionState extends State<Arcodion> with SingleTickerProviderStateMixin
   }
 
   @override
-  void didUpdateWidget(covariant Arcodion oldWidget) {
+  void didUpdateWidget(covariant Accordion oldWidget) {
     super.didUpdateWidget(oldWidget);
 
     if (widget.initiallyExpanded != oldWidget.initiallyExpanded) {

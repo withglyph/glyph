@@ -2,7 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
-import 'package:glyph/components/arcodion.dart';
+import 'package:glyph/components/accordion.dart';
 import 'package:glyph/components/button.dart';
 import 'package:glyph/components/heading.dart';
 import 'package:glyph/components/horizontal_divider.dart';
@@ -441,7 +441,7 @@ class _SearchFilterState extends State<_SearchFilter> {
                 SingleChildScrollView(
                   child: Column(
                     children: [
-                      Arcodion(
+                      Accordion(
                         title: '포함 태그',
                         initiallyExpanded: widget.initiallyExpandedFilterIndex == 0,
                         child: Column(
@@ -477,7 +477,7 @@ class _SearchFilterState extends State<_SearchFilter> {
                         ),
                       ),
                       const HorizontalDivider(color: BrandColors.gray_50),
-                      Arcodion(
+                      Accordion(
                         title: '제외 태그',
                         initiallyExpanded: widget.initiallyExpandedFilterIndex == 1,
                         child: Column(
@@ -513,7 +513,7 @@ class _SearchFilterState extends State<_SearchFilter> {
                         ),
                       ),
                       const HorizontalDivider(color: BrandColors.gray_50),
-                      Arcodion(
+                      Accordion(
                         title: '정렬',
                         initiallyExpanded: widget.initiallyExpandedFilterIndex == 2,
                         child: Row(
@@ -539,7 +539,7 @@ class _SearchFilterState extends State<_SearchFilter> {
                         ),
                       ),
                       const HorizontalDivider(color: BrandColors.gray_50),
-                      Arcodion(
+                      Accordion(
                         title: '성인물 표시',
                         initiallyExpanded: widget.initiallyExpandedFilterIndex == 3,
                         child: Row(
