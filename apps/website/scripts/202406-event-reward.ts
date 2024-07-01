@@ -16,7 +16,7 @@ for (let i = 0; ; i++) {
       .select({ UserEventEnrollments })
       .from(UserEventEnrollments)
       .innerJoin(UserPersonalIdentities, eq(UserEventEnrollments.userId, UserPersonalIdentities.userId))
-      .where(and(eq(UserEventEnrollments.eventCode, 'weekly_challenge_24062'), eq(UserEventEnrollments.eligible, true)))
+      .where(and(eq(UserEventEnrollments.eventCode, 'weekly_challenge_24064'), eq(UserEventEnrollments.eligible, true)))
       .orderBy(UserEventEnrollments.id)
       .limit(1)
       .offset(i)
@@ -37,7 +37,11 @@ for (let i = 0; ; i++) {
       .from(UserEventEnrollments)
       .where(
         and(
-          inArray(UserEventEnrollments.eventCode, ['weekly_challenge_24061']),
+          inArray(UserEventEnrollments.eventCode, [
+            'weekly_challenge_24061',
+            'weekly_challenge_24062',
+            'weekly_challenge_24063',
+          ]),
           eq(UserEventEnrollments.userId, eventEnrollment.userId),
           isNotNull(UserEventEnrollments.rewardedAt),
         ),

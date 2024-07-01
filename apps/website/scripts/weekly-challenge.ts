@@ -20,10 +20,10 @@ import { useFirstRow } from '$lib/server/utils/database';
 setupDayjs();
 const rl = createInterface(stdin, stdout);
 
-const challengeEventCode = 'weekly_challenge_24063';
-const challengeTagId = 'hw07dein06w0ugp9';
-const challengeStart = dayjs.kst('2024-06-17').startOf('day');
-const challengeEnd = dayjs.kst('2024-06-23').endOf('day');
+const challengeEventCode = 'weekly_challenge_24064';
+const challengeTagId = 'hpmxnzxrny5mgrqe';
+const challengeStart = dayjs.kst('2024-06-24').startOf('day');
+const challengeEnd = dayjs.kst('2024-06-30').endOf('day');
 
 const FreePostRevisionContents = alias(PostRevisionContents, 'free_post_revision_contents');
 const PaidPostRevisionContents = alias(PostRevisionContents, 'paid_post_revision_contents');
