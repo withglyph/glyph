@@ -8,13 +8,13 @@ extension ModalX on BuildContext {
     return await showModalBottomSheet(
       context: this,
       backgroundColor: BrandColors.gray_0,
+      barrierColor: Colors.black.withOpacity(0.2),
       elevation: 0,
       isScrollControlled: true,
       useSafeArea: true,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(8),
-          topRight: Radius.circular(8),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(20),
         ),
       ),
       clipBehavior: Clip.antiAlias,

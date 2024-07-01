@@ -16,6 +16,7 @@ class LoaderController {
       showDialog(
         context: context,
         barrierDismissible: false,
+        barrierColor: Colors.black.withOpacity(0.45),
         builder: (context) {
           _loaderContext = context;
 

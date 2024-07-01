@@ -183,6 +183,7 @@ Future<T> _showFloatingBottomSheet<T>({
   return await showModalBottomSheet(
     context: context,
     backgroundColor: Colors.transparent,
+    barrierColor: Colors.black.withOpacity(0.2),
     elevation: 0,
     isScrollControlled: true,
     useSafeArea: true,
