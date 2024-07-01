@@ -1,0 +1,11 @@
+mutation ProfileScreen_UpdateUserProfile_Mutation($input: UpdateUserProfileInput!) {
+  updateUserProfile(input: $input) {
+    id
+    name
+
+    avatar {
+      id
+      url
+    }
+  }
+}

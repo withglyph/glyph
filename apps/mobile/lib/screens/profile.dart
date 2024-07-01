@@ -6,8 +6,11 @@ import 'package:gap/gap.dart';
 import 'package:glyph/components/button.dart';
 import 'package:glyph/components/forms/form_text_field.dart';
 import 'package:glyph/components/pressable.dart';
+import 'package:glyph/context/toast.dart';
+import 'package:glyph/ferry/extension.dart';
 import 'package:glyph/ferry/widget.dart';
 import 'package:glyph/graphql/__generated__/profile_screen_query.req.gql.dart';
+import 'package:glyph/graphql/__generated__/profile_screen_update_user_profile_mutation.req.gql.dart';
 import 'package:glyph/icons/tabler.dart';
 import 'package:glyph/shells/default.dart';
 import 'package:glyph/themes/colors.dart';
@@ -47,7 +50,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           operation: GProfileScreen_QueryReq(),
           builder: (context, client, data) {
             return Padding(
-              padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
               child: Column(
                 children: [
                   Center(
@@ -134,7 +137,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   const Spacer(),
                   Button(
                     '변경',
+                    size: ButtonSize.large,
                     enabled: _isFormValid,
+                    onPressed: () async {
+                      if (!_formKey.currentState!.saveAndValidate()) {
+                        return;
+                      }
+
+                      final values = _formKey.currentState!.value;
+
+                      final req = GProfileScreen_UpdateUserProfile_MutationReq(
+                        (b) => b
+                          ..vars.input.avatarId = data.me!.profile.avatar.id
+                          ..vars.input.name = values['name'],
+                      );
+
+                      await client.req(req);
+                      if (context.mounted) {
+                        context.toast.show('프로필이 변경되었어요');
+                        await context.router.maybePop();
+                      }
+                    },
                   ),
                 ],
               ),
