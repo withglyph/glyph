@@ -177,6 +177,12 @@
               </time>
             </dd>
           </div>
+          <div class={flex({ align: 'center', gap: '12px', fontSize: '13px' })}>
+            <dt class={css({ fontWeight: 'semibold', width: '46px' })}>그룹코드</dt>
+            <dd class={css({ color: 'gray.600' })}>
+              {$query.redeemCodeGroup.id}
+            </dd>
+          </div>
         </dl>
 
         <p class={css({ marginTop: '8px', fontSize: '13px', color: 'gray.600' })}>
