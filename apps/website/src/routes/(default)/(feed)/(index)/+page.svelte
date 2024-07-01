@@ -28,11 +28,11 @@
         }
       }
 
-      challengeFeed {
-        id
+      # challengeFeed {
+      #   id
 
-        ...Feed_PostCard_post
-      }
+      #   ...Feed_PostCard_post
+      # }
 
       recommendFeed {
         id
@@ -203,7 +203,7 @@
     </div>
   {/if}
 
-  <div
+  <!-- <div
     class={css(
       { paddingY: { base: '32px', sm: '40px' } },
       $query.me &&
@@ -243,7 +243,7 @@
         size={20}
       />
     </HorizontalScroll>
-  </div>
+  </div> -->
 
   {#if $query.featureFlags.includes('SHOW_AD')}
     <AdSense style={css.raw({ width: 'full', height: '150px' })} slotId="3977220446" />

@@ -44,7 +44,7 @@
     {#if $query.me}
       <TabHeadItem id={2} style={css.raw({ fontWeight: '[800]' })} pathname="/feed">구독</TabHeadItem>
     {/if}
-    <TabHeadItem id={3} style={css.raw({ fontWeight: '[800]' })} pathname="/challenge">챌린지</TabHeadItem>
+    <!-- <TabHeadItem id={3} style={css.raw({ fontWeight: '[800]' })} pathname="/challenge">챌린지</TabHeadItem> -->
   </TabHead>
 
   <slot />

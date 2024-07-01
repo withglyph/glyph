@@ -28,7 +28,7 @@
   import { css, cx } from '$styled-system/css';
   import { center, flex } from '$styled-system/patterns';
   import CreateSpaceModal from '../../(default)/CreateSpaceModal.svelte';
-  import ChallengeTag from './ChallengeTag.svelte';
+  // import ChallengeTag from './ChallengeTag.svelte';
   import PublishMenuSearch from './PublishMenuSearch.svelte';
   import RadioGroup from './RadioGroup.svelte';
   import type { ChangeEventHandler } from 'svelte/elements';
@@ -585,7 +585,7 @@
           bind:query={extraQuery}
         />
 
-        <ChallengeTag bind:tags={$data.tags} />
+        <!-- <ChallengeTag bind:tags={$data.tags} /> -->
       </section>
 
       <div hidden={tabIndex !== 2}>
