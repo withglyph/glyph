@@ -15,5 +15,29 @@ query MeScreen_Query {
         ...Img_image
       }
     }
+
+    spaces {
+      id
+      slug
+      name
+
+      icon {
+        id
+        ...Img_image
+      }
+
+      meAsMember {
+        id
+
+        profile {
+          id
+          name
+
+          avatar {
+            ...Img_image
+          }
+        }
+      }
+    }
   }
 }

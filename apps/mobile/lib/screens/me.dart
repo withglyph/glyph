@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,6 +12,7 @@ import 'package:glyph/extensions/int.dart';
 import 'package:glyph/ferry/widget.dart';
 import 'package:glyph/graphql/__generated__/me_screen_query.req.gql.dart';
 import 'package:glyph/icons/tabler.dart';
+import 'package:glyph/icons/tabler_bold.dart';
 import 'package:glyph/routers/app.gr.dart';
 import 'package:glyph/shells/default.dart';
 import 'package:glyph/themes/colors.dart';
@@ -71,7 +74,7 @@ class _MeScreenState extends ConsumerState<MeScreen> {
                                 ),
                                 const Gap(6),
                                 const Icon(
-                                  Tabler.chevron_right,
+                                  TablerBold.chevron_right,
                                   size: 16,
                                 ),
                               ],
@@ -94,18 +97,146 @@ class _MeScreenState extends ConsumerState<MeScreen> {
                   ),
                 ),
                 const HorizontalDivider(height: 6, color: BrandColors.gray_50),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+                  child: Row(
+                    children: [
+                      const Icon(Tabler.planet, size: 20),
+                      const Gap(8),
+                      const Text(
+                        '스페이스',
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const Spacer(),
+                      Pressable(
+                        child: const Icon(
+                          TablerBold.plus,
+                          size: 16,
+                          color: BrandColors.gray_400,
+                        ),
+                        onPressed: () {},
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: 150,
+                  child: data.me!.spaces.isEmpty
+                      ? const Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              '아직 스페이스가 없어요',
+                              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: BrandColors.gray_400),
+                            ),
+                            Gap(4),
+                            Text(
+                              '+ 아이콘을 눌러 스페이스를 만들어보세요',
+                              style: TextStyle(fontSize: 13, color: BrandColors.gray_400),
+                            ),
+                          ],
+                        )
+                      : ListView.separated(
+                          scrollDirection: Axis.horizontal,
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          clipBehavior: Clip.none,
+                          itemCount: data.me!.spaces.length,
+                          itemBuilder: (context, index) {
+                            final space = data.me!.spaces[index];
+
+                            return Container(
+                              width: 150,
+                              decoration: BoxDecoration(
+                                color: BrandColors.gray_0,
+                                borderRadius: BorderRadius.circular(4),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: BrandColors.gray_900.withOpacity(0.1),
+                                    offset: const Offset(1, 1),
+                                    blurRadius: 8,
+                                  ),
+                                ],
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  Stack(
+                                    children: [
+                                      Container(
+                                        height: 100,
+                                        clipBehavior: Clip.antiAlias,
+                                        decoration: const BoxDecoration(
+                                          color: BrandColors.gray_50,
+                                          borderRadius: BorderRadius.vertical(top: Radius.circular(4)),
+                                        ),
+                                        child: ColorFiltered(
+                                          colorFilter: ColorFilter.mode(
+                                            BrandColors.gray_900.withOpacity(0.05),
+                                            BlendMode.srcATop,
+                                          ),
+                                          child: ImageFiltered(
+                                            imageFilter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+                                            child: Img(space.icon, width: 150, height: 100),
+                                          ),
+                                        ),
+                                      ),
+                                      Positioned(
+                                        left: 10,
+                                        bottom: 12,
+                                        child: Stack(
+                                          clipBehavior: Clip.none,
+                                          children: [
+                                            Img(space.icon, width: 32, height: 32, borderWidth: 1),
+                                            Positioned(
+                                              right: -4,
+                                              bottom: -4,
+                                              child: Img(
+                                                space.meAsMember!.profile.avatar,
+                                                width: 20,
+                                                height: 20,
+                                                borderWidth: 1,
+                                                borderRadius: 10,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            space.name,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+                                          ),
+                                          Text(
+                                            'by ${space.meAsMember!.profile.name}',
+                                            overflow: TextOverflow.ellipsis,
+                                            style: const TextStyle(fontSize: 11, color: BrandColors.gray_500),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                          separatorBuilder: (context, index) => const Gap(12),
+                        ),
+                ),
+                const Gap(20),
+                const HorizontalDivider(color: BrandColors.gray_50),
                 _Section(
                   children: [
-                    _MenuItem(
-                      icon: Tabler.planet,
-                      title: '스페이스',
-                      onPressed: () {},
-                    ),
-                    _MenuItem(
-                      icon: Tabler.template,
-                      title: '템플릿',
-                      onPressed: () {},
-                    ),
                     _MenuItem(
                       icon: Tabler.clipboard_text,
                       title: '임시보관함',
@@ -124,8 +255,8 @@ class _MeScreenState extends ConsumerState<MeScreen> {
                         child: Text(
                           '${data.me!.point.comma}P',
                           style: const TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w600,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
                             color: BrandColors.gray_400,
                           ),
                         ),
@@ -236,7 +367,7 @@ class _MenuItem extends StatelessWidget {
     return Pressable(
       onPressed: onPressed,
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 20),
+        padding: const EdgeInsets.symmetric(vertical: 18),
         child: Row(
           children: [
             Icon(icon, size: 20),
@@ -251,7 +382,7 @@ class _MenuItem extends StatelessWidget {
             const Spacer(),
             if (trailing != null) trailing!,
             const Icon(
-              Tabler.chevron_right,
+              TablerBold.chevron_right,
               size: 16,
               color: BrandColors.gray_400,
             ),
