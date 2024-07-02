@@ -70,8 +70,8 @@ class _SpaceScreenState extends State<SpaceScreen> with SingleTickerProviderStat
                       const Gap(18),
                       Pressable(
                         child: const Icon(Tabler.home),
-                        onPressed: () {
-                          context.router.popUntilRoot();
+                        onPressed: () async {
+                          await context.router.navigate(const MainRouter());
                         },
                       ),
                     ],

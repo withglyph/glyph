@@ -130,8 +130,8 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                     Tabler.home,
                     color: hasThumbnail && _isOverThumbnail ? BrandColors.gray_0 : BrandColors.gray_900,
                   ),
-                  onPressed: () {
-                    context.router.popUntilRoot();
+                  onPressed: () async {
+                    await context.router.navigate(const MainRouter());
                   },
                 ),
               ],
@@ -1108,6 +1108,10 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
   }
 
   void _updateFloatingFooterVisibility() {
+    if (!mounted) {
+      return;
+    }
+
     final staticFooterBox = _staticFooterKey.currentContext?.findRenderObject() as RenderBox?;
 
     if (staticFooterBox != null) {

@@ -27,6 +27,7 @@ import 'package:glyph/themes/colors.dart';
 import 'package:glyph/widgets/signup.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 @RoutePage()
 class LoginScreen extends ConsumerStatefulWidget {
@@ -101,8 +102,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> with SingleTickerProv
                     child: Row(
                       children: response!.data!.featuredImages
                           .map(
-                            (image) => CachedNetworkImage(
-                              imageUrl: image.url,
+                            (image) => FadeInImage(
+                              placeholder: MemoryImage(kTransparentImage),
+                              image: CachedNetworkImageProvider(image.url),
                               height: double.infinity,
                               fit: BoxFit.cover,
                               fadeInDuration: const Duration(milliseconds: 1000),

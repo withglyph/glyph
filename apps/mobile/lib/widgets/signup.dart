@@ -10,6 +10,7 @@ import 'package:glyph/graphql/__generated__/signup_dialog_create_user_mutation.r
 import 'package:glyph/icons/tabler.dart';
 import 'package:glyph/providers/auth.dart';
 import 'package:glyph/providers/ferry.dart';
+import 'package:glyph/routers/app.gr.dart';
 import 'package:glyph/themes/colors.dart';
 
 class SignupDialog extends ConsumerStatefulWidget {
@@ -117,8 +118,8 @@ class _SignupDialogState extends ConsumerState<SignupDialog> {
                   child: Button(
                     '취소',
                     kind: ButtonKind.secondary,
-                    onPressed: () {
-                      context.router.popUntilRoot();
+                    onPressed: () async {
+                      await context.router.navigate(const AuthRouter());
                     },
                   ),
                 ),
