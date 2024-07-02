@@ -1,0 +1,5 @@
+mutation PostScreen_Comments_DeleteComment_Mutation($input: DeleteCommentInput!) {
+  deleteComment(input: $input) {
+    id
+  }
+}

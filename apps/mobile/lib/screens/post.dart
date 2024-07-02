@@ -21,6 +21,7 @@ import 'package:glyph/context/bottom_menu.dart';
 import 'package:glyph/context/bottom_sheet.dart';
 import 'package:glyph/context/floating_bottom_sheet.dart';
 import 'package:glyph/context/modal.dart';
+import 'package:glyph/context/toast.dart';
 import 'package:glyph/extensions/build_context.dart';
 import 'package:glyph/extensions/int.dart';
 import 'package:glyph/extensions/iterable.dart';
@@ -29,6 +30,7 @@ import 'package:glyph/ferry/widget.dart';
 import 'package:glyph/graphql/__generated__/post_screen_bookmark_post_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_screen_collection_post_list_query.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_screen_comments_create_comment_mutation.req.gql.dart';
+import 'package:glyph/graphql/__generated__/post_screen_comments_delete_comment_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_screen_comments_like_comment_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_screen_comments_query.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_screen_comments_unlike_comment_mutation.req.gql.dart';
@@ -39,6 +41,7 @@ import 'package:glyph/graphql/__generated__/post_screen_update_post_view_mutatio
 import 'package:glyph/graphql/__generated__/schema.schema.gql.dart';
 import 'package:glyph/icons/tabler.dart';
 import 'package:glyph/icons/tabler_bold.dart';
+import 'package:glyph/providers/ferry.dart';
 import 'package:glyph/routers/app.gr.dart';
 import 'package:glyph/themes/colors.dart';
 import 'package:jiffy/jiffy.dart';
@@ -1778,12 +1781,95 @@ class _CommentsState extends ConsumerState<_Comments> with SingleTickerProviderS
                                           ],
                                         ),
                                       ),
-                                      const Icon(
-                                        Tabler.dots_vertical,
-                                        size: 20,
-                                        color: BrandColors.gray_300,
-                                        // onPressed: () {}, // TODO
-                                      ),
+                                      if (comment.profile.id == data.post.space?.commentProfile?.id ||
+                                          data.post.space?.meAsMember != null)
+                                        Pressable(
+                                          child: const Icon(
+                                            Tabler.dots_vertical,
+                                            size: 20,
+                                            color: BrandColors.gray_300,
+                                          ),
+                                          onPressed: () async {
+                                            await context.showBottomMenu(
+                                              title: '댓글',
+                                              items: comment.profile.id == data.post.space?.commentProfile?.id
+                                                  ? [
+                                                      // BottomMenuItem(
+                                                      //   icon: Tabler.x,
+                                                      //   iconColor: BrandColors.gray_600,
+                                                      //   title: '수정',
+                                                      //   onTap: () async {
+                                                      //     if (context.mounted) {
+                                                      //       // TODO:
+                                                      //       context.toast.show('Not implemented');
+                                                      //     }
+                                                      //   },
+                                                      // ),
+                                                      BottomMenuItem(
+                                                        icon: Tabler.x,
+                                                        iconColor: BrandColors.red_600,
+                                                        title: '삭제',
+                                                        color: BrandColors.red_600,
+                                                        onTap: () async {
+                                                          final client = ref.read(ferryProvider);
+                                                          final req = GPostScreen_Comments_DeleteComment_MutationReq(
+                                                            (b) => b..vars.input.commentId = comment.id,
+                                                          );
+                                                          await client.req(req);
+
+                                                          if (context.mounted) {
+                                                            // FIXME: 문구 미정
+                                                            context.toast.show('댓글을 삭제했어요');
+                                                          }
+
+                                                          await client.req(
+                                                            GPostScreen_Comnments_QueryReq(
+                                                              (b) => b..vars.permalink = widget.permalink,
+                                                            ),
+                                                          );
+                                                        },
+                                                      ),
+                                                    ]
+                                                  : [
+                                                      BottomMenuItem(
+                                                        icon: Tabler.x,
+                                                        iconColor: BrandColors.gray_600,
+                                                        title: '삭제',
+                                                        onTap: () async {
+                                                          final client = ref.read(ferryProvider);
+                                                          final req = GPostScreen_Comments_DeleteComment_MutationReq(
+                                                            (b) => b..vars.input.commentId = comment.id,
+                                                          );
+                                                          await client.req(req);
+
+                                                          if (context.mounted) {
+                                                            // FIXME: 문구 미정
+                                                            context.toast.show('댓글을 삭제했어요');
+                                                          }
+
+                                                          await client.req(
+                                                            GPostScreen_Comnments_QueryReq(
+                                                              (b) => b..vars.permalink = widget.permalink,
+                                                            ),
+                                                          );
+                                                        },
+                                                      ),
+                                                      // BottomMenuItem(
+                                                      //   icon: Tabler.user_x,
+                                                      //   iconColor: BrandColors.red_600,
+                                                      //   title: '차단',
+                                                      //   color: BrandColors.red_600,
+                                                      //   onTap: () async {
+                                                      //     if (context.mounted) {
+                                                      //       // TODO:
+                                                      //       context.toast.show('Not implemented');
+                                                      //     }
+                                                      //   },
+                                                      // ),
+                                                    ],
+                                            );
+                                          },
+                                        ),
                                     ],
                                   ),
                                   const Gap(4),
