@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:gap/gap.dart';
 import 'package:glyph/components/empty_state.dart';
 import 'package:glyph/components/horizontal_divider.dart';
 import 'package:glyph/components/post_card.dart';
@@ -8,6 +9,7 @@ import 'package:glyph/ferry/widget.dart';
 import 'package:glyph/graphql/__generated__/archive_purchases_screen_query.req.gql.dart';
 import 'package:glyph/icons/tabler_bold.dart';
 import 'package:glyph/themes/colors.dart';
+import 'package:jiffy/jiffy.dart';
 
 @RoutePage()
 class ArchivePurchasesScreen extends ConsumerWidget {
@@ -32,9 +34,31 @@ class ArchivePurchasesScreen extends ConsumerWidget {
                 ),
                 itemCount: posts.length,
                 itemBuilder: (context, index) {
-                  return PostCard(
-                    posts[index],
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+                  final post = posts[index];
+
+                  return Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 16, 0, 18),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: Text(
+                            '${Jiffy.parse(post.purchasedAt!.value).format(pattern: 'yyyy.MM.dd hh:mm')} 구매',
+                            style: const TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w500,
+                              color: BrandColors.gray_500,
+                            ),
+                          ),
+                        ),
+                        const Gap(4),
+                        PostCard(
+                          post,
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                        ),
+                      ],
+                    ),
                   );
                 },
                 separatorBuilder: (context, index) {
