@@ -30,6 +30,10 @@ query PostScreen_Comnments_Query($permalink: String!) {
 
     space {
       id
+      
+      meAsMember {
+        id
+      }
 
       commentProfile {
         id
