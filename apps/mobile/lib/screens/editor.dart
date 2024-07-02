@@ -43,7 +43,6 @@ class _EditorScreenState extends State<EditorScreen> {
       ),
       body: WebView(
         path: '/editor/${widget.permalink}',
-        readOnly: false,
         onJsMessage: (data, reply) async {
           this.reply ??= reply;
 

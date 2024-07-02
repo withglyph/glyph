@@ -499,6 +499,7 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                         height: _webViewHeight,
                         child: WebView(
                           path: '/_webview/post-view/${widget.permalink}',
+                          readOnly: true,
                           onJsMessage: (message, reply) async {
                             if (message['type'] == 'resize') {
                               final height = (message['height'] as num).toDouble();

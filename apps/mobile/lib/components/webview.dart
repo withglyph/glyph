@@ -12,7 +12,7 @@ class WebView extends ConsumerStatefulWidget {
   const WebView({
     required this.path,
     super.key,
-    this.readOnly = true,
+    this.readOnly = false,
     this.onJsMessage,
     this.onNavigate,
   });
@@ -41,8 +41,10 @@ class _WebviewState extends ConsumerState<WebView> {
         disableContextMenu: true,
         disableLongPressContextMenuOnLinks: true,
         isTextInteractionEnabled: !widget.readOnly,
+        disableHorizontalScroll: widget.readOnly,
+        disableVerticalScroll: widget.readOnly,
+        disallowOverScroll: widget.readOnly,
         supportZoom: false,
-        suppressesIncrementalRendering: true,
       );
 
   final _cookieManager = CookieManager.instance();
