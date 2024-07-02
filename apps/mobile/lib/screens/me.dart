@@ -59,35 +59,39 @@ class _MeScreenState extends ConsumerState<MeScreen> {
                           ),
                         ),
                         const Gap(14),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Text(
-                                  data.me!.profile.name,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(
-                                    fontSize: 22,
-                                    fontWeight: FontWeight.w800,
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      data.me!.profile.name,
+                                      maxLines: 3,
+                                      style: const TextStyle(
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.w800,
+                                      ),
+                                    ),
                                   ),
-                                ),
-                                const Gap(6),
-                                const Icon(
-                                  TablerBold.chevron_right,
-                                  size: 16,
-                                ),
-                              ],
-                            ),
-                            Text(
-                              data.me!.email,
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                fontSize: 14,
-                                color: BrandColors.gray_500,
+                                  const Gap(6),
+                                  const Icon(
+                                    TablerBold.chevron_right,
+                                    size: 16,
+                                  ),
+                                ],
                               ),
-                            ),
-                          ],
+                              Text(
+                                data.me!.email,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  color: BrandColors.gray_500,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     ),
