@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:auto_route/auto_route.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ferry_flutter/ferry_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -24,7 +25,6 @@ import 'package:glyph/routers/app.gr.dart';
 import 'package:glyph/themes/colors.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
-import 'package:transparent_image/transparent_image.dart';
 
 @RoutePage()
 class LoginScreen extends ConsumerStatefulWidget {
@@ -99,9 +99,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> with SingleTickerProv
                     child: Row(
                       children: response!.data!.featuredImages
                           .map(
-                            (image) => FadeInImage(
-                              placeholder: MemoryImage(kTransparentImage),
-                              image: NetworkImage(image.url),
+                            (image) => CachedNetworkImage(
+                              imageUrl: image.url,
                               height: double.infinity,
                               fit: BoxFit.cover,
                               fadeInDuration: const Duration(milliseconds: 1000),

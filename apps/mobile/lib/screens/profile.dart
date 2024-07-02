@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:built_value/json_object.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
@@ -76,7 +77,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   height: 98,
                                   placeholder: MemoryImage(kTransparentImage),
                                   image: _avatarBytes == null
-                                      ? NetworkImage(data.me!.profile.avatar.url)
+                                      ? CachedNetworkImageProvider(data.me!.profile.avatar.url)
                                       : MemoryImage(_avatarBytes!),
                                   fit: BoxFit.cover,
                                   fadeInDuration: const Duration(milliseconds: 150),

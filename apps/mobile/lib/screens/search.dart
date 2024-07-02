@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,12 +11,9 @@ import 'package:glyph/extensions/color.dart';
 import 'package:glyph/ferry/widget.dart';
 import 'package:glyph/graphql/__generated__/search_screen_query.data.gql.dart';
 import 'package:glyph/graphql/__generated__/search_screen_query.req.gql.dart';
-import 'package:glyph/icons/glyph.dart';
-import 'package:glyph/icons/tabler.dart';
 import 'package:glyph/routers/app.gr.dart';
 import 'package:glyph/shells/default.dart';
 import 'package:glyph/themes/colors.dart';
-import 'package:transparent_image/transparent_image.dart';
 
 @RoutePage()
 class SearchScreen extends ConsumerStatefulWidget {
@@ -186,9 +184,8 @@ class _Carousel extends StatelessWidget {
             child: Stack(
               children: [
                 Positioned.fill(
-                  child: FadeInImage.memoryNetwork(
-                    placeholder: kTransparentImage,
-                    image: carousel.backgroundImageUrl,
+                  child: CachedNetworkImage(
+                    imageUrl: carousel.backgroundImageUrl,
                     fit: BoxFit.cover,
                     fadeInDuration: const Duration(milliseconds: 150),
                   ),
