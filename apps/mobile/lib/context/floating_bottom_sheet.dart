@@ -1,8 +1,5 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:glyph/components/pressable.dart';
-import 'package:glyph/icons/tabler_bold.dart';
 import 'package:glyph/themes/colors.dart';
 
 extension FloatingBottomSheetX on BuildContext {
@@ -13,6 +10,7 @@ extension FloatingBottomSheetX on BuildContext {
     return showModalBottomSheet(
       context: this,
       backgroundColor: Colors.transparent,
+      barrierColor: Colors.black.withOpacity(0.2),
       elevation: 0,
       isScrollControlled: true,
       useSafeArea: true,
@@ -25,6 +23,7 @@ extension FloatingBottomSheetX on BuildContext {
           child: Container(
             margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
             padding: const EdgeInsets.fromLTRB(24, 8, 24, 20),
+            clipBehavior: Clip.antiAlias,
             decoration: BoxDecoration(
               color: BrandColors.gray_0,
               borderRadius: BorderRadius.circular(22),

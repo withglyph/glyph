@@ -31,6 +31,7 @@ import 'package:glyph/graphql/__generated__/post_screen_comments_create_comment_
 import 'package:glyph/graphql/__generated__/post_screen_comments_like_comment_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_screen_comments_query.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_screen_comments_unlike_comment_mutation.req.gql.dart';
+import 'package:glyph/graphql/__generated__/post_screen_post_list_query.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_screen_query.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_screen_unbookmark_post_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_screen_update_post_view_mutation.req.gql.dart';
@@ -239,135 +240,10 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                 Pressable(
                   child: const Icon(Tabler.list),
                   onPressed: () async {
-                    final controller = ScrollController();
-                    final postOrder = data.post.space!.posts.indexWhere((post) => post.id == data.post.id);
-
-                    var isScrolled = false;
-
                     await context.showFloatingBottomSheet(
                       title: '스페이스 목차',
                       builder: (context) {
-                        WidgetsBinding.instance.addPostFrameCallback((_) {
-                          if (controller.hasClients && !isScrolled && data.post.space!.posts.length > 1) {
-                            controller.jumpTo(
-                              controller.position.maxScrollExtent * (postOrder / (data.post.space!.posts.length - 1)),
-                            );
-                            isScrolled = true;
-                          }
-                        });
-
-                        return Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 8, 0, 16),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Stack(
-                                    children: [
-                                      Img(
-                                        data.post.space!.icon,
-                                        width: 38,
-                                        height: 38,
-                                        borderWidth: 1,
-                                      ),
-                                      Positioned(
-                                        bottom: 0,
-                                        right: 0,
-                                        child: Transform.translate(
-                                          offset: const Offset(4, 4),
-                                          child: Img(
-                                            data.post.member!.profile.avatar,
-                                            width: 24,
-                                            height: 24,
-                                            borderWidth: 1,
-                                            borderRadius: 12,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const Gap(12),
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        data.post.space!.name,
-                                        style: const TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w700,
-                                          color: BrandColors.gray_800,
-                                        ),
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      Text(
-                                        data.post.space!.description ?? '',
-                                        style: TextStyle(
-                                          fontSize: 11,
-                                          color: BrandColors.gray_800.withOpacity(0.8),
-                                        ),
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      const Gap(6),
-                                      Text(
-                                        '총 ${data.post.space!.posts.length}개',
-                                        style: TextStyle(
-                                          fontSize: 11,
-                                          fontWeight: FontWeight.w400,
-                                          color: BrandColors.gray_400.withOpacity(0.8),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const HorizontalDivider(),
-                            Flexible(
-                              child: SingleChildScrollView(
-                                controller: controller,
-                                child: Column(
-                                  children: data.post.space!.posts
-                                      .map(
-                                        (post) => Pressable(
-                                          onPressed: () => context.router.push(
-                                            PostRoute(
-                                              permalink: post.permalink,
-                                            ),
-                                          ),
-                                          child: Padding(
-                                            padding: const EdgeInsets.symmetric(vertical: 15),
-                                            child: Row(
-                                              children: [
-                                                Flexible(
-                                                  fit: FlexFit.tight,
-                                                  child: Text(
-                                                    post.publishedRevision!.title ?? '(제목 없음)',
-                                                    overflow: TextOverflow.ellipsis,
-                                                    style: const TextStyle(
-                                                      fontSize: 16,
-                                                      fontWeight: FontWeight.w600,
-                                                      color: BrandColors.gray_600,
-                                                    ),
-                                                  ),
-                                                ),
-                                                if (post.id == data.post.id) ...const [
-                                                  Gap(18),
-                                                  Icon(TablerBold.check, size: 16, color: BrandColors.brand_400),
-                                                ],
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      )
-                                      .toList(),
-                                ),
-                              ),
-                            ),
-                          ],
-                        );
+                        return _PostList(permalink: widget.permalink);
                       },
                     );
                   },
@@ -499,21 +375,21 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                               ),
                             ],
                             const Gap(12),
-                            Row(
-                              children: [
-                                Stack(
-                                  children: [
-                                    Img(
-                                      data.post.space!.icon,
-                                      width: 30,
-                                      height: 30,
-                                      borderWidth: 1,
-                                    ),
-                                    Positioned(
-                                      bottom: 0,
-                                      right: 0,
-                                      child: Transform.translate(
-                                        offset: const Offset(4, 4),
+                            Pressable(
+                              child: Row(
+                                children: [
+                                  Stack(
+                                    clipBehavior: Clip.none,
+                                    children: [
+                                      Img(
+                                        data.post.space!.icon,
+                                        width: 30,
+                                        height: 30,
+                                        borderWidth: 1,
+                                      ),
+                                      Positioned(
+                                        bottom: -4,
+                                        right: -4,
                                         child: Img(
                                           data.post.member!.profile.avatar,
                                           width: 20,
@@ -522,35 +398,40 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                                           borderRadius: 10,
                                         ),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                                const Gap(12),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        data.post.space!.name,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: const TextStyle(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w700,
-                                        ),
-                                      ),
-                                      Text(
-                                        'by ${data.post.member!.profile.name}',
-                                        overflow: TextOverflow.ellipsis,
-                                        style: const TextStyle(
-                                          fontSize: 13,
-                                          fontWeight: FontWeight.w500,
-                                          color: BrandColors.gray_500,
-                                        ),
-                                      ),
                                     ],
                                   ),
-                                ),
-                              ],
+                                  const Gap(12),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          data.post.space!.name,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: const TextStyle(
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                        ),
+                                        Text(
+                                          'by ${data.post.member!.profile.name}',
+                                          overflow: TextOverflow.ellipsis,
+                                          style: const TextStyle(
+                                            fontSize: 13,
+                                            fontWeight: FontWeight.w500,
+                                            color: BrandColors.gray_500,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              onPressed: () async {
+                                await context.router.push(
+                                  SpaceRoute(slug: data.post.space!.slug),
+                                );
+                              },
                             ),
                             const Gap(10),
                             Row(
@@ -1311,6 +1192,145 @@ class _Tag extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _PostList extends StatefulWidget {
+  const _PostList({required this.permalink});
+
+  final String permalink;
+
+  @override
+  createState() => _PostListState();
+}
+
+class _PostListState extends State<_PostList> {
+  final _controller = ScrollController();
+
+  @override
+  Widget build(BuildContext context) {
+    return GraphQLOperation(
+      operation: GPostScreen_PostList_QueryReq(
+        (b) => b..vars.permalink = widget.permalink,
+      ),
+      onDataLoaded: (context, client, data) {
+        if (data.post.space!.posts.isEmpty) {
+          return;
+        }
+
+        final thisIndex = data.post.space!.posts.indexWhere((post) => post.id == data.post.id);
+        final itemHeight = _controller.position.extentTotal / data.post.space!.posts.length;
+        final fraction = thisIndex / data.post.space!.posts.length;
+        final scrollPosition =
+            _controller.position.extentTotal * fraction - (_controller.position.extentInside / 2) + (itemHeight / 2);
+
+        _controller.jumpTo(scrollPosition.clamp(0, _controller.position.maxScrollExtent));
+      },
+      builder: (context, client, data) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(0, 8, 0, 16),
+              child: Row(
+                children: [
+                  Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      Img(
+                        data.post.space!.icon,
+                        width: 38,
+                        height: 38,
+                        borderWidth: 1,
+                      ),
+                      Positioned(
+                        bottom: -4,
+                        right: -4,
+                        child: Img(
+                          data.post.member!.profile.avatar,
+                          width: 24,
+                          height: 24,
+                          borderWidth: 1,
+                          borderRadius: 12,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const Gap(16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          data.post.space!.name,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                            color: BrandColors.gray_800,
+                          ),
+                        ),
+                        if (data.post.space!.description != null && data.post.space!.description!.isNotEmpty)
+                          Text(
+                            data.post.space!.description!,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: BrandColors.gray_800.withOpacity(0.8),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Transform.scale(scaleX: 2, child: const HorizontalDivider()),
+            Flexible(
+              child: ListView.builder(
+                controller: _controller,
+                shrinkWrap: true,
+                itemCount: data.post.space!.posts.isEmpty ? 1 : data.post.space!.posts.length,
+                itemBuilder: (context, index) {
+                  final dynamic post = data.post.space!.posts.isEmpty ? data.post : data.post.space!.posts[index];
+
+                  return Pressable(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 15),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              post.publishedRevision!.title ?? '(제목 없음)',
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w600,
+                                color: post.id == data.post.id ? BrandColors.gray_800 : BrandColors.gray_500,
+                              ),
+                            ),
+                          ),
+                          const Gap(18),
+                          if (post.id == data.post.id)
+                            const Icon(TablerBold.check, size: 20, color: BrandColors.brand_400)
+                          else
+                            const Gap(20),
+                        ],
+                      ),
+                    ),
+                    onPressed: () async {
+                      if (post.id != data.post.id) {
+                        await context.popWaitAndPush(PostRoute(permalink: post.permalink));
+                      }
+                    },
+                  );
+                },
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }
