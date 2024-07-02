@@ -32,6 +32,7 @@ import 'package:glyph/graphql/__generated__/post_screen_collection_post_list_que
 import 'package:glyph/graphql/__generated__/post_screen_comments_create_comment_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_screen_comments_delete_comment_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_screen_comments_like_comment_mutation.req.gql.dart';
+import 'package:glyph/graphql/__generated__/post_screen_comments_query.data.gql.dart';
 import 'package:glyph/graphql/__generated__/post_screen_comments_query.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_screen_comments_unlike_comment_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_screen_query.req.gql.dart';
@@ -1572,6 +1573,8 @@ class _CommentsState extends ConsumerState<_Comments> with SingleTickerProviderS
               (data.post.commentQualification == GPostCommentQualification.IDENTIFIED &&
                   data.me!.personalIdentity != null);
 
+          // var replyTo = null;
+
           Future<void> onSubmit() async {
             final value = _textController.text;
             if (value.isEmpty) {
@@ -1710,310 +1713,86 @@ class _CommentsState extends ConsumerState<_Comments> with SingleTickerProviderS
                         final invisible = comment.visibility == GPostCommentVisibility.PRIVATE &&
                             data.post.space?.commentProfile?.id != comment.profile.id &&
                             data.post.space?.meAsMember == null;
+                        final isMyComment = comment.profile.id == data.post.space?.commentProfile?.id;
 
-                        return StatefulBuilder(
-                          builder: (context, setState) {
-                            var showReply = false;
+                        onDelete() async {
+                          final client = ref.read(ferryProvider);
+                          final req = GPostScreen_Comments_DeleteComment_MutationReq(
+                            (b) => b..vars.input.commentId = comment.id,
+                          );
+                          await client.req(req);
 
-                            return Padding(
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 20,
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Expanded(
-                                        child: Row(
-                                          children: [
-                                            if (comment.visibility == GPostCommentVisibility.PRIVATE) ...[
-                                              const Icon(
-                                                Icons.lock,
-                                                size: 16,
-                                                color: BrandColors.gray_400,
-                                              ),
-                                              const Gap(6),
-                                            ],
-                                            if (comment.profile.id == data.post.member!.profile.id)
-                                              Flexible(
-                                                child: Container(
-                                                  padding: const EdgeInsets.symmetric(
-                                                    horizontal: 6,
-                                                    vertical: 1.5,
-                                                  ),
-                                                  decoration: const BoxDecoration(
-                                                    color: BrandColors.gray_400,
-                                                    borderRadius: BorderRadius.all(
-                                                      Radius.circular(2),
-                                                    ),
-                                                  ),
-                                                  child: Text(
-                                                    data.post.member!.profile.name,
-                                                    overflow: TextOverflow.ellipsis,
-                                                    style: const TextStyle(
-                                                      fontSize: 12,
-                                                      fontWeight: FontWeight.w600,
-                                                      color: Colors.white,
-                                                    ),
-                                                  ),
-                                                ),
-                                              )
-                                            else
-                                              Flexible(
-                                                child: Text(
-                                                  comment.profile.name,
-                                                  overflow: TextOverflow.ellipsis,
-                                                  style: const TextStyle(
-                                                    fontSize: 13,
-                                                    fontWeight: FontWeight.w600,
-                                                    color: BrandColors.gray_900,
-                                                  ),
-                                                ),
-                                              ),
-                                            const Gap(6),
-                                            Text(
-                                              Jiffy.parse(comment.createdAt.value).fromNow(),
-                                              style: const TextStyle(
-                                                fontSize: 12,
-                                                color: BrandColors.gray_400,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
+                          if (context.mounted) {
+                            // FIXME: 문구 미정
+                            context.toast.show('댓글을 삭제했어요');
+                          }
+
+                          await client.req(
+                            GPostScreen_Comnments_QueryReq(
+                              (b) => b..vars.permalink = widget.permalink,
+                            ),
+                          );
+                        }
+
+                        return _Comment(
+                          comment: comment,
+                          commentProfile: data.post.space?.commentProfile,
+                          postAuthorProfile: data.post.member!.profile,
+                          isMyComment: isMyComment,
+                          isMyPost: data.post.space?.meAsMember != null,
+                          isReply: false, // TODO
+                          onLike: () async {
+                            if (comment.liked) {
+                              final req = GPostScreen_Comments_UnlikeComment_MutationReq(
+                                (b) => b..vars.input.commentId = comment.id,
+                              );
+                              await client.req(req);
+                            } else {
+                              final req = GPostScreen_Comments_LikeComment_MutationReq(
+                                (b) => b..vars.input.commentId = comment.id,
+                              );
+                              await client.req(req);
+                            }
+                          },
+                          onMore: () async {
+                            await context.showBottomMenu(
+                              title: '댓글',
+                              items: isMyComment
+                                  ? [
+                                      BottomMenuItem(
+                                        icon: Tabler.x,
+                                        iconColor: BrandColors.red_600,
+                                        title: '삭제',
+                                        color: BrandColors.red_600,
+                                        onTap: onDelete,
                                       ),
-                                      if (comment.profile.id == data.post.space?.commentProfile?.id ||
-                                          data.post.space?.meAsMember != null)
-                                        Pressable(
-                                          child: const Icon(
-                                            Tabler.dots_vertical,
-                                            size: 20,
-                                            color: BrandColors.gray_300,
-                                          ),
-                                          onPressed: () async {
-                                            await context.showBottomMenu(
-                                              title: '댓글',
-                                              items: comment.profile.id == data.post.space?.commentProfile?.id
-                                                  ? [
-                                                      // BottomMenuItem(
-                                                      //   icon: Tabler.x,
-                                                      //   iconColor: BrandColors.gray_600,
-                                                      //   title: '수정',
-                                                      //   onTap: () async {
-                                                      //     if (context.mounted) {
-                                                      //       // TODO:
-                                                      //       context.toast.show('Not implemented');
-                                                      //     }
-                                                      //   },
-                                                      // ),
-                                                      BottomMenuItem(
-                                                        icon: Tabler.x,
-                                                        iconColor: BrandColors.red_600,
-                                                        title: '삭제',
-                                                        color: BrandColors.red_600,
-                                                        onTap: () async {
-                                                          final client = ref.read(ferryProvider);
-                                                          final req = GPostScreen_Comments_DeleteComment_MutationReq(
-                                                            (b) => b..vars.input.commentId = comment.id,
-                                                          );
-                                                          await client.req(req);
-
-                                                          if (context.mounted) {
-                                                            // FIXME: 문구 미정
-                                                            context.toast.show('댓글을 삭제했어요');
-                                                          }
-
-                                                          await client.req(
-                                                            GPostScreen_Comnments_QueryReq(
-                                                              (b) => b..vars.permalink = widget.permalink,
-                                                            ),
-                                                          );
-                                                        },
-                                                      ),
-                                                    ]
-                                                  : [
-                                                      BottomMenuItem(
-                                                        icon: Tabler.x,
-                                                        iconColor: BrandColors.gray_600,
-                                                        title: '삭제',
-                                                        onTap: () async {
-                                                          final client = ref.read(ferryProvider);
-                                                          final req = GPostScreen_Comments_DeleteComment_MutationReq(
-                                                            (b) => b..vars.input.commentId = comment.id,
-                                                          );
-                                                          await client.req(req);
-
-                                                          if (context.mounted) {
-                                                            // FIXME: 문구 미정
-                                                            context.toast.show('댓글을 삭제했어요');
-                                                          }
-
-                                                          await client.req(
-                                                            GPostScreen_Comnments_QueryReq(
-                                                              (b) => b..vars.permalink = widget.permalink,
-                                                            ),
-                                                          );
-                                                        },
-                                                      ),
-                                                      // BottomMenuItem(
-                                                      //   icon: Tabler.user_x,
-                                                      //   iconColor: BrandColors.red_600,
-                                                      //   title: '차단',
-                                                      //   color: BrandColors.red_600,
-                                                      //   onTap: () async {
-                                                      //     if (context.mounted) {
-                                                      //       // TODO:
-                                                      //       context.toast.show('Not implemented');
-                                                      //     }
-                                                      //   },
-                                                      // ),
-                                                    ],
-                                            );
-                                          },
-                                        ),
+                                    ]
+                                  : [
+                                      BottomMenuItem(
+                                        icon: Tabler.x,
+                                        iconColor: BrandColors.gray_600,
+                                        title: '삭제',
+                                        onTap: onDelete,
+                                      ),
+                                      // BottomMenuItem(
+                                      //   icon: Tabler.user_x,
+                                      //   iconColor: BrandColors.red_600,
+                                      //   title: '차단',
+                                      //   color: BrandColors.red_600,
+                                      //   onTap: () async {
+                                      //     if (context.mounted) {
+                                      //       // TODO:
+                                      //       context.toast.show('Not implemented');
+                                      //     }
+                                      //   },
+                                      // ),
                                     ],
-                                  ),
-                                  const Gap(4),
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 12),
-                                    child: invisible
-                                        ? const Text(
-                                            '비밀댓글입니다',
-                                            style: TextStyle(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w400,
-                                              color: BrandColors.gray_400,
-                                            ),
-                                          )
-                                        : Text(
-                                            comment.content,
-                                            style: const TextStyle(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w400,
-                                              color: BrandColors.gray_900,
-                                            ),
-                                          ),
-                                  ),
-                                  const Gap(8),
-                                  SizedBox(
-                                    height: 24,
-                                    child: Row(
-                                      children: [
-                                        Expanded(
-                                          child: Row(
-                                            children: [
-                                              Pressable(
-                                                child: Row(
-                                                  children: [
-                                                    const Icon(
-                                                      Tabler.message,
-                                                      size: 16,
-                                                      color: BrandColors.gray_400,
-                                                    ),
-                                                    const Gap(3),
-                                                    Text(
-                                                      '답글${comment.children.isEmpty ? '' : ' ${comment.children.length}'}',
-                                                      style: const TextStyle(
-                                                        fontSize: 12,
-                                                        fontWeight: FontWeight.w500,
-                                                        color: BrandColors.gray_400,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                                onPressed: () {
-                                                  setState(() {
-                                                    showReply = !showReply;
-                                                  });
-                                                },
-                                              ),
-                                              const Gap(12),
-                                              Container(
-                                                width: 1,
-                                                height: 10,
-                                                color: BrandColors.gray_100,
-                                              ),
-                                              const Gap(12),
-                                              Pressable(
-                                                child: Row(
-                                                  children: [
-                                                    if (comment.liked)
-                                                      const Icon(
-                                                        Tabler.heart_filled,
-                                                        size: 16,
-                                                        color: BrandColors.gray_900,
-                                                      )
-                                                    else
-                                                      const Icon(
-                                                        Tabler.heart,
-                                                        size: 16,
-                                                        color: BrandColors.gray_400,
-                                                      ),
-                                                    const Gap(3),
-                                                    Text(
-                                                      '좋아요${comment.likeCount > 0 ? ' ${comment.likeCount}' : ''}',
-                                                      style: TextStyle(
-                                                        fontSize: 12,
-                                                        fontWeight: FontWeight.w500,
-                                                        color:
-                                                            comment.liked ? BrandColors.gray_900 : BrandColors.gray_400,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                                onPressed: () async {
-                                                  if (comment.liked) {
-                                                    final req = GPostScreen_Comments_UnlikeComment_MutationReq(
-                                                      (b) => b..vars.input.commentId = comment.id,
-                                                    );
-                                                    await client.req(req);
-                                                  } else {
-                                                    final req = GPostScreen_Comments_LikeComment_MutationReq(
-                                                      (b) => b..vars.input.commentId = comment.id,
-                                                    );
-                                                    await client.req(req);
-                                                  }
-                                                },
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        if (comment.likedByPostUser)
-                                          Stack(
-                                            children: [
-                                              CircleAvatar(
-                                                radius: 12,
-                                                backgroundColor: BrandColors.gray_900,
-                                                child: Padding(
-                                                  padding: const EdgeInsets.all(1),
-                                                  child: ClipOval(
-                                                    child: Img(
-                                                      data.post.member!.profile.avatar,
-                                                      width: 24,
-                                                      height: 24,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                              Positioned(
-                                                right: 0,
-                                                bottom: 0,
-                                                child: Transform.translate(
-                                                  offset: const Offset(4, 4),
-                                                  child: const Icon(
-                                                    Tabler.heart_filled,
-                                                    size: 16,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
                             );
+                          },
+                          onReply: () {
+                            setState(() {
+                              // replyTo = comment.id;
+                            });
                           },
                         );
                       },
@@ -2133,6 +1912,240 @@ class _CommentsState extends ConsumerState<_Comments> with SingleTickerProviderS
             ],
           );
         },
+      ),
+    );
+  }
+}
+
+class _Comment extends ConsumerWidget {
+  const _Comment({
+    required this.comment,
+    required this.onReply,
+    required this.onLike,
+    required this.onMore,
+    required this.postAuthorProfile,
+    required this.commentProfile,
+    required this.isMyComment,
+    required this.isMyPost,
+    required this.isReply,
+  });
+
+  final GPostScreen_Comnments_QueryData_post_comments comment;
+  final GPostScreen_Comnments_QueryData_post_member_profile postAuthorProfile;
+  final GPostScreen_Comnments_QueryData_post_space_commentProfile? commentProfile;
+  final bool isMyComment;
+  final bool isMyPost;
+  final bool isReply;
+  final VoidCallback onReply;
+  final VoidCallback onLike;
+  final VoidCallback onMore;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final invisible = comment.visibility == GPostCommentVisibility.PRIVATE && !isMyComment && !isMyPost;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        vertical: 20,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Row(
+                  children: [
+                    if (comment.visibility == GPostCommentVisibility.PRIVATE) ...[
+                      const Icon(
+                        Icons.lock,
+                        size: 16,
+                        color: BrandColors.gray_400,
+                      ),
+                      const Gap(6),
+                    ],
+                    if (comment.profile.id == postAuthorProfile.id)
+                      Flexible(
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 6,
+                            vertical: 1.5,
+                          ),
+                          decoration: const BoxDecoration(
+                            color: BrandColors.gray_400,
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(2),
+                            ),
+                          ),
+                          child: Text(
+                            postAuthorProfile.name,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      )
+                    else
+                      Flexible(
+                        child: Text(
+                          comment.profile.name,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            color: BrandColors.gray_900,
+                          ),
+                        ),
+                      ),
+                    const Gap(6),
+                    Text(
+                      Jiffy.parse(comment.createdAt.value).fromNow(),
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: BrandColors.gray_400,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              if (isMyComment || isMyPost)
+                Pressable(
+                  onPressed: onMore,
+                  child: const Icon(
+                    Tabler.dots_vertical,
+                    size: 20,
+                    color: BrandColors.gray_300,
+                  ),
+                ),
+            ],
+          ),
+          const Gap(4),
+          Padding(
+            padding: const EdgeInsets.only(right: 12),
+            child: invisible
+                ? const Text(
+                    '비밀댓글입니다',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                      color: BrandColors.gray_400,
+                    ),
+                  )
+                : Text(
+                    comment.content,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                      color: BrandColors.gray_900,
+                    ),
+                  ),
+          ),
+          const Gap(8),
+          SizedBox(
+            height: 24,
+            child: Row(
+              children: [
+                Expanded(
+                  child: Row(
+                    children: [
+                      if (!isReply) ...[
+                        Pressable(
+                          onPressed: onReply,
+                          child: Row(
+                            children: [
+                              const Icon(
+                                Tabler.message,
+                                size: 16,
+                                color: BrandColors.gray_400,
+                              ),
+                              const Gap(3),
+                              Text(
+                                '답글${comment.children.isEmpty ? '' : ' ${comment.children.length}'}',
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
+                                  color: BrandColors.gray_400,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const Gap(12),
+                      ],
+                      Container(
+                        width: 1,
+                        height: 10,
+                        color: BrandColors.gray_100,
+                      ),
+                      const Gap(12),
+                      Pressable(
+                        onPressed: onLike,
+                        child: Row(
+                          children: [
+                            if (comment.liked)
+                              const Icon(
+                                Tabler.heart_filled,
+                                size: 16,
+                                color: BrandColors.gray_900,
+                              )
+                            else
+                              const Icon(
+                                Tabler.heart,
+                                size: 16,
+                                color: BrandColors.gray_400,
+                              ),
+                            const Gap(3),
+                            Text(
+                              '좋아요${comment.likeCount > 0 ? ' ${comment.likeCount}' : ''}',
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                                color: comment.liked ? BrandColors.gray_900 : BrandColors.gray_400,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                if (comment.likedByPostUser)
+                  Stack(
+                    children: [
+                      CircleAvatar(
+                        radius: 12,
+                        backgroundColor: BrandColors.gray_900,
+                        child: Padding(
+                          padding: const EdgeInsets.all(1),
+                          child: ClipOval(
+                            child: Img(
+                              postAuthorProfile.avatar,
+                              width: 24,
+                              height: 24,
+                            ),
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        right: 0,
+                        bottom: 0,
+                        child: Transform.translate(
+                          offset: const Offset(4, 4),
+                          child: const Icon(
+                            Tabler.heart_filled,
+                            size: 16,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
