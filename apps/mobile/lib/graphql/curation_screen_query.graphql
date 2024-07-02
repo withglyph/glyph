@@ -1,0 +1,13 @@
+# import './fragments/img_image.graphql'
+
+query CurationScreen_Query {
+  recommendedTags {
+    id
+    name
+
+    thumbnail {
+      id
+      ...Img_image
+    }
+  }
+}

@@ -330,6 +330,13 @@ class _MeScreenState extends ConsumerState<MeScreen> {
                         );
                       },
                     ),
+                    _MenuItem(
+                      icon: Tabler.sparkles,
+                      title: '큐레이션',
+                      onPressed: () async {
+                        await context.router.push(const CurationRoute());
+                      },
+                    ),
                   ],
                 ),
                 const Gap(80),
