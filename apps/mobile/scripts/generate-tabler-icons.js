@@ -26,9 +26,13 @@ await exportToDirectory(iconSet, {
 
 await SVGFixer(tmp, tmp).fix()
 
-const {codepoints} = await generateFonts({
+const icons = iconSet.list(['icon']);
+const codepoints = Object.fromEntries(icons.map((name, index) => [name, index + 0xe0_00]));
+
+await generateFonts({
   inputDir: tmp,
   outputDir: '.',
+  codepoints,
   assetTypes: [],
   fontTypes: [FontAssetType.TTF],
   name: 'TablerIcons',
@@ -59,7 +63,7 @@ const dartKeywords = new Set([
   'yield'
 ]);
 
-const entries = Object.entries(codepoints).reverse().map(([name, codepoint]) => {
+const entries = Object.entries(codepoints).map(([name, codepoint]) => {
   let n = Case.snake(name);
   if (dartKeywords.has(n)) {
     n = `${n}_`;
