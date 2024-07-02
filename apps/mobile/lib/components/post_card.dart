@@ -175,7 +175,7 @@ class PostCard extends ConsumerWidget {
                                   await client.req(req);
 
                                   if (context.mounted) {
-                                    context.toast.show('${post.space!.name} 스페이스 구독을 해지했어요', type: ToastType.error);
+                                    context.toast.show('${post.space!.name} 스페이스 구독을 해제했어요', type: ToastType.error);
                                   }
                                 } else {
                                   final req = GPostCard_FollowSpace_MutationReq(

@@ -104,11 +104,19 @@ class ThumbnailPostCard extends ConsumerWidget {
                                 (b) => b..vars.input.spaceId = post.space!.id,
                               );
                               await client.req(req);
+
+                              if (context.mounted) {
+                                context.toast.show('${post.space!.name} 스페이스 구독을 해제했어요', type: ToastType.error);
+                              }
                             } else {
                               final req = GThumbnailPostCard_FollowSpace_MutationReq(
                                 (b) => b..vars.input.spaceId = post.space!.id,
                               );
                               await client.req(req);
+
+                              if (context.mounted) {
+                                context.toast.show('${post.space!.name} 스페이스를 구독했어요');
+                              }
                             }
                           },
                         ),
