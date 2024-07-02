@@ -120,7 +120,7 @@ class SettingsScreen extends ConsumerWidget {
                         onPressed: () async {
                           await launchUrl(
                             Uri.parse('https://help.withglyph.com/legal/terms'),
-                            mode: LaunchMode.externalApplication,
+                            mode: LaunchMode.inAppBrowserView,
                           );
                         },
                       ),
@@ -128,10 +128,8 @@ class SettingsScreen extends ConsumerWidget {
                         title: '개인정보처리방침',
                         onPressed: () async {
                           await launchUrl(
-                            Uri.parse(
-                              'https://help.withglyph.com/legal/privacy',
-                            ),
-                            mode: LaunchMode.externalApplication,
+                            Uri.parse('https://help.withglyph.com/legal/privacy'),
+                            mode: LaunchMode.inAppBrowserView,
                           );
                         },
                       ),
@@ -139,10 +137,8 @@ class SettingsScreen extends ConsumerWidget {
                         title: '사업자 정보',
                         onPressed: () async {
                           await launchUrl(
-                            Uri.parse(
-                              'https://www.ftc.go.kr/bizCommPop.do?wrkr_no=6108803078',
-                            ),
-                            mode: LaunchMode.externalApplication,
+                            Uri.parse('https://www.ftc.go.kr/bizCommPop.do?wrkr_no=6108803078'),
+                            mode: LaunchMode.inAppBrowserView,
                           );
                         },
                       ),
@@ -199,9 +195,7 @@ class SettingsScreen extends ConsumerWidget {
                         title: '회원탈퇴',
                         onPressed: () async {
                           if (context.mounted) {
-                            await context.router.push(
-                              const DeactivateRoute(),
-                            );
+                            await context.router.push(const DeactivateRoute());
                           }
                         },
                       ),
