@@ -1,10 +1,10 @@
 # import './fragments/img_image.graphql'
 
-query ArchiveCommentsScreen_Query {
+query ArchiveCommentsScreen_Query($page: Int!) {
   me {
     id
 
-    comments {
+    comments(page: $page) {
       id
       createdAt
       content
