@@ -16,13 +16,14 @@ class SpacePostsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return GraphQLOperation(
-      operation: GSpacePostsScreen_QueryReq((b) => b..vars.slug = slug),
+      operation: GSpacePostsScreen_QueryReq(
+        (b) => b..vars.slug = slug,
+      ),
       builder: (context, client, data) {
         final posts = data.space.posts;
 
         return ListView.separated(
           itemCount: posts.length,
-          shrinkWrap: true,
           physics: const AlwaysScrollableScrollPhysics(
             parent: BouncingScrollPhysics(),
           ),

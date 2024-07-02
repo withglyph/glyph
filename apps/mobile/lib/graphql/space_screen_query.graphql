@@ -1,5 +1,4 @@
 # import './fragments/img_image.graphql'
-# import './fragments/post_card_post.graphql'
 
 query SpaceScreen_Query($slug: String!) {
   space(slug: $slug) {
@@ -33,11 +32,6 @@ query SpaceScreen_Query($slug: String!) {
 
     meAsMember {
       id
-    }
-
-    posts {
-      id
-      ...PostCard_post
     }
 
     collections {

@@ -147,87 +147,92 @@ class _MeScreenState extends ConsumerState<MeScreen> {
                           itemBuilder: (context, index) {
                             final space = data.me!.spaces[index];
 
-                            return Container(
-                              width: 150,
-                              decoration: BoxDecoration(
-                                color: BrandColors.gray_0,
-                                borderRadius: BorderRadius.circular(4),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: BrandColors.gray_900.withOpacity(0.1),
-                                    offset: const Offset(1, 1),
-                                    blurRadius: 8,
-                                  ),
-                                ],
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                children: [
-                                  Stack(
-                                    children: [
-                                      Container(
-                                        height: 100,
-                                        clipBehavior: Clip.antiAlias,
-                                        decoration: const BoxDecoration(
-                                          color: BrandColors.gray_50,
-                                          borderRadius: BorderRadius.vertical(top: Radius.circular(4)),
-                                        ),
-                                        child: ColorFiltered(
-                                          colorFilter: ColorFilter.mode(
-                                            BrandColors.gray_900.withOpacity(0.05),
-                                            BlendMode.srcATop,
+                            return Pressable(
+                              child: Container(
+                                width: 150,
+                                decoration: BoxDecoration(
+                                  color: BrandColors.gray_0,
+                                  borderRadius: BorderRadius.circular(4),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: BrandColors.gray_900.withOpacity(0.1),
+                                      offset: const Offset(1, 1),
+                                      blurRadius: 8,
+                                    ),
+                                  ],
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                                  children: [
+                                    Stack(
+                                      children: [
+                                        Container(
+                                          height: 100,
+                                          clipBehavior: Clip.antiAlias,
+                                          decoration: const BoxDecoration(
+                                            color: BrandColors.gray_50,
+                                            borderRadius: BorderRadius.vertical(top: Radius.circular(4)),
                                           ),
-                                          child: ImageFiltered(
-                                            imageFilter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-                                            child: Img(space.icon, width: 150, height: 100),
+                                          child: ColorFiltered(
+                                            colorFilter: ColorFilter.mode(
+                                              BrandColors.gray_900.withOpacity(0.05),
+                                              BlendMode.srcATop,
+                                            ),
+                                            child: ImageFiltered(
+                                              imageFilter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+                                              child: Img(space.icon, width: 150, height: 100),
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                      Positioned(
-                                        left: 10,
-                                        bottom: 12,
-                                        child: Stack(
-                                          clipBehavior: Clip.none,
-                                          children: [
-                                            Img(space.icon, width: 32, height: 32, borderWidth: 1),
-                                            Positioned(
-                                              right: -4,
-                                              bottom: -4,
-                                              child: Img(
-                                                space.meAsMember!.profile.avatar,
-                                                width: 20,
-                                                height: 20,
-                                                borderWidth: 1,
-                                                borderRadius: 10,
+                                        Positioned(
+                                          left: 10,
+                                          bottom: 12,
+                                          child: Stack(
+                                            clipBehavior: Clip.none,
+                                            children: [
+                                              Img(space.icon, width: 32, height: 32, borderWidth: 1),
+                                              Positioned(
+                                                right: -4,
+                                                bottom: -4,
+                                                child: Img(
+                                                  space.meAsMember!.profile.avatar,
+                                                  width: 20,
+                                                  height: 20,
+                                                  borderWidth: 1,
+                                                  borderRadius: 10,
+                                                ),
                                               ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    Expanded(
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              space.name,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+                                            ),
+                                            Text(
+                                              'by ${space.meAsMember!.profile.name}',
+                                              overflow: TextOverflow.ellipsis,
+                                              style: const TextStyle(fontSize: 11, color: BrandColors.gray_500),
                                             ),
                                           ],
                                         ),
                                       ),
-                                    ],
-                                  ),
-                                  Expanded(
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            space.name,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
-                                          ),
-                                          Text(
-                                            'by ${space.meAsMember!.profile.name}',
-                                            overflow: TextOverflow.ellipsis,
-                                            style: const TextStyle(fontSize: 11, color: BrandColors.gray_500),
-                                          ),
-                                        ],
-                                      ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
+                              onPressed: () async {
+                                await context.router.push(SpaceRoute(slug: space.slug));
+                              },
                             );
                           },
                           separatorBuilder: (context, index) => const Gap(12),

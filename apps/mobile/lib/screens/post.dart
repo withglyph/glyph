@@ -388,10 +388,10 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                     final pos = thumbnailBox.localToGlobal(Offset.zero).dy + thumbnailBox.size.height;
                     final threshhold = safeAreaTopHeight + 54;
 
-                    final isScrollTop = pos >= threshhold;
-                    if (isScrollTop != _isOverThumbnail) {
+                    final isOverThumbnail = pos >= threshhold;
+                    if (isOverThumbnail != _isOverThumbnail) {
                       setState(() {
-                        _isOverThumbnail = isScrollTop;
+                        _isOverThumbnail = isOverThumbnail;
                       });
                     }
 

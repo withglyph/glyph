@@ -45,6 +45,7 @@ dependencies:
   intl: ^0.19.0
   jiffy: '^6.3.1'
   mixpanel_flutter: '^2.2.0'
+  nested_scroll_view_plus: ^2.0.0
   package_info_plus: '^8.0.0'
   permission_handler: '^11.3.1'
   pinput: '^5.0.0'
