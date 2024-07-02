@@ -4,10 +4,12 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:glyph/components/Img.dart';
+import 'package:glyph/components/button.dart';
 import 'package:glyph/components/heading.dart';
 import 'package:glyph/components/horizontal_divider.dart';
 import 'package:glyph/components/pressable.dart';
 import 'package:glyph/context/bottom_menu.dart';
+import 'package:glyph/context/toast.dart';
 import 'package:glyph/ferry/extension.dart';
 import 'package:glyph/ferry/widget.dart';
 import 'package:glyph/graphql/__generated__/space_screen_create_post_mutation.req.gql.dart';
@@ -94,18 +96,26 @@ class _SpaceScreenState extends State<SpaceScreen> with SingleTickerProviderStat
                               BottomMenuItem(
                                 icon: Tabler.volume_3,
                                 title: data.space.muted ? '스페이스 뮤트 해제' : '스페이스 뮤트',
-                                color: data.space.muted ? BrandColors.gray_900 : BrandColors.red_600,
+                                color: BrandColors.red_600,
                                 onTap: () async {
                                   if (data.space.muted) {
                                     final req = GSpaceScreen_UnmuteSpace_MutationReq(
                                       (b) => b..vars.input.spaceId = data.space.id,
                                     );
                                     await client.req(req);
+
+                                    if (context.mounted) {
+                                      context.toast.show('${data.space.name} 스페이스 뮤트를 해제했어요');
+                                    }
                                   } else {
                                     final req = GSpaceScreen_MuteSpace_MutationReq(
                                       (b) => b..vars.input.spaceId = data.space.id,
                                     );
                                     await client.req(req);
+
+                                    if (context.mounted) {
+                                      context.toast.show('${data.space.name} 스페이스를 뮤트했어요', type: ToastType.error);
+                                    }
                                   }
                                 },
                               ),
@@ -263,67 +273,47 @@ class _SpaceScreenState extends State<SpaceScreen> with SingleTickerProviderStat
                                       ],
                                     ),
                                     const Gap(20),
-                                    Pressable(
-                                      child: DecoratedBox(
-                                        decoration: BoxDecoration(
-                                          color: data.space.followed ? BrandColors.gray_0 : BrandColors.gray_900,
-                                          border: Border.all(
-                                            color: data.space.followed ? BrandColors.gray_150 : BrandColors.gray_900,
-                                          ),
-                                          borderRadius: BorderRadius.circular(4),
-                                        ),
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(vertical: 11),
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            children: [
-                                              Icon(
-                                                data.space.followed ? Tabler.check : Tabler.plus,
-                                                size: 18,
-                                                color: data.space.followed ? BrandColors.gray_600 : BrandColors.gray_0,
-                                              ),
-                                              const Gap(3),
-                                              Text(
-                                                data.space.followed
-                                                    ? '스페이스 구독중'
-                                                    : data.space.meAsMember != null
-                                                        ? '포스트 작성'
-                                                        : '스페이스 구독',
-                                                style: TextStyle(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.w700,
-                                                  color:
-                                                      data.space.followed ? BrandColors.gray_600 : BrandColors.gray_0,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                      onPressed: () async {
-                                        if (data.space.meAsMember == null) {
-                                          if (data.space.followed) {
-                                            final req = GSpaceScreen_UnfollowSpace_MutationReq(
-                                              (b) => b..vars.input.spaceId = data.space.id,
-                                            );
-                                            await client.req(req);
-                                          } else {
-                                            final req = GSpaceScreen_FollowSpace_MutationReq(
-                                              (b) => b..vars.input.spaceId = data.space.id,
-                                            );
-                                            await client.req(req);
-                                          }
-                                        } else {
-                                          final req = GSpaceScreen_CreatePost_MutationReq();
-                                          final resp = await client.req(req);
+                                    Button(
+                                      data.space.muted
+                                          ? '뮤트됨'
+                                          : data.space.followed
+                                              ? '스페이스 구독중'
+                                              : data.space.meAsMember != null
+                                                  ? '포스트 작성'
+                                                  : '스페이스 구독',
+                                      kind: data.space.followed ? ButtonKind.secondaryOutline : ButtonKind.primary,
+                                      iconLeft: data.space.muted
+                                          ? Tabler.volume_3
+                                          : data.space.followed
+                                              ? Tabler.check
+                                              : Tabler.plus,
+                                      enabled: !data.space.muted,
+                                      onPressed: data.space.muted
+                                          ? null
+                                          : () async {
+                                              if (data.space.meAsMember == null) {
+                                                if (data.space.followed) {
+                                                  final req = GSpaceScreen_UnfollowSpace_MutationReq(
+                                                    (b) => b..vars.input.spaceId = data.space.id,
+                                                  );
+                                                  await client.req(req);
+                                                } else {
+                                                  final req = GSpaceScreen_FollowSpace_MutationReq(
+                                                    (b) => b..vars.input.spaceId = data.space.id,
+                                                  );
+                                                  await client.req(req);
+                                                }
+                                              } else {
+                                                final req = GSpaceScreen_CreatePost_MutationReq();
+                                                final resp = await client.req(req);
 
-                                          if (context.mounted) {
-                                            await context.router.push(
-                                              EditorRoute(permalink: resp.createPost.permalink),
-                                            );
-                                          }
-                                        }
-                                      },
+                                                if (context.mounted) {
+                                                  await context.router.push(
+                                                    EditorRoute(permalink: resp.createPost.permalink),
+                                                  );
+                                                }
+                                              }
+                                            },
                                     ),
                                     const Gap(24),
                                   ],
