@@ -31,6 +31,15 @@ query NotificationScreen_Query {
             id
             title
           }
+
+          space {
+            id
+
+            icon {
+              id
+              ...Img_image
+            }
+          }
         }
       }
 
@@ -38,6 +47,11 @@ query NotificationScreen_Query {
         space {
           id
           name
+
+          icon {
+            id
+            ...Img_image
+          }
         }
       }
 
@@ -49,6 +63,15 @@ query NotificationScreen_Query {
           publishedRevision {
             id
             title
+          }
+
+          space {
+            id
+
+            icon {
+              id
+              ...Img_image
+            }
           }
         }
       }
@@ -63,6 +86,15 @@ query NotificationScreen_Query {
           publishedRevision {
             id
             title
+          }
+
+          space {
+            id
+
+            icon {
+              id
+              ...Img_image
+            }
           }
         }
       }

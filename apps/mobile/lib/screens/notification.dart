@@ -172,7 +172,13 @@ class NotificationScreen extends ConsumerWidget {
                                     child: Transform.translate(
                                       offset: const Offset(4, 4),
                                       child: Img(
-                                        notification.actor!.avatar,
+                                        notification.when(
+                                          commentNotification: (notification) => notification.post.space?.icon,
+                                          subscribeNotification: (notification) => notification.space.icon,
+                                          purchaseNotification: (notification) => notification.post.space?.icon,
+                                          emojiReactionNotification: (notification) => notification.post.space?.icon,
+                                          orElse: () => notification.actor?.avatar,
+                                        ),
                                         width: 18,
                                         height: 18,
                                       ),
