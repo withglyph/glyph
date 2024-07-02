@@ -9,5 +9,9 @@ query SpacePostsScreen_Query($slug: String!) {
       id
       ...ThumbnailPostCard_post
     }
+
+    meAsMember {
+      id
+    }
   }
 }
