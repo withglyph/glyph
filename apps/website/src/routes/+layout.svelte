@@ -66,7 +66,7 @@
 {#if $isWebView}
   <slot />
 {:else}
-  <div class={flex({ direction: 'column', position: 'relative' })}>
+  <div class={flex({ direction: 'column', position: 'relative', minHeight: 'dvh' })}>
     <slot />
   </div>
 {/if}
