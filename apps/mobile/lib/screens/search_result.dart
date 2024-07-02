@@ -440,141 +440,143 @@ class _SearchFilterState extends State<_SearchFilter> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      Accordion(
-                        title: '포함 태그',
-                        initiallyExpanded: widget.initiallyExpandedFilterIndex == 0,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            SearchInput(
-                              placeholder: '포함할 태그를 입력해주세요',
-                              onSearch: (value, controller) {
-                                includeTagsDraft.add(value);
-                                controller.clear();
-                                setState(() {});
-                              },
-                            ),
-                            if (includeTagsDraft.isNotEmpty) ...[
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        Accordion(
+                          title: '포함 태그',
+                          initiallyExpanded: widget.initiallyExpandedFilterIndex == 0,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              SearchInput(
+                                placeholder: '포함할 태그를 입력해주세요',
+                                onSearch: (value, controller) {
+                                  includeTagsDraft.add(value);
+                                  controller.clear();
+                                  setState(() {});
+                                },
+                              ),
+                              if (includeTagsDraft.isNotEmpty) ...[
+                                const Gap(8),
+                                Wrap(
+                                  spacing: 8,
+                                  runSpacing: 10,
+                                  children: includeTagsDraft
+                                      .map(
+                                        (tag) => _TagChip(
+                                          tag,
+                                          onDeleted: () {
+                                            includeTagsDraft.remove(tag);
+                                            setState(() {});
+                                          },
+                                        ),
+                                      )
+                                      .toList(),
+                                ),
+                              ],
+                            ],
+                          ),
+                        ),
+                        const HorizontalDivider(color: BrandColors.gray_50),
+                        Accordion(
+                          title: '제외 태그',
+                          initiallyExpanded: widget.initiallyExpandedFilterIndex == 1,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              SearchInput(
+                                placeholder: '제외할 태그를 입력해주세요',
+                                onSearch: (value, controller) {
+                                  excludeTagsDraft.add(value);
+                                  controller.clear();
+                                  setState(() {});
+                                },
+                              ),
+                              if (excludeTagsDraft.isNotEmpty) ...[
+                                const Gap(8),
+                                Wrap(
+                                  spacing: 8,
+                                  runSpacing: 10,
+                                  children: excludeTagsDraft
+                                      .map(
+                                        (tag) => _TagChip(
+                                          tag,
+                                          onDeleted: () {
+                                            excludeTagsDraft.remove(tag);
+                                            setState(() {});
+                                          },
+                                        ),
+                                      )
+                                      .toList(),
+                                ),
+                              ],
+                            ],
+                          ),
+                        ),
+                        const HorizontalDivider(color: BrandColors.gray_50),
+                        Accordion(
+                          title: '정렬',
+                          initiallyExpanded: widget.initiallyExpandedFilterIndex == 2,
+                          child: Row(
+                            children: [
+                              _SearchFilterChip(
+                                '정확도순',
+                                selected: orderByDraft == _SearchOrderByKind.accuracy,
+                                onPressed: () {
+                                  orderByDraft = _SearchOrderByKind.accuracy;
+                                  setState(() {});
+                                },
+                              ),
                               const Gap(8),
-                              Wrap(
-                                spacing: 8,
-                                runSpacing: 10,
-                                children: includeTagsDraft
-                                    .map(
-                                      (tag) => _TagChip(
-                                        tag,
-                                        onDeleted: () {
-                                          includeTagsDraft.remove(tag);
-                                          setState(() {});
-                                        },
-                                      ),
-                                    )
-                                    .toList(),
+                              _SearchFilterChip(
+                                '최신순',
+                                selected: orderByDraft == _SearchOrderByKind.latest,
+                                onPressed: () {
+                                  orderByDraft = _SearchOrderByKind.latest;
+                                  setState(() {});
+                                },
                               ),
                             ],
-                          ],
+                          ),
                         ),
-                      ),
-                      const HorizontalDivider(color: BrandColors.gray_50),
-                      Accordion(
-                        title: '제외 태그',
-                        initiallyExpanded: widget.initiallyExpandedFilterIndex == 1,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            SearchInput(
-                              placeholder: '제외할 태그를 입력해주세요',
-                              onSearch: (value, controller) {
-                                excludeTagsDraft.add(value);
-                                controller.clear();
-                                setState(() {});
-                              },
-                            ),
-                            if (excludeTagsDraft.isNotEmpty) ...[
+                        const HorizontalDivider(color: BrandColors.gray_50),
+                        Accordion(
+                          title: '성인물 표시',
+                          initiallyExpanded: widget.initiallyExpandedFilterIndex == 3,
+                          child: Row(
+                            children: [
+                              _SearchFilterChip(
+                                '성인물 제외',
+                                selected: adultFilterDraft == false,
+                                onPressed: () {
+                                  if (adultFilterDraft == false) {
+                                    adultFilterDraft = null;
+                                  } else {
+                                    adultFilterDraft = false;
+                                  }
+                                  setState(() {});
+                                },
+                              ),
                               const Gap(8),
-                              Wrap(
-                                spacing: 8,
-                                runSpacing: 10,
-                                children: excludeTagsDraft
-                                    .map(
-                                      (tag) => _TagChip(
-                                        tag,
-                                        onDeleted: () {
-                                          excludeTagsDraft.remove(tag);
-                                          setState(() {});
-                                        },
-                                      ),
-                                    )
-                                    .toList(),
+                              _SearchFilterChip(
+                                '성인물만',
+                                selected: adultFilterDraft == true,
+                                onPressed: () {
+                                  if (adultFilterDraft == true) {
+                                    adultFilterDraft = null;
+                                  } else {
+                                    adultFilterDraft = true;
+                                  }
+                                  setState(() {});
+                                },
                               ),
                             ],
-                          ],
+                          ),
                         ),
-                      ),
-                      const HorizontalDivider(color: BrandColors.gray_50),
-                      Accordion(
-                        title: '정렬',
-                        initiallyExpanded: widget.initiallyExpandedFilterIndex == 2,
-                        child: Row(
-                          children: [
-                            _SearchFilterChip(
-                              '정확도순',
-                              selected: orderByDraft == _SearchOrderByKind.accuracy,
-                              onPressed: () {
-                                orderByDraft = _SearchOrderByKind.accuracy;
-                                setState(() {});
-                              },
-                            ),
-                            const Gap(8),
-                            _SearchFilterChip(
-                              '최신순',
-                              selected: orderByDraft == _SearchOrderByKind.latest,
-                              onPressed: () {
-                                orderByDraft = _SearchOrderByKind.latest;
-                                setState(() {});
-                              },
-                            ),
-                          ],
-                        ),
-                      ),
-                      const HorizontalDivider(color: BrandColors.gray_50),
-                      Accordion(
-                        title: '성인물 표시',
-                        initiallyExpanded: widget.initiallyExpandedFilterIndex == 3,
-                        child: Row(
-                          children: [
-                            _SearchFilterChip(
-                              '성인물 제외',
-                              selected: adultFilterDraft == false,
-                              onPressed: () {
-                                if (adultFilterDraft == false) {
-                                  adultFilterDraft = null;
-                                } else {
-                                  adultFilterDraft = false;
-                                }
-                                setState(() {});
-                              },
-                            ),
-                            const Gap(8),
-                            _SearchFilterChip(
-                              '성인물만',
-                              selected: adultFilterDraft == true,
-                              onPressed: () {
-                                if (adultFilterDraft == true) {
-                                  adultFilterDraft = null;
-                                } else {
-                                  adultFilterDraft = true;
-                                }
-                                setState(() {});
-                              },
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
                 Padding(
