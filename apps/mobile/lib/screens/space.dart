@@ -174,7 +174,7 @@ class _SpaceScreenState extends State<SpaceScreen> with SingleTickerProviderStat
                                     scale: _headerScale,
                                     alignment: Alignment.bottomCenter,
                                     child: Container(
-                                      height: 140,
+                                      height: 88,
                                       color: BrandColors.gray_50,
                                     ),
                                   ),
@@ -228,7 +228,7 @@ class _SpaceScreenState extends State<SpaceScreen> with SingleTickerProviderStat
                                         fontWeight: FontWeight.w500,
                                       ),
                                     ),
-                                    const Gap(16),
+                                    const Gap(14),
                                     Row(
                                       children: [
                                         const Icon(
@@ -240,7 +240,7 @@ class _SpaceScreenState extends State<SpaceScreen> with SingleTickerProviderStat
                                         Text(
                                           '${data.space.followerCount}명',
                                           style: const TextStyle(
-                                            fontSize: 12,
+                                            fontSize: 13,
                                             fontWeight: FontWeight.w500,
                                             color: BrandColors.gray_500,
                                           ),
@@ -255,14 +255,14 @@ class _SpaceScreenState extends State<SpaceScreen> with SingleTickerProviderStat
                                         Text(
                                           '${data.space.postCount}개',
                                           style: const TextStyle(
-                                            fontSize: 12,
+                                            fontSize: 13,
                                             fontWeight: FontWeight.w500,
                                             color: BrandColors.gray_500,
                                           ),
                                         ),
                                       ],
                                     ),
-                                    const Gap(16),
+                                    const Gap(20),
                                     Pressable(
                                       child: DecoratedBox(
                                         decoration: BoxDecoration(
@@ -353,7 +353,7 @@ class _SpaceScreenState extends State<SpaceScreen> with SingleTickerProviderStat
                                         Text(
                                           data.space.description ?? '아직 스페이스를 소개하는 글이 작성되지 않았어요\n스페이스 관리에서 소개글을 작성해주세요',
                                           style: TextStyle(
-                                            fontSize: 13,
+                                            fontSize: 14,
                                             color: data.space.description != null && data.space.meAsMember != null
                                                 ? BrandColors.gray_400
                                                 : BrandColors.gray_900,
@@ -427,7 +427,7 @@ class _TabItem extends StatelessWidget {
     return Pressable(
       onPressed: onTap,
       child: Container(
-        padding: const EdgeInsets.fromLTRB(15, 10, 15, 7),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
         decoration: BoxDecoration(
           border: Border(
             bottom: BorderSide(
@@ -441,7 +441,7 @@ class _TabItem extends StatelessWidget {
           textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: 16,
-            fontWeight: isActive ? FontWeight.w600 : FontWeight.w500,
+            fontWeight: isActive ? FontWeight.w800 : FontWeight.w500,
             color: isActive ? BrandColors.gray_900 : BrandColors.gray_400,
           ),
         ),
