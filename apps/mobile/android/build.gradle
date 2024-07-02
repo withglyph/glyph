@@ -7,6 +7,13 @@ allprojects {
         google()
         mavenCentral()
     }
+
+    // https://github.com/pichillilorenzo/flutter_inappwebview/issues/2150
+    configurations.configureEach {
+        resolutionStrategy {
+            force 'androidx.webkit:webkit:1.8.0'
+        }
+    }
 }
 
 rootProject.buildDir = "../build"
