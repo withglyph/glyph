@@ -48,16 +48,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> with SingleTickerProv
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(minutes: 20),
-    );
-
-    _animationController
-      ..addListener(() {
-        if (_animationController.status == AnimationStatus.completed) {
-          final client = ref.read(ferryProvider);
-          client.requestController.add(GLoginScreen_QueryReq());
-        }
-      })
-      ..repeat();
+    )..repeat();
 
     _alignmentAnimation = AlignmentTween(
       begin: Alignment.centerLeft,
@@ -100,17 +91,17 @@ class _LoginScreenState extends ConsumerState<LoginScreen> with SingleTickerProv
                       );
                     },
                     child: Row(
-                      children: response!.data!.featuredImages
-                          .map(
-                            (image) => FadeInImage(
-                              placeholder: MemoryImage(kTransparentImage),
-                              image: CachedNetworkImageProvider(image.url),
+                          children: response!.data!.featuredImages
+                              .map(
+                                (image) => FadeInImage(
+                                  placeholder: MemoryImage(kTransparentImage),
+                                  image: CachedNetworkImageProvider(image.url),
                               height: double.infinity,
-                              fit: BoxFit.cover,
-                              fadeInDuration: const Duration(milliseconds: 1000),
-                            ),
-                          )
-                          .toList(),
+                                  fit: BoxFit.cover,
+                                  fadeInDuration: const Duration(milliseconds: 1000),
+                                ),
+                              )
+                              .toList(),
                     ),
                   ),
                 ),
