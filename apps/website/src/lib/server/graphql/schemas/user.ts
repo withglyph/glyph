@@ -8,6 +8,7 @@ import { match } from 'ts-pattern';
 import { env } from '$env/dynamic/private';
 import {
   AuthScope,
+  AuthTokenKind,
   ContentFilterAction,
   ContentFilterCategory,
   PointKind,
@@ -690,11 +691,19 @@ const IssueUserEmailAuthorizationTokenResult = builder.simpleObject('IssueUserEm
 
 const AuthorizeSingleSignOnTokenResult = builder.simpleObject('AuthorizeSingleSignOnTokenResult', {
   fields: (t) => ({
+    kind: t.field({ type: AuthTokenKind }),
     token: t.string(),
   }),
 });
 
 const AuthorizeUserEmailTokenResult = builder.simpleObject('AuthorizeUserEmailTokenResult', {
+  fields: (t) => ({
+    kind: t.field({ type: AuthTokenKind }),
+    token: t.string(),
+  }),
+});
+
+const CreateUserResult = builder.simpleObject('CreateUserResult', {
   fields: (t) => ({
     token: t.string(),
   }),
@@ -734,7 +743,7 @@ const LoginUserInput = builder.inputType('LoginUserInput', {
 const CreateUserInput = builder.inputType('CreateUserInput', {
   fields: (t) => ({
     token: t.string(),
-    name: t.string(),
+    name: t.string({ required: false }),
     termsConsent: t.boolean(),
     isGte14: t.boolean(),
     marketingConsent: t.boolean(),
@@ -995,7 +1004,17 @@ builder.mutationFields((t) => ({
           .where(and(eq(Users.email, userEmailVerification.email.toLowerCase()), eq(Users.state, 'ACTIVE')));
 
         if (users.length === 0) {
-          throw new Error('Not implemented');
+          const token = nanoid();
+
+          await tx.insert(ProvisionedUsers).values({
+            email: userEmailVerification.email.toLowerCase(),
+            token,
+          });
+
+          return {
+            kind: 'PROVISIONED_USER_TOKEN',
+            token,
+          };
         }
 
         const [session] = await tx
@@ -1006,6 +1025,7 @@ builder.mutationFields((t) => ({
         const accessToken = await createAccessToken(session.id);
 
         return {
+          kind: 'ACCESS_TOKEN',
           token: accessToken,
         };
       });
@@ -1013,7 +1033,7 @@ builder.mutationFields((t) => ({
   }),
 
   createUser: t.field({
-    type: User,
+    type: CreateUserResult,
     args: { input: t.arg({ type: CreateUserInput }) },
     resolve: async (_, { input }, context) => {
       const provisionedUsers = await database
@@ -1050,7 +1070,10 @@ builder.mutationFields((t) => ({
       return await database.transaction(async (tx) => {
         const [profile] = await tx
           .insert(Profiles)
-          .values({ name: input.name, avatarId })
+          .values({
+            name: input.name ?? generateRandomName(provisionedUser.id + provisionedUser.email),
+            avatarId,
+          })
           .returning({ id: Profiles.id });
 
         const [user] = await tx
@@ -1088,7 +1111,9 @@ builder.mutationFields((t) => ({
           maxAge: dayjs.duration(1, 'year').asSeconds(),
         });
 
-        return user.id;
+        return {
+          token: accessToken,
+        };
       });
     },
   }),
@@ -1138,50 +1163,21 @@ builder.mutationFields((t) => ({
           .where(and(eq(Users.email, externalUser.email.toLowerCase()), eq(Users.state, 'ACTIVE')));
 
         if (users.length === 0) {
-          const avatarId = await directUploadImage({
-            name: 'avatar',
-            source: await createRandomAvatar(),
+          const token = nanoid();
+
+          await database.insert(ProvisionedUsers).values({
+            email: externalUser.email.toLowerCase(),
+            token,
+            name: externalUser.name,
+            avatarUrl: externalUser.avatarUrl,
+            provider: externalUser.provider,
+            principal: externalUser.id,
           });
 
-          return await database.transaction(async (tx) => {
-            const [profile] = await tx
-              .insert(Profiles)
-              .values({
-                name: externalUser.name ?? generateRandomName(externalUser.id + externalUser.email),
-                avatarId,
-              })
-              .returning({ id: Profiles.id });
-
-            const [user] = await tx
-              .insert(Users)
-              .values({
-                email: externalUser.email.toLowerCase(),
-                profileId: profile.id,
-                role: 'USER',
-                state: 'ACTIVE',
-              })
-              .returning({ id: Users.id });
-
-            await tx.update(Images).set({ userId: user.id }).where(eq(Images.id, avatarId));
-
-            await tx.insert(UserSingleSignOns).values({
-              userId: user.id,
-              provider: externalUser.provider,
-              principal: externalUser.id,
-              email: externalUser.email.toLowerCase(),
-            });
-
-            const [session] = await tx
-              .insert(UserSessions)
-              .values({ userId: user.id })
-              .returning({ id: UserSessions.id });
-
-            const accessToken = await createAccessToken(session.id);
-
-            return {
-              token: accessToken,
-            };
-          });
+          return {
+            kind: 'PROVISIONED_USER_TOKEN',
+            token,
+          };
         } else {
           const [user] = users;
 
@@ -1200,6 +1196,7 @@ builder.mutationFields((t) => ({
           const accessToken = await createAccessToken(session.id);
 
           return {
+            kind: 'ACCESS_TOKEN',
             token: accessToken,
           };
         }
@@ -1212,6 +1209,7 @@ builder.mutationFields((t) => ({
         const accessToken = await createAccessToken(session.id);
 
         return {
+          kind: 'ACCESS_TOKEN',
           token: accessToken,
         };
       }

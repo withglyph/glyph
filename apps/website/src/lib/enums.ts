@@ -3,6 +3,11 @@ export const AuthScope = {
   STAFF: 'STAFF',
 } as const;
 
+export const AuthTokenKind = {
+  ACCESS_TOKEN: 'ACCESS_TOKEN',
+  PROVISIONED_USER_TOKEN: 'PROVISIONED_USER_TOKEN',
+};
+
 export const ContentFilterAction = {
   EXPOSE: 'EXPOSE',
   WARN: 'WARN',

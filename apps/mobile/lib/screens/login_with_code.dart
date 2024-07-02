@@ -7,12 +7,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:glyph/ferry/error.dart';
 import 'package:glyph/ferry/extension.dart';
-import 'package:glyph/graphql/__generated__/login_with_email_next_screen_authorize_user_email_token_mutation.req.gql.dart';
-import 'package:glyph/graphql/__generated__/login_with_email_next_screen_issue_user_email_authorization_token_mutation.req.gql.dart';
+import 'package:glyph/graphql/__generated__/login_with_code_screen_authorize_user_email_token_mutation.req.gql.dart';
+import 'package:glyph/graphql/__generated__/login_with_code_screen_issue_user_email_authorization_token_mutation.req.gql.dart';
+import 'package:glyph/graphql/__generated__/schema.schema.gql.dart';
 import 'package:glyph/providers/auth.dart';
 import 'package:glyph/providers/ferry.dart';
 import 'package:glyph/shells/default.dart';
 import 'package:glyph/themes/colors.dart';
+import 'package:glyph/widgets/signup.dart';
 import 'package:pinput/pinput.dart';
 
 @RoutePage()
@@ -140,19 +142,32 @@ class _LoginWithCodeScreenState extends ConsumerState<LoginWithCodeScreen> {
                 final client = ref.read(ferryProvider);
 
                 try {
-                  final req1 = GLoginWithEmailNextScreen_IssueUserEmailAuthorizationToken_MutationReq(
+                  final req1 = GLoginWithCodeScreen_IssueUserEmailAuthorizationToken_MutationReq(
                     (b) => b
                       ..vars.input.email = widget.email
                       ..vars.input.code = value,
                   );
                   final resp1 = await client.req(req1);
 
-                  final req2 = GLoginWithEmailNextScreen_AuthorizeUserEmailToken_MutationReq(
+                  final req2 = GLoginWithCodeScreen_AuthorizeUserEmailToken_MutationReq(
                     (b) => b..vars.input.token = resp1.issueUserEmailAuthorizationToken.token,
                   );
                   final resp2 = await client.req(req2);
 
-                  await ref.read(authProvider.notifier).setAccessToken(resp2.authorizeUserEmailToken.token);
+                  if (resp2.authorizeUserEmailToken.kind == GAuthTokenKind.ACCESS_TOKEN) {
+                    await ref.read(authProvider.notifier).setAccessToken(resp2.authorizeUserEmailToken.token);
+                  } else if (resp2.authorizeUserEmailToken.kind == GAuthTokenKind.PROVISIONED_USER_TOKEN) {
+                    if (context.mounted) {
+                      await showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        useRootNavigator: false,
+                        builder: (context) {
+                          return SignupDialog(token: resp2.authorizeUserEmailToken.token);
+                        },
+                      );
+                    }
+                  }
                 } on IntentionalError catch (_) {
                   setState(() {
                     _hasError = true;

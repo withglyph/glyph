@@ -5,14 +5,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:glyph/ferry/extension.dart';
 import 'package:glyph/graphql/__generated__/login_with_token_screen_authorize_user_email_token_mutation.req.gql.dart';
+import 'package:glyph/graphql/__generated__/schema.schema.gql.dart';
 import 'package:glyph/providers/auth.dart';
 import 'package:glyph/providers/ferry.dart';
+import 'package:glyph/widgets/signup.dart';
 
 @RoutePage()
 class LoginWithTokenScreen extends ConsumerStatefulWidget {
-  const LoginWithTokenScreen({super.key, @QueryParam() this.token = ''});
+  const LoginWithTokenScreen({@QueryParam() this.token, super.key});
 
-  final String token;
+  final String? token;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _LoginWithTokenScreenState();
@@ -30,27 +32,26 @@ class _LoginWithTokenScreenState extends ConsumerState<LoginWithTokenScreen> {
 
     unawaited(
       client.req(req).then((resp) async {
-        await ref.read(authProvider.notifier).setAccessToken(resp.authorizeUserEmailToken.token);
+        if (resp.authorizeUserEmailToken.kind == GAuthTokenKind.ACCESS_TOKEN) {
+          await ref.read(authProvider.notifier).setAccessToken(resp.authorizeUserEmailToken.token);
+        } else if (resp.authorizeUserEmailToken.kind == GAuthTokenKind.PROVISIONED_USER_TOKEN) {
+          if (context.mounted) {
+            await showDialog(
+              context: context,
+              barrierDismissible: false,
+              useRootNavigator: false,
+              builder: (context) {
+                return SignupDialog(token: resp.authorizeUserEmailToken.token);
+              },
+            );
+          }
+        }
       }),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 20),
-        child: SafeArea(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              CircularProgressIndicator(),
-              Text('로그인 중이에요', style: TextStyle(fontSize: 14)),
-            ],
-          ),
-        ),
-      ),
-    );
+    return const Scaffold();
   }
 }

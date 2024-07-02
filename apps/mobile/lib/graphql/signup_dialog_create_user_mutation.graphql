@@ -1,0 +1,5 @@
+mutation SignupDialog_CreateUser_Mutation($input: CreateUserInput!) {
+  createUser(input: $input) {
+    token
+  }
+}

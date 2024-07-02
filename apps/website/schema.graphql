@@ -8,12 +8,18 @@ enum AuthScope {
   USER
 }
 
+enum AuthTokenKind {
+  ACCESS_TOKEN
+  PROVISIONED_USER_TOKEN
+}
+
 input AuthorizeSingleSignOnTokenInput {
   provider: UserSingleSignOnProvider!
   token: String!
 }
 
 type AuthorizeSingleSignOnTokenResult {
+  kind: AuthTokenKind!
   token: String!
 }
 
@@ -22,6 +28,7 @@ input AuthorizeUserEmailTokenInput {
 }
 
 type AuthorizeUserEmailTokenResult {
+  kind: AuthTokenKind!
   token: String!
 }
 
@@ -127,8 +134,12 @@ input CreateSpaceInput {
 input CreateUserInput {
   isGte14: Boolean!
   marketingConsent: Boolean!
-  name: String!
+  name: String
   termsConsent: Boolean!
+  token: String!
+}
+
+type CreateUserResult {
   token: String!
 }
 
@@ -336,7 +347,7 @@ type Mutation {
   createRedeemCodeGroup(input: CreateRedeemCodeGroupInput!): RedeemCodeGroup!
   createSpace(input: CreateSpaceInput!): Space!
   createSpaceCollection(input: CreateSpaceCollectionInput!): SpaceCollection!
-  createUser(input: CreateUserInput!): User!
+  createUser(input: CreateUserInput!): CreateUserResult!
   deleteComment(input: DeleteCommentInput!): PostComment!
   deletePost(input: DeletePostInput!): Post!
   deletePostReaction(input: DeletePostReactionInput!): Post!

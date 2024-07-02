@@ -23,6 +23,7 @@ import 'package:glyph/providers/auth.dart';
 import 'package:glyph/providers/ferry.dart';
 import 'package:glyph/routers/app.gr.dart';
 import 'package:glyph/themes/colors.dart';
+import 'package:glyph/widgets/signup.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
@@ -187,7 +188,20 @@ class _BottomSheet extends ConsumerWidget {
 
         final resp = await client.req(req);
 
-        await ref.read(authProvider.notifier).setAccessToken(resp.authorizeSingleSignOnToken.token);
+        if (resp.authorizeSingleSignOnToken.kind == GAuthTokenKind.ACCESS_TOKEN) {
+          await ref.read(authProvider.notifier).setAccessToken(resp.authorizeSingleSignOnToken.token);
+        } else if (resp.authorizeSingleSignOnToken.kind == GAuthTokenKind.PROVISIONED_USER_TOKEN) {
+          if (context.mounted) {
+            await showDialog(
+              context: context,
+              barrierDismissible: false,
+              useRootNavigator: false,
+              builder: (context) {
+                return SignupDialog(token: resp.authorizeSingleSignOnToken.token);
+              },
+            );
+          }
+        }
       });
     };
 
