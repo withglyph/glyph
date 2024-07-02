@@ -209,13 +209,13 @@ class NotificationScreen extends ConsumerWidget {
                                     Text(
                                       notification.when(
                                         commentNotification: (notification) =>
-                                            '${notification.actor!.name}님이 ${_truncate(notification.post.publishedRevision!.title ?? '(제목 없음)')}에 댓글을 남겼어요',
+                                            '${notification.actor!.name}님이 ${notification.post.publishedRevision!.title ?? '(제목 없음)'}에 댓글을 남겼어요',
                                         subscribeNotification: (notification) =>
-                                            '${notification.actor!.name}님이 ${_truncate(notification.space.name)} 스페이스를 구독했어요',
+                                            '${notification.actor!.name}님이 ${notification.space.name} 스페이스를 구독했어요',
                                         purchaseNotification: (notification) =>
-                                            '${notification.actor!.name}님이 ${_truncate(notification.post.publishedRevision!.title ?? '(제목 없음)')} 포스트를 구매했어요',
+                                            '${notification.actor!.name}님이 ${notification.post.publishedRevision!.title ?? '(제목 없음)'} 포스트를 구매했어요',
                                         emojiReactionNotification: (notification) =>
-                                            '${notification.actor!.name}님이 ${_truncate(notification.post.publishedRevision!.title ?? '(제목 없음)')}에 ${notification.emoji}를 달았어요',
+                                            '${notification.actor!.name}님이 ${notification.post.publishedRevision!.title ?? '(제목 없음)'}에 ${notification.emoji}를 달았어요',
                                         orElse: () => '(알 수 없음)',
                                       ),
                                       style: const TextStyle(
@@ -281,9 +281,5 @@ class NotificationScreen extends ConsumerWidget {
         },
       ),
     );
-  }
-
-  String _truncate(String text) {
-    return text.runes.length > 10 ? '${text.substring(0, 10)}...' : text;
   }
 }
