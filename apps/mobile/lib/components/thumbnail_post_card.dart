@@ -7,6 +7,7 @@ import 'package:glyph/components/img.dart';
 import 'package:glyph/components/pressable.dart';
 import 'package:glyph/components/tag.dart';
 import 'package:glyph/context/bottom_menu.dart';
+import 'package:glyph/context/toast.dart';
 import 'package:glyph/extensions/iterable.dart';
 import 'package:glyph/ferry/extension.dart';
 import 'package:glyph/graphql/__generated__/thumbnail_post_card_bookmark_post_mutation.req.gql.dart';
@@ -63,8 +64,7 @@ class ThumbnailPostCard extends ConsumerWidget {
                     ],
                   ),
                   onPressed: () async {
-                    await context.router
-                        .push(SpaceRoute(slug: post.space!.slug));
+                    await context.router.push(SpaceRoute(slug: post.space!.slug));
                   },
                 ),
                 const Gap(6),
@@ -115,7 +115,7 @@ class ThumbnailPostCard extends ConsumerWidget {
                         BottomMenuItem(
                           icon: Tabler.volume_3,
                           title: post.space!.muted ? '스페이스 뮤트 해제' : '스페이스 뮤트',
-                          color: post.space!.muted ? BrandColors.gray_900 : BrandColors.red_600,
+                          color: BrandColors.red_600,
                           onTap: () async {
                             final client = ref.read(ferryProvider);
                             if (post.space!.muted) {
@@ -123,11 +123,19 @@ class ThumbnailPostCard extends ConsumerWidget {
                                 (b) => b..vars.input.spaceId = post.space!.id,
                               );
                               await client.req(req);
+
+                              if (context.mounted) {
+                                context.toast.show('${post.space!.name} 스페이스 뮤트를 해제했어요');
+                              }
                             } else {
                               final req = GThumbnailPostCard_MuteSpace_MutationReq(
                                 (b) => b..vars.input.spaceId = post.space!.id,
                               );
                               await client.req(req);
+
+                              if (context.mounted) {
+                                context.toast.show('${post.space!.name} 스페이스를 뮤트했어요', type: ToastType.error);
+                              }
                             }
                           },
                         ),
