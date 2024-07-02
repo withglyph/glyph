@@ -183,7 +183,15 @@ const FeaturedFeed = builder.unionType('FeaturedFeed', {
 builder.queryFields((t) => ({
   recommendFeed: t.field({
     type: [Post],
-    resolve: async (_, __, context) => {
+    args: {
+      page: t.arg.int({ defaultValue: 1 }),
+      take: t.arg.int({ defaultValue: 6 }),
+      seed: t.arg.int({ required: false }),
+    },
+
+    resolve: async (_, args, context) => {
+      const seed = args.seed ?? Math.floor(Math.random() * 1000);
+
       const searchResult = await (async () => {
         if (context.session) {
           const [mutedTagIds, mutedSpaceIds, followingTagIds, viewedPostIds, allowedAgeRating] = await Promise.all([
@@ -262,7 +270,7 @@ builder.queryFields((t) => ({
                 },
                 functions: [
                   {
-                    random_score: { seed: Math.floor(Math.random() * 1000), field: '_seq_no' },
+                    random_score: { seed, field: '_seq_no' },
                   },
                   {
                     exp: {
@@ -276,7 +284,8 @@ builder.queryFields((t) => ({
               },
             },
 
-            size: 6,
+            from: (args.page - 1) * args.take,
+            size: args.take,
           });
         } else {
           return elasticSearch.search({
@@ -291,7 +300,7 @@ builder.queryFields((t) => ({
                 },
                 functions: [
                   {
-                    random_score: { seed: Math.floor(Math.random() * 1000), field: '_seq_no' },
+                    random_score: { seed, field: '_seq_no' },
                   },
                   {
                     exp: {
@@ -305,7 +314,8 @@ builder.queryFields((t) => ({
               },
             },
 
-            size: 6,
+            from: (args.page - 1) * args.take,
+            size: args.take,
           });
         }
       })();
@@ -329,7 +339,14 @@ builder.queryFields((t) => ({
 
   recommendedTags: t.field({
     type: [Tag],
-    resolve: async (_, __, context) => {
+    args: {
+      page: t.arg.int({ defaultValue: 1 }),
+      take: t.arg.int({ defaultValue: 20 }),
+      seed: t.arg.int({ required: false }),
+    },
+    resolve: async (_, args, context) => {
+      const seed = args.seed ?? Math.floor(Math.random() * 1000);
+
       if (context.session) {
         const [mutedTagIds, followingTagIds, recentlyViewedTagIds] = await Promise.all([
           getMutedTagIds({ userId: context.session.userId }),
@@ -376,13 +393,14 @@ builder.queryFields((t) => ({
 
               functions: [
                 {
-                  random_score: { seed: Math.floor(Math.random() * 1000), field: '_seq_no' },
+                  random_score: { seed, field: '_seq_no' },
                 },
               ],
             },
           },
 
-          size: 20,
+          from: (args.page - 1) * args.take,
+          size: args.take,
         });
 
         return searchResultToIds(searchResult);
@@ -398,7 +416,7 @@ builder.queryFields((t) => ({
               },
               functions: [
                 {
-                  random_score: { seed: Math.floor(Math.random() * 1000), field: '_seq_no' },
+                  random_score: { seed, field: '_seq_no' },
                 },
               ],
             },

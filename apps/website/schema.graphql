@@ -784,8 +784,8 @@ type Query {
   pointPurchase(paymentKey: String!): PointPurchase!
   post(permalink: String!): Post!
   provisionedUser(token: String!): ProvisionedUser!
-  recommendFeed: [Post!]!
-  recommendedTags: [Tag!]!
+  recommendFeed(page: Int! = 1, seed: Int, take: Int! = 6): [Post!]!
+  recommendedTags(page: Int! = 1, seed: Int, take: Int! = 20): [Tag!]!
   redeemCodeGroup(id: ID!): RedeemCodeGroup!
   redeemCodeRedemption(id: ID!): RedeemCodeRedemption!
   revenueWithdrawal(id: String!): RevenueWithdrawal!
