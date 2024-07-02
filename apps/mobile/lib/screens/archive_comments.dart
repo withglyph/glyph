@@ -71,41 +71,43 @@ class ArchiveCommentsScreen extends ConsumerWidget {
                                 aspectRatio: 16 / 10,
                               ),
                               const Gap(8),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    comment.post != null
-                                        ? comment.post?.publishedRevision?.title ?? '(제목 없음)'
-                                        : '삭제된 포스트',
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.w500,
-                                      color: comment.post != null ? BrandColors.gray_500 : BrandColors.gray_400,
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      comment.post != null
+                                          ? comment.post?.publishedRevision?.title ?? '(제목 없음)'
+                                          : '삭제된 포스트',
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w500,
+                                        color: comment.post != null ? BrandColors.gray_500 : BrandColors.gray_400,
+                                      ),
                                     ),
-                                  ),
-                                  const Gap(3),
-                                  Row(
-                                    children: [
-                                      Img(
-                                        comment.post?.space?.icon,
-                                        width: 18,
-                                        aspectRatio: 1 / 1,
-                                      ),
-                                      const Gap(4),
-                                      Text(
-                                        comment.post?.space?.name ?? '스페이스',
-                                        overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          color: comment.post != null ? BrandColors.gray_500 : BrandColors.gray_400,
+                                    const Gap(3),
+                                    Row(
+                                      children: [
+                                        Img(
+                                          comment.post?.space?.icon,
+                                          width: 18,
+                                          aspectRatio: 1 / 1,
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                  const Gap(3),
-                                ],
+                                        const Gap(4),
+                                        Text(
+                                          comment.post?.space?.name ?? '스페이스',
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            color: comment.post != null ? BrandColors.gray_500 : BrandColors.gray_400,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const Gap(3),
+                                  ],
+                                ),
                               ),
                             ],
                           ),
