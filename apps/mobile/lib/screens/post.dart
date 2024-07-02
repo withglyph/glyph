@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:auto_route/auto_route.dart';
+import 'package:built_collection/src/list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -27,11 +28,12 @@ import 'package:glyph/extensions/iterable.dart';
 import 'package:glyph/ferry/extension.dart';
 import 'package:glyph/ferry/widget.dart';
 import 'package:glyph/graphql/__generated__/post_screen_bookmark_post_mutation.req.gql.dart';
+import 'package:glyph/graphql/__generated__/post_screen_collection_post_list_query.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_screen_comments_create_comment_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_screen_comments_like_comment_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_screen_comments_query.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_screen_comments_unlike_comment_mutation.req.gql.dart';
-import 'package:glyph/graphql/__generated__/post_screen_post_list_query.req.gql.dart';
+import 'package:glyph/graphql/__generated__/post_screen_space_post_list_query.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_screen_query.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_screen_unbookmark_post_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_screen_update_post_view_mutation.req.gql.dart';
@@ -240,12 +242,21 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                 Pressable(
                   child: const Icon(Tabler.list),
                   onPressed: () async {
-                    await context.showFloatingBottomSheet(
-                      title: '스페이스 목차',
-                      builder: (context) {
-                        return _PostList(permalink: widget.permalink);
-                      },
-                    );
+                    if (data.post.collection != null) {
+                      await context.showFloatingBottomSheet(
+                        title: '컬렉션 목차',
+                        builder: (context) {
+                          return _CollectionPostList(permalink: widget.permalink);
+                        },
+                      );
+                    } else {
+                      await context.showFloatingBottomSheet(
+                        title: '스페이스 목차',
+                        builder: (context) {
+                          return _SpacePostList(permalink: widget.permalink);
+                        },
+                      );
+                    }
                   },
                 ),
               ],
@@ -1196,22 +1207,22 @@ class _Tag extends StatelessWidget {
   }
 }
 
-class _PostList extends StatefulWidget {
-  const _PostList({required this.permalink});
+class _SpacePostList extends StatefulWidget {
+  const _SpacePostList({required this.permalink});
 
   final String permalink;
 
   @override
-  createState() => _PostListState();
+  createState() => _SpacePostListState();
 }
 
-class _PostListState extends State<_PostList> {
+class _SpacePostListState extends State<_SpacePostList> {
   final _controller = ScrollController();
 
   @override
   Widget build(BuildContext context) {
     return GraphQLOperation(
-      operation: GPostScreen_PostList_QueryReq(
+      operation: GPostScreen_SpacePostList_QueryReq(
         (b) => b..vars.permalink = widget.permalink,
       ),
       onDataLoaded: (context, client, data) {
@@ -1300,6 +1311,161 @@ class _PostListState extends State<_PostList> {
                       padding: const EdgeInsets.symmetric(vertical: 15),
                       child: Row(
                         children: [
+                          Expanded(
+                            child: Text(
+                              post.publishedRevision!.title ?? '(제목 없음)',
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w600,
+                                color: post.id == data.post.id ? BrandColors.gray_800 : BrandColors.gray_500,
+                              ),
+                            ),
+                          ),
+                          const Gap(18),
+                          if (post.id == data.post.id)
+                            const Icon(TablerBold.check, size: 20, color: BrandColors.brand_400)
+                          else
+                            const Gap(20),
+                        ],
+                      ),
+                    ),
+                    onPressed: () async {
+                      if (post.id != data.post.id) {
+                        await context.popWaitAndPush(PostRoute(permalink: post.permalink));
+                      }
+                    },
+                  );
+                },
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _CollectionPostList extends StatefulWidget {
+  const _CollectionPostList({required this.permalink});
+
+  final String permalink;
+
+  @override
+  createState() => _CollectionPostListState();
+}
+
+class _CollectionPostListState extends State<_CollectionPostList> {
+  final _controller = ScrollController();
+
+  @override
+  Widget build(BuildContext context) {
+    return GraphQLOperation(
+      operation: GPostScreen_CollectionPostList_QueryReq(
+        (b) => b..vars.permalink = widget.permalink,
+      ),
+      onDataLoaded: (context, client, data) {
+        if (data.post.collection?.posts.isEmpty ?? true) {
+          return;
+        }
+
+        final thisIndex = data.post.collection!.posts.indexWhere((post) => post.id == data.post.id);
+        final itemHeight = _controller.position.extentTotal / data.post.collection!.posts.length;
+        final fraction = thisIndex / data.post.collection!.posts.length;
+        final scrollPosition =
+            _controller.position.extentTotal * fraction - (_controller.position.extentInside / 2) + (itemHeight / 2);
+
+        _controller.jumpTo(scrollPosition.clamp(0, _controller.position.maxScrollExtent));
+      },
+      builder: (context, client, data) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(0, 8, 0, 16),
+              child: Row(
+                children: [
+                  Img(
+                    data.post.collection!.thumbnail,
+                    width: 43,
+                    aspectRatio: 3 / 4,
+                  ),
+                  const Gap(12),
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          data.post.collection!.name,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                            color: BrandColors.gray_800,
+                          ),
+                        ),
+                        if (data.post.collection!.description?.isNotEmpty ?? false)
+                          Text(
+                            data.post.collection!.description!,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: BrandColors.gray_800.withOpacity(0.8),
+                            ),
+                          ),
+                        const Gap(4),
+                        Text(
+                          '총 ${data.post.collection!.posts.length}화',
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w400,
+                            color: BrandColors.gray_400.withOpacity(0.8),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Transform.scale(scaleX: 2, child: const HorizontalDivider()),
+            Flexible(
+              child: ListView.builder(
+                controller: _controller,
+                shrinkWrap: true,
+                itemCount: data.post.collection!.posts.isEmpty ? 1 : data.post.collection!.posts.length,
+                itemBuilder: (context, index) {
+                  final dynamic post =
+                      data.post.collection!.posts.isEmpty ? data.post : data.post.collection!.posts[index];
+
+                  return Pressable(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 15),
+                      child: Row(
+                        children: [
+                          SizedBox(
+                            width: 41,
+                            child: Text(
+                              '${index + 1}화',
+                              textAlign: TextAlign.start,
+                              style: const TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w600,
+                                color: BrandColors.gray_400,
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                            child: SizedBox(
+                              width: 1,
+                              height: 12,
+                              child: Container(
+                                color: BrandColors.gray_200,
+                              ),
+                            ),
+                          ),
                           Expanded(
                             child: Text(
                               post.publishedRevision!.title ?? '(제목 없음)',

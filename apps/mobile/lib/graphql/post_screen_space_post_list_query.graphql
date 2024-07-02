@@ -1,0 +1,48 @@
+# import './fragments/img_image.graphql'
+
+query PostScreen_SpacePostList_Query($permalink: String!) {
+  post(permalink: $permalink) {
+    id
+
+    publishedRevision {
+      id
+      title
+    }
+
+    space {
+      id
+      slug
+      name
+      description
+
+      icon  {
+        id
+        ...Img_image
+      }
+
+      posts {
+        id
+        permalink
+
+        publishedRevision {
+          id
+          title
+        }
+      }
+    }
+
+    member {
+      id
+
+      profile {
+        id
+        name
+
+        avatar {
+          id
+          ...Img_image
+        }
+      }
+    }
+  }
+}

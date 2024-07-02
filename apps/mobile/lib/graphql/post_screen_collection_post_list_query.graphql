@@ -1,6 +1,6 @@
 # import './fragments/img_image.graphql'
 
-query PostScreen_PostList_Query($permalink: String!) {
+query PostScreen_CollectionPostList_Query($permalink: String!) {
   post(permalink: $permalink) {
     id
 
@@ -9,18 +9,17 @@ query PostScreen_PostList_Query($permalink: String!) {
       title
     }
 
-    space {
+    collection {
       id
-      slug
       name
       description
 
-      icon  {
+      thumbnail {
         id
         ...Img_image
       }
 
-      posts {
+      posts(order: OLDEST) {
         id
         permalink
 
