@@ -30,7 +30,7 @@ class LoginWithEmailNextScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             const Text(
-              '이메일이 전송되었습니다',
+              '이메일이 전송되었어요',
               style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.w700,

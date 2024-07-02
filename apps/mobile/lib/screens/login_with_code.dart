@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
+import 'package:glyph/context/toast.dart';
 import 'package:glyph/ferry/error.dart';
 import 'package:glyph/ferry/extension.dart';
 import 'package:glyph/graphql/__generated__/login_with_code_screen_authorize_user_email_token_mutation.req.gql.dart';
@@ -169,6 +170,10 @@ class _LoginWithCodeScreenState extends ConsumerState<LoginWithCodeScreen> {
                     }
                   }
                 } on IntentionalError catch (_) {
+                  if (context.mounted) {
+                    context.toast.show('잘못된 코드예요', type: ToastType.error);
+                  }
+
                   setState(() {
                     _hasError = true;
                   });

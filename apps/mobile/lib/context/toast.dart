@@ -105,8 +105,9 @@ class ToastController {
       child: _TextToastWidget(type: type, message: message),
       positionedToastBuilder: (context, child) {
         final height = MediaQuery.of(context).padding.bottom;
+        final inset = MediaQuery.of(context).viewInsets.bottom;
         return Positioned(
-          bottom: height + 12,
+          bottom: height + inset + 12,
           left: 20,
           right: 20,
           child: child,

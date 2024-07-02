@@ -10,8 +10,8 @@ import 'package:glyph/graphql/__generated__/signup_dialog_create_user_mutation.r
 import 'package:glyph/icons/tabler.dart';
 import 'package:glyph/providers/auth.dart';
 import 'package:glyph/providers/ferry.dart';
-import 'package:glyph/routers/app.gr.dart';
 import 'package:glyph/themes/colors.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SignupDialog extends ConsumerStatefulWidget {
   const SignupDialog({
@@ -43,19 +43,28 @@ class _SignupDialogState extends ConsumerState<SignupDialog> {
   Widget build(BuildContext context) {
     return Dialog(
       insetPadding: const EdgeInsets.symmetric(horizontal: 20),
-      backgroundColor: BrandColors.gray_0,
+      backgroundColor: Colors.transparent,
       elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Padding(
+      shape: LinearBorder.none,
+      child: Container(
         padding: const EdgeInsets.fromLTRB(22, 22, 22, 18),
+        decoration: BoxDecoration(
+          color: BrandColors.gray_0,
+          borderRadius: BorderRadius.circular(8),
+          boxShadow: [
+            BoxShadow(
+              color: BrandColors.gray_900.withOpacity(0.35),
+              offset: const Offset(2, 4),
+              blurRadius: 20,
+            ),
+          ],
+        ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              '약관 동의',
+              '글리프 시작하기',
               style: TextStyle(
                 fontSize: 19,
                 fontWeight: FontWeight.w700,
@@ -64,8 +73,8 @@ class _SignupDialogState extends ConsumerState<SignupDialog> {
             const Gap(20),
             _Checkbox(
               label: const Text(
-                '전체동의',
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
+                '전체 동의',
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
               ),
               value: _isCheckAll,
               onChanged: (value) {
@@ -87,9 +96,30 @@ class _SignupDialogState extends ConsumerState<SignupDialog> {
             ),
             const Gap(12),
             _Checkbox(
-              label: const Text(
-                '(필수) 이용약관 및 개인정보처리방침 동의',
-                style: TextStyle(fontSize: 15),
+              label: Row(
+                children: [
+                  const Text('(필수) ', style: TextStyle(fontSize: 15)),
+                  Pressable(
+                    child: const Text('이용약관', style: TextStyle(fontSize: 15, decoration: TextDecoration.underline)),
+                    onPressed: () async {
+                      await launchUrl(
+                        Uri.parse('https://help.withglyph.com/legal/terms'),
+                        mode: LaunchMode.inAppBrowserView,
+                      );
+                    },
+                  ),
+                  const Text(' 및 ', style: TextStyle(fontSize: 15)),
+                  Pressable(
+                    child: const Text('개인정보처리방침', style: TextStyle(fontSize: 15, decoration: TextDecoration.underline)),
+                    onPressed: () async {
+                      await launchUrl(
+                        Uri.parse('https://help.withglyph.com/legal/privacy'),
+                        mode: LaunchMode.inAppBrowserView,
+                      );
+                    },
+                  ),
+                  const Text(' 동의', style: TextStyle(fontSize: 15)),
+                ],
               ),
               value: _termsConsent,
               onChanged: (value) {
@@ -118,8 +148,8 @@ class _SignupDialogState extends ConsumerState<SignupDialog> {
                   child: Button(
                     '취소',
                     kind: ButtonKind.secondary,
-                    onPressed: () async {
-                      await context.router.navigate(const AuthRouter());
+                    onPressed: () {
+                      context.router.popUntilRoot();
                     },
                   ),
                 ),
