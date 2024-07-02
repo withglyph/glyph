@@ -341,7 +341,7 @@ class _SpaceScreenState extends State<SpaceScreen> with SingleTickerProviderStat
                                           data.space.description ?? '아직 스페이스를 소개하는 글이 작성되지 않았어요\n스페이스 관리에서 소개글을 작성해주세요',
                                           style: TextStyle(
                                             fontSize: 14,
-                                            color: data.space.description != null && data.space.meAsMember != null
+                                            color: data.space.description == null && data.space.meAsMember != null
                                                 ? BrandColors.gray_400
                                                 : BrandColors.gray_900,
                                           ),
