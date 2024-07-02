@@ -165,8 +165,12 @@ class _Carousel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return Container(
       height: 150,
+      clipBehavior: Clip.antiAlias,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(4),
+      ),
       child: Swiper(
         autoplay: true,
         autoplayDelay: 5000,
@@ -176,109 +180,103 @@ class _Carousel extends StatelessWidget {
         itemBuilder: (context, index) {
           final carousel = _carousels[index];
 
-          return Container(
-            clipBehavior: Clip.antiAlias,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(4),
-            ),
-            child: Stack(
-              children: [
-                Positioned.fill(
-                  child: CachedNetworkImage(
-                    imageUrl: carousel.backgroundImageUrl,
-                    fit: BoxFit.cover,
-                    fadeInDuration: const Duration(milliseconds: 150),
-                  ),
+          return Stack(
+            children: [
+              Positioned.fill(
+                child: CachedNetworkImage(
+                  imageUrl: carousel.backgroundImageUrl,
+                  fit: BoxFit.cover,
+                  fadeInDuration: const Duration(milliseconds: 150),
                 ),
-                Positioned(
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  child: Container(
-                    constraints: const BoxConstraints(minHeight: 100),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 14,
-                      vertical: 12,
+              ),
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: 0,
+                child: Container(
+                  constraints: const BoxConstraints(minHeight: 100),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 12,
+                  ),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        HexColor.fromHex(carousel.color).withOpacity(0),
+                        HexColor.fromHex(carousel.color),
+                      ],
                     ),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          HexColor.fromHex(carousel.color).withOpacity(0),
-                          HexColor.fromHex(carousel.color),
-                        ],
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        carousel.title,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                          color: BrandColors.gray_0,
+                        ),
                       ),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
+                      if (carousel.subtitle != null)
                         Text(
-                          carousel.title,
+                          carousel.subtitle!,
                           style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700,
+                            fontSize: 13,
                             color: BrandColors.gray_0,
                           ),
                         ),
-                        if (carousel.subtitle != null)
-                          Text(
-                            carousel.subtitle!,
-                            style: const TextStyle(
-                              fontSize: 13,
-                              color: BrandColors.gray_0,
-                            ),
-                          ),
-                      ],
-                    ),
+                    ],
                   ),
                 ),
-                Positioned(
-                  right: 14,
-                  bottom: 12,
-                  child: Container(
-                    padding: const EdgeInsets.fromLTRB(4, 2, 8, 2),
-                    decoration: BoxDecoration(
-                      color: BrandColors.gray_900.withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        ConstrainedBox(
-                          constraints: const BoxConstraints.tightFor(width: 13),
-                          child: Text(
-                            (index + 1).toString(),
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(
-                              fontSize: 11,
-                              color: BrandColors.gray_0,
-                            ),
-                          ),
-                        ),
-                        const Gap(2),
-                        Text(
-                          '/',
-                          style: TextStyle(
+              ),
+              Positioned(
+                right: 14,
+                bottom: 12,
+                child: Container(
+                  padding: const EdgeInsets.fromLTRB(4, 2, 8, 2),
+                  decoration: BoxDecoration(
+                    color: BrandColors.gray_900.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      ConstrainedBox(
+                        constraints: const BoxConstraints.tightFor(width: 13),
+                        child: Text(
+                          (index + 1).toString(),
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
                             fontSize: 11,
-                            color: BrandColors.gray_0.withOpacity(0.5),
+                            color: BrandColors.gray_0,
                           ),
                         ),
-                        const Gap(2),
-                        Text(
-                          _carousels.length.toString(),
-                          style: TextStyle(
-                            fontSize: 11,
-                            color: BrandColors.gray_0.withOpacity(0.5),
-                          ),
+                      ),
+                      const Gap(2),
+                      Text(
+                        '/',
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: BrandColors.gray_0.withOpacity(0.5),
                         ),
-                      ],
-                    ),
+                      ),
+                      const Gap(2),
+                      Text(
+                        _carousels.length.toString(),
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: BrandColors.gray_0.withOpacity(0.5),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           );
         },
         onTap: (index) async {
