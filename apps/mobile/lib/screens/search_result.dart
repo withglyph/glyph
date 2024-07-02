@@ -139,6 +139,7 @@ class _SearchResultScreenState extends ConsumerState<SearchResultScreen> with Si
                       _SearchFilterChip(
                         orderBy == _SearchOrderByKind.accuracy ? '정확도순' : '최신순',
                         kind: _SearchFilterChipKind.fillSearch,
+                        selected: orderBy == _SearchOrderByKind.accuracy,
                         onPressed: () async => openSearchFilterMenu(2),
                       ),
                       _SearchFilterChip(
@@ -148,6 +149,7 @@ class _SearchResultScreenState extends ConsumerState<SearchResultScreen> with Si
                                 ? '성인물만'
                                 : '성인물 제외',
                         kind: _SearchFilterChipKind.fillSearch,
+                        selected: adultFilter != null,
                         onPressed: () async => openSearchFilterMenu(3),
                       ),
                     ].intersperse(const Gap(8)).toList(),
