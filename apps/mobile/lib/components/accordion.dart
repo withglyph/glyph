@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:glyph/components/horizontal_divider.dart';
 import 'package:glyph/components/pressable.dart';
 import 'package:glyph/icons/tabler.dart';
 import 'package:glyph/themes/colors.dart';

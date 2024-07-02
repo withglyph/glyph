@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 @RoutePage()
 class SpaceCollectionsScreen extends ConsumerWidget {
-  const SpaceCollectionsScreen({super.key, required this.slug});
+  const SpaceCollectionsScreen({required this.slug, super.key});
 
   final String slug;
 

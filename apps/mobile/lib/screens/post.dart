@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:auto_route/auto_route.dart';
-import 'package:built_collection/src/list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -33,8 +32,8 @@ import 'package:glyph/graphql/__generated__/post_screen_comments_create_comment_
 import 'package:glyph/graphql/__generated__/post_screen_comments_like_comment_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_screen_comments_query.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_screen_comments_unlike_comment_mutation.req.gql.dart';
-import 'package:glyph/graphql/__generated__/post_screen_space_post_list_query.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_screen_query.req.gql.dart';
+import 'package:glyph/graphql/__generated__/post_screen_space_post_list_query.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_screen_unbookmark_post_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_screen_update_post_view_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/schema.schema.gql.dart';
