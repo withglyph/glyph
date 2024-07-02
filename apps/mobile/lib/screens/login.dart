@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:auto_route/auto_route.dart';
@@ -192,13 +193,15 @@ class _BottomSheet extends ConsumerWidget {
           await ref.read(authProvider.notifier).setAccessToken(resp.authorizeSingleSignOnToken.token);
         } else if (resp.authorizeSingleSignOnToken.kind == GAuthTokenKind.PROVISIONED_USER_TOKEN) {
           if (context.mounted) {
-            await showDialog(
-              context: context,
-              barrierDismissible: false,
-              useRootNavigator: false,
-              builder: (context) {
-                return SignupDialog(token: resp.authorizeSingleSignOnToken.token);
-              },
+            unawaited(
+              showDialog(
+                context: context,
+                barrierDismissible: false,
+                useRootNavigator: false,
+                builder: (context) {
+                  return SignupDialog(token: resp.authorizeSingleSignOnToken.token);
+                },
+              ),
             );
           }
         }
