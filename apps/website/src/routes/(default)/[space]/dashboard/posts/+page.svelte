@@ -4,6 +4,7 @@
   import { graphql } from '$glitch';
   import { Helmet } from '$lib/components';
   import { Select, SelectItem } from '$lib/components/select';
+  import { isWebView } from '$lib/flutter';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
   import { initFilter } from './filter';
@@ -93,7 +94,7 @@
     gap: '12px',
     wrap: 'wrap',
     position: 'sticky',
-    top: { base: '116px', sm: '62px' },
+    top: { base: $isWebView ? '54px' : '116px', sm: '62px' },
     paddingTop: '20px',
     paddingBottom: { base: '24px', sm: '20px' },
     backgroundColor: 'gray.0',

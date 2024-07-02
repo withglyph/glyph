@@ -126,10 +126,7 @@ class _SpaceScreenState extends State<SpaceScreen> with SingleTickerProviderStat
                                 iconColor: BrandColors.gray_400,
                                 onTap: () async {
                                   await context.router.push(
-                                    WebViewRoute(
-                                      title: '스페이스 설정',
-                                      path: '/${data.space.slug}/dashboard/settings',
-                                    ),
+                                    SpaceDashboardRoute(slug: data.space.slug),
                                   );
                                 },
                               ),

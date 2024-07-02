@@ -114,6 +114,10 @@ class AppRouter extends $AppRouter {
               ],
             ),
             AutoRoute(
+              page: SpaceDashboardRoute.page,
+              path: ':slug/dashboard/settings',
+            ),
+            AutoRoute(
               page: SearchResultRoute.page,
               path: 'search-result/:query',
               usesPathAsKey: true,

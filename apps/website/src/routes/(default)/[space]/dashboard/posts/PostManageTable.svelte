@@ -14,6 +14,7 @@
   import { Menu, MenuItem } from '$lib/components/menu';
   import { Select, SelectItem } from '$lib/components/select';
   import { Table, TableBody, TableData, TableHead, TableHeader, TableRow } from '$lib/components/table';
+  import { isWebView, postFlutterMessage } from '$lib/flutter';
   import { comma, humanizeNumber } from '$lib/utils';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
@@ -139,7 +140,9 @@
 </script>
 
 <Table>
-  <TableHeader style={css.raw({ position: 'sticky', top: { base: '194px', sm: '136px' }, zIndex: '1' })}>
+  <TableHeader
+    style={css.raw({ position: 'sticky', top: { base: $isWebView ? '132px' : '194px', sm: '136px' }, zIndex: '1' })}
+  >
     <TableRow style={css.raw({ textAlign: 'left' })}>
       <TableHead style={css.raw({ width: '50px' })}>
         <Checkbox
@@ -245,7 +248,18 @@
           style={css.raw({ padding: '20px', paddingLeft: '0', color: '[inherit]', maxWidth: '1px', truncate: true })}
         >
           <div class={css({ position: 'relative' })}>
-            <a href="/{post.space.slug}/{post.permalink}">
+            <svelte:element
+              this={$isWebView ? 'button' : 'a'}
+              class={css({ textAlign: 'left', width: 'full' })}
+              href={$isWebView ? undefined : `/${post.space.slug}/${post.permalink}`}
+              role={$isWebView ? 'button' : 'a'}
+              on:click={() => {
+                if ($isWebView) {
+                  postFlutterMessage({ type: 'post:view', permalink: post.permalink });
+                  return;
+                }
+              }}
+            >
               <div class={flex({ align: 'flex-start', justify: 'space-between', gap: { base: '10px', sm: '86px' } })}>
                 <div class={css({ truncate: true })}>
                   {#if post.collection}
@@ -392,7 +406,7 @@
                   <time datetime={post.createdAt}>{dayjs(post.createdAt).formatAsDate()}</time>
                 </div>
               </div>
-            </a>
+            </svelte:element>
             <Menu style={css.raw({ position: 'absolute', bottom: '0', right: '-6px' })} placement="bottom-end">
               <Icon slot="value" style={css.raw({ color: 'gray.400' })} icon={IconDotsVertical} size={24} />
 

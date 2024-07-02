@@ -5,6 +5,7 @@
   import IconScan from '~icons/tabler/scan';
   import IconUserX from '~icons/tabler/user-x';
   import { graphql } from '$glitch';
+  import { isWebView } from '$lib/flutter';
   import { flex } from '$styled-system/patterns';
   import NavItem from '../../me/NavItem.svelte';
 
@@ -54,7 +55,7 @@
       smDown: {
         gap: '28px',
         position: 'sticky',
-        top: '62px',
+        top: $isWebView ? '0' : '62px',
         borderBottomWidth: '1px',
         paddingX: '20px',
         paddingY: '14px',

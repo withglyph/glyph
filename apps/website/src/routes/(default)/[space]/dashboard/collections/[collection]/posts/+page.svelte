@@ -7,6 +7,7 @@
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
   import { Button, Helmet, Icon, Image } from '$lib/components';
+  import { isWebView } from '$lib/flutter';
   import { toast } from '$lib/notification';
   import { isMobile } from '$lib/utils';
   import { css, cx } from '$styled-system/css';
@@ -93,7 +94,7 @@
       scroll: true,
       handle: '.post',
       animation: 150,
-      delay: isMobile() ? 50 : 0,
+      delay: isMobile() || $isWebView ? 50 : 0,
       forceAutoScrollFallback: true,
       scrollSensitivity: 60,
       scrollSpeed: 10,
@@ -133,7 +134,7 @@
     align: { sm: 'center' },
     justify: 'space-between',
     position: 'sticky',
-    top: { base: '163px', sm: '186px' },
+    top: { base: $isWebView ? '99px' : '163px', sm: '186px' },
     zIndex: '1',
     smDown: { flexDirection: 'column', gap: '12px', padding: '20px', backgroundColor: 'gray.50' },
     sm: {

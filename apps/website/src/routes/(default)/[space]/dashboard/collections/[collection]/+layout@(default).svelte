@@ -3,6 +3,7 @@
   import { graphql } from '$glitch';
   import { Icon } from '$lib/components';
   import { TabHead, TabHeadItem } from '$lib/components/tab';
+  import { isWebView } from '$lib/flutter';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
 
@@ -32,7 +33,7 @@
   <div
     class={css({
       position: 'sticky',
-      top: '62px',
+      top: $isWebView ? '0' : '62px',
       paddingTop: { sm: '35px' },
       backgroundColor: 'gray.0',
       zIndex: '1',
