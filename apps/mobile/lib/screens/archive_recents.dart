@@ -35,6 +35,7 @@ class ArchiveRecentsScreen extends ConsumerWidget {
                   return PostCard(
                     posts[index],
                     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+                    dots: false,
                   );
                 },
                 separatorBuilder: (context, index) {

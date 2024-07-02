@@ -1,0 +1,6 @@
+mutation PostCard_FollowSpace_Mutation($input: FollowSpaceInput!) {
+  followSpace(input: $input) {
+    id
+    followed
+  }
+}

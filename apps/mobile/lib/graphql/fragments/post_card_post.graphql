@@ -21,6 +21,8 @@ fragment PostCard_post on Post {
   space {
     id
     name
+    followed
+    muted
 
     icon {
       id

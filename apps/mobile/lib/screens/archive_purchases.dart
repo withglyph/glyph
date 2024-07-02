@@ -56,6 +56,7 @@ class ArchivePurchasesScreen extends ConsumerWidget {
                         PostCard(
                           post,
                           padding: const EdgeInsets.symmetric(horizontal: 20),
+                          dots: false,
                         ),
                       ],
                     ),

@@ -1,0 +1,6 @@
+mutation PostCard_UnmuteSpace_Mutation($input: UnmuteSpaceInput!) {
+  unmuteSpace(input: $input) {
+    id
+    muted
+  }
+}
