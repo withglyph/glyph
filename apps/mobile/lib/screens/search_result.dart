@@ -139,7 +139,7 @@ class _SearchResultScreenState extends ConsumerState<SearchResultScreen> with Si
                       _SearchFilterChip(
                         orderBy == _SearchOrderByKind.accuracy ? '정확도순' : '최신순',
                         kind: _SearchFilterChipKind.fillSearch,
-                        selected: orderBy == _SearchOrderByKind.accuracy,
+                        selected: orderBy == _SearchOrderByKind.latest,
                         onPressed: () async => openSearchFilterMenu(2),
                       ),
                       _SearchFilterChip(
