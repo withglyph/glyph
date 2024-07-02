@@ -29,6 +29,8 @@ class SpaceDashboardScreen extends StatelessWidget {
             await context.router.push(
               PostRoute(permalink: data['permalink']),
             );
+          } else if (data['type'] == 'space:delete') {
+            await context.router.navigate(const MainRouter());
           }
         },
       ),

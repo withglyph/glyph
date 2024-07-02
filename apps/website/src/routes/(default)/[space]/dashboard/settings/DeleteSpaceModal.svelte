@@ -4,6 +4,7 @@
   import { mixpanel } from '$lib/analytics';
   import { Button, Modal } from '$lib/components';
   import { FormField, TextInput } from '$lib/components/forms';
+  import { isWebView, postFlutterMessage } from '$lib/flutter';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
   import type { SpaceDashboardSettingsPage_DeleteSpaceModal_space } from '$glitch';
@@ -39,7 +40,11 @@
       await _deleteSpace({ spaceId: $space.id });
       mixpanel.track('space:delete', { spaceId: $space.id });
 
-      location.href = '/';
+      if ($isWebView) {
+        postFlutterMessage({ type: 'space:delete' });
+      } else {
+        location.href = '/';
+      }
     }
   };
 </script>

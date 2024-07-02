@@ -3,6 +3,7 @@
   import { graphql } from '$glitch';
   import { Button, Modal } from '$lib/components';
   import { FormField, TextInput } from '$lib/components/forms';
+  import { isWebView, postFlutterMessage } from '$lib/flutter';
   import { createMutationForm } from '$lib/form';
   import { toast } from '$lib/notification';
   import { DeleteUserSchema } from '$lib/validations';
@@ -18,8 +19,12 @@
     `),
     schema: DeleteUserSchema,
     onSuccess: async () => {
-      toast.success('탈퇴가 완료되었어요');
-      await goto('/');
+      if ($isWebView) {
+        postFlutterMessage({ type: 'deactivate:done' });
+      } else {
+        toast.success('탈퇴가 완료되었어요');
+        await goto('/');
+      }
     },
     onError: (resp) => {
       // @ts-expect-error form validation error
