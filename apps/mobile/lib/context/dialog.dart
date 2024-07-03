@@ -9,7 +9,10 @@ import 'package:glyph/themes/colors.dart';
 extension DialogX on BuildContext {
   Future<T?> showDialog<T>({
     required String title,
-    required String content,
+    String? content,
+    String confirmText = '확인',
+    String cancelText = '취소',
+    Function()? onConfirmed,
   }) {
     return material.showDialog(
       context: this,
@@ -19,10 +22,10 @@ extension DialogX on BuildContext {
           backgroundColor: BrandColors.gray_0,
           elevation: 0,
           shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(4)),
+            borderRadius: BorderRadius.all(Radius.circular(8)),
           ),
           child: Padding(
-            padding: const Pad(horizontal: 20, vertical: 16),
+            padding: const Pad(all: 22, bottom: -4),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -31,42 +34,75 @@ extension DialogX on BuildContext {
                   title,
                   textAlign: TextAlign.left,
                   style: const TextStyle(
-                    fontSize: 16,
+                    fontSize: 19,
                     fontWeight: FontWeight.w700,
+                    color: BrandColors.gray_900,
                   ),
                 ),
                 const Gap(8),
-                Text(
-                  content,
-                  textAlign: TextAlign.left,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    color: BrandColors.gray_600,
-                  ),
-                ),
-                const Gap(16),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: Pressable(
-                    child: Container(
-                      padding: const Pad(horizontal: 16, vertical: 8),
-                      decoration: BoxDecoration(
-                        color: BrandColors.brand_400,
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                      child: const Text(
-                        '확인',
-                        style: TextStyle(
-                          color: BrandColors.gray_0,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w700,
-                        ),
+                if (content != null)
+                  Flexible(
+                    child: Text(
+                      content,
+                      textAlign: TextAlign.left,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: BrandColors.gray_600,
                       ),
                     ),
-                    onPressed: () {
-                      context.router.maybePop();
-                    },
                   ),
+                const Gap(28),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Pressable(
+                        child: Container(
+                          padding: const Pad(horizontal: 18, vertical: 11),
+                          decoration: BoxDecoration(
+                            color: BrandColors.gray_200,
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: Text(
+                            cancelText,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              color: BrandColors.gray_600,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
+                        onPressed: () {
+                          context.router.maybePop();
+                        },
+                      ),
+                    ),
+                    const Gap(8),
+                    Expanded(
+                      child: Pressable(
+                        child: Container(
+                          padding: const Pad(horizontal: 18, vertical: 11),
+                          decoration: BoxDecoration(
+                            color: BrandColors.gray_900,
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: Text(
+                            confirmText,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              color: BrandColors.gray_0,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
+                        onPressed: () {
+                          context.router.maybePop();
+                          onConfirmed?.call();
+                        },
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),

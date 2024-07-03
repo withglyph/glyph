@@ -7,7 +7,7 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:gap/gap.dart';
 import 'package:glyph/components/btn.dart';
 import 'package:glyph/components/forms/form_text_field.dart';
-import 'package:glyph/context/dialog.dart';
+import 'package:glyph/context/alert.dart';
 import 'package:glyph/ferry/error.dart';
 import 'package:glyph/ferry/extension.dart';
 import 'package:glyph/graphql/__generated__/login_with_email_screen_login_user_mutation.req.gql.dart';
@@ -103,7 +103,7 @@ class _LoginWithEmailScreenState extends ConsumerState<LoginWithEmailScreen> {
     } on Exception catch (e) {
       final context = this.context;
       if (context.mounted) {
-        await context.showDialog(
+        await context.showAlert(
           title: '문제가 발생했어요',
           content: switch (e) {
             final IntentionalError e => e.message,
