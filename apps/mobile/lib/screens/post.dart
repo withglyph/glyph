@@ -1296,6 +1296,9 @@ class _SpacePostListState extends State<_SpacePostList> {
             Transform.scale(scaleX: 2, child: const HorizontalDivider()),
             Flexible(
               child: ListView.builder(
+                physics: const AlwaysScrollableScrollPhysics(
+                  parent: BouncingScrollPhysics(),
+                ),
                 controller: _controller,
                 shrinkWrap: true,
                 itemCount: data.post.space!.posts.isEmpty ? 1 : data.post.space!.posts.length,
@@ -1428,6 +1431,9 @@ class _CollectionPostListState extends State<_CollectionPostList> {
             Transform.scale(scaleX: 2, child: const HorizontalDivider()),
             Flexible(
               child: ListView.builder(
+                physics: const AlwaysScrollableScrollPhysics(
+                  parent: BouncingScrollPhysics(),
+                ),
                 controller: _controller,
                 shrinkWrap: true,
                 itemCount: data.post.collection!.posts.isEmpty ? 1 : data.post.collection!.posts.length,
@@ -1677,13 +1683,11 @@ class _CommentsState extends ConsumerState<_Comments> with SingleTickerProviderS
                   child: Padding(
                     padding: const Pad(horizontal: 20),
                     child: ListView.separated(
+                      physics: const AlwaysScrollableScrollPhysics(
+                        parent: BouncingScrollPhysics(),
+                      ),
                       controller: _scrollController,
                       itemCount: data.post.comments.length,
-                      separatorBuilder: (context, index) {
-                        return const HorizontalDivider(
-                          color: BrandColors.gray_50,
-                        );
-                      },
                       itemBuilder: (context, index) {
                         final comment = data.post.comments[index];
 
@@ -1773,6 +1777,9 @@ class _CommentsState extends ConsumerState<_Comments> with SingleTickerProviderS
                             });
                           },
                         );
+                      },
+                      separatorBuilder: (context, index) {
+                        return const HorizontalDivider(color: BrandColors.gray_50);
                       },
                     ),
                   ),

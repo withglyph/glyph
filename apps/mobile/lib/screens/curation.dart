@@ -50,6 +50,9 @@ class _CurationScreenState extends ConsumerState<CurationScreen> {
               Padding(
                 padding: const Pad(horizontal: 20),
                 child: CustomScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(
+                    parent: BouncingScrollPhysics(),
+                  ),
                   slivers: [
                     const SliverGap(16),
                     const SliverToBoxAdapter(

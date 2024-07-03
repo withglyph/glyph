@@ -232,6 +232,9 @@ Future<T> _showFloatingBottomSheet<T>({
               const Gap(10),
               Flexible(
                 child: SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(
+                    parent: BouncingScrollPhysics(),
+                  ),
                   child: child,
                 ),
               ),

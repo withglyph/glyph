@@ -19,6 +19,9 @@ class OssLicensesDetailsScreen extends StatelessWidget {
     return DefaultShell(
       title: package,
       child: ListView.builder(
+        physics: const AlwaysScrollableScrollPhysics(
+          parent: BouncingScrollPhysics(),
+        ),
         itemCount: paragraphs.length,
         itemBuilder: (context, index) {
           final paragraph = paragraphs[index];

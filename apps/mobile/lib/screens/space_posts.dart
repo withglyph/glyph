@@ -33,10 +33,10 @@ class SpacePostsScreen extends ConsumerWidget {
                     data.space.meAsMember == null ? '스페이스를 구독하면 새로운 포스트가\n올라올 때 알림을 받을 수 있어요' : '원하는 포스트를 작성해보세요',
               )
             : ListView.separated(
-                itemCount: posts.length,
                 physics: const AlwaysScrollableScrollPhysics(
                   parent: BouncingScrollPhysics(),
                 ),
+                itemCount: posts.length,
                 itemBuilder: (context, index) {
                   final post = posts[index];
 

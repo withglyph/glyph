@@ -121,6 +121,10 @@ class _PointHistoryState extends ConsumerState<PointHistoryScreen> {
             ),
             Expanded(
               child: ListView.separated(
+                physics: const AlwaysScrollableScrollPhysics(
+                  parent: BouncingScrollPhysics(),
+                ),
+                itemCount: points.length,
                 itemBuilder: (context, index) {
                   final point = points[index];
 
@@ -218,7 +222,6 @@ class _PointHistoryState extends ConsumerState<PointHistoryScreen> {
                     child: HorizontalDivider(color: BrandColors.gray_50),
                   );
                 },
-                itemCount: points.length,
               ),
             ),
           ],

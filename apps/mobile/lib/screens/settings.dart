@@ -33,7 +33,9 @@ class SettingsScreen extends ConsumerWidget {
         operation: GSettingsScreen_QueryReq(),
         builder: (context, client, data) {
           return SingleChildScrollView(
-            physics: const AlwaysScrollableScrollPhysics(),
+            physics: const AlwaysScrollableScrollPhysics(
+              parent: BouncingScrollPhysics(),
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

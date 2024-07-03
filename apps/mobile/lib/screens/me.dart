@@ -142,6 +142,9 @@ class _MeScreenState extends ConsumerState<MeScreen> {
                           ],
                         )
                       : ListView.separated(
+                          physics: const AlwaysScrollableScrollPhysics(
+                            parent: BouncingScrollPhysics(),
+                          ),
                           scrollDirection: Axis.horizontal,
                           padding: const Pad(horizontal: 20),
                           clipBehavior: Clip.none,

@@ -183,6 +183,9 @@ class _TagScreenState extends State<TagScreen> with SingleTickerProviderStateMix
                 return false;
               },
               child: CustomScrollView(
+                physics: const AlwaysScrollableScrollPhysics(
+                  parent: BouncingScrollPhysics(),
+                ),
                 slivers: [
                   SliverToBoxAdapter(
                     child: Column(

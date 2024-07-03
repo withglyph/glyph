@@ -93,14 +93,18 @@ class PullToRefreshListView extends StatelessWidget {
           onRefresh: onRefresh,
           child: itemCount == 0
               ? SingleChildScrollView(
-                  physics: const AlwaysScrollableScrollPhysics(),
+                  physics: const AlwaysScrollableScrollPhysics(
+                    parent: BouncingScrollPhysics(),
+                  ),
                   child: SizedBox(
                     height: constraints.maxHeight,
                     child: emptyText,
                   ),
                 )
               : ListView.separated(
-                  physics: const AlwaysScrollableScrollPhysics(),
+                  physics: const AlwaysScrollableScrollPhysics(
+                    parent: BouncingScrollPhysics(),
+                  ),
                   itemCount: itemCount,
                   itemBuilder: itemBuilder,
                   separatorBuilder: separatorBuilder,

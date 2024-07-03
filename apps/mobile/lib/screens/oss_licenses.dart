@@ -42,6 +42,9 @@ class _OssLicensesScreenState extends State<OssLicensesScreen> {
           }
 
           return ListView.builder(
+            physics: const AlwaysScrollableScrollPhysics(
+              parent: BouncingScrollPhysics(),
+            ),
             itemCount: snapshot.requireData.length,
             itemBuilder: (context, index) {
               final entry = snapshot.requireData[index];

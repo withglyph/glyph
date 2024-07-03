@@ -118,6 +118,9 @@ class _SearchResultScreenState extends ConsumerState<SearchResultScreen> with Si
                   ),
                 ),
                 child: SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(
+                    parent: BouncingScrollPhysics(),
+                  ),
                   padding: const Pad(horizontal: 20, vertical: 12.5),
                   scrollDirection: Axis.horizontal,
                   child: Row(
@@ -437,6 +440,9 @@ class _SearchFilterState extends State<_SearchFilter> {
               children: [
                 Expanded(
                   child: SingleChildScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(
+                      parent: BouncingScrollPhysics(),
+                    ),
                     child: Column(
                       children: [
                         Accordion(

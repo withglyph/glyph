@@ -45,6 +45,9 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           ),
           Expanded(
             child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(
+                parent: BouncingScrollPhysics(),
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
