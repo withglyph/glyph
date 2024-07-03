@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:glyph/components/empty_state.dart';
@@ -78,12 +79,12 @@ class _FeedFollowingScreenState extends State<FeedFollowingScreen> {
                   itemBuilder: (context, index) {
                     return ThumbnailPostCard(
                       posts[index],
-                      padding: const EdgeInsets.all(20),
+                      padding: const Pad(all: 20),
                     );
                   },
                   separatorBuilder: (context, index) {
                     return const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      padding: Pad(horizontal: 20),
                       child: HorizontalDivider(color: BrandColors.gray_50),
                     );
                   },

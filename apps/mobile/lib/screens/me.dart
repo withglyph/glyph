@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -40,11 +41,8 @@ class _MeScreenState extends ConsumerState<MeScreen> {
             ),
             child: Column(
               children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 28,
-                  ),
+                Padding(
+                  padding: const Pad(horizontal: 20, vertical: 28),
                   child: Pressable(
                     child: Row(
                       children: [
@@ -102,7 +100,7 @@ class _MeScreenState extends ConsumerState<MeScreen> {
                 ),
                 const HorizontalDivider(height: 6, color: BrandColors.gray_50),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+                  padding: const Pad(horizontal: 20, vertical: 18),
                   child: Row(
                     children: [
                       const Icon(Tabler.planet, size: 20),
@@ -145,7 +143,7 @@ class _MeScreenState extends ConsumerState<MeScreen> {
                         )
                       : ListView.separated(
                           scrollDirection: Axis.horizontal,
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          padding: const Pad(horizontal: 20),
                           clipBehavior: Clip.none,
                           itemCount: data.me!.spaces.length,
                           itemBuilder: (context, index) {
@@ -213,7 +211,7 @@ class _MeScreenState extends ConsumerState<MeScreen> {
                                     ),
                                     Expanded(
                                       child: Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                                        padding: const Pad(horizontal: 10, vertical: 6),
                                         child: Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
@@ -260,7 +258,7 @@ class _MeScreenState extends ConsumerState<MeScreen> {
                       icon: Tabler.coin,
                       title: '포인트',
                       trailing: Padding(
-                        padding: const EdgeInsets.only(right: 6),
+                        padding: const Pad(right: 6),
                         child: Text(
                           '${data.me!.point.comma}P',
                           style: const TextStyle(
@@ -360,8 +358,8 @@ class _Section extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+    return Padding(
+      padding: const Pad(horizontal: 20),
       child: Column(
         children: children,
       ),
@@ -387,7 +385,7 @@ class _MenuItem extends StatelessWidget {
     return Pressable(
       onPressed: onPressed,
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 18),
+        padding: const Pad(vertical: 18),
         child: Row(
           children: [
             Icon(icon, size: 20),

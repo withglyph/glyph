@@ -1,8 +1,9 @@
+import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
-import 'package:glyph/components/button.dart';
+import 'package:glyph/components/btn.dart';
 import 'package:glyph/components/pressable.dart';
 import 'package:glyph/context/toast.dart';
 import 'package:glyph/ferry/extension.dart';
@@ -42,12 +43,12 @@ class _SignupDialogState extends ConsumerState<SignupDialog> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      insetPadding: const EdgeInsets.symmetric(horizontal: 20),
+      insetPadding: const Pad(horizontal: 20),
       backgroundColor: Colors.transparent,
       elevation: 0,
       shape: LinearBorder.none,
       child: Container(
-        padding: const EdgeInsets.fromLTRB(22, 22, 22, 18),
+        padding: const Pad(horizontal: 22, top: 22, bottom: 18),
         decoration: BoxDecoration(
           color: BrandColors.gray_0,
           borderRadius: BorderRadius.circular(8),
@@ -145,9 +146,9 @@ class _SignupDialogState extends ConsumerState<SignupDialog> {
             Row(
               children: [
                 Expanded(
-                  child: Button(
+                  child: Btn(
                     '취소',
-                    kind: ButtonKind.secondary,
+                    theme: BtnTheme.secondary,
                     onPressed: () {
                       context.router.popUntilRoot();
                     },
@@ -155,7 +156,7 @@ class _SignupDialogState extends ConsumerState<SignupDialog> {
                 ),
                 const Gap(8),
                 Expanded(
-                  child: Button(
+                  child: Btn(
                     '가입하기',
                     onPressed: () async {
                       if (!_termsConsent || !_isGte14) {

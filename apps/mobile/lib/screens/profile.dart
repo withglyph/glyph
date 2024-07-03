@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:built_value/json_object.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -7,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:gap/gap.dart';
-import 'package:glyph/components/button.dart';
+import 'package:glyph/components/btn.dart';
 import 'package:glyph/components/forms/form_text_field.dart';
 import 'package:glyph/components/pressable.dart';
 import 'package:glyph/context/toast.dart';
@@ -59,7 +60,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           operation: GProfileScreen_QueryReq(),
           builder: (context, client, data) {
             return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+              padding: const Pad(horizontal: 20, vertical: 16),
               child: Column(
                 children: [
                   Center(
@@ -70,7 +71,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             radius: 50,
                             backgroundColor: BrandColors.gray_100,
                             child: Padding(
-                              padding: const EdgeInsets.all(1),
+                              padding: const Pad(all: 1),
                               child: ClipOval(
                                 child: FadeInImage(
                                   width: 98,
@@ -149,9 +150,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ],
                   ),
                   const Spacer(),
-                  Button(
+                  Btn(
                     '변경',
-                    size: ButtonSize.large,
+                    size: BtnSize.large,
                     enabled: _isFormValid,
                     onPressed: () async {
                       if (!_formKey.currentState!.saveAndValidate()) {

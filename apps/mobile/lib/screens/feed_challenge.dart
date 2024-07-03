@@ -38,12 +38,12 @@ class _FeedChallengeScreenState extends State<FeedChallengeScreen> {
     //       itemBuilder: (context, index) {
     //         return ThumbnailPostCard(
     //           posts[index],
-    //           padding: const EdgeInsets.all(20),
+    //           padding: const Pad(all: 20),
     //         );
     //       },
     //       separatorBuilder: (context, index) {
     //         return const Padding(
-    //           padding: EdgeInsets.symmetric(horizontal: 20),
+    //           padding: Pad(horizontal: 20),
     //           child: HorizontalDivider(color: BrandColors.gray_50),
     //         );
     //       },

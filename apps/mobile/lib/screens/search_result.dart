@@ -1,9 +1,10 @@
+import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:glyph/components/accordion.dart';
-import 'package:glyph/components/button.dart';
+import 'package:glyph/components/btn.dart';
 import 'package:glyph/components/heading.dart';
 import 'package:glyph/components/horizontal_divider.dart';
 import 'package:glyph/components/post_card.dart';
@@ -86,7 +87,7 @@ class _SearchResultScreenState extends ConsumerState<SearchResultScreen> with Si
           Column(
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                padding: const Pad(horizontal: 20, vertical: 8),
                 child: SearchInput(
                   action: Pressable(
                     onPressed: () async {
@@ -117,10 +118,7 @@ class _SearchResultScreenState extends ConsumerState<SearchResultScreen> with Si
                   ),
                 ),
                 child: SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 12.5,
-                  ),
+                  padding: const Pad(horizontal: 20, vertical: 12.5),
                   scrollDirection: Axis.horizontal,
                   child: Row(
                     children: [
@@ -213,15 +211,12 @@ class _SearchResultScreenState extends ConsumerState<SearchResultScreen> with Si
                   itemBuilder: (context, index) {
                     return PostCard(
                       posts[index],
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 20,
-                        vertical: 18,
-                      ),
+                      padding: const Pad(horizontal: 20, vertical: 18),
                     );
                   },
                   separatorBuilder: (context, index) {
                     return const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      padding: Pad(horizontal: 20),
                       child: HorizontalDivider(
                         color: BrandColors.gray_50,
                       ),
@@ -262,7 +257,7 @@ class _SearchFilterChip extends StatelessWidget {
       onPressed: onPressed,
       child: switch (kind) {
         _SearchFilterChipKind.fillSearch => Container(
-            padding: const EdgeInsets.fromLTRB(12, 6, 10, 6),
+            padding: const Pad(vertical: 6, left: 12, right: 10),
             decoration: BoxDecoration(
               color: selected ? BrandColors.gray_800 : Colors.white,
               borderRadius: BorderRadius.circular(18),
@@ -290,7 +285,7 @@ class _SearchFilterChip extends StatelessWidget {
             ),
           ),
         _SearchFilterChipKind.fill => Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            padding: const Pad(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
               color: selected ? BrandColors.gray_800 : Colors.white,
               borderRadius: BorderRadius.circular(18),
@@ -308,7 +303,7 @@ class _SearchFilterChip extends StatelessWidget {
             ),
           ),
         _SearchFilterChipKind.outline => Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            padding: const Pad(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(18),
@@ -349,9 +344,9 @@ class _TagChip extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Container(
+          Box(
             color: const Color(0xFFF3F3F3),
-            padding: const EdgeInsets.fromLTRB(8, 5, 6, 5),
+            padding: const Pad(vertical: 5, left: 8, right: 6),
             child: Row(
               children: [
                 Text(
@@ -435,7 +430,7 @@ class _SearchFilterState extends State<_SearchFilter> {
         builder: (context, constraints) {
           final height = constraints.maxHeight - 115;
 
-          return Container(
+          return ConstrainedBox(
             constraints: BoxConstraints.tightFor(height: height),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -580,22 +575,22 @@ class _SearchFilterState extends State<_SearchFilter> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 10, 20, 5),
+                  padding: const Pad(horizontal: 20, top: 10, bottom: 5),
                   child: Row(
                     children: [
                       Expanded(
-                        child: Button(
+                        child: Btn(
                           '선택 초기화',
-                          size: ButtonSize.large,
-                          kind: ButtonKind.secondaryOutline,
+                          size: BtnSize.large,
+                          theme: BtnTheme.secondaryOutline,
                           onPressed: onReset,
                         ),
                       ),
                       const Gap(8),
                       Expanded(
-                        child: Button(
+                        child: Btn(
                           '적용',
-                          size: ButtonSize.large,
+                          size: BtnSize.large,
                           onPressed: () {
                             widget.onApply.call(
                               includeTagsDraft: includeTagsDraft,

@@ -1,3 +1,4 @@
+import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart' as material;
@@ -21,10 +22,7 @@ extension DialogX on BuildContext {
             borderRadius: BorderRadius.all(Radius.circular(4)),
           ),
           child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 20,
-              vertical: 16,
-            ),
+            padding: const Pad(horizontal: 20, vertical: 16),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -51,10 +49,7 @@ extension DialogX on BuildContext {
                   alignment: Alignment.centerRight,
                   child: Pressable(
                     child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 8,
-                      ),
+                      padding: const Pad(horizontal: 16, vertical: 8),
                       decoration: BoxDecoration(
                         color: BrandColors.brand_400,
                         borderRadius: BorderRadius.circular(4),

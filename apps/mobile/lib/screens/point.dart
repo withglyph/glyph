@@ -1,3 +1,4 @@
+import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -33,7 +34,7 @@ class PointScreen extends ConsumerWidget {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    padding: const Pad(horizontal: 20),
                     child: Row(
                       children: [
                         _TabItem(
@@ -78,8 +79,8 @@ class _TabItem extends StatelessWidget {
         onPressed: onTap,
         child: Stack(
           children: [
-            Container(
-              padding: const EdgeInsets.only(top: 6, bottom: 8),
+            Padding(
+              padding: const Pad(top: 6, bottom: 8),
               child: Center(
                 child: Text(
                   title,

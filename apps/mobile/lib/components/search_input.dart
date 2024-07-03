@@ -1,3 +1,4 @@
+import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:glyph/components/pressable.dart';
@@ -57,7 +58,7 @@ class _SearchInputState extends State<SearchInput> {
               hintText: widget.placeholder,
               hintStyle: const TextStyle(color: BrandColors.gray_400),
               prefixIcon: const Padding(
-                padding: EdgeInsets.fromLTRB(12, 11, 6, 11),
+                padding: Pad(left: 12, top: 11, right: 6, bottom: 11),
                 child: Icon(
                   Glyph.search,
                   size: 16,
@@ -77,9 +78,9 @@ class _SearchInputState extends State<SearchInput> {
                         color: BrandColors.gray_400,
                       ),
                     )
-                  : Container(),
+                  : const SizedBox.shrink(),
               suffixIconConstraints: BoxConstraints.tight(const Size(38, 38)),
-              contentPadding: const EdgeInsets.symmetric(vertical: 8),
+              contentPadding: const Pad(vertical: 8),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(4),
                 borderSide: BorderSide.none,

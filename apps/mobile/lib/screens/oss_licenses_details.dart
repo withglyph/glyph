@@ -1,3 +1,4 @@
+import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:glyph/shells/default.dart';
@@ -23,10 +24,7 @@ class OssLicensesDetailsScreen extends StatelessWidget {
           final paragraph = paragraphs[index];
 
           return Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 20,
-              vertical: 16,
-            ),
+            padding: const Pad(horizontal: 20, vertical: 16),
             child: Text(
               paragraph,
               style: const TextStyle(

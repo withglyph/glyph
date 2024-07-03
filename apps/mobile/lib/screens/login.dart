@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ferry_flutter/ferry_flutter.dart';
@@ -9,7 +10,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_naver_login/flutter_naver_login.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
-import 'package:glyph/components/button.dart';
+import 'package:glyph/components/btn.dart';
 import 'package:glyph/components/heading.dart';
 import 'package:glyph/components/pressable.dart';
 import 'package:glyph/components/svg_image.dart';
@@ -91,17 +92,17 @@ class _LoginScreenState extends ConsumerState<LoginScreen> with SingleTickerProv
                       );
                     },
                     child: Row(
-                          children: response!.data!.featuredImages
-                              .map(
-                                (image) => FadeInImage(
-                                  placeholder: MemoryImage(kTransparentImage),
-                                  image: CachedNetworkImageProvider(image.url),
+                      children: response!.data!.featuredImages
+                          .map(
+                            (image) => FadeInImage(
+                              placeholder: MemoryImage(kTransparentImage),
+                              image: CachedNetworkImageProvider(image.url),
                               height: double.infinity,
-                                  fit: BoxFit.cover,
-                                  fadeInDuration: const Duration(milliseconds: 1000),
-                                ),
-                              )
-                              .toList(),
+                              fit: BoxFit.cover,
+                              fadeInDuration: const Duration(milliseconds: 1000),
+                            ),
+                          )
+                          .toList(),
                     ),
                   ),
                 ),
@@ -122,7 +123,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> with SingleTickerProv
               SafeArea(
                 maintainBottomViewPadding: true,
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(32, 60, 32, 40),
+                  padding: const Pad(horizontal: 32, top: 60, bottom: 40),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -136,9 +137,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> with SingleTickerProv
                         ),
                       ),
                       const Spacer(),
-                      Button(
+                      Btn(
                         '시작하기',
-                        size: ButtonSize.large,
+                        size: BtnSize.large,
                         onPressed: () async {
                           await context.showBottomSheet(
                             builder: (context) => _BottomSheet(),
@@ -202,7 +203,7 @@ class _BottomSheet extends ConsumerWidget {
     };
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(32, 16, 32, 32),
+      padding: const Pad(horizontal: 32, top: 16, bottom: 32),
       child: Column(
         children: [
           _Button(

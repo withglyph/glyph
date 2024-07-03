@@ -1,8 +1,9 @@
+import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:external_app_launcher/external_app_launcher.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:glyph/components/button.dart';
+import 'package:glyph/components/btn.dart';
 import 'package:glyph/components/pressable.dart';
 import 'package:glyph/components/svg_image.dart';
 import 'package:glyph/context/bottom_menu.dart';
@@ -25,7 +26,7 @@ class LoginWithEmailNextScreen extends StatelessWidget {
       bottomBorder: false,
       useSafeArea: true,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        padding: const Pad(horizontal: 20, vertical: 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -57,9 +58,9 @@ class LoginWithEmailNextScreen extends StatelessWidget {
               },
             ),
             const Gap(20),
-            Button(
+            Btn(
               '이메일 앱 열기',
-              size: ButtonSize.large,
+              size: BtnSize.large,
               onPressed: () async {
                 await context.showBottomMenu(
                   title: '이메일 앱 선택',

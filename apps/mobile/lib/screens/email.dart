@@ -1,12 +1,13 @@
 import 'dart:async';
 
+import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:gap/gap.dart';
-import 'package:glyph/components/button.dart';
+import 'package:glyph/components/btn.dart';
 import 'package:glyph/components/forms/form_text_field.dart';
 import 'package:glyph/context/toast.dart';
 import 'package:glyph/ferry/extension.dart';
@@ -47,7 +48,7 @@ class _EmailScreenState extends ConsumerState<EmailScreen> {
           operation: GEmailScreen_QueryReq(),
           builder: (context, client, data) {
             return Padding(
-              padding: const EdgeInsets.all(20),
+              padding: const Pad(all: 20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -80,9 +81,9 @@ class _EmailScreenState extends ConsumerState<EmailScreen> {
                     onSubmitted: (value) async => _submit(),
                   ),
                   const Spacer(),
-                  Button(
+                  Btn(
                     '변경',
-                    size: ButtonSize.large,
+                    size: BtnSize.large,
                     enabled: _isFormValid,
                     onPressed: _submit,
                   ),

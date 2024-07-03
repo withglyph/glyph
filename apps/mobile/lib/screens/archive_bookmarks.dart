@@ -1,3 +1,4 @@
+import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -38,13 +39,13 @@ class ArchiveBookmarksScreen extends ConsumerWidget {
                 itemBuilder: (context, index) {
                   return PostCard(
                     posts[index],
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+                    padding: const Pad(horizontal: 20, vertical: 18),
                     dots: false,
                   );
                 },
                 separatorBuilder: (context, index) {
                   return const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    padding: Pad(horizontal: 20),
                     child: HorizontalDivider(color: BrandColors.gray_50),
                   );
                 },

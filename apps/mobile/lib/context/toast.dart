@@ -1,3 +1,4 @@
+import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -23,7 +24,7 @@ class _TextToastWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Container(
-      padding: const EdgeInsets.all(14),
+      padding: const Pad(all: 14),
       decoration: BoxDecoration(
         color: BrandColors.gray_600,
         borderRadius: BorderRadius.circular(4),
@@ -32,7 +33,7 @@ class _TextToastWidget extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.only(top: 2),
+            padding: const Pad(top: 2),
             child: switch (type) {
               ToastType.success => const Icon(
                   Tabler.circle_check_filled,

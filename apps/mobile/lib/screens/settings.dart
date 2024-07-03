@@ -1,3 +1,4 @@
+import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -37,7 +38,7 @@ class SettingsScreen extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+                  padding: const Pad(horizontal: 20, top: 20),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -57,15 +58,15 @@ class SettingsScreen extends ConsumerWidget {
                     ],
                   ),
                 ),
-                Container(height: 6, color: BrandColors.gray_50),
+                const Box(height: 6, color: BrandColors.gray_50),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+                  padding: const Pad(horizontal: 20, top: 20),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const _Section('이벤트 알림 설정'),
                       Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 16, 0, 18),
+                        padding: const Pad(top: 16, bottom: 18),
                         child: Row(
                           children: [
                             Column(
@@ -109,9 +110,9 @@ class SettingsScreen extends ConsumerWidget {
                     ],
                   ),
                 ),
-                Container(height: 6, color: BrandColors.gray_50),
+                const Box(height: 6, color: BrandColors.gray_50),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+                  padding: const Pad(horizontal: 20, top: 20),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -156,7 +157,7 @@ class SettingsScreen extends ConsumerWidget {
                           return _Item(
                             title: '버전 정보',
                             leading: Padding(
-                              padding: const EdgeInsets.only(left: 6),
+                              padding: const Pad(left: 6),
                               child: Text(
                                 snapshot.hasData
                                     ? '${snapshot.requireData.version} (${kReleaseMode ? snapshot.requireData.buildNumber : 'dev'})'
@@ -175,9 +176,9 @@ class SettingsScreen extends ConsumerWidget {
                     ],
                   ),
                 ),
-                Container(height: 6, color: BrandColors.gray_50),
+                const Box(height: 6, color: BrandColors.gray_50),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
+                  padding: const Pad(all: 20, bottom: 4),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -247,8 +248,8 @@ class _Item extends StatelessWidget {
   Widget build(BuildContext context) {
     return Pressable(
       onPressed: onPressed,
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 18),
+      child: Padding(
+        padding: const Pad(vertical: 18),
         child: Row(
           children: [
             Text(

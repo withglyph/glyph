@@ -1,3 +1,4 @@
+import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:glyph/components/pressable.dart';
 import 'package:glyph/icons/tabler.dart';
@@ -66,8 +67,8 @@ class _AccordionState extends State<Accordion> with SingleTickerProviderStateMix
     return AnimatedBuilder(
       animation: _heightAnimation,
       builder: (context, child) {
-        return Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
+        return Box(
+          padding: const Pad(horizontal: 20),
           child: Column(
             children: [
               Pressable(
@@ -82,7 +83,7 @@ class _AccordionState extends State<Accordion> with SingleTickerProviderStateMix
                   });
                 },
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  padding: const Pad(vertical: 16),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -106,7 +107,7 @@ class _AccordionState extends State<Accordion> with SingleTickerProviderStateMix
                 child: Align(
                   heightFactor: _heightAnimation.value,
                   child: Padding(
-                    padding: const EdgeInsets.only(bottom: 28),
+                    padding: const Pad(bottom: 28),
                     child: child,
                   ),
                 ),

@@ -1,8 +1,9 @@
+import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
-import 'package:glyph/components/button.dart';
+import 'package:glyph/components/btn.dart';
 import 'package:glyph/components/img.dart';
 import 'package:glyph/components/pressable.dart';
 import 'package:glyph/ferry/widget.dart';
@@ -47,7 +48,7 @@ class _CurationScreenState extends ConsumerState<CurationScreen> {
           return Stack(
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
+                padding: const Pad(horizontal: 20),
                 child: CustomScrollView(
                   slivers: [
                     const SliverGap(16),
@@ -163,12 +164,12 @@ class _CurationScreenState extends ConsumerState<CurationScreen> {
                       ),
                     ],
                   ),
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                  padding: const Pad(horizontal: 20, vertical: 16),
                   child: SafeArea(
-                    child: Button(
+                    child: Btn(
                       '다음',
                       enabled: selectedTagIds.length >= 3,
-                      size: ButtonSize.large,
+                      size: BtnSize.large,
                       onPressed: () async {
                         await context.router.navigate(const MainRouter());
                       },

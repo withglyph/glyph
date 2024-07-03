@@ -1,10 +1,11 @@
+import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:gap/gap.dart';
-import 'package:glyph/components/button.dart';
+import 'package:glyph/components/btn.dart';
 import 'package:glyph/components/forms/form_text_field.dart';
 import 'package:glyph/context/dialog.dart';
 import 'package:glyph/ferry/error.dart';
@@ -36,7 +37,7 @@ class _LoginWithEmailScreenState extends ConsumerState<LoginWithEmailScreen> {
         key: _formKey,
         onChanged: _validate,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+          padding: const Pad(horizontal: 20, vertical: 16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -62,9 +63,9 @@ class _LoginWithEmailScreenState extends ConsumerState<LoginWithEmailScreen> {
                 onSubmitted: (value) async => _submit(),
               ),
               const Spacer(),
-              Button(
+              Btn(
                 '다음',
-                size: ButtonSize.large,
+                size: BtnSize.large,
                 enabled: _isFormValid,
                 onPressed: _submit,
               ),

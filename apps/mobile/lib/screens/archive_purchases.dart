@@ -1,3 +1,4 @@
+import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -37,12 +38,12 @@ class ArchivePurchasesScreen extends ConsumerWidget {
                   final post = posts[index];
 
                   return Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 16, 0, 18),
+                    padding: const Pad(top: 16, bottom: 18),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          padding: const Pad(horizontal: 20),
                           child: Text(
                             '${Jiffy.parse(post.purchasedAt!.value, isUtc: true).format(pattern: 'yyyy.MM.dd hh:mm')} 구매',
                             style: const TextStyle(
@@ -55,7 +56,7 @@ class ArchivePurchasesScreen extends ConsumerWidget {
                         const Gap(4),
                         PostCard(
                           post,
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          padding: const Pad(horizontal: 20),
                           dots: false,
                         ),
                       ],
@@ -64,7 +65,7 @@ class ArchivePurchasesScreen extends ConsumerWidget {
                 },
                 separatorBuilder: (context, index) {
                   return const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    padding: Pad(horizontal: 20),
                     child: HorizontalDivider(color: BrandColors.gray_50),
                   );
                 },

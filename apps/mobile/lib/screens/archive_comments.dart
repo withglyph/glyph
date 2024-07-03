@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
@@ -82,7 +83,7 @@ class _ArchiveCommentState extends State<ArchiveCommentsScreen> {
 
                     return Pressable(
                       child: Padding(
-                        padding: const EdgeInsets.fromLTRB(20, 16, 20, 18),
+                        padding: const Pad(horizontal: 20, top: 16, bottom: 18),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -165,7 +166,7 @@ class _ArchiveCommentState extends State<ArchiveCommentsScreen> {
                   },
                   separatorBuilder: (context, index) {
                     return const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      padding: Pad(horizontal: 20),
                       child: HorizontalDivider(color: BrandColors.gray_50),
                     );
                   },

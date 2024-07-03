@@ -1,3 +1,4 @@
+import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:glyph/routers/app.dart';
 import 'package:glyph/screens/splash.dart';
@@ -66,7 +67,7 @@ class _AppState extends State<App> {
           return const AppErrorWidget();
         };
 
-        return child!;
+        return KeyboardDismiss(child: child!);
       },
     );
   }

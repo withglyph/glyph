@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -9,7 +10,7 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:get_it/get_it.dart';
-import 'package:glyph/components/button.dart';
+import 'package:glyph/components/btn.dart';
 import 'package:glyph/components/dot.dart';
 import 'package:glyph/components/heading.dart';
 import 'package:glyph/components/horizontal_divider.dart';
@@ -163,9 +164,9 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
             ],
           );
 
-          final footer = Container(
+          final footer = Box(
             height: 54,
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+            padding: const Pad(horizontal: 20),
             child: Row(
               children: [
                 Pressable(
@@ -365,7 +366,7 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                           ),
                         ),
                       Padding(
-                        padding: const EdgeInsets.all(20),
+                        padding: const Pad(all: 20),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -478,7 +479,7 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                       ),
                       if (!_webViewLoaded)
                         const Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 20),
+                          padding: Pad(horizontal: 20),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -517,11 +518,11 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                                   final purchasable = data.me!.point >= data.post.publishedRevision!.price!;
 
                                   return Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                                    padding: const Pad(horizontal: 20),
                                     child: Column(
                                       children: [
                                         Padding(
-                                          padding: const EdgeInsets.symmetric(vertical: 20),
+                                          padding: const Pad(vertical: 20),
                                           child: Column(
                                             crossAxisAlignment: CrossAxisAlignment.stretch,
                                             children: [
@@ -552,9 +553,7 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                                         const HorizontalDivider(),
                                         const Gap(8),
                                         Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                            vertical: 12,
-                                          ),
+                                          padding: const Pad(vertical: 12),
                                           child: Row(
                                             children: [
                                               const Text(
@@ -576,9 +575,7 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                                           ),
                                         ),
                                         Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                            vertical: 12,
-                                          ),
+                                          padding: const Pad(vertical: 12),
                                           child: Row(
                                             children: [
                                               const Text(
@@ -601,9 +598,9 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                                         ),
                                         if (purchasable) ...[
                                           const Gap(24),
-                                          Button(
+                                          Btn(
                                             '구매하기',
-                                            kind: ButtonKind.accent,
+                                            theme: BtnTheme.accent,
                                             onPressed: () async {
                                               await reply({
                                                 'type': 'purchase:proceed',
@@ -616,9 +613,7 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                                           ),
                                         ] else ...[
                                           Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                              vertical: 12,
-                                            ),
+                                            padding: const Pad(vertical: 12),
                                             child: Row(
                                               children: [
                                                 const Text(
@@ -648,7 +643,7 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                                               ),
                                             ),
                                             child: Padding(
-                                              padding: EdgeInsets.all(10),
+                                              padding: Pad(all: 10),
                                               child: Row(
                                                 children: [
                                                   Icon(
@@ -669,7 +664,7 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                                             ),
                                           ),
                                           const Gap(24),
-                                          Button(
+                                          Btn(
                                             '충전하기',
                                             onPressed: () async {
                                               await context.popWaitAndPush(const PointPurchaseRoute());
@@ -703,7 +698,7 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                       ),
                       const Gap(20),
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        padding: const Pad(horizontal: 20),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -750,14 +745,14 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                         ),
                       ),
                       const Gap(24),
-                      Container(
+                      Box(
                         key: _staticFooterKey,
                         child: footer,
                       ),
                       const HorizontalDivider(),
                       const Gap(32),
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        padding: const Pad(horizontal: 20),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -777,7 +772,7 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                                   Expanded(
                                     child: data.post.previousPost == null
                                         ? Container(
-                                            padding: const EdgeInsets.fromLTRB(12, 10, 10, 10),
+                                            padding: const Pad(all: 10, left: 2),
                                             decoration: BoxDecoration(
                                               border: Border.all(color: BrandColors.gray_50),
                                               borderRadius: BorderRadius.circular(4),
@@ -799,7 +794,7 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                                           )
                                         : Pressable(
                                             child: Container(
-                                              padding: const EdgeInsets.fromLTRB(12, 10, 10, 10),
+                                              padding: const Pad(all: 10, left: 2),
                                               decoration: BoxDecoration(
                                                 color: BrandColors.gray_50,
                                                 borderRadius: BorderRadius.circular(4),
@@ -854,7 +849,7 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                                   Expanded(
                                     child: data.post.nextPost == null
                                         ? Container(
-                                            padding: const EdgeInsets.fromLTRB(12, 10, 10, 10),
+                                            padding: const Pad(all: 10, left: 2),
                                             decoration: BoxDecoration(
                                               border: Border.all(color: BrandColors.gray_50),
                                               borderRadius: BorderRadius.circular(4),
@@ -876,7 +871,7 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                                           )
                                         : Pressable(
                                             child: Container(
-                                              padding: const EdgeInsets.fromLTRB(12, 10, 10, 10),
+                                              padding: const Pad(all: 10, left: 2),
                                               decoration: BoxDecoration(
                                                 color: BrandColors.gray_50,
                                                 borderRadius: BorderRadius.circular(4),
@@ -1010,10 +1005,7 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                             const Gap(18),
                             Pressable(
                               child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 16,
-                                  vertical: 10,
-                                ),
+                                padding: const Pad(horizontal: 16, vertical: 10),
                                 decoration: BoxDecoration(
                                   color: BrandColors.gray_900,
                                   borderRadius: BorderRadius.circular(2),
@@ -1043,7 +1035,7 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                       const HorizontalDivider(height: 10, color: BrandColors.gray_50),
                       const Gap(22),
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        padding: const Pad(horizontal: 20),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -1058,7 +1050,7 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                             ...data.post.recommendedPosts.map((item) {
                               return PostCard(
                                 item,
-                                padding: const EdgeInsets.symmetric(vertical: 18),
+                                padding: const Pad(vertical: 18),
                               );
                             }).intersperse(
                               const HorizontalDivider(
@@ -1180,7 +1172,7 @@ class _Tag extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+            padding: const Pad(horizontal: 6, vertical: 2),
             child: Text(
               kind,
               style: const TextStyle(
@@ -1191,9 +1183,9 @@ class _Tag extends StatelessWidget {
             ),
           ),
           Flexible(
-            child: Container(
+            child: Box(
               color: const Color(0xFFF3F3F3),
-              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+              padding: const Pad(horizontal: 6, vertical: 2),
               child: Text(
                 '#$name',
                 overflow: TextOverflow.ellipsis,
@@ -1247,7 +1239,7 @@ class _SpacePostListState extends State<_SpacePostList> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(0, 8, 0, 16),
+              padding: const Pad(top: 8, bottom: 16),
               child: Row(
                 children: [
                   Stack(
@@ -1312,7 +1304,7 @@ class _SpacePostListState extends State<_SpacePostList> {
 
                   return Pressable(
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 15),
+                      padding: const Pad(vertical: 15),
                       child: Row(
                         children: [
                           Expanded(
@@ -1386,7 +1378,7 @@ class _CollectionPostListState extends State<_CollectionPostList> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(0, 8, 0, 16),
+              padding: const Pad(top: 8, bottom: 16),
               child: Row(
                 children: [
                   Img(
@@ -1445,7 +1437,7 @@ class _CollectionPostListState extends State<_CollectionPostList> {
 
                   return Pressable(
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 15),
+                      padding: const Pad(vertical: 15),
                       child: Row(
                         children: [
                           SizedBox(
@@ -1460,14 +1452,12 @@ class _CollectionPostListState extends State<_CollectionPostList> {
                               ),
                             ),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8),
-                            child: SizedBox(
+                          const Padding(
+                            padding: Pad(horizontal: 8),
+                            child: Box(
                               width: 1,
                               height: 12,
-                              child: Container(
-                                color: BrandColors.gray_200,
-                              ),
+                              color: BrandColors.gray_200,
                             ),
                           ),
                           Expanded(
@@ -1624,9 +1614,7 @@ class _CommentsState extends ConsumerState<_Comments> with SingleTickerProviderS
                     ),
                   ),
                   trailing: Padding(
-                    padding: const EdgeInsets.only(
-                      right: 20,
-                    ),
+                    padding: const Pad(right: 20),
                     child: Pressable(
                       child: const Icon(Tabler.x),
                       onPressed: () async {
@@ -1691,9 +1679,7 @@ class _CommentsState extends ConsumerState<_Comments> with SingleTickerProviderS
               else
                 Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                    ),
+                    padding: const Pad(horizontal: 20),
                     child: ListView.separated(
                       controller: _scrollController,
                       itemCount: data.post.comments.length,
@@ -1796,10 +1782,7 @@ class _CommentsState extends ConsumerState<_Comments> with SingleTickerProviderS
                   ),
                 ),
               Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 14,
-                ),
+                padding: const Pad(horizontal: 20, vertical: 14),
                 decoration: const BoxDecoration(
                   border: Border(
                     top: BorderSide(
@@ -1839,9 +1822,7 @@ class _CommentsState extends ConsumerState<_Comments> with SingleTickerProviderS
                                   enabledBorder: InputBorder.none,
                                   focusedBorder: InputBorder.none,
                                   disabledBorder: InputBorder.none,
-                                  contentPadding: const EdgeInsets.symmetric(
-                                    vertical: 2,
-                                  ),
+                                  contentPadding: const Pad(vertical: 2),
                                   hintText: isCommentEnabled
                                       ? '창작자에게 응원의 글을 남겨주세요'
                                       : (data.post.commentQualification == GPostCommentQualification.IDENTIFIED
@@ -1941,9 +1922,7 @@ class _Comment extends ConsumerWidget {
     final invisible = comment.visibility == GPostCommentVisibility.PRIVATE && !isMyComment && !isMyPost;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        vertical: 20,
-      ),
+      padding: const Pad(vertical: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -1963,10 +1942,7 @@ class _Comment extends ConsumerWidget {
                     if (comment.profile.id == postAuthorProfile.id)
                       Flexible(
                         child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 6,
-                            vertical: 1.5,
-                          ),
+                          padding: const Pad(horizontal: 6, vertical: 1.5),
                           decoration: const BoxDecoration(
                             color: BrandColors.gray_400,
                             borderRadius: BorderRadius.all(
@@ -2020,7 +1996,7 @@ class _Comment extends ConsumerWidget {
           ),
           const Gap(4),
           Padding(
-            padding: const EdgeInsets.only(right: 12),
+            padding: const Pad(right: 12),
             child: invisible
                 ? const Text(
                     '비밀댓글입니다',
@@ -2071,11 +2047,7 @@ class _Comment extends ConsumerWidget {
                         ),
                         const Gap(12),
                       ],
-                      Container(
-                        width: 1,
-                        height: 10,
-                        color: BrandColors.gray_100,
-                      ),
+                      const Box(width: 1, height: 10, color: BrandColors.gray_100),
                       const Gap(12),
                       Pressable(
                         onPressed: onLike,
@@ -2115,7 +2087,7 @@ class _Comment extends ConsumerWidget {
                         radius: 12,
                         backgroundColor: BrandColors.gray_900,
                         child: Padding(
-                          padding: const EdgeInsets.all(1),
+                          padding: const Pad(all: 1),
                           child: ClipOval(
                             child: Img(
                               postAuthorProfile.avatar,

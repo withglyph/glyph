@@ -1,3 +1,4 @@
+import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
@@ -99,7 +100,7 @@ class _BottomMenu extends StatelessWidget {
       children: items.map((item) {
         return Pressable(
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16),
+            padding: const Pad(vertical: 16),
             child: item.child,
           ),
           onPressed: () async {
@@ -141,9 +142,7 @@ class _BottomSelectMenu<T> extends StatelessWidget {
       children: items.map((item) {
         return Pressable(
           child: Padding(
-            padding: const EdgeInsets.symmetric(
-              vertical: 16,
-            ),
+            padding: const Pad(vertical: 16),
             child: Row(
               children: [
                 Expanded(
@@ -194,8 +193,8 @@ Future<T> _showFloatingBottomSheet<T>({
 
       return SafeArea(
         child: Container(
-          margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-          padding: const EdgeInsets.fromLTRB(24, 8, 24, 20),
+          margin: const Pad(horizontal: 10),
+          padding: const Pad(left: 24, top: 8, right: 24, bottom: 20),
           decoration: BoxDecoration(
             color: BrandColors.gray_0,
             borderRadius: BorderRadius.circular(22),

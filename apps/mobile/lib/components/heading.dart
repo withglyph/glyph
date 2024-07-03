@@ -1,3 +1,4 @@
+import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -48,7 +49,7 @@ class Heading extends StatelessWidget implements PreferredSizeWidget {
           bottom: false,
           child: Container(
             constraints: BoxConstraints.tight(_preferredSize),
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+            padding: const Pad(horizontal: 20),
             decoration: BoxDecoration(
               border: Border(
                 bottom: BorderSide(
@@ -121,7 +122,7 @@ class EmptyHeading extends StatelessWidget implements PreferredSizeWidget {
       value: baseSystemUiOverlayStyle.copyWith(
         statusBarColor: backgroundColor,
       ),
-      child: Container(
+      child: Box(
         color: backgroundColor,
         child: const SafeArea(
           child: SizedBox.shrink(),

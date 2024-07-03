@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
@@ -105,7 +106,7 @@ class _PointPurchaseScreenState extends ConsumerState<PointPurchaseScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: const EdgeInsets.all(20),
+                padding: const Pad(all: 20),
                 child: Column(
                   children: [
                     Row(
@@ -191,11 +192,8 @@ class _PointPurchaseScreenState extends ConsumerState<PointPurchaseScreen> {
               ),
               ..._products.map((product) {
                 return Pressable(
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 18,
-                    ),
+                  child: Padding(
+                    padding: const Pad(horizontal: 20, vertical: 18),
                     child: Row(
                       children: [
                         Expanded(
@@ -209,7 +207,7 @@ class _PointPurchaseScreenState extends ConsumerState<PointPurchaseScreen> {
                         ),
                         Container(
                           width: 78,
-                          padding: const EdgeInsets.symmetric(vertical: 6),
+                          padding: const Pad(vertical: 6),
                           decoration: BoxDecoration(
                             color: BrandColors.gray_900,
                             borderRadius: BorderRadius.circular(2),
@@ -268,15 +266,15 @@ class _PointPurchaseScreenState extends ConsumerState<PointPurchaseScreen> {
                 );
               }).intersperse(
                 const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  padding: Pad(horizontal: 20),
                   child: HorizontalDivider(color: BrandColors.gray_50),
                 ),
               ),
-              Container(
+              const Box(
                 width: double.infinity,
-                padding: const EdgeInsets.all(20),
-                color: const Color(0xFFFBFBFB),
-                child: const Column(
+                padding: Pad(all: 20),
+                color: Color(0xFFFBFBFB),
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
@@ -341,7 +339,7 @@ class _PurchaseCompleteBottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+      padding: const Pad(horizontal: 20, top: 20),
       child: Column(
         children: [
           const Icon(Tabler.circle_check_filled, size: 38),

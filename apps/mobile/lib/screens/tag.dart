@@ -1,3 +1,4 @@
+import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -94,7 +95,7 @@ class _TagScreenState extends State<TagScreen> with SingleTickerProviderStateMix
                         await context.showBottomSheet(
                           builder: (context) {
                             return Padding(
-                              padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+                              padding: const Pad(horizontal: 20, bottom: 20),
                               child: Column(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
@@ -127,10 +128,7 @@ class _TagScreenState extends State<TagScreen> with SingleTickerProviderStateMix
                                       }
                                     },
                                     child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                        vertical: 14,
-                                        horizontal: 10,
-                                      ),
+                                      padding: const Pad(vertical: 14, horizontal: 10),
                                       child: Row(
                                         children: [
                                           Icon(
@@ -191,7 +189,7 @@ class _TagScreenState extends State<TagScreen> with SingleTickerProviderStateMix
                       children: [
                         Container(
                           height: 215 + safeAreaHeight,
-                          padding: EdgeInsets.only(top: safeAreaHeight),
+                          padding: Pad(top: safeAreaHeight),
                           decoration: const BoxDecoration(
                             gradient: LinearGradient(
                               colors: [
@@ -224,11 +222,7 @@ class _TagScreenState extends State<TagScreen> with SingleTickerProviderStateMix
                                       ),
                                     ),
                                     const Gap(6),
-                                    Container(
-                                      width: 1,
-                                      height: 9,
-                                      color: const Color(0xFF4B4B4B),
-                                    ),
+                                    const Box(width: 1, height: 9, color: Color(0xFF4B4B4B)),
                                     const Gap(6),
                                     Text(
                                       '구독자 ${data.tag.followerCount}명',
@@ -286,10 +280,7 @@ class _TagScreenState extends State<TagScreen> with SingleTickerProviderStateMix
                                             },
                                       child: Container(
                                         width: 68,
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 12,
-                                          vertical: 6,
-                                        ),
+                                        padding: const Pad(horizontal: 12, vertical: 6),
                                         decoration: BoxDecoration(
                                           borderRadius: BorderRadius.circular(2),
                                           color: data.tag.muted
@@ -346,7 +337,7 @@ class _TagScreenState extends State<TagScreen> with SingleTickerProviderStateMix
                           SliverToBoxAdapter(
                             child: Padding(
                               key: _key,
-                              padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
+                              padding: const Pad(horizontal: 20, top: 16),
                               child: Text(
                                 '태그 검색 결과 ${data.tag.postCount}건',
                                 style: const TextStyle(
@@ -363,15 +354,12 @@ class _TagScreenState extends State<TagScreen> with SingleTickerProviderStateMix
 
                               return PostCard(
                                 post,
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 20,
-                                  vertical: 18,
-                                ),
+                                padding: const Pad(horizontal: 20, vertical: 18),
                               );
                             },
                             separatorBuilder: (context, index) {
                               return const Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 20),
+                                padding: Pad(horizontal: 20),
                                 child: HorizontalDivider(
                                   color: BrandColors.gray_50,
                                 ),

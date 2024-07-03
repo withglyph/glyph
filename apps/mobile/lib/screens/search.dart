@@ -1,3 +1,4 @@
+import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:card_swiper/card_swiper.dart';
@@ -32,7 +33,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       child: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+            padding: const Pad(horizontal: 20, vertical: 8),
             child: SearchInput(
               onSearch: (value, controller) async {
                 if (value.isNotEmpty) {
@@ -48,11 +49,11 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                    padding: Pad(horizontal: 20, vertical: 8),
                     child: _Carousel(),
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                    padding: const Pad(horizontal: 20, vertical: 8),
                     child: GraphQLOperation(
                       operation: GSearchScreen_QueryReq(),
                       builder: (context, client, data) {
@@ -66,7 +67,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const Padding(
-                              padding: EdgeInsets.symmetric(vertical: 10),
+                              padding: Pad(vertical: 10),
                               child: Text(
                                 '추천 태그',
                                 style: TextStyle(
@@ -91,7 +92,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                             ),
                             const Gap(32),
                             const Padding(
-                              padding: EdgeInsets.symmetric(vertical: 10),
+                              padding: Pad(vertical: 10),
                               child: Text(
                                 '지금 뜨는 태그',
                                 style: TextStyle(
@@ -195,10 +196,7 @@ class _Carousel extends StatelessWidget {
                 bottom: 0,
                 child: Container(
                   constraints: const BoxConstraints(minHeight: 100),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 14,
-                    vertical: 12,
-                  ),
+                  padding: const Pad(horizontal: 14, vertical: 12),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       begin: Alignment.topCenter,
@@ -237,7 +235,7 @@ class _Carousel extends StatelessWidget {
                 right: 14,
                 bottom: 12,
                 child: Container(
-                  padding: const EdgeInsets.fromLTRB(4, 2, 8, 2),
+                  padding: const Pad(vertical: 2, left: 4, right: 8),
                   decoration: BoxDecoration(
                     color: BrandColors.gray_900.withOpacity(0.2),
                     borderRadius: BorderRadius.circular(30),
@@ -326,9 +324,9 @@ class _TagButton extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Container(
+            Box(
               color: const Color(0xFFF3F3F3),
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+              padding: const Pad(horizontal: 8, vertical: 6),
               child: Text(
                 '#$name',
                 style: const TextStyle(

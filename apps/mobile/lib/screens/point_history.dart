@@ -1,3 +1,4 @@
+import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -67,7 +68,7 @@ class _PointHistoryState extends ConsumerState<PointHistoryScreen> {
         return Column(
           children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(20, 16, 20, 4),
+              padding: const Pad(horizontal: 20, top: 16, bottom: 4),
               child: Pressable(
                 child: Row(
                   children: [
@@ -124,8 +125,8 @@ class _PointHistoryState extends ConsumerState<PointHistoryScreen> {
                   final point = points[index];
 
                   return Pressable(
-                    child: Container(
-                      padding: const EdgeInsets.fromLTRB(20, 18, 20, 20),
+                    child: Padding(
+                      padding: const Pad(horizontal: 20, top: 18, bottom: 20),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -213,7 +214,7 @@ class _PointHistoryState extends ConsumerState<PointHistoryScreen> {
                 },
                 separatorBuilder: (context, index) {
                   return const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    padding: Pad(horizontal: 20),
                     child: HorizontalDivider(color: BrandColors.gray_50),
                   );
                 },

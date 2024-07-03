@@ -1,10 +1,11 @@
 import 'dart:math';
 
+import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:glyph/components/Img.dart';
-import 'package:glyph/components/button.dart';
+import 'package:glyph/components/btn.dart';
 import 'package:glyph/components/heading.dart';
 import 'package:glyph/components/horizontal_divider.dart';
 import 'package:glyph/components/pressable.dart';
@@ -180,10 +181,7 @@ class _SpaceScreenState extends State<SpaceScreen> with SingleTickerProviderStat
                                     key: _headerKey,
                                     scale: _headerScale,
                                     alignment: Alignment.bottomCenter,
-                                    child: Container(
-                                      height: 88,
-                                      color: BrandColors.gray_50,
-                                    ),
+                                    child: const Box(height: 88, color: BrandColors.gray_50),
                                   ),
                                   Positioned(
                                     left: 20,
@@ -215,8 +213,8 @@ class _SpaceScreenState extends State<SpaceScreen> with SingleTickerProviderStat
                                   ),
                                 ],
                               ),
-                              Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 20),
+                              Padding(
+                                padding: const Pad(horizontal: 20),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -270,7 +268,7 @@ class _SpaceScreenState extends State<SpaceScreen> with SingleTickerProviderStat
                                       ],
                                     ),
                                     const Gap(20),
-                                    Button(
+                                    Btn(
                                       data.space.muted
                                           ? '뮤트됨'
                                           : data.space.followed
@@ -278,7 +276,7 @@ class _SpaceScreenState extends State<SpaceScreen> with SingleTickerProviderStat
                                               : data.space.meAsMember != null
                                                   ? '포스트 작성'
                                                   : '스페이스 구독',
-                                      kind: data.space.followed ? ButtonKind.secondaryOutline : ButtonKind.primary,
+                                      theme: data.space.followed ? BtnTheme.secondaryOutline : BtnTheme.primary,
                                       iconLeft: data.space.muted
                                           ? Tabler.volume_3
                                           : data.space.followed
@@ -322,7 +320,7 @@ class _SpaceScreenState extends State<SpaceScreen> with SingleTickerProviderStat
                               ),
                               if (data.space.description != null || data.space.meAsMember != null) ...[
                                 Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+                                  padding: const Pad(horizontal: 20, vertical: 24),
                                   child: SizedBox(
                                     width: double.infinity,
                                     child: Column(
@@ -362,7 +360,7 @@ class _SpaceScreenState extends State<SpaceScreen> with SingleTickerProviderStat
                           child: ColoredBox(
                             color: BrandColors.gray_0,
                             child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 20),
+                              padding: const Pad(horizontal: 20),
                               child: Row(
                                 children: [
                                   Expanded(
@@ -414,7 +412,7 @@ class _TabItem extends StatelessWidget {
     return Pressable(
       onPressed: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+        padding: const Pad(horizontal: 12, vertical: 14),
         decoration: BoxDecoration(
           border: Border(
             bottom: BorderSide(

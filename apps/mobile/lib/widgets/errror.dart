@@ -1,3 +1,4 @@
+import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
@@ -22,12 +23,10 @@ class AppErrorWidget extends StatelessWidget {
             ),
             const Gap(16),
             GestureDetector(
-              child: Container(
-                decoration: const BoxDecoration(
-                  color: BrandColors.gray_900,
-                ),
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                child: const Text(
+              child: const Box(
+                color: BrandColors.gray_900,
+                padding: Pad(horizontal: 16, vertical: 8),
+                child: Text(
                   '뒤로 가기',
                   style: TextStyle(
                     fontWeight: FontWeight.w600,

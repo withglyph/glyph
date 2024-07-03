@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:glyph/components/svg_image.dart';
@@ -72,7 +73,7 @@ class Img extends StatelessWidget {
       return Container(
         width: effectiveWidth,
         height: effectiveHeight,
-        padding: EdgeInsets.all(borderWidth),
+        padding: Pad(all: borderWidth),
         decoration: BoxDecoration(
           color: borderColor,
           borderRadius: BorderRadius.circular(borderRadius),

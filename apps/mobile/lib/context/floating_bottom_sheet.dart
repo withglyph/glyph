@@ -1,3 +1,4 @@
+import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:glyph/themes/colors.dart';
@@ -21,8 +22,8 @@ extension FloatingBottomSheetX on BuildContext {
 
         return SafeArea(
           child: Container(
-            margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-            padding: const EdgeInsets.fromLTRB(24, 8, 24, 20),
+            margin: const Pad(horizontal: 10),
+            padding: const Pad(left: 24, top: 8, right: 24, bottom: 20),
             clipBehavior: Clip.antiAlias,
             decoration: BoxDecoration(
               color: BrandColors.gray_0,

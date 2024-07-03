@@ -1,3 +1,4 @@
+import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:glyph/themes/colors.dart';
 
@@ -13,7 +14,7 @@ class VerticalDivider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return Box(
       width: width,
       color: color,
     );

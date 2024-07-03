@@ -1,3 +1,4 @@
+import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:glyph/components/pressable.dart';
 import 'package:glyph/themes/colors.dart';
@@ -70,7 +71,7 @@ class _ToggleSwitchState extends State<ToggleSwitch> with SingleTickerProviderSt
           return Container(
             width: 40,
             height: 22,
-            padding: const EdgeInsets.all(2),
+            padding: const Pad(all: 2),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(11),
               color: _thumbColorAnimation.value,

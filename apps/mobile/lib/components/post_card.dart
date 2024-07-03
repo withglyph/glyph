@@ -1,3 +1,4 @@
+import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -112,11 +113,7 @@ class PostCard extends ConsumerWidget {
                           ),
                         ),
                         const Gap(6),
-                        Container(
-                          width: 1,
-                          height: 12,
-                          color: BrandColors.gray_100,
-                        ),
+                        const Box(width: 1, height: 12, color: BrandColors.gray_100),
                         const Gap(6),
                         Text(
                           Jiffy.parse(post.publishedAt!.value, isUtc: true).format(pattern: 'yyyy.MM.dd'),

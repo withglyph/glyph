@@ -1,3 +1,4 @@
+import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -126,7 +127,7 @@ class LobbyShell extends ConsumerWidget {
                 radius: 12,
                 backgroundColor: BrandColors.gray_100,
                 child: Padding(
-                  padding: const EdgeInsets.all(1), // Border radius
+                  padding: const Pad(all: 1),
                   child: ClipOval(
                     child: me == null ? null : Image.network(me.profile.avatar.url),
                   ),
@@ -137,7 +138,7 @@ class LobbyShell extends ConsumerWidget {
                 radius: 12,
                 backgroundColor: BrandColors.gray_900,
                 child: Padding(
-                  padding: const EdgeInsets.all(1), // Border radius
+                  padding: const Pad(all: 1),
                   child: ClipOval(
                     child: me == null ? null : Image.network(me.profile.avatar.url),
                   ),
@@ -181,7 +182,7 @@ class LobbyBottomNavigationBar extends ConsumerWidget {
           color: BrandColors.gray_0,
           border: Border(top: BorderSide(color: BrandColors.gray_100)),
         ),
-        padding: const EdgeInsets.symmetric(horizontal: 20),
+        padding: const Pad(horizontal: 20),
         child: Center(
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 460),

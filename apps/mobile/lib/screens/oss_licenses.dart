@@ -1,3 +1,4 @@
+import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -47,10 +48,7 @@ class _OssLicensesScreenState extends State<OssLicensesScreen> {
 
               return Pressable(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 16,
-                  ),
+                  padding: const Pad(horizontal: 20, vertical: 16),
                   child: Text(
                     entry.key,
                     style: const TextStyle(
