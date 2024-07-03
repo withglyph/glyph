@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +14,7 @@ import 'package:glyph/components/pressable.dart';
 import 'package:glyph/components/search_input.dart';
 import 'package:glyph/context/bottom_sheet.dart';
 import 'package:glyph/extensions/iterable.dart';
+import 'package:glyph/ferry/extension.dart';
 import 'package:glyph/ferry/widget.dart';
 import 'package:glyph/graphql/__generated__/schema.schema.gql.dart';
 import 'package:glyph/graphql/__generated__/search_result_screen_query.req.gql.dart';
@@ -40,196 +43,264 @@ class _SearchResultScreenState extends ConsumerState<SearchResultScreen> with Si
   Set<String> excludeTags = {};
   _SearchOrderByKind orderBy = _SearchOrderByKind.accuracy;
   bool? adultFilter;
-  int page = 1;
-  String query = '';
+
+  int _page = 1;
+  String _query = '';
+
+  bool _fetching = false;
+  bool _eol = false;
+
+  late GSearchResultScreen_QueryReq req;
 
   @override
   void initState() {
     super.initState();
-    query = widget.query;
+    _query = widget.query;
+
+    req = GSearchResultScreen_QueryReq(
+      (b) => b
+        ..requestId = 'SearchResultScreen_Query'
+        ..vars.query = widget.query
+        ..vars.page = _page
+        ..vars.orderBy =
+            orderBy == _SearchOrderByKind.accuracy ? GSearchOrderByKind.ACCURACY : GSearchOrderByKind.LATEST
+        ..vars.includeTags.addAll(includeTags)
+        ..vars.excludeTags.addAll(excludeTags)
+        ..vars.adultFilter = adultFilter,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    openSearchFilterMenu(int initiallyExpandedFilterIndex) async {
-      await context.showBottomSheet(
-        title: '검색 필터',
-        builder: (context) {
-          return _SearchFilter(
-            onApply: ({
-              required includeTagsDraft,
-              required excludeTagsDraft,
-              required orderByDraft,
-              adultFilterDraft,
-            }) {
-              includeTags = includeTagsDraft;
-              excludeTags = excludeTagsDraft;
-              orderBy = orderByDraft;
-              adultFilter = adultFilterDraft;
-              context.router.maybePop();
-              setState(() {});
-            },
-            initiallyExpandedFilterIndex: initiallyExpandedFilterIndex,
-            includeTags: includeTags,
-            excludeTags: excludeTags,
-            orderBy: orderBy,
-            adultFilter: adultFilter,
-          );
-        },
-      );
-    }
-
     return DefaultShell(
       useSafeArea: true,
       appBar: Heading.empty(),
-      child: Column(
-        children: [
-          Column(
-            children: [
-              Padding(
-                padding: const Pad(horizontal: 20, vertical: 8),
-                child: SearchInput(
-                  action: Pressable(
-                    onPressed: () async {
-                      await context.router.maybePop();
-                    },
-                    child: const Icon(
-                      Tabler.arrow_left,
-                      size: 24,
-                      color: BrandColors.gray_900,
-                    ),
-                  ),
-                  initialValue: query,
-                  onSearch: (value, controller) {
-                    query = value;
+      child: GraphQLOperation(
+        operation: req,
+        builder: (context, client, data) {
+          final posts = data.searchPosts.posts;
+
+          openSearchFilterMenu(int initiallyExpandedFilterIndex) async {
+            await context.showBottomSheet(
+              title: '검색 필터',
+              builder: (context) {
+                return _SearchFilter(
+                  onApply: ({
+                    required includeTagsDraft,
+                    required excludeTagsDraft,
+                    required orderByDraft,
+                    adultFilterDraft,
+                  }) {
+                    _page = 1;
+                    includeTags = includeTagsDraft;
+                    excludeTags = excludeTagsDraft;
+                    orderBy = orderByDraft;
+                    adultFilter = adultFilterDraft;
+                    req = req.rebuild(
+                      (b) => b
+                        ..vars.query = _query
+                        ..vars.page = _page
+                        ..vars.includeTags.replace(includeTags)
+                        ..vars.excludeTags.replace(excludeTags)
+                        ..vars.orderBy = orderBy == _SearchOrderByKind.accuracy
+                            ? GSearchOrderByKind.ACCURACY
+                            : GSearchOrderByKind.LATEST
+                        ..vars.adultFilter = adultFilter
+                        ..updateResult = (previous, result) => result,
+                    );
+                    context.router.maybePop();
+                    _fetching = true;
+                    unawaited(
+                      client.req(req).then((value) {
+                        _fetching = false;
+                        _eol = posts.length == value.searchPosts.posts.length;
+                      }),
+                    );
                     setState(() {});
                   },
-                ),
-              ),
-              DecoratedBox(
-                decoration: const BoxDecoration(
-                  border: Border(
-                    top: BorderSide(
-                      color: BrandColors.gray_50,
-                    ),
-                    bottom: BorderSide(
-                      color: BrandColors.gray_50,
-                    ),
-                  ),
-                ),
-                child: SingleChildScrollView(
-                  physics: const AlwaysScrollableScrollPhysics(
-                    parent: BouncingScrollPhysics(),
-                  ),
-                  padding: const Pad(horizontal: 20, vertical: 12.5),
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: [
-                      _SearchFilterChip(
-                        '포함 태그${includeTags.isNotEmpty ? ' ${includeTags.length}' : ''}',
-                        kind: _SearchFilterChipKind.fillSearch,
-                        selected: includeTags.isNotEmpty,
-                        onPressed: () async => openSearchFilterMenu(0),
-                      ),
-                      _SearchFilterChip(
-                        '제외 태그${excludeTags.isNotEmpty ? ' ${excludeTags.length}' : ''}',
-                        kind: _SearchFilterChipKind.fillSearch,
-                        selected: excludeTags.isNotEmpty,
-                        onPressed: () async => openSearchFilterMenu(1),
-                      ),
-                      _SearchFilterChip(
-                        orderBy == _SearchOrderByKind.accuracy ? '정확도순' : '최신순',
-                        kind: _SearchFilterChipKind.fillSearch,
-                        selected: orderBy == _SearchOrderByKind.latest,
-                        onPressed: () async => openSearchFilterMenu(2),
-                      ),
-                      _SearchFilterChip(
-                        adultFilter == null
-                            ? '성인물 표시'
-                            : adultFilter!
-                                ? '성인물만'
-                                : '성인물 제외',
-                        kind: _SearchFilterChipKind.fillSearch,
-                        selected: adultFilter != null,
-                        onPressed: () async => openSearchFilterMenu(3),
-                      ),
-                    ].intersperse(const Gap(8)).toList(),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          Expanded(
-            child: GraphQLOperation(
-              operation: GSearchResultScreen_QueryReq((b) {
-                b
-                  ..vars.query = query
-                  ..vars.page = page
-                  ..vars.orderBy =
-                      orderBy == _SearchOrderByKind.accuracy ? GSearchOrderByKind.ACCURACY : GSearchOrderByKind.LATEST
-                  ..vars.includeTags.addAll(includeTags)
-                  ..vars.excludeTags.addAll(excludeTags)
-                  ..vars.adultFilter = adultFilter;
-              }),
-              builder: (context, client, data) {
-                final posts = data.searchPosts.posts;
-
-                if (posts.isEmpty) {
-                  return const Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        TablerBold.notes_off,
-                        size: 40,
-                        color: BrandColors.gray_800,
-                      ),
-                      Gap(16),
-                      Text(
-                        '검색 결과가 없어요',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w700,
-                          color: BrandColors.gray_800,
-                        ),
-                      ),
-                      Gap(4),
-                      Text(
-                        '다른 키워드 및 태그로 검색해보세요',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w400,
-                          color: BrandColors.gray_500,
-                        ),
-                      ),
-                      Gap(152),
-                    ],
-                  );
-                }
-
-                return ListView.separated(
-                  physics: const AlwaysScrollableScrollPhysics(
-                    parent: BouncingScrollPhysics(),
-                  ),
-                  itemCount: posts.length,
-                  itemBuilder: (context, index) {
-                    return PostCard(
-                      posts[index],
-                      padding: const Pad(horizontal: 20, vertical: 18),
-                    );
-                  },
-                  separatorBuilder: (context, index) {
-                    return const Padding(
-                      padding: Pad(horizontal: 20),
-                      child: HorizontalDivider(
-                        color: BrandColors.gray_50,
-                      ),
-                    );
-                  },
+                  initiallyExpandedFilterIndex: initiallyExpandedFilterIndex,
+                  includeTags: includeTags,
+                  excludeTags: excludeTags,
+                  orderBy: orderBy,
+                  adultFilter: adultFilter,
                 );
               },
-            ),
-          ),
-        ],
+            );
+          }
+
+          return Column(
+            children: [
+              Column(
+                children: [
+                  Padding(
+                    padding: const Pad(horizontal: 20, vertical: 8),
+                    child: SearchInput(
+                      action: Pressable(
+                        onPressed: () async {
+                          await context.router.maybePop();
+                        },
+                        child: const Icon(
+                          Tabler.arrow_left,
+                          size: 24,
+                          color: BrandColors.gray_900,
+                        ),
+                      ),
+                      initialValue: _query,
+                      onSearch: (value, controller) {
+                        _query = value;
+                        _page = 1;
+                        req = req.rebuild(
+                          (b) => b
+                            ..vars.query = _query
+                            ..vars.page = _page
+                            ..updateResult = (previous, result) => result,
+                        );
+
+                        _fetching = true;
+                        unawaited(
+                          client.req(req).then((value) {
+                            _fetching = false;
+                            _eol = posts.length == value.searchPosts.posts.length;
+                          }),
+                        );
+                        setState(() {});
+                      },
+                    ),
+                  ),
+                  DecoratedBox(
+                    decoration: const BoxDecoration(
+                      border: Border(
+                        top: BorderSide(
+                          color: BrandColors.gray_50,
+                        ),
+                        bottom: BorderSide(
+                          color: BrandColors.gray_50,
+                        ),
+                      ),
+                    ),
+                    child: SingleChildScrollView(
+                      physics: const AlwaysScrollableScrollPhysics(
+                        parent: BouncingScrollPhysics(),
+                      ),
+                      padding: const Pad(horizontal: 20, vertical: 12.5),
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: [
+                          _SearchFilterChip(
+                            '포함 태그${includeTags.isNotEmpty ? ' ${includeTags.length}' : ''}',
+                            kind: _SearchFilterChipKind.fillSearch,
+                            selected: includeTags.isNotEmpty,
+                            onPressed: () async => openSearchFilterMenu(0),
+                          ),
+                          _SearchFilterChip(
+                            '제외 태그${excludeTags.isNotEmpty ? ' ${excludeTags.length}' : ''}',
+                            kind: _SearchFilterChipKind.fillSearch,
+                            selected: excludeTags.isNotEmpty,
+                            onPressed: () async => openSearchFilterMenu(1),
+                          ),
+                          _SearchFilterChip(
+                            orderBy == _SearchOrderByKind.accuracy ? '정확도순' : '최신순',
+                            kind: _SearchFilterChipKind.fillSearch,
+                            selected: orderBy == _SearchOrderByKind.latest,
+                            onPressed: () async => openSearchFilterMenu(2),
+                          ),
+                          _SearchFilterChip(
+                            adultFilter == null
+                                ? '성인물 표시'
+                                : adultFilter!
+                                    ? '성인물만'
+                                    : '성인물 제외',
+                            kind: _SearchFilterChipKind.fillSearch,
+                            selected: adultFilter != null,
+                            onPressed: () async => openSearchFilterMenu(3),
+                          ),
+                        ].intersperse(const Gap(8)).toList(),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              Expanded(
+                child: (posts.isEmpty)
+                    ? const Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            TablerBold.notes_off,
+                            size: 40,
+                            color: BrandColors.gray_800,
+                          ),
+                          Gap(16),
+                          Text(
+                            '검색 결과가 없어요',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w700,
+                              color: BrandColors.gray_800,
+                            ),
+                          ),
+                          Gap(4),
+                          Text(
+                            '다른 키워드 및 태그로 검색해보세요',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                              color: BrandColors.gray_500,
+                            ),
+                          ),
+                          Gap(152),
+                        ],
+                      )
+                    : NotificationListener<ScrollUpdateNotification>(
+                        onNotification: (notification) {
+                          if (notification.metrics.extentAfter <= 200) {
+                            if (!_fetching && !_eol) {
+                              _fetching = true;
+                              final newReq = req.rebuild(
+                                (b) => b
+                                  ..vars.page = ++_page
+                                  ..updateResult = (previous, result) => previous
+                                      ?.rebuild((b) => b..searchPosts.posts.addAll(result?.searchPosts.posts ?? [])),
+                              );
+
+                              unawaited(
+                                client.req(newReq).then((value) {
+                                  _fetching = false;
+                                  if (posts.length == value.searchPosts.posts.length) {
+                                    _eol = true;
+                                  }
+                                }),
+                              );
+                            }
+                          }
+
+                          return false;
+                        },
+                        child: ListView.separated(
+                          physics: const AlwaysScrollableScrollPhysics(
+                            parent: BouncingScrollPhysics(),
+                          ),
+                          itemCount: posts.length,
+                          itemBuilder: (context, index) {
+                            return PostCard(
+                              posts[index],
+                              padding: const Pad(horizontal: 20, vertical: 18),
+                            );
+                          },
+                          separatorBuilder: (context, index) {
+                            return const Padding(
+                              padding: Pad(horizontal: 20),
+                              child: HorizontalDivider(
+                                color: BrandColors.gray_50,
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
