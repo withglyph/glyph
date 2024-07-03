@@ -7,6 +7,12 @@ query ArchiveEmojisScreen_Query {
     emojiReactedPosts {
       id
       ...PostCard_post
+
+      reactions {
+        id
+        emoji
+        mine
+      }
     }
   }
 }

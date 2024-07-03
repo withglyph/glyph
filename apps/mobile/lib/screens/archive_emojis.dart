@@ -2,9 +2,13 @@ import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:gap/gap.dart';
 import 'package:glyph/components/empty_state.dart';
 import 'package:glyph/components/horizontal_divider.dart';
 import 'package:glyph/components/post_card.dart';
+import 'package:glyph/emojis/data.dart';
+import 'package:glyph/emojis/emoji.dart';
+import 'package:glyph/extensions/iterable.dart';
 import 'package:glyph/ferry/widget.dart';
 import 'package:glyph/graphql/__generated__/archive_emojis_screen_query.req.gql.dart';
 import 'package:glyph/icons/tabler_bold.dart';
@@ -33,10 +37,34 @@ class ArchiveEmojisScreen extends ConsumerWidget {
                 ),
                 itemCount: posts.length,
                 itemBuilder: (context, index) {
-                  return PostCard(
-                    posts[index],
-                    padding: const Pad(horizontal: 20, vertical: 18),
-                    dots: false,
+                  final post = posts[index];
+
+                  return Padding(
+                    padding: const Pad(top: 16, bottom: 18),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const Pad(horizontal: 20),
+                          child: UnconstrainedBox(
+                            clipBehavior: Clip.hardEdge,
+                            alignment: Alignment.centerLeft,
+                            child: Row(
+                              children: post.reactions
+                                  .expand((b) => [if (b.mine) Emoji(Emojis.fromShortCode(b.emoji))])
+                                  .intersperse(const Gap(2))
+                                  .toList(),
+                            ),
+                          ),
+                        ),
+                        const Gap(4),
+                        PostCard(
+                          post,
+                          padding: const Pad(horizontal: 20),
+                          dots: false,
+                        ),
+                      ],
+                    ),
                   );
                 },
                 separatorBuilder: (context, index) {
