@@ -209,35 +209,35 @@ class NotificationScreen extends ConsumerWidget {
                                     ),
                                     const Gap(2),
                                     DefaultTextStyle.merge(
-                                      style: const TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w500,
-                                        color: BrandColors.gray_600,
-                                      ),
-                                      child: notification.when(
-                                        commentNotification: (notification) => Text(
-                                            '${notification.actor!.name}님이 ${notification.post.publishedRevision!.title ?? '(제목 없음)'}에 댓글을 남겼어요'),
-                                        subscribeNotification: (notification) => Text(
-                                            '${notification.actor!.name}님이 ${notification.space.name} 스페이스를 구독했어요'),
-                                        purchaseNotification: (notification) => Text(
-                                            '${notification.actor!.name}님이 ${notification.post.publishedRevision!.title ?? '(제목 없음)'} 포스트를 구매했어요'),
-                                        emojiReactionNotification: (notification) => RichText(
-                                          text: TextSpan(
-                                            style: DefaultTextStyle.of(context).style,
-                                            children: [
-                                              TextSpan(
-                                                text:
-                                                    '${notification.actor!.name}님이 ${notification.post.publishedRevision!.title ?? '(제목 없음)'}에 ',
+                                      style: const TextStyle(fontSize: 14),
+                                      child: Builder(
+                                        builder: (context) {
+                                          return notification.when(
+                                            commentNotification: (notification) => Text(
+                                                '${notification.actor!.name}님이 ${notification.post.publishedRevision!.title ?? '(제목 없음)'}에 댓글을 남겼어요'),
+                                            subscribeNotification: (notification) => Text(
+                                                '${notification.actor!.name}님이 ${notification.space.name} 스페이스를 구독했어요'),
+                                            purchaseNotification: (notification) => Text(
+                                                '${notification.actor!.name}님이 ${notification.post.publishedRevision!.title ?? '(제목 없음)'} 포스트를 구매했어요'),
+                                            emojiReactionNotification: (notification) => RichText(
+                                              text: TextSpan(
+                                                style: DefaultTextStyle.of(context).style,
+                                                children: [
+                                                  TextSpan(
+                                                    text:
+                                                        '${notification.actor!.name}님이 ${notification.post.publishedRevision!.title ?? '(제목 없음)'}에 ',
+                                                  ),
+                                                  WidgetSpan(
+                                                    alignment: PlaceholderAlignment.middle,
+                                                    child: Emoji(Emojis.fromShortCode(notification.emoji), size: 14),
+                                                  ),
+                                                  const TextSpan(text: '를 달았어요'),
+                                                ],
                                               ),
-                                              WidgetSpan(
-                                                alignment: PlaceholderAlignment.middle,
-                                                child: Emoji(Emojis.fromShortCode(notification.emoji), size: 14),
-                                              ),
-                                              const TextSpan(text: '를 달았어요'),
-                                            ],
-                                          ),
-                                        ),
-                                        orElse: () => const Text('(알 수 없음)'),
+                                            ),
+                                            orElse: () => const Text('(알 수 없음)'),
+                                          );
+                                        },
                                       ),
                                     ),
                                     const Gap(4),
