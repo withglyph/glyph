@@ -1,0 +1,5 @@
+mutation PostScreen_Comments_BlockMasquerade_Mutation($input: BlockMasqueradeInput!) {
+  blockMasquerade(input: $input) {
+    id
+  }
+}

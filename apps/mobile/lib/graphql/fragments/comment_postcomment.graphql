@@ -5,6 +5,9 @@ fragment Comment_postComment on PostComment {
   purchased
   liked
   likedByPostUser
+  masquerade {
+    id
+  }
   likeCount
   content
   createdAt

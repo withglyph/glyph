@@ -31,6 +31,7 @@ import 'package:glyph/ferry/extension.dart';
 import 'package:glyph/ferry/widget.dart';
 import 'package:glyph/graphql/__generated__/post_screen_bookmark_post_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_screen_collection_post_list_query.req.gql.dart';
+import 'package:glyph/graphql/__generated__/post_screen_comments_block_masquerade_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_screen_comments_create_comment_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_screen_comments_delete_comment_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_screen_comments_like_comment_mutation.req.gql.dart';
@@ -1677,6 +1678,7 @@ class _CommentsState extends ConsumerState<_Comments> with SingleTickerProviderS
                       itemBuilder: (context, index) {
                         final comment = data.post.comments[index];
                         final isMyComment = comment.profile.id == data.post.space?.commentProfile?.id;
+                        final client = ref.read(ferryProvider);
 
                         onDelete() async {
                           await context.showDialog(
@@ -1691,6 +1693,32 @@ class _CommentsState extends ConsumerState<_Comments> with SingleTickerProviderS
 
                               if (context.mounted) {
                                 context.toast.show('댓글이 삭제되었어요', type: ToastType.error);
+                              }
+
+                              await client.req(
+                                GPostScreen_Comnments_QueryReq(
+                                  (b) => b..vars.permalink = widget.permalink,
+                                ),
+                              );
+                            },
+                          );
+                        }
+
+                        onBlock() async {
+                          await context.showDialog(
+                            title: '${comment.profile.name}님을 차단할까요?',
+                            content: '차단된 유저는 스페이스의 모든 게시물을 볼 수 없으며, 댓글을 달 수 없어요. 차단 해지는 [스페이스 설정- 독자관리]에서 가능해요.',
+                            confirmText: '차단',
+                            onConfirmed: () async {
+                              final req = GPostScreen_Comments_BlockMasquerade_MutationReq(
+                                (b) => b
+                                  ..vars.input.masqueradeId = comment.masquerade!.id
+                                  ..vars.input.spaceId = data.post.space!.id,
+                              );
+                              await client.req(req);
+
+                              if (context.mounted) {
+                                context.toast.show('${comment.profile.name}님이 차단되었습니다.');
                               }
 
                               await client.req(
@@ -1741,18 +1769,13 @@ class _CommentsState extends ConsumerState<_Comments> with SingleTickerProviderS
                                         title: '삭제',
                                         onTap: onDelete,
                                       ),
-                                      // BottomMenuItem(
-                                      //   icon: Tabler.user_x,
-                                      //   iconColor: BrandColors.red_600,
-                                      //   title: '차단',
-                                      //   color: BrandColors.red_600,
-                                      //   onTap: () async {
-                                      //     if (context.mounted) {
-                                      //       // TODO:
-                                      //       context.toast.show('Not implemented');
-                                      //     }
-                                      //   },
-                                      // ),
+                                      BottomMenuItem(
+                                        icon: Tabler.user_x,
+                                        iconColor: BrandColors.red_600,
+                                        title: '차단',
+                                        color: BrandColors.red_600,
+                                        onTap: onBlock,
+                                      ),
                                     ],
                             );
                           },
@@ -2233,6 +2256,32 @@ class _RepliesState extends ConsumerState<_Replies> with SingleTickerProviderSta
             );
           }
 
+          onBlock({required GComment_postComment comment}) async {
+            await context.showDialog(
+              title: '${comment.profile.name}님을 차단할까요?',
+              content: '차단된 유저는 스페이스의 모든 게시물을 볼 수 없으며, 댓글을 달 수 없어요. 차단 해지는 [스페이스 설정- 독자관리]에서 가능해요.',
+              confirmText: '차단',
+              onConfirmed: () async {
+                final req = GPostScreen_Comments_BlockMasquerade_MutationReq(
+                  (b) => b
+                    ..vars.input.masqueradeId = comment.masquerade!.id
+                    ..vars.input.spaceId = data.post.space!.id,
+                );
+                await client.req(req);
+
+                if (context.mounted) {
+                  context.toast.show('${comment.profile.name}님이 차단되었습니다.');
+                }
+
+                await client.req(
+                  GPostScreen_Comnments_QueryReq(
+                    (b) => b..vars.permalink = widget.permalink,
+                  ),
+                );
+              },
+            );
+          }
+
           onMore({required GComment_postComment comment}) async {
             await context.showBottomMenu(
               title: '댓글',
@@ -2253,18 +2302,13 @@ class _RepliesState extends ConsumerState<_Replies> with SingleTickerProviderSta
                         title: '삭제',
                         onTap: () => onDelete(id: comment.id),
                       ),
-                      // BottomMenuItem(
-                      //   icon: Tabler.user_x,
-                      //   iconColor: BrandColors.red_600,
-                      //   title: '차단',
-                      //   color: BrandColors.red_600,
-                      //   onTap: () async {
-                      //     if (context.mounted) {
-                      //       // TODO:
-                      //       context.toast.show('Not implemented');
-                      //     }
-                      //   },
-                      // ),
+                      BottomMenuItem(
+                        icon: Tabler.user_x,
+                        iconColor: BrandColors.red_600,
+                        title: '차단',
+                        color: BrandColors.red_600,
+                        onTap: () => onBlock(comment: comment),
+                      ),
                     ],
             );
           }
