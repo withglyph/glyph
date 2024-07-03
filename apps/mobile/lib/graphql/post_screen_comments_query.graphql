@@ -1,4 +1,5 @@
 # import './fragments/img_image.graphql'
+# import './fragments/comment_postcomment.graphql'
 
 query PostScreen_Comnments_Query($permalink: String!) {
   me {
@@ -43,35 +44,11 @@ query PostScreen_Comnments_Query($permalink: String!) {
 
     comments(take: 1000) {
       id
-      pinned
-      visibility
-      purchased
-      liked
-      likedByPostUser
-      likeCount
-      content
-      createdAt
-
-      profile {
-        id
-        name
-      }
+      ...Comment_postComment
 
       children {
         id
-        pinned
-        visibility
-        purchased
-        liked
-        likedByPostUser
-        likeCount
-        content
-        createdAt
-
-        profile {
-          id
-          name
-        }
+        ...Comment_postComment
       }
     }
   }

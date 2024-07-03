@@ -1,0 +1,16 @@
+fragment Comment_postComment on PostComment {
+  id
+  pinned
+  visibility
+  purchased
+  liked
+  likedByPostUser
+  likeCount
+  content
+  createdAt
+
+  profile {
+    id
+    name
+  }
+}

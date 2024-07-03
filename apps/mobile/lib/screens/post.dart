@@ -41,6 +41,7 @@ import 'package:glyph/graphql/__generated__/post_screen_space_post_list_query.re
 import 'package:glyph/graphql/__generated__/post_screen_unbookmark_post_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_screen_update_post_view_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/schema.schema.gql.dart';
+import 'package:glyph/graphql/fragments/__generated__/comment_postcomment.data.gql.dart';
 import 'package:glyph/icons/tabler.dart';
 import 'package:glyph/icons/tabler_bold.dart';
 import 'package:glyph/providers/ferry.dart';
@@ -1561,8 +1562,6 @@ class _CommentsState extends ConsumerState<_Comments> with SingleTickerProviderS
               (data.post.commentQualification == GPostCommentQualification.IDENTIFIED &&
                   data.me!.personalIdentity != null);
 
-          // var replyTo = null;
-
           Future<void> onSubmit() async {
             final value = _textController.text;
             if (value.isEmpty) {
@@ -1718,11 +1717,10 @@ class _CommentsState extends ConsumerState<_Comments> with SingleTickerProviderS
 
                         return _Comment(
                           comment: comment,
+                          children: comment.children.toList(),
                           commentProfile: data.post.space?.commentProfile,
                           postAuthorProfile: data.post.member!.profile,
-                          isMyComment: isMyComment,
                           isMyPost: data.post.space?.meAsMember != null,
-                          isReply: false, // TODO
                           onLike: () async {
                             if (comment.liked) {
                               final req = GPostScreen_Comments_UnlikeComment_MutationReq(
@@ -1771,10 +1769,15 @@ class _CommentsState extends ConsumerState<_Comments> with SingleTickerProviderS
                                     ],
                             );
                           },
-                          onReply: () {
-                            setState(() {
-                              // replyTo = comment.id;
-                            });
+                          onReply: () async {
+                            // await context.showModal(
+                            //   builder: (context) {
+                            //     return _Replies(
+                            //       parentId: comment.id,
+                            //       permalink: widget.permalink,
+                            //     );
+                            //   },
+                            // );
                           },
                         );
                       },
@@ -1900,224 +1903,237 @@ class _CommentsState extends ConsumerState<_Comments> with SingleTickerProviderS
 class _Comment extends ConsumerWidget {
   const _Comment({
     required this.comment,
-    required this.onReply,
     required this.onLike,
     required this.onMore,
     required this.postAuthorProfile,
     required this.commentProfile,
-    required this.isMyComment,
     required this.isMyPost,
-    required this.isReply,
+    this.children,
+    this.onReply,
   });
 
-  final GPostScreen_Comnments_QueryData_post_comments comment;
+  final GComment_postComment comment;
+  final List<GComment_postComment>? children;
   final GPostScreen_Comnments_QueryData_post_member_profile postAuthorProfile;
   final GPostScreen_Comnments_QueryData_post_space_commentProfile? commentProfile;
-  final bool isMyComment;
   final bool isMyPost;
-  final bool isReply;
-  final VoidCallback onReply;
+  final VoidCallback? onReply;
   final VoidCallback onLike;
   final VoidCallback onMore;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final isMyComment = comment.profile.id == commentProfile?.id;
     final invisible = comment.visibility == GPostCommentVisibility.PRIVATE && !isMyComment && !isMyPost;
 
-    return Padding(
-      padding: const Pad(vertical: 20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
+    return Stack(
+      children: [
+        Padding(
+          padding: const Pad(
+            vertical: 20,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(
-                child: Row(
-                  children: [
-                    if (comment.visibility == GPostCommentVisibility.PRIVATE) ...[
-                      const Icon(
-                        Icons.lock,
-                        size: 16,
-                        color: BrandColors.gray_400,
-                      ),
-                      const Gap(6),
-                    ],
-                    if (comment.profile.id == postAuthorProfile.id)
-                      Flexible(
-                        child: Container(
-                          padding: const Pad(horizontal: 6, vertical: 1.5),
-                          decoration: const BoxDecoration(
+              Row(
+                children: [
+                  Expanded(
+                    child: Row(
+                      children: [
+                        if (comment.visibility == GPostCommentVisibility.PRIVATE) ...[
+                          const Icon(
+                            Icons.lock,
+                            size: 16,
                             color: BrandColors.gray_400,
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(2),
-                            ),
                           ),
-                          child: Text(
-                            postAuthorProfile.name,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      )
-                    else
-                      Flexible(
-                        child: Text(
-                          comment.profile.name,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600,
-                            color: BrandColors.gray_900,
-                          ),
-                        ),
-                      ),
-                    const Gap(6),
-                    Text(
-                      Jiffy.parse(comment.createdAt.value, isUtc: true).fromNow(),
-                      style: const TextStyle(
-                        fontSize: 12,
-                        color: BrandColors.gray_400,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              if (isMyComment || isMyPost)
-                Pressable(
-                  onPressed: onMore,
-                  child: const Icon(
-                    Tabler.dots_vertical,
-                    size: 20,
-                    color: BrandColors.gray_300,
-                  ),
-                ),
-            ],
-          ),
-          const Gap(4),
-          Padding(
-            padding: const Pad(right: 12),
-            child: invisible
-                ? const Text(
-                    '비밀댓글입니다',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w400,
-                      color: BrandColors.gray_400,
-                    ),
-                  )
-                : Text(
-                    comment.content,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w400,
-                      color: BrandColors.gray_900,
-                    ),
-                  ),
-          ),
-          const Gap(8),
-          SizedBox(
-            height: 24,
-            child: Row(
-              children: [
-                Expanded(
-                  child: Row(
-                    children: [
-                      if (!isReply) ...[
-                        Pressable(
-                          onPressed: onReply,
-                          child: Row(
-                            children: [
-                              const Icon(
-                                Tabler.message,
-                                size: 16,
-                                color: BrandColors.gray_400,
+                          const Gap(6),
+                        ],
+                        if (comment.profile.id == postAuthorProfile.id)
+                          Flexible(
+                            child: Container(
+                              padding: const Pad(
+                                horizontal: 6,
+                                vertical: 1.5,
                               ),
-                              const Gap(3),
-                              Text(
-                                '답글${comment.children.isEmpty ? '' : ' ${comment.children.length}'}',
+                              decoration: const BoxDecoration(
+                                color: BrandColors.gray_400,
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(2),
+                                ),
+                              ),
+                              child: Text(
+                                postAuthorProfile.name,
+                                overflow: TextOverflow.ellipsis,
                                 style: const TextStyle(
                                   fontSize: 12,
-                                  fontWeight: FontWeight.w500,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          )
+                        else
+                          Flexible(
+                            child: Text(
+                              comment.profile.name,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                                color: BrandColors.gray_900,
+                              ),
+                            ),
+                          ),
+                        const Gap(6),
+                        Text(
+                          Jiffy.parse(comment.createdAt.value, isUtc: true).fromNow(),
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: BrandColors.gray_400,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  if (isMyComment || isMyPost)
+                    Pressable(
+                      onPressed: onMore,
+                      child: const Icon(
+                        Tabler.dots_vertical,
+                        size: 20,
+                        color: BrandColors.gray_300,
+                      ),
+                    ),
+                ],
+              ),
+              const Gap(4),
+              Padding(
+                padding: const Pad(right: 12),
+                child: invisible
+                    ? const Text(
+                        '비밀댓글입니다',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                          color: BrandColors.gray_400,
+                        ),
+                      )
+                    : Text(
+                        comment.content,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                          color: BrandColors.gray_900,
+                        ),
+                      ),
+              ),
+              const Gap(12),
+              Row(
+                children: [
+                  Expanded(
+                    child: Row(
+                      children: [
+                        if (children != null) ...[
+                          Pressable(
+                            onPressed: onReply,
+                            child: Row(
+                              children: [
+                                const Icon(
+                                  Tabler.message,
+                                  size: 16,
                                   color: BrandColors.gray_400,
+                                ),
+                                const Gap(3),
+                                Text(
+                                  '답글${(children!.isEmpty) ? '' : ' ${children!.length}'}',
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w500,
+                                    color: BrandColors.gray_400,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const Gap(12),
+                          Container(
+                            width: 1,
+                            height: 10,
+                            color: BrandColors.gray_100,
+                          ),
+                          const Gap(12),
+                        ],
+                        Pressable(
+                          onPressed: onLike,
+                          child: Row(
+                            children: [
+                              if (comment.liked)
+                                const Icon(
+                                  Tabler.heart_filled,
+                                  size: 16,
+                                  color: BrandColors.gray_900,
+                                )
+                              else
+                                const Icon(
+                                  Tabler.heart,
+                                  size: 16,
+                                  color: BrandColors.gray_400,
+                                ),
+                              const Gap(3),
+                              Text(
+                                '좋아요${comment.likeCount > 0 ? ' ${comment.likeCount}' : ''}',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
+                                  color: comment.liked ? BrandColors.gray_900 : BrandColors.gray_400,
                                 ),
                               ),
                             ],
                           ),
                         ),
-                        const Gap(12),
                       ],
-                      const Box(width: 1, height: 10, color: BrandColors.gray_100),
-                      const Gap(12),
-                      Pressable(
-                        onPressed: onLike,
-                        child: Row(
-                          children: [
-                            if (comment.liked)
-                              const Icon(
-                                Tabler.heart_filled,
-                                size: 16,
-                                color: BrandColors.gray_900,
-                              )
-                            else
-                              const Icon(
-                                Tabler.heart,
-                                size: 16,
-                                color: BrandColors.gray_400,
-                              ),
-                            const Gap(3),
-                            Text(
-                              '좋아요${comment.likeCount > 0 ? ' ${comment.likeCount}' : ''}',
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w500,
-                                color: comment.liked ? BrandColors.gray_900 : BrandColors.gray_400,
-                              ),
-                            ),
-                          ],
-                        ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+        if (comment.likedByPostUser)
+          Positioned(
+            right: 0,
+            bottom: 17,
+            child: Stack(
+              children: [
+                CircleAvatar(
+                  radius: 12,
+                  backgroundColor: BrandColors.gray_900,
+                  child: Padding(
+                    padding: const Pad(all: 1),
+                    child: ClipOval(
+                      child: Img(
+                        postAuthorProfile.avatar,
+                        width: 24,
+                        height: 24,
                       ),
-                    ],
+                    ),
                   ),
                 ),
-                if (comment.likedByPostUser)
-                  Stack(
-                    children: [
-                      CircleAvatar(
-                        radius: 12,
-                        backgroundColor: BrandColors.gray_900,
-                        child: Padding(
-                          padding: const Pad(all: 1),
-                          child: ClipOval(
-                            child: Img(
-                              postAuthorProfile.avatar,
-                              width: 24,
-                              height: 24,
-                            ),
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        right: 0,
-                        bottom: 0,
-                        child: Transform.translate(
-                          offset: const Offset(4, 4),
-                          child: const Icon(
-                            Tabler.heart_filled,
-                            size: 16,
-                          ),
-                        ),
-                      ),
-                    ],
+                Positioned(
+                  right: 0,
+                  bottom: 0,
+                  child: Transform.translate(
+                    offset: const Offset(4, 4),
+                    child: const Icon(
+                      Tabler.heart_filled,
+                      size: 16,
+                    ),
                   ),
+                ),
               ],
             ),
           ),
-        ],
-      ),
+      ],
     );
   }
 }
