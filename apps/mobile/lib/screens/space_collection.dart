@@ -13,9 +13,12 @@ import 'package:glyph/components/img.dart';
 import 'package:glyph/components/post_card.dart';
 import 'package:glyph/components/pressable.dart';
 import 'package:glyph/context/bottom_menu.dart';
+import 'package:glyph/ferry/extension.dart';
 import 'package:glyph/ferry/widget.dart';
 import 'package:glyph/graphql/__generated__/schema.schema.gql.dart';
+import 'package:glyph/graphql/__generated__/space_collection_screen_follow_space_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/space_collection_screen_query.req.gql.dart';
+import 'package:glyph/graphql/__generated__/space_collection_screen_unfollow_space_mutation.req.gql.dart';
 import 'package:glyph/icons/tabler.dart';
 import 'package:glyph/icons/tabler_bold.dart';
 import 'package:glyph/routers/app.gr.dart';
@@ -311,9 +314,22 @@ class _SpaceCollectionScreenState extends State<SpaceCollectionScreen> with Sing
                         if (data.spaceCollection.space.meAsMember == null) ...[
                           const Gap(18),
                           Btn(
-                            '스페이스 구독',
-                            iconLeft: Tabler.plus,
-                            onPressed: () {},
+                            data.spaceCollection.space.followed ? '스페이스 구독중' : '스페이스 구독',
+                            theme: data.spaceCollection.space.followed ? BtnTheme.secondaryOutline : BtnTheme.primary,
+                            iconLeft: data.spaceCollection.space.followed ? Tabler.check : Tabler.plus,
+                            onPressed: () async {
+                              if (data.spaceCollection.space.followed) {
+                                final req = GSpaceCollectionScreen_UnfollowSpace_MutationReq(
+                                  (b) => b..vars.input.spaceId = data.spaceCollection.space.id,
+                                );
+                                await client.req(req);
+                              } else {
+                                final req = GSpaceCollectionScreen_FollowSpace_MutationReq(
+                                  (b) => b..vars.input.spaceId = data.spaceCollection.space.id,
+                                );
+                                await client.req(req);
+                              }
+                            },
                           ),
                         ],
                       ],

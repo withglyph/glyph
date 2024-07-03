@@ -25,6 +25,7 @@ query SpaceCollectionScreen_Query($slug: String!, $order: SpaceCollectionPostOrd
       slug
       name
       description
+      followed
 
       icon {
         id

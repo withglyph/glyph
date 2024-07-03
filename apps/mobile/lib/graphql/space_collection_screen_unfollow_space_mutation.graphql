@@ -1,0 +1,7 @@
+mutation SpaceCollectionScreen_UnfollowSpace_Mutation($input: UnfollowSpaceInput!) {
+  unfollowSpace(input: $input) {
+    id
+    followed
+    followerCount
+  }
+}
