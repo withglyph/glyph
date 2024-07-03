@@ -46,6 +46,7 @@ query NotificationScreen_Query {
       ... on SubscribeNotification {
         space {
           id
+          slug
           name
 
           icon {

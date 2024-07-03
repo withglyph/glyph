@@ -245,9 +245,9 @@ class NotificationScreen extends ConsumerWidget {
                         );
                         await client.req(req);
 
-                        final route = notification.when(
+                        final dynamic route = notification.when(
                           commentNotification: (notification) => PostRoute(permalink: notification.post.permalink),
-                          subscribeNotification: (notification) => null,
+                          subscribeNotification: (notification) => SpaceRoute(slug: notification.space.slug),
                           purchaseNotification: (notification) => PostRoute(permalink: notification.post.permalink),
                           emojiReactionNotification: (notification) =>
                               PostRoute(permalink: notification.post.permalink),
