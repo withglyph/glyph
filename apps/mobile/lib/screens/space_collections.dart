@@ -10,6 +10,7 @@ import 'package:glyph/components/pressable.dart';
 import 'package:glyph/ferry/widget.dart';
 import 'package:glyph/graphql/__generated__/space_collections_screen_query.req.gql.dart';
 import 'package:glyph/icons/tabler_bold.dart';
+import 'package:glyph/routers/app.gr.dart';
 import 'package:glyph/themes/colors.dart';
 
 @RoutePage()
@@ -98,7 +99,9 @@ class SpaceCollectionsScreen extends ConsumerWidget {
                             ),
                           ),
                         ),
-                        onPressed: () async {},
+                        onPressed: () async {
+                          await context.router.push(SpaceCollectionRoute(collection: collection.id));
+                        },
                       );
                     },
                     separatorBuilder: (context, index) {

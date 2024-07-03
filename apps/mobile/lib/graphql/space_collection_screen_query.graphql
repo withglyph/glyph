@@ -1,0 +1,53 @@
+# import './fragments/img_image.graphql'
+# import './fragments/post_card_post.graphql';
+
+
+query SpaceCollectionScreen_Query($slug: String!, $order: SpaceCollectionPostOrderByKind! = LATEST) {
+  spaceCollection(slug: $slug) {
+    id
+    name
+    description
+    count
+
+    thumbnail {
+      id
+      ...Img_image
+    }
+
+    posts(order: $order) {
+      id
+      permalink
+      ...PostCard_post
+    }
+
+    space {
+      id
+      slug
+      name
+      description
+
+      icon {
+        id
+        ...Img_image
+      }
+
+      members {
+        id
+
+        profile {
+          id
+          name
+
+          avatar {
+            id
+            ...Img_image
+          }
+        }
+      }
+    
+      meAsMember {
+        id
+      }
+    }
+  }
+}
