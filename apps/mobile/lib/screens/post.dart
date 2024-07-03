@@ -20,6 +20,7 @@ import 'package:glyph/components/pressable.dart';
 import 'package:glyph/components/webview.dart';
 import 'package:glyph/context/bottom_menu.dart';
 import 'package:glyph/context/bottom_sheet.dart';
+import 'package:glyph/context/dialog.dart';
 import 'package:glyph/context/floating_bottom_sheet.dart';
 import 'package:glyph/context/modal.dart';
 import 'package:glyph/context/toast.dart';
@@ -1678,21 +1679,26 @@ class _CommentsState extends ConsumerState<_Comments> with SingleTickerProviderS
                         final isMyComment = comment.profile.id == data.post.space?.commentProfile?.id;
 
                         onDelete() async {
-                          final client = ref.read(ferryProvider);
-                          final req = GPostScreen_Comments_DeleteComment_MutationReq(
-                            (b) => b..vars.input.commentId = comment.id,
-                          );
-                          await client.req(req);
+                          await context.showDialog(
+                            title: '댓글을 삭제하시겠어요?',
+                            confirmText: '삭제',
+                            onConfirmed: () async {
+                              final client = ref.read(ferryProvider);
+                              final req = GPostScreen_Comments_DeleteComment_MutationReq(
+                                (b) => b..vars.input.commentId = comment.id,
+                              );
+                              await client.req(req);
 
-                          if (context.mounted) {
-                            // FIXME: 문구 미정
-                            context.toast.show('댓글을 삭제했어요');
-                          }
+                              if (context.mounted) {
+                                context.toast.show('댓글이 삭제되었어요', type: ToastType.error);
+                              }
 
-                          await client.req(
-                            GPostScreen_Comnments_QueryReq(
-                              (b) => b..vars.permalink = widget.permalink,
-                            ),
+                              await client.req(
+                                GPostScreen_Comnments_QueryReq(
+                                  (b) => b..vars.permalink = widget.permalink,
+                                ),
+                              );
+                            },
                           );
                         }
 
@@ -2204,20 +2210,26 @@ class _RepliesState extends ConsumerState<_Replies> with SingleTickerProviderSta
           }
 
           onDelete({required String id}) async {
-            final req = GPostScreen_Comments_DeleteComment_MutationReq(
-              (b) => b..vars.input.commentId = id,
-            );
-            await client.req(req);
+            await context.showDialog(
+              title: '댓글을 삭제하시겠어요?',
+              confirmText: '삭제',
+              onConfirmed: () async {
+                final client = ref.read(ferryProvider);
+                final req = GPostScreen_Comments_DeleteComment_MutationReq(
+                  (b) => b..vars.input.commentId = id,
+                );
+                await client.req(req);
 
-            if (context.mounted) {
-              // FIXME: 문구 미정
-              context.toast.show('댓글을 삭제했어요');
-            }
+                if (context.mounted) {
+                  context.toast.show('댓글이 삭제되었어요', type: ToastType.error);
+                }
 
-            await client.req(
-              GPostScreen_Comnments_QueryReq(
-                (b) => b..vars.permalink = widget.permalink,
-              ),
+                await client.req(
+                  GPostScreen_Comnments_QueryReq(
+                    (b) => b..vars.permalink = widget.permalink,
+                  ),
+                );
+              },
             );
           }
 
