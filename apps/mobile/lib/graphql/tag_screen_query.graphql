@@ -1,4 +1,5 @@
 # import './fragments/post_card_post.graphql';
+# import './fragments/img_image.graphql'
 
 query TagScreen_Query($name: String!) {
   tag(name: $name) {
@@ -12,6 +13,11 @@ query TagScreen_Query($name: String!) {
     posts {
       id
       ...PostCard_post
+    }
+
+    thumbnail {
+      id
+      ...Img_image
     }
   }
 }
