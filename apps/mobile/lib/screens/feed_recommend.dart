@@ -55,7 +55,7 @@ class _FeedRecommendScreenState extends State<FeedRecommendScreen> {
                 unawaited(
                   client.req(newReq).then((value) {
                     _fetching = false;
-                    if (value.recommendFeed.isEmpty) {
+                    if (posts.length == value.recommendFeed.length) {
                       _eol = true;
                     }
                   }),

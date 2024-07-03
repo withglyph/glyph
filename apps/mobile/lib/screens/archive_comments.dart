@@ -57,7 +57,7 @@ class _ArchiveCommentState extends State<ArchiveCommentsScreen> {
                 unawaited(
                   client.req(newReq).then((value) {
                     _fetching = false;
-                    if (value.me!.comments.isEmpty) {
+                    if (comments.length == value.me!.comments.length) {
                       _eol = true;
                     }
                   }),

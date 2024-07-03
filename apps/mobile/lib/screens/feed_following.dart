@@ -55,7 +55,7 @@ class _FeedFollowingScreenState extends State<FeedFollowingScreen> {
                 unawaited(
                   client.req(newReq).then((value) {
                     _fetching = false;
-                    if (value.followingFeed.isEmpty) {
+                    if (posts.length == value.followingFeed.length) {
                       _eol = true;
                     }
                   }),

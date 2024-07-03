@@ -87,7 +87,7 @@ class _OnboardingCurationScreenState extends ConsumerState<OnboardingCurationScr
                   unawaited(
                     client.req(newReq).then((value) {
                       _fetching = false;
-                      if (value.recommendedTags.isEmpty) {
+                      if (data.recommendedTags.length == value.recommendedTags.length) {
                         _eol = true;
                       }
                     }),
