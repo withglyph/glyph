@@ -119,7 +119,7 @@ class PostCard extends ConsumerWidget {
                         ),
                         const Gap(6),
                         Text(
-                          Jiffy.parse(post.publishedAt!.value).format(pattern: 'yyyy.MM.dd'),
+                          Jiffy.parse(post.publishedAt!.value, isUtc: true).format(pattern: 'yyyy.MM.dd'),
                           style: const TextStyle(
                             fontSize: 12,
                             color: BrandColors.gray_500,

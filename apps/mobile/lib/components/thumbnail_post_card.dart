@@ -75,7 +75,7 @@ class ThumbnailPostCard extends ConsumerWidget {
                 ),
                 const Gap(6),
                 Text(
-                  Jiffy.parse(post.publishedAt!.value).fromNow(),
+                  Jiffy.parse(post.publishedAt!.value, isUtc: true).fromNow(),
                   style: const TextStyle(
                     fontSize: 12,
                     color: BrandColors.gray_500,

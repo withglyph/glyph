@@ -44,7 +44,7 @@ class ArchivePurchasesScreen extends ConsumerWidget {
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 20),
                           child: Text(
-                            '${Jiffy.parse(post.purchasedAt!.value).format(pattern: 'yyyy.MM.dd hh:mm')} 구매',
+                            '${Jiffy.parse(post.purchasedAt!.value, isUtc: true).format(pattern: 'yyyy.MM.dd hh:mm')} 구매',
                             style: const TextStyle(
                               fontSize: 11,
                               fontWeight: FontWeight.w500,

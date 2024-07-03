@@ -83,6 +83,7 @@ class SettingsScreen extends ConsumerWidget {
                                   Text(
                                     Jiffy.parse(
                                       data.me!.marketingConsent!.createdAt.value,
+                                      isUtc: true,
                                     ).format(pattern: 'yyyy년 MM월 dd일 수신 동의'),
                                     style: const TextStyle(
                                       fontSize: 12,

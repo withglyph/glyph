@@ -451,11 +451,7 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                             Row(
                               children: [
                                 Text(
-                                  Jiffy.parse(
-                                    data.post.publishedAt!.value,
-                                  ).format(
-                                    pattern: 'yyyy.MM.dd',
-                                  ),
+                                  Jiffy.parse(data.post.publishedAt!.value, isUtc: true).format(pattern: 'yyyy.MM.dd'),
                                   style: const TextStyle(
                                     fontSize: 13,
                                     fontWeight: FontWeight.w500,
@@ -2002,7 +1998,7 @@ class _Comment extends ConsumerWidget {
                       ),
                     const Gap(6),
                     Text(
-                      Jiffy.parse(comment.createdAt.value).fromNow(),
+                      Jiffy.parse(comment.createdAt.value, isUtc: true).fromNow(),
                       style: const TextStyle(
                         fontSize: 12,
                         color: BrandColors.gray_400,

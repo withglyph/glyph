@@ -242,7 +242,7 @@ class NotificationScreen extends ConsumerWidget {
                                     ),
                                     const Gap(4),
                                     Text(
-                                      Jiffy.parse(notification.createdAt.value).fromNow(),
+                                      Jiffy.parse(notification.createdAt.value, isUtc: true).fromNow(),
                                       style: const TextStyle(
                                         fontSize: 12,
                                         color: BrandColors.gray_400,

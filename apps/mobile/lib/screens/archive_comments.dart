@@ -87,7 +87,7 @@ class _ArchiveCommentState extends State<ArchiveCommentsScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              '${Jiffy.parse(comment.createdAt.value).format(pattern: 'yyyy.MM.dd hh:mm')}에 작성',
+                              '${Jiffy.parse(comment.createdAt.value, isUtc: true).format(pattern: 'yyyy.MM.dd hh:mm')}에 작성',
                               style: const TextStyle(
                                 fontSize: 11,
                                 fontWeight: FontWeight.w500,

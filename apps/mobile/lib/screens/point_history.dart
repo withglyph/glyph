@@ -134,7 +134,7 @@ class _PointHistoryState extends ConsumerState<PointHistoryScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  Jiffy.parse(point.createdAt.value).format(
+                                  Jiffy.parse(point.createdAt.value, isUtc: true).format(
                                     pattern: 'yyyy.MM.dd HH:mm 사용',
                                   ),
                                   style: const TextStyle(
