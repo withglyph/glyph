@@ -17,6 +17,7 @@
     "@iconify/json": "^2.2.220",
     "@iconify/tools": "^4.0.4",
     "change-case-all": "^2.1.0",
+    "emojibase-data": "^15.3.2",
     "fantasticon": "^3.0.0",
     "oslllo-svg-fixer": "^4.0.1"
   }
