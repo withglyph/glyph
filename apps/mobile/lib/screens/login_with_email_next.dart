@@ -50,7 +50,8 @@ class LoginWithEmailNextScreen extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
-                  color: BrandColors.gray_600,
+                  color: BrandColors.gray_500,
+                  decoration: TextDecoration.underline,
                 ),
               ),
               onPressed: () async {

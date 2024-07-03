@@ -182,8 +182,11 @@ class _TagScreenState extends State<TagScreen> with SingleTickerProviderStateMix
                       Container(
                         key: _thumbnailKey,
                         padding: const Pad(all: 20),
-                        decoration:
-                            const BoxDecoration(border: Border(bottom: BorderSide(color: BrandColors.gray_100))),
+                        decoration: const BoxDecoration(
+                          border: Border(
+                            bottom: BorderSide(color: BrandColors.gray_100),
+                          ),
+                        ),
                         child: Center(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,

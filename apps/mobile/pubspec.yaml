@@ -28,6 +28,7 @@ dependencies:
   flutter_inappwebview: '^6.0.0'
   flutter_native_splash: '^2.4.0'
   flutter_naver_login: '^1.8.0'
+  flutter_randomcolor: ^1.0.15
   flutter_riverpod: '^2.5.1'
   flutter_secure_storage: '^9.2.1'
   flutter_svg: '^2.0.10+1'

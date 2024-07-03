@@ -339,7 +339,7 @@ class _MeScreenState extends ConsumerState<MeScreen> {
                       icon: Tabler.sparkles,
                       title: '큐레이션',
                       onPressed: () async {
-                        await context.router.push(const CurationRoute());
+                        await context.router.push(const OnboardingCurationRoute());
                       },
                     ),
                   ],

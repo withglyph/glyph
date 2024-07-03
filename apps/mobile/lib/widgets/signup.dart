@@ -68,7 +68,7 @@ class _SignupDialogState extends ConsumerState<SignupDialog> {
               '글리프 시작하기',
               style: TextStyle(
                 fontSize: 19,
-                fontWeight: FontWeight.w700,
+                fontWeight: FontWeight.w800,
               ),
             ),
             const Gap(20),
@@ -97,30 +97,46 @@ class _SignupDialogState extends ConsumerState<SignupDialog> {
             ),
             const Gap(12),
             _Checkbox(
-              label: Row(
-                children: [
-                  const Text('(필수) ', style: TextStyle(fontSize: 15)),
-                  Pressable(
-                    child: const Text('이용약관', style: TextStyle(fontSize: 15, decoration: TextDecoration.underline)),
-                    onPressed: () async {
-                      await launchUrl(
-                        Uri.parse('https://help.withglyph.com/legal/terms'),
-                        mode: LaunchMode.inAppBrowserView,
-                      );
-                    },
-                  ),
-                  const Text(' 및 ', style: TextStyle(fontSize: 15)),
-                  Pressable(
-                    child: const Text('개인정보처리방침', style: TextStyle(fontSize: 15, decoration: TextDecoration.underline)),
-                    onPressed: () async {
-                      await launchUrl(
-                        Uri.parse('https://help.withglyph.com/legal/privacy'),
-                        mode: LaunchMode.inAppBrowserView,
-                      );
-                    },
-                  ),
-                  const Text(' 동의', style: TextStyle(fontSize: 15)),
-                ],
+              label: DefaultTextStyle.merge(
+                style: const TextStyle(fontSize: 15),
+                child: Builder(
+                  builder: (context) {
+                    return Text.rich(
+                      TextSpan(
+                        style: DefaultTextStyle.of(context).style,
+                        children: [
+                          const TextSpan(text: '(필수) '),
+                          WidgetSpan(
+                            alignment: PlaceholderAlignment.middle,
+                            child: Pressable(
+                              child: const Text('이용약관', style: TextStyle(decoration: TextDecoration.underline)),
+                              onPressed: () async {
+                                await launchUrl(
+                                  Uri.parse('https://help.withglyph.com/legal/terms'),
+                                  mode: LaunchMode.inAppBrowserView,
+                                );
+                              },
+                            ),
+                          ),
+                          const TextSpan(text: ' 및 '),
+                          WidgetSpan(
+                            alignment: PlaceholderAlignment.middle,
+                            child: Pressable(
+                              child: const Text('개인정보처리방침', style: TextStyle(decoration: TextDecoration.underline)),
+                              onPressed: () async {
+                                await launchUrl(
+                                  Uri.parse('https://help.withglyph.com/legal/privacy'),
+                                  mode: LaunchMode.inAppBrowserView,
+                                );
+                              },
+                            ),
+                          ),
+                          const TextSpan(text: ' 동의'),
+                        ],
+                      ),
+                    );
+                  },
+                ),
               ),
               value: _termsConsent,
               onChanged: (value) {

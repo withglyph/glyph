@@ -691,6 +691,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.20"
+  flutter_randomcolor:
+    dependency: "direct main"
+    description:
+      name: flutter_randomcolor
+      sha256: f11e88387fe741c9ed3e3b9cca876936b6d883d3e8eef0c11e931c0339195fae
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.15"
   flutter_riverpod:
     dependency: "direct main"
     description:

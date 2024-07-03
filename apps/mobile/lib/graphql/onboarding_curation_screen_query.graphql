@@ -1,0 +1,13 @@
+# import './fragments/img_image.graphql'
+
+query OnboardingCurationScreen_Query($page: Int!, $take: Int!, $seed: Int!) {
+  recommendedTags(page: $page, take: $take, seed: $seed) {
+    id
+    name
+
+    thumbnail {
+      id
+      ...Img_image
+    }
+  }
+}
