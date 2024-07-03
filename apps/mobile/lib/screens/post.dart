@@ -1625,37 +1625,23 @@ class _CommentsState extends ConsumerState<_Comments> with SingleTickerProviderS
                   ),
                 ),
               ),
-              if (!isCommentEnabled)
-                Expanded(
+              if (data.post.commentQualification == GPostCommentQualification.NONE)
+                const Expanded(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: data.post.commentQualification == GPostCommentQualification.IDENTIFIED
-                        ? const [
-                            Icon(TablerBold.message_circle_off, size: 40, color: Colors.black),
-                            Gap(16),
-                            Text(
-                              '본인인증 계정만 댓글을 남길 수 있어요',
-                              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: BrandColors.gray_800),
-                            ),
-                            Gap(4),
-                            Text(
-                              '본인인증을 진행해주세요',
-                              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: BrandColors.gray_500),
-                            ),
-                          ]
-                        : const [
-                            Icon(TablerBold.message_circle_off, size: 40, color: Colors.black),
-                            Gap(16),
-                            Text(
-                              '댓글을 달 수 없어요',
-                              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: BrandColors.gray_800),
-                            ),
-                            Gap(4),
-                            Text(
-                              '창작자가 댓글을 달 수 없도록 설정했어요',
-                              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: BrandColors.gray_500),
-                            ),
-                          ],
+                    children: [
+                      Icon(TablerBold.message_circle_off, size: 40, color: Colors.black),
+                      Gap(16),
+                      Text(
+                        '댓글을 달 수 없어요',
+                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: BrandColors.gray_800),
+                      ),
+                      Gap(4),
+                      Text(
+                        '창작자가 댓글을 달 수 없도록 설정했어요',
+                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: BrandColors.gray_500),
+                      ),
+                    ],
                   ),
                 )
               else if (data.post.comments.isEmpty)
@@ -1689,11 +1675,6 @@ class _CommentsState extends ConsumerState<_Comments> with SingleTickerProviderS
                       itemCount: data.post.comments.length,
                       itemBuilder: (context, index) {
                         final comment = data.post.comments[index];
-
-                        // FIXME: comment visible 여부는 서버에서 주기로 했다
-                        final invisible = comment.visibility == GPostCommentVisibility.PRIVATE &&
-                            data.post.space?.commentProfile?.id != comment.profile.id &&
-                            data.post.space?.meAsMember == null;
                         final isMyComment = comment.profile.id == data.post.space?.commentProfile?.id;
 
                         onDelete() async {
