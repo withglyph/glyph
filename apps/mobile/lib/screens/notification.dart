@@ -231,7 +231,7 @@ class NotificationScreen extends ConsumerWidget {
                                               ),
                                               WidgetSpan(
                                                 alignment: PlaceholderAlignment.middle,
-                                                child: Emoji(Emojis.fromShortCode(notification.emoji)),
+                                                child: Emoji(Emojis.fromShortCode(notification.emoji), size: 14),
                                               ),
                                               const TextSpan(text: '를 달았어요'),
                                             ],
