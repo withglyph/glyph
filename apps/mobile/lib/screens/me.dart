@@ -65,7 +65,7 @@ class _MeScreenState extends ConsumerState<MeScreen> {
                             children: [
                               Row(
                                 children: [
-                                  Expanded(
+                                  Flexible(
                                     child: Text(
                                       data.me!.profile.name,
                                       maxLines: 3,
