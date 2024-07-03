@@ -16,6 +16,7 @@ class VerticalDivider extends StatelessWidget {
   Widget build(BuildContext context) {
     return Box(
       width: width,
+      height: double.infinity,
       color: color,
     );
   }

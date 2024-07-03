@@ -178,6 +178,7 @@ class _FormTextFieldState extends State<FormTextField> with SingleTickerProvider
               animation: _animationController,
               builder: (context, child) {
                 return Box(
+                  width: double.infinity,
                   height: 1.5,
                   color: field.hasError ? BrandColors.red_600 : _borderColorAnimation.value,
                 );

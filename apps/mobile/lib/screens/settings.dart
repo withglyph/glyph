@@ -58,7 +58,7 @@ class SettingsScreen extends ConsumerWidget {
                     ],
                   ),
                 ),
-                const Box(height: 6, color: BrandColors.gray_50),
+                const Box(width: double.infinity, height: 6, color: BrandColors.gray_50),
                 Padding(
                   padding: const Pad(horizontal: 20, top: 20),
                   child: Column(
@@ -110,7 +110,7 @@ class SettingsScreen extends ConsumerWidget {
                     ],
                   ),
                 ),
-                const Box(height: 6, color: BrandColors.gray_50),
+                const Box(width: double.infinity, height: 6, color: BrandColors.gray_50),
                 Padding(
                   padding: const Pad(horizontal: 20, top: 20),
                   child: Column(
@@ -176,7 +176,7 @@ class SettingsScreen extends ConsumerWidget {
                     ],
                   ),
                 ),
-                const Box(height: 6, color: BrandColors.gray_50),
+                const Box(width: double.infinity, height: 6, color: BrandColors.gray_50),
                 Padding(
                   padding: const Pad(all: 20, bottom: 4),
                   child: Column(

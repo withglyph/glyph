@@ -1454,11 +1454,7 @@ class _CollectionPostListState extends State<_CollectionPostList> {
                           ),
                           const Padding(
                             padding: Pad(horizontal: 8),
-                            child: Box(
-                              width: 1,
-                              height: 12,
-                              color: BrandColors.gray_200,
-                            ),
+                            child: Box(width: 1, height: 12, color: BrandColors.gray_200),
                           ),
                           Expanded(
                             child: Text(

@@ -15,6 +15,7 @@ class HorizontalDivider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Box(
+      width: double.infinity,
       height: height,
       color: color,
     );

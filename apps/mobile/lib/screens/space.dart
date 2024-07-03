@@ -181,7 +181,7 @@ class _SpaceScreenState extends State<SpaceScreen> with SingleTickerProviderStat
                                     key: _headerKey,
                                     scale: _headerScale,
                                     alignment: Alignment.bottomCenter,
-                                    child: const Box(height: 88, color: BrandColors.gray_50),
+                                    child: const Box(width: double.infinity, height: 88, color: BrandColors.gray_50),
                                   ),
                                   Positioned(
                                     left: 20,
