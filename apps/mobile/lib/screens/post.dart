@@ -1770,14 +1770,14 @@ class _CommentsState extends ConsumerState<_Comments> with SingleTickerProviderS
                             );
                           },
                           onReply: () async {
-                            // await context.showModal(
-                            //   builder: (context) {
-                            //     return _Replies(
-                            //       parentId: comment.id,
-                            //       permalink: widget.permalink,
-                            //     );
-                            //   },
-                            // );
+                            await context.showModal(
+                              builder: (context) {
+                                return _Replies(
+                                  parentId: comment.id,
+                                  permalink: widget.permalink,
+                                );
+                              },
+                            );
                           },
                         );
                       },
@@ -2134,6 +2134,401 @@ class _Comment extends ConsumerWidget {
             ),
           ),
       ],
+    );
+  }
+}
+
+class _Replies extends ConsumerStatefulWidget {
+  const _Replies({
+    required this.parentId,
+    required this.permalink,
+  });
+
+  final String parentId;
+  final String permalink;
+
+  @override
+  createState() => _RepliesState();
+}
+
+class _RepliesState extends ConsumerState<_Replies> with SingleTickerProviderStateMixin {
+  final _focusNode = FocusNode();
+  final _textController = TextEditingController();
+  final _scrollController = ScrollController();
+
+  late AnimationController _textFieldAnimationController;
+  late Animation<Color?> _textFieldFillColorAnimation;
+
+  bool _isEmpty = true;
+  GPostCommentVisibility _visibility = GPostCommentVisibility.PUBLIC;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _textFieldAnimationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 150),
+    );
+
+    _textFieldFillColorAnimation = ColorTween(
+      begin: BrandColors.gray_0,
+      end: BrandColors.gray_50,
+    ).animate(_textFieldAnimationController);
+
+    _focusNode.addListener(() {
+      if (_focusNode.hasFocus) {
+        _textFieldAnimationController.forward();
+      } else {
+        _textFieldAnimationController.reverse();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    _textFieldAnimationController.dispose();
+    _scrollController.dispose();
+
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: GraphQLOperation(
+        operation: GPostScreen_Comnments_QueryReq(
+          (b) => b..vars.permalink = widget.permalink,
+        ),
+        builder: (context, client, data) {
+          final isCommentEnabled = data.post.commentQualification == GPostCommentQualification.ANY ||
+              (data.post.commentQualification == GPostCommentQualification.IDENTIFIED &&
+                  data.me!.personalIdentity != null);
+
+          final comment = data.post.comments.firstWhere((comment) => comment.id == widget.parentId);
+
+          onLike({required bool liked, required String id}) async {
+            if (liked) {
+              final req = GPostScreen_Comments_UnlikeComment_MutationReq(
+                (b) => b..vars.input.commentId = id,
+              );
+              await client.req(req);
+            } else {
+              final req = GPostScreen_Comments_LikeComment_MutationReq(
+                (b) => b..vars.input.commentId = id,
+              );
+              await client.req(req);
+            }
+          }
+
+          onDelete({required String id}) async {
+            final req = GPostScreen_Comments_DeleteComment_MutationReq(
+              (b) => b..vars.input.commentId = id,
+            );
+            await client.req(req);
+
+            if (context.mounted) {
+              // FIXME: 문구 미정
+              context.toast.show('댓글을 삭제했어요');
+            }
+
+            await client.req(
+              GPostScreen_Comnments_QueryReq(
+                (b) => b..vars.permalink = widget.permalink,
+              ),
+            );
+          }
+
+          onMore({required GComment_postComment comment}) async {
+            await context.showBottomMenu(
+              title: '댓글',
+              items: comment.profile.id == data.post.space?.commentProfile?.id // isMyComment
+                  ? [
+                      BottomMenuItem(
+                        icon: Tabler.x,
+                        iconColor: BrandColors.red_600,
+                        title: '삭제',
+                        color: BrandColors.red_600,
+                        onTap: () => onDelete(id: comment.id),
+                      ),
+                    ]
+                  : [
+                      BottomMenuItem(
+                        icon: Tabler.x,
+                        iconColor: BrandColors.gray_600,
+                        title: '삭제',
+                        onTap: () => onDelete(id: comment.id),
+                      ),
+                      // BottomMenuItem(
+                      //   icon: Tabler.user_x,
+                      //   iconColor: BrandColors.red_600,
+                      //   title: '차단',
+                      //   color: BrandColors.red_600,
+                      //   onTap: () async {
+                      //     if (context.mounted) {
+                      //       // TODO:
+                      //       context.toast.show('Not implemented');
+                      //     }
+                      //   },
+                      // ),
+                    ],
+            );
+          }
+
+          Future<void> onSubmit() async {
+            final value = _textController.text;
+            if (value.isEmpty) {
+              return;
+            }
+
+            _focusNode.unfocus();
+
+            final req = GPostScreen_Comments_CreateComment_MutationReq(
+              (b) => b
+                ..vars.input.postId = data.post.id
+                ..vars.input.parentId = widget.parentId
+                ..vars.input.content = value
+                ..vars.input.visibility = _visibility,
+            );
+            await client.req(req);
+            await client.req(
+              GPostScreen_Comnments_QueryReq(
+                (b) => b..vars.permalink = widget.permalink,
+              ),
+            );
+
+            _textController.clear();
+            setState(() {
+              _isEmpty = true;
+            });
+
+            await _scrollController.animateTo(
+              _scrollController.position.maxScrollExtent,
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeInOut,
+            );
+          }
+
+          return Column(
+            children: [
+              Container(
+                height: 54,
+                decoration: const BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(
+                      color: BrandColors.gray_50,
+                    ),
+                  ),
+                ),
+                child: NavigationToolbar(
+                  middle: Text(
+                    '답글 ${comment.children.length}',
+                    style: const TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  trailing: Padding(
+                    padding: const Pad(
+                      right: 20,
+                    ),
+                    child: Pressable(
+                      child: const Icon(Tabler.x),
+                      onPressed: () async {
+                        await context.router.maybePop();
+                      },
+                    ),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const Pad(
+                    horizontal: 20,
+                  ),
+                  child: Column(
+                    children: [
+                      _Comment(
+                        comment: comment,
+                        commentProfile: data.post.space?.commentProfile,
+                        postAuthorProfile: data.post.member!.profile,
+                        isMyPost: data.post.space?.meAsMember != null,
+                        onLike: () async => onLike(
+                          liked: comment.liked,
+                          id: comment.id,
+                        ),
+                        onMore: () async => onMore(comment: comment),
+                      ),
+                      if (comment.children.isNotEmpty) ...[
+                        const HorizontalDivider(
+                          color: BrandColors.gray_50,
+                        ),
+                        Expanded(
+                          child: ListView.separated(
+                            controller: _scrollController,
+                            itemCount: comment.children.length,
+                            separatorBuilder: (context, index) {
+                              return const Padding(
+                                padding: Pad(left: 24),
+                                child: HorizontalDivider(
+                                  color: BrandColors.gray_50,
+                                ),
+                              );
+                            },
+                            itemBuilder: (context, index) {
+                              final commentReply = comment.children[index];
+
+                              // FIXME: comment visible 여부는 서버에서 주기로 했다
+                              final invisible = commentReply.visibility == GPostCommentVisibility.PRIVATE &&
+                                  data.post.space?.commentProfile?.id != commentReply.profile.id &&
+                                  data.post.space?.meAsMember == null;
+
+                              return Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Padding(
+                                    padding: Pad(vertical: 20),
+                                    child: Icon(Tabler.chevron_down_left, size: 16, color: BrandColors.gray_400),
+                                  ),
+                                  const Gap(8),
+                                  Expanded(
+                                    child: _Comment(
+                                      comment: commentReply,
+                                      commentProfile: data.post.space?.commentProfile,
+                                      postAuthorProfile: data.post.member!.profile,
+                                      isMyPost: data.post.space?.meAsMember != null,
+                                      onLike: () async => onLike(
+                                        liked: commentReply.liked,
+                                        id: commentReply.id,
+                                      ),
+                                      onMore: () async => onMore(comment: commentReply),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+              ),
+              Container(
+                padding: const Pad(
+                  horizontal: 20,
+                  vertical: 14,
+                ),
+                decoration: const BoxDecoration(
+                  border: Border(
+                    top: BorderSide(
+                      color: BrandColors.gray_150,
+                    ),
+                  ),
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      data.post.space!.commentProfile?.name ?? '(알 수 없음)',
+                      style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: BrandColors.gray_500,
+                      ),
+                    ),
+                    const Gap(4),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Expanded(
+                          child: AnimatedBuilder(
+                            animation: _textFieldAnimationController,
+                            builder: (context, child) {
+                              return TextField(
+                                controller: _textController,
+                                focusNode: _focusNode,
+                                enabled: isCommentEnabled,
+                                textInputAction: TextInputAction.newline,
+                                minLines: 1,
+                                maxLines: 4,
+                                decoration: InputDecoration(
+                                  isCollapsed: true,
+                                  enabledBorder: InputBorder.none,
+                                  focusedBorder: InputBorder.none,
+                                  disabledBorder: InputBorder.none,
+                                  contentPadding: const Pad(
+                                    vertical: 2,
+                                  ),
+                                  hintText: isCommentEnabled
+                                      ? '답글을 입력해주세요'
+                                      : (data.post.commentQualification == GPostCommentQualification.IDENTIFIED
+                                          ? '본인인증이 된 계정만 댓글을 달 수 있어요'
+                                          : '댓글을 달 수 없는 포스트에요'),
+                                  hintStyle: const TextStyle(
+                                    color: BrandColors.gray_400,
+                                  ),
+                                ),
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400,
+                                  color: BrandColors.gray_900,
+                                ),
+                                onChanged: (value) {
+                                  setState(() {
+                                    _isEmpty = value.isEmpty;
+                                  });
+                                },
+                                onSubmitted: (value) async {
+                                  await onSubmit();
+                                },
+                              );
+                            },
+                          ),
+                        ),
+                        const Gap(10),
+                        Row(
+                          children: [
+                            Pressable(
+                              onPressed: () {
+                                setState(() {
+                                  if (_visibility == GPostCommentVisibility.PUBLIC) {
+                                    _visibility = GPostCommentVisibility.PRIVATE;
+                                  } else if (_visibility == GPostCommentVisibility.PRIVATE) {
+                                    _visibility = GPostCommentVisibility.PUBLIC;
+                                  }
+                                });
+                              },
+                              child: Icon(
+                                _visibility == GPostCommentVisibility.PRIVATE ? Tabler.lock : Tabler.lock_open,
+                                size: 24,
+                                color: _visibility == GPostCommentVisibility.PRIVATE
+                                    ? BrandColors.gray_900
+                                    : BrandColors.gray_300,
+                              ),
+                            ),
+                            const Gap(20),
+                            Pressable(
+                              onPressed: onSubmit,
+                              child: Icon(
+                                Tabler.circle_arrow_up_filled,
+                                size: 24,
+                                color: _isEmpty ? BrandColors.gray_300 : BrandColors.gray_900,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          );
+        },
+      ),
     );
   }
 }
