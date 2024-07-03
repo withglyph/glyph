@@ -8,6 +8,8 @@ import 'package:glyph/components/img.dart';
 import 'package:glyph/components/pressable.dart';
 import 'package:glyph/components/pull_to_refresh.dart';
 import 'package:glyph/context/toast.dart';
+import 'package:glyph/emojis/data.dart';
+import 'package:glyph/emojis/emoji.dart';
 import 'package:glyph/ferry/extension.dart';
 import 'package:glyph/ferry/widget.dart';
 import 'package:glyph/graphql/__generated__/notification_screen_mark_all_notification_as_read_mutation.req.gql.dart';
@@ -206,22 +208,36 @@ class NotificationScreen extends ConsumerWidget {
                                       ),
                                     ),
                                     const Gap(2),
-                                    Text(
-                                      notification.when(
-                                        commentNotification: (notification) =>
-                                            '${notification.actor!.name}님이 ${notification.post.publishedRevision!.title ?? '(제목 없음)'}에 댓글을 남겼어요',
-                                        subscribeNotification: (notification) =>
-                                            '${notification.actor!.name}님이 ${notification.space.name} 스페이스를 구독했어요',
-                                        purchaseNotification: (notification) =>
-                                            '${notification.actor!.name}님이 ${notification.post.publishedRevision!.title ?? '(제목 없음)'} 포스트를 구매했어요',
-                                        emojiReactionNotification: (notification) =>
-                                            '${notification.actor!.name}님이 ${notification.post.publishedRevision!.title ?? '(제목 없음)'}에 ${notification.emoji}를 달았어요',
-                                        orElse: () => '(알 수 없음)',
-                                      ),
+                                    DefaultTextStyle.merge(
                                       style: const TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.w500,
                                         color: BrandColors.gray_600,
+                                      ),
+                                      child: notification.when(
+                                        commentNotification: (notification) => Text(
+                                            '${notification.actor!.name}님이 ${notification.post.publishedRevision!.title ?? '(제목 없음)'}에 댓글을 남겼어요'),
+                                        subscribeNotification: (notification) => Text(
+                                            '${notification.actor!.name}님이 ${notification.space.name} 스페이스를 구독했어요'),
+                                        purchaseNotification: (notification) => Text(
+                                            '${notification.actor!.name}님이 ${notification.post.publishedRevision!.title ?? '(제목 없음)'} 포스트를 구매했어요'),
+                                        emojiReactionNotification: (notification) => RichText(
+                                          text: TextSpan(
+                                            style: DefaultTextStyle.of(context).style,
+                                            children: [
+                                              TextSpan(
+                                                text:
+                                                    '${notification.actor!.name}님이 ${notification.post.publishedRevision!.title ?? '(제목 없음)'}에 ',
+                                              ),
+                                              WidgetSpan(
+                                                alignment: PlaceholderAlignment.middle,
+                                                child: Emoji(Emojis.fromShortCode(notification.emoji)),
+                                              ),
+                                              const TextSpan(text: '를 달았어요'),
+                                            ],
+                                          ),
+                                        ),
+                                        orElse: () => const Text('(알 수 없음)'),
                                       ),
                                     ),
                                     const Gap(4),
