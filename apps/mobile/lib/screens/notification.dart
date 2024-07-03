@@ -19,7 +19,6 @@ import 'package:glyph/graphql/__generated__/notification_screen_query.req.gql.da
 import 'package:glyph/graphql/__generated__/schema.schema.gql.dart';
 import 'package:glyph/icons/tabler.dart';
 import 'package:glyph/icons/tabler_bold.dart';
-import 'package:glyph/providers/ferry.dart';
 import 'package:glyph/routers/app.gr.dart';
 import 'package:glyph/shells/default.dart';
 import 'package:glyph/themes/colors.dart';
@@ -106,7 +105,10 @@ class NotificationScreen extends ConsumerWidget {
                         ),
                       ),
                       onPressed: () async {
-                        final client = ref.read(ferryProvider);
+                        if (unreadNotifications.isEmpty) {
+                          return;
+                        }
+
                         final req = GNotificationScreen_MarkAllNotificationsAsRead_MutationReq();
                         await client.req(req);
 
@@ -214,11 +216,14 @@ class NotificationScreen extends ConsumerWidget {
                                         builder: (context) {
                                           return notification.when(
                                             commentNotification: (notification) => Text(
-                                                '${notification.actor!.name}님이 ${notification.post.publishedRevision!.title ?? '(제목 없음)'}에 댓글을 남겼어요'),
+                                              '${notification.actor!.name}님이 ${notification.post.publishedRevision!.title ?? '(제목 없음)'}에 댓글을 남겼어요',
+                                            ),
                                             subscribeNotification: (notification) => Text(
-                                                '${notification.actor!.name}님이 ${notification.space.name} 스페이스를 구독했어요'),
+                                              '${notification.actor!.name}님이 ${notification.space.name} 스페이스를 구독했어요',
+                                            ),
                                             purchaseNotification: (notification) => Text(
-                                                '${notification.actor!.name}님이 ${notification.post.publishedRevision!.title ?? '(제목 없음)'} 포스트를 구매했어요'),
+                                              '${notification.actor!.name}님이 ${notification.post.publishedRevision!.title ?? '(제목 없음)'} 포스트를 구매했어요',
+                                            ),
                                             emojiReactionNotification: (notification) => RichText(
                                               text: TextSpan(
                                                 style: DefaultTextStyle.of(context).style,
