@@ -1,0 +1,23 @@
+# import './fragments/img_image.graphql'
+
+query SpaceCollectionsScreen_Query($slug: String!) {
+  space(slug: $slug) {
+    id
+
+    collections {
+      id
+      name
+      description
+      count
+      
+      thumbnail {
+        id
+        ...Img_image
+      }
+    }
+
+    meAsMember {
+      id
+    }
+  }
+}

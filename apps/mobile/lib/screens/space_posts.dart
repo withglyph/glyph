@@ -7,7 +7,7 @@ import 'package:glyph/components/horizontal_divider.dart';
 import 'package:glyph/components/thumbnail_post_card.dart';
 import 'package:glyph/ferry/widget.dart';
 import 'package:glyph/graphql/__generated__/space_posts_screen_query.req.gql.dart';
-import 'package:glyph/icons/tabler.dart';
+import 'package:glyph/icons/tabler_bold.dart';
 import 'package:glyph/themes/colors.dart';
 
 @RoutePage()
@@ -27,30 +27,35 @@ class SpacePostsScreen extends ConsumerWidget {
 
         return posts.isEmpty
             ? EmptyState(
-                icon: Tabler.notes_off,
+                icon: TablerBold.notes_off,
                 title: '아직 포스트가 없어요',
                 description:
                     data.space.meAsMember == null ? '스페이스를 구독하면 새로운 포스트가\n올라올 때 알림을 받을 수 있어요' : '원하는 포스트를 작성해보세요',
               )
-            : ListView.separated(
+            : CustomScrollView(
+                key: const PageStorageKey<String>('space-posts'),
                 physics: const AlwaysScrollableScrollPhysics(
                   parent: BouncingScrollPhysics(),
                 ),
-                itemCount: posts.length,
-                itemBuilder: (context, index) {
-                  final post = posts[index];
+                slivers: [
+                  SliverList.separated(
+                    itemCount: posts.length,
+                    itemBuilder: (context, index) {
+                      final post = posts[index];
 
-                  return ThumbnailPostCard(
-                    post,
-                    padding: const Pad(horizontal: 20, vertical: 18),
-                  );
-                },
-                separatorBuilder: (context, index) {
-                  return const Padding(
-                    padding: Pad(horizontal: 20),
-                    child: HorizontalDivider(color: BrandColors.gray_50),
-                  );
-                },
+                      return ThumbnailPostCard(
+                        post,
+                        padding: const Pad(horizontal: 20, vertical: 18),
+                      );
+                    },
+                    separatorBuilder: (context, index) {
+                      return const Padding(
+                        padding: Pad(horizontal: 20),
+                        child: HorizontalDivider(color: BrandColors.gray_50),
+                      );
+                    },
+                  ),
+                ],
               );
       },
     );
