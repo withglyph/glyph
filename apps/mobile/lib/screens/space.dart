@@ -318,7 +318,8 @@ class _SpaceScreenState extends State<SpaceScreen> with SingleTickerProviderStat
                                 height: 8,
                                 color: BrandColors.gray_50,
                               ),
-                              if (data.space.description != null || data.space.meAsMember != null) ...[
+                              if ((data.space.description != null && data.space.description != '') ||
+                                  data.space.meAsMember != null) ...[
                                 Padding(
                                   padding: const Pad(horizontal: 20, vertical: 24),
                                   child: SizedBox(
@@ -336,10 +337,13 @@ class _SpaceScreenState extends State<SpaceScreen> with SingleTickerProviderStat
                                         ),
                                         const Gap(8),
                                         Text(
-                                          data.space.description ?? '아직 스페이스를 소개하는 글이 작성되지 않았어요\n스페이스 관리에서 소개글을 작성해주세요',
+                                          data.space.description != null && data.space.description != ''
+                                              ? '${data.space.description}'
+                                              : '아직 스페이스를 소개하는 글이 작성되지 않았어요\n스페이스 관리에서 소개글을 작성해주세요',
                                           style: TextStyle(
                                             fontSize: 14,
-                                            color: data.space.description == null && data.space.meAsMember != null
+                                            color: (data.space.description == '' || data.space.description == null) &&
+                                                    data.space.meAsMember != null
                                                 ? BrandColors.gray_400
                                                 : BrandColors.gray_900,
                                           ),
@@ -359,6 +363,11 @@ class _SpaceScreenState extends State<SpaceScreen> with SingleTickerProviderStat
                         SliverPinnedHeader(
                           child: Stack(
                             children: [
+                              const Positioned.fill(
+                                child: ColoredBox(
+                                  color: BrandColors.gray_0,
+                                ),
+                              ),
                               const Positioned.fill(
                                 top: null,
                                 child: HorizontalDivider(
