@@ -847,7 +847,8 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                               ),
                             ),
                             const Gap(12),
-                            IntrinsicHeight(
+                            SizedBox(
+                              height: 56,
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.stretch,
                                 children: [
@@ -947,7 +948,7 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                                             ),
                                             child: const Row(
                                               children: [
-                                                Flexible(
+                                                Expanded(
                                                   child: Text(
                                                     '다음 포스트가 없습니다',
                                                     maxLines: 2,
