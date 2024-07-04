@@ -12,7 +12,8 @@ import {
   SpaceMasquerades,
   UserPersonalIdentities,
 } from '$lib/server/database';
-import { createNotification, getSpaceMember, Loader, makeMasquerade } from '$lib/server/utils';
+import { enqueueJob } from '$lib/server/jobs';
+import { getSpaceMember, Loader, makeMasquerade } from '$lib/server/utils';
 import { builder } from '../builder';
 import { createObjectRef } from '../utils';
 import { Post } from './post';
@@ -411,7 +412,7 @@ builder.mutationFields((t) => ({
         profileId = masquerade.profileId;
       }
 
-      return await database.transaction(async (tx) => {
+      const commentId = await database.transaction(async (tx) => {
         const [comment] = await tx
           .insert(PostComments)
           .values({
@@ -425,18 +426,20 @@ builder.mutationFields((t) => ({
           })
           .returning({ id: PostComments.id });
 
-        if (notificationTargetUserId !== context.session.userId) {
-          await createNotification({
-            userId: notificationTargetUserId,
-            category: 'COMMENT',
-            actorId: profileId,
-            data: { commentId: comment.id },
-            origin: context.event.url.origin,
-          });
-        }
-
         return comment.id;
       });
+
+      if (notificationTargetUserId !== context.session.userId) {
+        await enqueueJob('createNotification', {
+          userId: notificationTargetUserId,
+          category: 'COMMENT',
+          actorId: profileId,
+          data: { commentId },
+          origin: context.event.url.origin,
+        });
+      }
+
+      return commentId;
     },
   }),
 

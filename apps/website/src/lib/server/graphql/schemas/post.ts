@@ -53,7 +53,6 @@ import { enqueueJob } from '$lib/server/jobs';
 import { elasticSearch, indexName } from '$lib/server/search';
 import {
   checkAgeRatingAllowed,
-  createNotification,
   deductUserPoint,
   defragmentSpaceCollectionPosts,
   generatePostShareImage,
@@ -1880,7 +1879,7 @@ builder.mutationFields((t) => ({
         spaceId: post.space.id,
       });
 
-      await createNotification({
+      await enqueueJob('createNotification', {
         userId: post.userId,
         category: 'PURCHASE',
         actorId: masquerade.profileId,
@@ -1961,7 +1960,7 @@ builder.mutationFields((t) => ({
           spaceId: post.spaceId,
         });
 
-        await createNotification({
+        await enqueueJob('createNotification', {
           userId: post.userId,
           category: 'EMOJI_REACTION',
           actorId: masquerade.profileId,

@@ -25,7 +25,6 @@ import {
 } from '$lib/server/database';
 import { enqueueJob } from '$lib/server/jobs';
 import {
-  createNotification,
   createRandomIcon,
   directUploadImage,
   getSpaceMember,
@@ -817,7 +816,7 @@ builder.mutationFields((t) => ({
 
       await Promise.all(
         members.map((member) =>
-          createNotification({
+          enqueueJob('createNotification', {
             userId: member.userId,
             category: 'SUBSCRIBE',
             actorId: masquerade.profileId,
