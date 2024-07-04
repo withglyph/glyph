@@ -1,7 +1,7 @@
 default_platform(:android)
 
 platform :android do
-  lane :beta do
+  lane :build do
     latest_release = firebase_app_distribution_get_latest_release(
       service_credentials_json_data: ENV["GOOGLE_SERVICE_ACCOUNT"],
       app: "1:58678861052:android:a1ecff4792b696f9bd8b79",
@@ -17,6 +17,15 @@ platform :android do
       service_credentials_json_data: ENV["GOOGLE_SERVICE_ACCOUNT"],
       app: "1:58678861052:android:a1ecff4792b696f9bd8b79",
       groups: "android@team",
+      android_artifact_path: "../build/app/outputs/apk/release/app-release.apk",
+    )
+  end
+
+  lane :beta do
+    dist = firebase_app_distribution(
+      service_credentials_json_data: ENV["GOOGLE_SERVICE_ACCOUNT"],
+      app: "1:58678861052:android:a1ecff4792b696f9bd8b79",
+      groups: "android@team, android@beta",
       android_artifact_path: "../build/app/outputs/apk/release/app-release.apk",
     )
 

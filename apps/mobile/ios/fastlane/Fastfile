@@ -19,7 +19,7 @@ platform :ios do
     match(type: "appstore")
   end
 
-  lane :beta do
+  lane :build do
     latest_release = firebase_app_distribution_get_latest_release(
       service_credentials_json_data: ENV["GOOGLE_SERVICE_ACCOUNT"],
       app: "1:58678861052:ios:65d590f2311a51d6bd8b79",
@@ -42,6 +42,15 @@ platform :ios do
       service_credentials_json_data: ENV["GOOGLE_SERVICE_ACCOUNT"],
       app: "1:58678861052:ios:65d590f2311a51d6bd8b79",
       groups: "ios@team",
+    )
+  end
+
+  lane :beta do
+    dist = firebase_app_distribution(
+      service_credentials_json_data: ENV["GOOGLE_SERVICE_ACCOUNT"],
+      app: "1:58678861052:ios:65d590f2311a51d6bd8b79",
+      groups: "ios@team, ios@beta",
+      ipa_path: "build/Runner.ipa",
     )
 
     slack(
