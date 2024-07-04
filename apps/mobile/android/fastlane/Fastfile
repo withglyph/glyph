@@ -19,6 +19,21 @@ platform :android do
       groups: "android@team",
       android_artifact_path: "../build/app/outputs/apk/release/app-release.apk",
     )
+
+    slack(
+      slack_url: ENV["SLACK_WEBHOOK_URL"],
+      channel: '#activities',
+      pretext: "새 테스트 빌드가 있습니다 :rocket:",
+      default_payloads: [],
+      use_webhook_configured_username_and_icon: true,
+      attachment_properties: {
+        fields: [
+          { title: "플랫폼", value: "Android", short: true },
+          { title: "빌드", value: "#{dist[:displayVersion]} (#{dist[:buildVersion]})", short: true },
+          { title: "릴리즈 페이지", value: dist[:testingUri] },
+        ],
+      },
+    )
   end
 
   lane :beta do
@@ -31,7 +46,8 @@ platform :android do
 
     slack(
       slack_url: ENV["SLACK_WEBHOOK_URL"],
-      pretext: "새 빌드가 있습니다 :rocket:",
+      channel: '#app-private-beta',
+      pretext: "새 베타 빌드가 있습니다 :rocket:",
       default_payloads: [],
       use_webhook_configured_username_and_icon: true,
       attachment_properties: {
