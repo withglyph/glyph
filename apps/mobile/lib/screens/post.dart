@@ -1934,6 +1934,7 @@ class _CommentsState extends ConsumerState<_Comments> with SingleTickerProviderS
 
           return Column(
             children: [
+              // FIXME: modal 사용
               Container(
                 height: 54,
                 decoration: const BoxDecoration(
@@ -1943,23 +1944,42 @@ class _CommentsState extends ConsumerState<_Comments> with SingleTickerProviderS
                     ),
                   ),
                 ),
-                child: NavigationToolbar(
-                  middle: Text(
-                    '댓글 ${data.post.commentCount}',
-                    style: const TextStyle(
-                      fontSize: 17,
-                      fontWeight: FontWeight.w700,
+                child: Stack(
+                  children: [
+                    NavigationToolbar(
+                      middle: Text(
+                        '댓글 ${data.post.commentCount}',
+                        style: const TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      trailing: Padding(
+                        padding: const Pad(right: 20),
+                        child: Pressable(
+                          child: const Icon(Tabler.x),
+                          onPressed: () async {
+                            await context.router.maybePop();
+                          },
+                        ),
+                      ),
                     ),
-                  ),
-                  trailing: Padding(
-                    padding: const Pad(right: 20),
-                    child: Pressable(
-                      child: const Icon(Tabler.x),
-                      onPressed: () async {
-                        await context.router.maybePop();
-                      },
+                    Positioned(
+                      left: 0,
+                      right: 0,
+                      top: 4,
+                      child: Center(
+                        child: Container(
+                          width: 40,
+                          height: 4,
+                          decoration: BoxDecoration(
+                            color: BrandColors.gray_150,
+                            borderRadius: BorderRadius.circular(2),
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
+                  ],
                 ),
               ),
               if (data.post.commentQualification == GPostCommentQualification.NONE)
@@ -1983,6 +2003,7 @@ class _CommentsState extends ConsumerState<_Comments> with SingleTickerProviderS
                   child: Padding(
                     padding: const Pad(horizontal: 20),
                     child: ListView.separated(
+                      padding: const Pad(bottom: 32),
                       physics: const AlwaysScrollableScrollPhysics(
                         parent: BouncingScrollPhysics(),
                       ),
@@ -2353,37 +2374,34 @@ class _Comment extends ConsumerWidget {
                     ),
                 ],
               ),
-              const Gap(4),
-              Padding(
-                padding: const Pad(right: 12),
-                child: switch (comment.invisibleReason) {
-                  GCommentInvisibleReason.DELETED => const Text(
-                      '삭제된 댓글입니다',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w400,
-                        color: BrandColors.gray_400,
-                      ),
+              const Gap(6),
+              switch (comment.invisibleReason) {
+                GCommentInvisibleReason.DELETED => const Text(
+                    '삭제된 댓글입니다',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                      color: BrandColors.gray_400,
                     ),
-                  GCommentInvisibleReason.PRIVATE => const Text(
-                      '비밀댓글입니다',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w400,
-                        color: BrandColors.gray_400,
-                      ),
+                  ),
+                GCommentInvisibleReason.PRIVATE => const Text(
+                    '비밀댓글입니다',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                      color: BrandColors.gray_400,
                     ),
-                  null => Text(
-                      comment.content,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w400,
-                        color: BrandColors.gray_900,
-                      ),
+                  ),
+                null => Text(
+                    comment.content,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                      color: BrandColors.gray_900,
                     ),
-                  _ => throw UnimplementedError(),
-                },
-              ),
+                  ),
+                _ => throw UnimplementedError(),
+              },
               const Gap(12),
               Row(
                 children: [
@@ -2728,6 +2746,7 @@ class _RepliesState extends ConsumerState<_Replies> with SingleTickerProviderSta
 
           return Column(
             children: [
+              // FIXME: modal 사용
               Container(
                 height: 54,
                 decoration: const BoxDecoration(
@@ -2737,25 +2756,42 @@ class _RepliesState extends ConsumerState<_Replies> with SingleTickerProviderSta
                     ),
                   ),
                 ),
-                child: NavigationToolbar(
-                  middle: Text(
-                    '답글 ${comment.children.length}',
-                    style: const TextStyle(
-                      fontSize: 17,
-                      fontWeight: FontWeight.w700,
+                child: Stack(
+                  children: [
+                    NavigationToolbar(
+                      middle: Text(
+                        '답글 ${comment.children.length}',
+                        style: const TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      trailing: Padding(
+                        padding: const Pad(right: 20),
+                        child: Pressable(
+                          child: const Icon(Tabler.x),
+                          onPressed: () async {
+                            await context.router.maybePop();
+                          },
+                        ),
+                      ),
                     ),
-                  ),
-                  trailing: Padding(
-                    padding: const Pad(
-                      right: 20,
+                    Positioned(
+                      left: 0,
+                      right: 0,
+                      top: 4,
+                      child: Center(
+                        child: Container(
+                          width: 40,
+                          height: 4,
+                          decoration: BoxDecoration(
+                            color: BrandColors.gray_150,
+                            borderRadius: BorderRadius.circular(2),
+                          ),
+                        ),
+                      ),
                     ),
-                    child: Pressable(
-                      child: const Icon(Tabler.x),
-                      onPressed: () async {
-                        await context.router.maybePop();
-                      },
-                    ),
-                  ),
+                  ],
                 ),
               ),
               Expanded(
@@ -2782,6 +2818,10 @@ class _RepliesState extends ConsumerState<_Replies> with SingleTickerProviderSta
                         ),
                         Expanded(
                           child: ListView.separated(
+                            padding: const Pad(bottom: 32),
+                            physics: const AlwaysScrollableScrollPhysics(
+                              parent: BouncingScrollPhysics(),
+                            ),
                             controller: _scrollController,
                             itemCount: comment.children.length,
                             separatorBuilder: (context, index) {
