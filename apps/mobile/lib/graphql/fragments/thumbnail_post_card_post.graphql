@@ -31,6 +31,10 @@ fragment ThumbnailPostCard_post on Post {
       id
       ...Img_image
     }
+
+    meAsMember {
+      id
+    }
   }
 
   tags {
