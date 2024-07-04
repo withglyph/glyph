@@ -1,0 +1,6 @@
+mutation PostScreen_MuteSpace_Mutation($input: MuteSpaceInput!) {
+  muteSpace(input: $input) {
+    id
+    muted
+  }
+}

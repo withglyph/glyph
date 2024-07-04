@@ -22,15 +22,29 @@ query PostScreen_Query($permalink: String!) {
       slug
       name
       description
+      followed
+      muted
 
       icon  {
         id
         ...Img_image
       }
+
+      meAsMember {
+        id
+      }
     }
 
     collection {
       id
+      name
+      description
+      count
+
+      thumbnail {
+        id
+        ...Img_image
+      }
     }
 
     member {
@@ -52,6 +66,7 @@ query PostScreen_Query($permalink: String!) {
       title
       subtitle
       price
+      readingTime
     }
 
     thumbnail {
