@@ -111,6 +111,7 @@ class SpaceCollectionsScreen extends ConsumerWidget {
                       );
                     },
                   ),
+                  const SliverGap(120),
                 ],
               );
       },

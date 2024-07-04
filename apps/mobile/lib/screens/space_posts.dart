@@ -2,6 +2,7 @@ import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:gap/gap.dart';
 import 'package:glyph/components/empty_state.dart';
 import 'package:glyph/components/horizontal_divider.dart';
 import 'package:glyph/components/thumbnail_post_card.dart';
@@ -55,6 +56,7 @@ class SpacePostsScreen extends ConsumerWidget {
                       );
                     },
                   ),
+                  const SliverGap(120),
                 ],
               );
       },

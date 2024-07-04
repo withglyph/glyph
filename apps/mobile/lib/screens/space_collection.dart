@@ -254,7 +254,7 @@ class _SpaceCollectionScreenState extends State<SpaceCollectionScreen> with Sing
                       },
                     ),
                   ),
-                  if (data.spaceCollection.description != '') ...[
+                  if (data.spaceCollection.description != null && data.spaceCollection.description != '') ...[
                     SliverToBoxAdapter(
                       child: Container(
                         padding: const Pad(horizontal: 20, vertical: 24),
@@ -332,7 +332,8 @@ class _SpaceCollectionScreenState extends State<SpaceCollectionScreen> with Sing
                               ),
                             ],
                           ),
-                          if (data.spaceCollection.space.description != null) ...[
+                          if (data.spaceCollection.space.description != null &&
+                              data.spaceCollection.space.description != '') ...[
                             const Gap(10),
                             Text(
                               data.spaceCollection.space.description ?? '',
@@ -480,6 +481,7 @@ class _SpaceCollectionScreenState extends State<SpaceCollectionScreen> with Sing
                               );
                             },
                           ),
+                          const SliverGap(120),
                         ]),
                 ],
               ),
