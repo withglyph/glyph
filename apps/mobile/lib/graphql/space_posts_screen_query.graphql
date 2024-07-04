@@ -4,6 +4,7 @@ query SpacePostsScreen_Query($slug: String!) {
   space(slug: $slug) {
     id
     postCount
+    visibility
 
     posts {
       id

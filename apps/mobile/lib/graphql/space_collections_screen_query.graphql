@@ -3,6 +3,7 @@
 query SpaceCollectionsScreen_Query($slug: String!) {
   space(slug: $slug) {
     id
+    visibility
 
     collections {
       id
