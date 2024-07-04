@@ -3,7 +3,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart' as material;
 import 'package:gap/gap.dart';
-import 'package:glyph/components/pressable.dart';
+import 'package:glyph/components/btn.dart';
 import 'package:glyph/themes/colors.dart';
 
 extension AlertX on BuildContext {
@@ -27,49 +27,39 @@ extension AlertX on BuildContext {
             padding: const Pad(all: 22),
             child: Column(
               mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text(
                   title,
-                  textAlign: TextAlign.left,
+                  textAlign: TextAlign.center,
                   style: const TextStyle(
                     fontSize: 19,
                     fontWeight: FontWeight.w700,
                     color: BrandColors.gray_900,
                   ),
                 ),
-                const Gap(8),
-                if (content != null)
-                Flexible(
-                  child: Text(
-                    content,
-                    textAlign: TextAlign.left,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      color: BrandColors.gray_600,
-                    ),
-                  ),
-                ),
-                const Gap(24),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: Pressable(
-                    child: Container(
-                      padding: const Pad(horizontal: 16, vertical: 8),
-                      child: const Text(
-                        '확인',
-                        style: TextStyle(
-                          color: BrandColors.brand_400,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w700,
-                        ),
+                if (content != null) ...[
+                  const Gap(3),
+                  Flexible(
+                    child: Text(
+                      content,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: BrandColors.gray_500,
                       ),
                     ),
-                    onPressed: () {
-                      context.router.maybePop();
-                      onConfirmed?.call();
-                    },
                   ),
+                ],
+                const Gap(28),
+                Btn(
+                  '닫기',
+                  theme: BtnTheme.secondary,
+                  onPressed: () {
+                    context.router.maybePop();
+                    onConfirmed?.call();
+                  },
                 ),
               ],
             ),

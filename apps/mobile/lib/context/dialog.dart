@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/material.dart' as material;
 import 'package:gap/gap.dart';
 import 'package:glyph/components/btn.dart';
-import 'package:glyph/components/pressable.dart';
 import 'package:glyph/themes/colors.dart';
 
 extension DialogX on BuildContext {
@@ -33,25 +32,26 @@ extension DialogX on BuildContext {
               children: [
                 Text(
                   title,
-                  textAlign: TextAlign.left,
+                  textAlign: TextAlign.center,
                   style: const TextStyle(
                     fontSize: 19,
                     fontWeight: FontWeight.w700,
                     color: BrandColors.gray_900,
                   ),
                 ),
-                const Gap(8),
-                if (content != null)
+                if (content != null) ...[
+                  const Gap(3),
                   Flexible(
                     child: Text(
                       content,
-                      textAlign: TextAlign.left,
+                      textAlign: TextAlign.center,
                       style: const TextStyle(
                         fontSize: 14,
-                        color: BrandColors.gray_600,
+                        color: BrandColors.gray_500,
                       ),
                     ),
                   ),
+                ],
                 const Gap(28),
                 Row(
                   children: [
