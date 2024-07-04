@@ -23,6 +23,7 @@ import 'package:glyph/graphql/__generated__/tag_screen_query.req.gql.dart';
 import 'package:glyph/graphql/__generated__/tag_screen_unfollow_tag_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/tag_screen_unmute_tag_mutation.req.gql.dart';
 import 'package:glyph/icons/tabler.dart';
+import 'package:glyph/icons/tabler_bold.dart';
 import 'package:glyph/routers/app.gr.dart';
 import 'package:glyph/themes/colors.dart';
 
@@ -319,7 +320,7 @@ class _TagScreenState extends State<TagScreen> with SingleTickerProviderStateMix
                                 const SliverFillRemaining(
                                   hasScrollBody: false,
                                   child: EmptyState(
-                                    icon: Tabler.notes_off,
+                                    icon: TablerBold.notes_off,
                                     title: '해당 태그에 대한 포스트가 없어요',
                                     description: '태그에 대한 포스트가\n삭제되었거나 비공개되었어요',
                                   ),
