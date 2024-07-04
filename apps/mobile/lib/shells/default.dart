@@ -11,6 +11,7 @@ class DefaultShell extends StatelessWidget {
     this.useSafeArea = false,
     this.appBar,
     this.bottomBorder = true,
+    this.resizeToAvoidBottomInset = true,
     this.backgroundColor = BrandColors.gray_0,
   });
 
@@ -20,11 +21,13 @@ class DefaultShell extends StatelessWidget {
   final List<Widget>? actions;
   final bool useSafeArea;
   final bool bottomBorder;
+  final bool resizeToAvoidBottomInset;
   final Color backgroundColor;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: resizeToAvoidBottomInset,
       backgroundColor: backgroundColor,
       appBar: appBar ??
           Heading(
@@ -41,7 +44,12 @@ class DefaultShell extends StatelessWidget {
             bottomBorder: bottomBorder,
           ),
       body: SizedBox.expand(
-        child: useSafeArea ? SafeArea(child: child) : child,
+        child: useSafeArea
+            ? SafeArea(
+                maintainBottomViewPadding: resizeToAvoidBottomInset,
+                child: child,
+              )
+            : child,
       ),
     );
   }

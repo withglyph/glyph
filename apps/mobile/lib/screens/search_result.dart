@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:glyph/components/accordion.dart';
 import 'package:glyph/components/btn.dart';
+import 'package:glyph/components/empty_state.dart';
 import 'package:glyph/components/heading.dart';
 import 'package:glyph/components/horizontal_divider.dart';
 import 'package:glyph/components/post_card.dart';
@@ -73,7 +74,7 @@ class _SearchResultScreenState extends ConsumerState<SearchResultScreen> with Si
   @override
   Widget build(BuildContext context) {
     return DefaultShell(
-      useSafeArea: true,
+      resizeToAvoidBottomInset: false,
       appBar: Heading.empty(),
       child: GraphQLOperation(
         operation: req,
@@ -222,34 +223,10 @@ class _SearchResultScreenState extends ConsumerState<SearchResultScreen> with Si
               ),
               Expanded(
                 child: (posts.isEmpty)
-                    ? const Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            TablerBold.notes_off,
-                            size: 40,
-                            color: BrandColors.gray_800,
-                          ),
-                          Gap(16),
-                          Text(
-                            '검색 결과가 없어요',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w700,
-                              color: BrandColors.gray_800,
-                            ),
-                          ),
-                          Gap(4),
-                          Text(
-                            '다른 키워드 및 태그로 검색해보세요',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w400,
-                              color: BrandColors.gray_500,
-                            ),
-                          ),
-                          Gap(152),
-                        ],
+                    ? const EmptyState(
+                        icon: TablerBold.notes_off,
+                        title: '검색 결과가 없어요',
+                        description: '다른 키워드 및 태그로 검색해보세요',
                       )
                     : NotificationListener<ScrollUpdateNotification>(
                         onNotification: (notification) {
