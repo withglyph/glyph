@@ -10,9 +10,11 @@ import 'package:gap/gap.dart';
 import 'package:glyph/components/heading.dart';
 import 'package:glyph/components/img.dart';
 import 'package:glyph/components/pressable.dart';
+import 'package:glyph/const.dart';
 import 'package:glyph/extensions/color.dart';
 import 'package:glyph/ferry/extension.dart';
 import 'package:glyph/ferry/widget.dart';
+import 'package:glyph/graphql/__generated__/feed_recommend_screen_query.req.gql.dart';
 import 'package:glyph/graphql/__generated__/onboarding_curation_screen_complete_onboarding_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/onboarding_curation_screen_follow_tag_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/onboarding_curation_screen_query.req.gql.dart';
@@ -281,6 +283,15 @@ class _OnboardingCurationScreenState extends ConsumerState<OnboardingCurationScr
     final client = ref.read(ferryProvider);
     final req = GOnboardingCurationScreen_CompleteOnboarding_MutationReq();
     await client.req(req);
+
+    final req2 = GFeedRecommendScreen_QueryReq(
+      (b) => b
+        ..requestId = 'FeedRecommendScreen_Query'
+        ..vars.page = 1
+        ..vars.take = kPaginationSize
+        ..vars.seed = Random().nextInt(1000),
+    );
+    await client.req(req2);
 
     if (mounted) {
       await context.router.maybePop();
