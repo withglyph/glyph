@@ -3,6 +3,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart' as material;
 import 'package:gap/gap.dart';
+import 'package:glyph/components/btn.dart';
 import 'package:glyph/components/pressable.dart';
 import 'package:glyph/themes/colors.dart';
 
@@ -55,23 +56,9 @@ extension DialogX on BuildContext {
                 Row(
                   children: [
                     Expanded(
-                      child: Pressable(
-                        child: Container(
-                          padding: const Pad(horizontal: 18, vertical: 11),
-                          decoration: BoxDecoration(
-                            color: BrandColors.gray_200,
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                          child: Text(
-                            cancelText,
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(
-                              color: BrandColors.gray_600,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                        ),
+                      child: Btn(
+                        cancelText,
+                        theme: BtnTheme.secondary,
                         onPressed: () {
                           context.router.maybePop();
                         },
@@ -79,23 +66,8 @@ extension DialogX on BuildContext {
                     ),
                     const Gap(8),
                     Expanded(
-                      child: Pressable(
-                        child: Container(
-                          padding: const Pad(horizontal: 18, vertical: 11),
-                          decoration: BoxDecoration(
-                            color: BrandColors.gray_900,
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                          child: Text(
-                            confirmText,
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(
-                              color: BrandColors.gray_0,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                        ),
+                      child: Btn(
+                        confirmText,
                         onPressed: () {
                           context.router.maybePop();
                           onConfirmed?.call();
