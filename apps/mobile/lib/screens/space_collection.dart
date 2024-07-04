@@ -383,14 +383,21 @@ class _SpaceCollectionScreenState extends State<SpaceCollectionScreen> with Sing
                         horizontal: 20,
                         bottom: 12,
                       ),
+                      decoration: const BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(
+                            color: BrandColors.gray_50,
+                          ),
+                        ),
+                      ),
                       child: Row(
                         children: [
                           const Text(
                             '포스트',
                             style: TextStyle(
                               fontSize: 13,
-                              fontWeight: FontWeight.w700,
-                              color: BrandColors.gray_400,
+                              fontWeight: FontWeight.w600,
+                              color: BrandColors.gray_500,
                             ),
                           ),
                           const Gap(4),
@@ -399,7 +406,8 @@ class _SpaceCollectionScreenState extends State<SpaceCollectionScreen> with Sing
                               data.spaceCollection.count.toString(),
                               style: const TextStyle(
                                 fontSize: 13,
-                                fontWeight: FontWeight.w700,
+                                fontWeight: FontWeight.w600,
+                                color: BrandColors.gray_500,
                               ),
                             ),
                           ),
@@ -410,11 +418,12 @@ class _SpaceCollectionScreenState extends State<SpaceCollectionScreen> with Sing
                                   orderToLocaleString[order] ?? '최신화부터',
                                   style: const TextStyle(
                                     fontSize: 13,
-                                    fontWeight: FontWeight.w700,
+                                    fontWeight: FontWeight.w600,
+                                    color: BrandColors.gray_500,
                                   ),
                                 ),
                                 const Gap(4),
-                                const Icon(Tabler.caret_down_filled, size: 12),
+                                const Icon(Tabler.caret_down_filled, size: 12, color: BrandColors.gray_500),
                               ],
                             ),
                             onPressed: () async {
