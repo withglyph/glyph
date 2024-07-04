@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:glyph/routers/app.dart';
 import 'package:glyph/screens/splash.dart';
 import 'package:glyph/themes/colors.dart';
-import 'package:glyph/widgets/errror.dart';
+import 'package:glyph/widgets/error.dart';
 
 class App extends StatefulWidget {
   const App({super.key});
