@@ -59,6 +59,7 @@ import {
   generatePostShareImage,
   getMutedSpaceIds,
   getMutedTagIds,
+  getPersonalIdentity,
   getPostContentState,
   getPostViewCount,
   getSpaceMember,
@@ -88,6 +89,10 @@ import type { JSONContent } from '@tiptap/core';
 
 const CommentOrderByKind = builder.enumType('CommentOrderByKind', {
   values: ['LATEST', 'OLDEST'] as const,
+});
+
+const PostBlurredReason = builder.enumType('PostBlurredReason', {
+  values: ['NOT_IDENTIFIED', 'AGE_RATING', 'ADULT_HIDDEN', 'TRIGGER', 'PASSWORD'] as const,
 });
 
 export const Post = createObjectRef('Post', Posts);
@@ -273,6 +278,7 @@ Post.implement({
     }),
 
     blurred: t.boolean({
+      deprecationReason: 'Use `blurredReason` instead',
       resolve: async (post, _, context) => {
         if (context.session?.userId === post.userId) {
           return false;
@@ -325,6 +331,72 @@ Post.implement({
         const adultFilters = await adultFiltersLoader.load(context.session!.userId);
 
         return adultFilters?.action !== 'EXPOSE';
+      },
+    }),
+
+    blurredReason: t.field({
+      type: PostBlurredReason,
+      nullable: true,
+      resolve: async (post, _, context) => {
+        if (post.ageRating !== 'ALL') {
+          const identity = await getPersonalIdentity(context.session?.userId, context);
+
+          if (!identity) {
+            return 'NOT_IDENTIFIED';
+          }
+
+          if (!(await checkAgeRatingAllowed(context.session?.userId, post.ageRating, context))) {
+            return 'AGE_RATING';
+          }
+
+          const adultFiltersLoader = context.loader({
+            name: 'Post.blurred > adultFilters',
+            nullable: true,
+            load: async (ids: string[]) => {
+              return await database
+                .select({ userId: UserContentFilterPreferences.userId, action: UserContentFilterPreferences.action })
+                .from(UserContentFilterPreferences)
+                .where(
+                  and(
+                    inArray(UserContentFilterPreferences.userId, ids),
+                    eq(UserContentFilterPreferences.category, 'ADULT'),
+                  ),
+                );
+            },
+            key: (row) => row?.userId,
+          });
+
+          // context.session이 null이면 checkAgeRatingAllowed에서 걸림
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          const adultFilter = await adultFiltersLoader.load(context.session!.userId);
+          if (adultFilter?.action !== 'EXPOSE') {
+            return 'ADULT_HIDDEN';
+          }
+        }
+
+        if (post.password && post.userId !== context.session?.userId) {
+          const unlock = await redis.hget(`Post:${post.id}:passwordUnlock`, context.deviceId);
+          if (!unlock || dayjs(unlock).isBefore(dayjs())) {
+            return 'PASSWORD';
+          }
+        }
+
+        const triggerTagsLoader = context.loader({
+          name: 'Post.blurred > triggerTags',
+          many: true,
+          load: async (ids: string[]) => {
+            return await database
+              .select({ postId: PostTags.postId })
+              .from(PostTags)
+              .where(and(inArray(PostTags.postId, ids), eq(PostTags.kind, 'TRIGGER')));
+          },
+          key: (row) => row?.postId,
+        });
+
+        const triggerTags = await triggerTagsLoader.load(post.id);
+        if (triggerTags.length > 0) {
+          return 'TRIGGER';
+        }
       },
     }),
 

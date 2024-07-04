@@ -493,7 +493,8 @@ enum PointTransactionCause {
 
 type Post {
   ageRating: PostAgeRating!
-  blurred: Boolean!
+  blurred: Boolean! @deprecated(reason: "Use `blurredReason` instead")
+  blurredReason: PostBlurredReason
   bookmarkGroups: [BookmarkGroup!]!
   category: PostCategory!
   collection: SpaceCollection
@@ -541,6 +542,14 @@ enum PostAgeRating {
   ALL
   R15
   R19
+}
+
+enum PostBlurredReason {
+  ADULT_HIDDEN
+  AGE_RATING
+  NOT_IDENTIFIED
+  PASSWORD
+  TRIGGER
 }
 
 enum PostCategory {

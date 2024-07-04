@@ -39,7 +39,7 @@ const getBirthdayAge = (birthday?: dayjs.Dayjs) => {
 
 type AgeIdentity = Pick<typeof UserPersonalIdentities.$inferSelect, 'kind' | 'birthday'>;
 
-const allowedAgeRating = (identity?: AgeIdentity): (keyof typeof E.PostAgeRating)[] => {
+const allowedAgeRating = (identity: AgeIdentity | undefined): (keyof typeof E.PostAgeRating)[] => {
   if (!identity) {
     return ['ALL'];
   }
@@ -59,7 +59,7 @@ const allowedAgeRating = (identity?: AgeIdentity): (keyof typeof E.PostAgeRating
   }
 };
 
-export const getAllowedAgeRating = async (userId: string | undefined, context: Pick<Context, 'loader'>) => {
+export const getPersonalIdentity = async (userId: string | undefined, context: Pick<Context, 'loader'>) => {
   const loader = context.loader({
     name: 'UserPersonalIdentities(userId)',
     nullable: true,
@@ -73,11 +73,11 @@ export const getAllowedAgeRating = async (userId: string | undefined, context: P
     key: (identity) => identity?.userId,
   });
 
-  if (!userId) {
-    return ['ALL' as const];
-  }
+  return userId ? loader.load(userId) : null;
+};
 
-  const identity = await loader.load(userId);
+export const getAllowedAgeRating = async (userId: string | undefined, context: Pick<Context, 'loader'>) => {
+  const identity = await getPersonalIdentity(userId, context);
   return allowedAgeRating(identity ?? undefined);
 };
 
