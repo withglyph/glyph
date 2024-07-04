@@ -206,6 +206,7 @@ class SettingsScreen extends ConsumerWidget {
                     ],
                   ),
                 ),
+                const Gap(80),
               ],
             ),
           );
