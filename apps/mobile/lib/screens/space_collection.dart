@@ -253,7 +253,7 @@ class _SpaceCollectionScreenState extends State<SpaceCollectionScreen> with Sing
                     },
                   ),
                 ),
-                if (data.spaceCollection.description != null)
+                if (data.spaceCollection.description != '') ...[
                   SliverToBoxAdapter(
                     child: Container(
                       padding: const Pad(horizontal: 20, vertical: 24),
@@ -274,11 +274,12 @@ class _SpaceCollectionScreenState extends State<SpaceCollectionScreen> with Sing
                       ),
                     ),
                   ),
-                const SliverToBoxAdapter(
-                  child: HorizontalDivider(
-                    height: 8,
+                  const SliverToBoxAdapter(
+                    child: HorizontalDivider(
+                      height: 8,
+                    ),
                   ),
-                ),
+                ],
                 SliverToBoxAdapter(
                   child: Container(
                     key: _thumbnailKey,
