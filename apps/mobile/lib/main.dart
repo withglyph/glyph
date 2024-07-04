@@ -10,9 +10,12 @@ import 'package:get_it/get_it.dart';
 import 'package:glyph/app.dart';
 import 'package:glyph/env.dart';
 import 'package:glyph/firebase_options.dart';
+import 'package:glyph/misc/device_id_holder.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uuid/uuid.dart';
 
 Future<void> main() async {
   final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -44,9 +47,20 @@ Future<void> main() async {
   await Jiffy.setLocale('ko');
 
   PlatformInAppWebViewController.debugLoggingSettings.enabled = false;
+  PlatformChromeSafariBrowser.debugLoggingSettings.enabled = false;
+
+  final prefs = await SharedPreferences.getInstance();
+
+  var deviceId = prefs.getString('deviceId');
+  if (deviceId == null) {
+    deviceId = const Uuid().v4();
+    await prefs.setString('deviceId', deviceId);
+  }
+  DeviceIdHolder.deviceId = deviceId;
 
   final mixpanel = await Mixpanel.init(Env.mixpanelToken, trackAutomaticEvents: false);
 
+  GetIt.I.registerSingleton<SharedPreferences>(prefs);
   GetIt.I.registerSingleton<FlutterSecureStorage>(const FlutterSecureStorage());
   GetIt.I.registerSingleton<FirebaseMessaging>(FirebaseMessaging.instance);
   GetIt.I.registerSingleton<InAppPurchase>(InAppPurchase.instance);
