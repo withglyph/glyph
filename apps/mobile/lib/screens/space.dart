@@ -357,29 +357,36 @@ class _SpaceScreenState extends State<SpaceScreen> with SingleTickerProviderStat
                           ),
                         ),
                         SliverPinnedHeader(
-                          child: ColoredBox(
-                            color: BrandColors.gray_0,
-                            child: Padding(
-                              padding: const Pad(horizontal: 20),
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    child: _TabItem(
-                                      title: '포스트 ${data.space.postCount}',
-                                      isActive: tabController.index == 0,
-                                      onTap: () => tabController.animateTo(0),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: _TabItem(
-                                      title: '컬렉션 ${data.space.collections.length}',
-                                      isActive: tabController.index == 1,
-                                      onTap: () => tabController.animateTo(1),
-                                    ),
-                                  ),
-                                ],
+                          child: Stack(
+                            children: [
+                              const Positioned.fill(
+                                top: null,
+                                child: HorizontalDivider(
+                                  color: BrandColors.gray_50,
+                                ),
                               ),
-                            ),
+                              Padding(
+                                padding: const Pad(horizontal: 20),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: _TabItem(
+                                        title: '포스트 ${data.space.postCount}',
+                                        isActive: tabController.index == 0,
+                                        onTap: () => tabController.animateTo(0),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: _TabItem(
+                                        title: '컬렉션 ${data.space.collections.length}',
+                                        isActive: tabController.index == 1,
+                                        onTap: () => tabController.animateTo(1),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ];
@@ -417,7 +424,7 @@ class _TabItem extends StatelessWidget {
           border: Border(
             bottom: BorderSide(
               width: 2,
-              color: isActive ? BrandColors.gray_900 : BrandColors.gray_0,
+              color: isActive ? BrandColors.gray_900 : Colors.transparent,
             ),
           ),
         ),
@@ -426,7 +433,7 @@ class _TabItem extends StatelessWidget {
           textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: 16,
-            fontWeight: isActive ? FontWeight.w800 : FontWeight.w500,
+            fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
             color: isActive ? BrandColors.gray_900 : BrandColors.gray_400,
           ),
         ),
