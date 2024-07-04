@@ -92,12 +92,12 @@ class _TagScreenState extends State<TagScreen> with SingleTickerProviderStateMix
             builder: (context) {
               return Heading(
                 backgroundColor: hasThumbnail ? _appBarBackgroundColorAnimation.value : BrandColors.gray_0,
-                fallbackSystemUiOverlayStyle: hasThumbnail && _isOverThumbnail ? SystemUiOverlayStyle.light : null,
+                fallbackSystemUiOverlayStyle: hasThumbnail && !_isOverThumbnail ? SystemUiOverlayStyle.light : null,
                 bottomBorder: hasThumbnail && _isOverThumbnail,
                 leading: Row(
                   children: [
                     HeadingAutoLeading(
-                      color: hasThumbnail && _isOverThumbnail
+                      color: hasThumbnail && !_isOverThumbnail
                           ? _appBarForegroundColorAnimation.value
                           : BrandColors.gray_900,
                     ),
@@ -105,7 +105,7 @@ class _TagScreenState extends State<TagScreen> with SingleTickerProviderStateMix
                     Pressable(
                       child: Icon(
                         Tabler.home,
-                        color: hasThumbnail && _isOverThumbnail
+                        color: hasThumbnail && !_isOverThumbnail
                             ? _appBarForegroundColorAnimation.value
                             : BrandColors.gray_900,
                       ),
@@ -119,7 +119,7 @@ class _TagScreenState extends State<TagScreen> with SingleTickerProviderStateMix
                   Pressable(
                     child: Icon(
                       Tabler.dots_vertical,
-                      color: hasThumbnail && _isOverThumbnail
+                      color: hasThumbnail && !_isOverThumbnail
                           ? _appBarForegroundColorAnimation.value
                           : BrandColors.gray_900,
                     ),
