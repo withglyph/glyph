@@ -24,7 +24,7 @@ class DeactivateScreen extends ConsumerWidget {
       ),
       body: WebView(
         path: '/me/settings/deactivate',
-        onJsMessage: (data, reply) async {
+        onJsMessage: (data, reply, controller) async {
           if (data['type'] == 'deactivate:cancel') {
             await context.router.maybePop();
           } else if (data['type'] == 'deactivate:done') {

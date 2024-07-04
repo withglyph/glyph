@@ -23,7 +23,7 @@ class ContentFiltersScreen extends ConsumerWidget {
       ),
       body: WebView(
         path: '/me/contentfilters',
-        onJsMessage: (data, reply) async {
+        onJsMessage: (data, reply, controller) async {
           if (data['type'] == 'space:view') {
             await context.router.push(
               SpaceRoute(slug: data['slug']),

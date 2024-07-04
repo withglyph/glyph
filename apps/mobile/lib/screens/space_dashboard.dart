@@ -24,7 +24,7 @@ class SpaceDashboardScreen extends StatelessWidget {
       ),
       body: WebView(
         path: '/$slug/dashboard/settings',
-        onJsMessage: (data, reply) async {
+        onJsMessage: (data, reply, controller) async {
           if (data['type'] == 'post:view') {
             await context.router.push(
               PostRoute(permalink: data['permalink']),

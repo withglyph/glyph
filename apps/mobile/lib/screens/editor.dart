@@ -43,7 +43,7 @@ class _EditorScreenState extends State<EditorScreen> {
       ),
       body: WebView(
         path: '/editor/${widget.permalink}',
-        onJsMessage: (data, reply) async {
+        onJsMessage: (data, reply, controller) async {
           this.reply ??= reply;
 
           if (data['type'] == 'publish:done') {

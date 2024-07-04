@@ -24,6 +24,7 @@ class WebView extends ConsumerStatefulWidget {
   final Future<void> Function(
     dynamic data,
     Future<void> Function(dynamic data) reply,
+    InAppWebViewController controller,
   )? onJsMessage;
   final Future<NavigationActionPolicy?> Function(
     InAppWebViewController controller,
@@ -111,6 +112,7 @@ class _WebviewState extends ConsumerState<WebView> {
                       data: base64.encode(utf8.encode(json.encode(data))),
                     ),
                   ),
+                  controller,
                 );
               },
             ),
