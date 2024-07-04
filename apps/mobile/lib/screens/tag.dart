@@ -207,10 +207,28 @@ class _TagScreenState extends State<TagScreen> with SingleTickerProviderStateMix
                       if (hasThumbnail)
                         LayoutBuilder(
                           builder: (context, constraints) {
-                            return Img(
-                              data.tag.thumbnail,
-                              height: 190 + safeAreaHeight,
-                              width: constraints.maxWidth,
+                            return Stack(
+                              children: [
+                                Img(
+                                  data.tag.thumbnail,
+                                  height: 190 + safeAreaHeight,
+                                  width: constraints.maxWidth,
+                                ),
+                                Positioned.fill(
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        colors: [
+                                          BrandColors.gray_900.withOpacity(0.6),
+                                          BrandColors.gray_900.withOpacity(0),
+                                        ],
+                                        begin: Alignment.topCenter,
+                                        end: Alignment.bottomCenter,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             );
                           },
                         ),
