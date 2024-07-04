@@ -13,6 +13,7 @@ import 'package:get_it/get_it.dart';
 import 'package:glyph/components/btn.dart';
 import 'package:glyph/components/dot.dart';
 import 'package:glyph/components/empty_state.dart';
+import 'package:glyph/components/forms/form_text_field.dart';
 import 'package:glyph/components/heading.dart';
 import 'package:glyph/components/horizontal_divider.dart';
 import 'package:glyph/components/img.dart';
@@ -29,6 +30,7 @@ import 'package:glyph/context/toast.dart';
 import 'package:glyph/extensions/build_context.dart';
 import 'package:glyph/extensions/int.dart';
 import 'package:glyph/extensions/iterable.dart';
+import 'package:glyph/ferry/error.dart';
 import 'package:glyph/ferry/extension.dart';
 import 'package:glyph/ferry/widget.dart';
 import 'package:glyph/graphql/__generated__/post_screen_bookmark_post_mutation.req.gql.dart';
@@ -47,6 +49,7 @@ import 'package:glyph/graphql/__generated__/post_screen_query.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_screen_space_post_list_query.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_screen_unbookmark_post_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_screen_unfollow_space_mutation.req.gql.dart';
+import 'package:glyph/graphql/__generated__/post_screen_unlock_passworded_post_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_screen_unmute_space_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_screen_update_post_view_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/schema.schema.gql.dart';
@@ -390,6 +393,26 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
             await context.router.push(const IdentificationRoute());
           }
 
+          onUnlockPasswordedPost(String password) async {
+            _mixpanel.track(
+              'post:unlock',
+              properties: {
+                'postId': data.post.id,
+              },
+            );
+
+            final req = GPostScreen_UnlockPasswordedPost_MutationReq(
+              (b) => b
+                ..vars.input.postId = data.post.id
+                ..vars.input.password = password,
+            );
+
+            await client.req(req).then((_) async {
+              _blurContent = false;
+              setState(() {});
+            });
+          }
+
           return Stack(
             fit: StackFit.passthrough,
             children: [
@@ -649,7 +672,9 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                                     ),
                               _ => throw UnimplementedError(),
                             },
-                          GPostBlurredReason.PASSWORD => throw UnimplementedError(), // TODO: 비밀글
+                          GPostBlurredReason.PASSWORD => _PasswordedPostGuard(
+                              onSubmit: onUnlockPasswordedPost,
+                            ),
                           GPostBlurredReason.TRIGGER => PostWarning(
                               title: '보기전 주의사항',
                               description: data.post.tags
@@ -2904,6 +2929,98 @@ class _RepliesState extends ConsumerState<_Replies> with SingleTickerProviderSta
             ],
           );
         },
+      ),
+    );
+  }
+}
+
+class _PasswordedPostGuard extends StatefulWidget {
+  const _PasswordedPostGuard({
+    required this.onSubmit,
+  });
+
+  final Future<void> Function(String password) onSubmit;
+
+  @override
+  createState() => _PasswordedPostGuardState();
+}
+
+class _PasswordedPostGuardState extends State<_PasswordedPostGuard> {
+  final _controller = TextEditingController();
+  String? validationMessage;
+
+  @override
+  Widget build(BuildContext context) {
+    onSubmit(String? value) async {
+      if (value != null && value.isNotEmpty) {
+        await widget.onSubmit(value).catchError((error) {
+          if (error is FormValidationError) {
+            validationMessage = error.message;
+            setState(() {});
+          }
+        });
+        _controller.clear();
+      }
+    }
+
+    return Center(
+      child: Padding(
+        padding: const Pad(vertical: 80),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 300),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(
+                TablerBold.lock,
+                size: 34,
+                color: Color(0xFFC7C7C7),
+              ),
+              const Gap(10),
+              const Text(
+                '비밀글',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w700,
+                  color: BrandColors.gray_800,
+                ),
+              ),
+              const Gap(18),
+              ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 255),
+                child: FormTextField(
+                  hintText: '비밀번호를 입력해주세요',
+                  name: 'password',
+                  autofocus: true,
+                  controller: _controller,
+                  keyboardType: TextInputType.visiblePassword,
+                  textInputAction: TextInputAction.done,
+                  onSubmitted: onSubmit,
+                  obscureText: true,
+                  autovalidateMode: AutovalidateMode.always,
+                  validators: [
+                    (value) {
+                      if (validationMessage != null) {
+                        return validationMessage;
+                      }
+                      return null;
+                    },
+                  ],
+                ),
+              ),
+              const Gap(24),
+              ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 254),
+                child: Btn(
+                  '확인',
+                  onPressed: () async {
+                    await onSubmit(_controller.text);
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
