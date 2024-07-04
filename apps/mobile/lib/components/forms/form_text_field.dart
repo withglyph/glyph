@@ -22,6 +22,7 @@ class FormTextField extends StatefulWidget {
     this.initialValue,
     this.validators,
     this.onSubmitted,
+    this.autovalidateMode = AutovalidateMode.onUserInteraction,
   });
 
   final String name;
@@ -36,6 +37,7 @@ class FormTextField extends StatefulWidget {
   final String? initialValue;
   final List<FormFieldValidator<String>>? validators;
   final ValueChanged<String?>? onSubmitted;
+  final AutovalidateMode autovalidateMode;
 
   @override
   createState() => _FormTextFieldState();
@@ -123,6 +125,7 @@ class _FormTextFieldState extends State<FormTextField> with SingleTickerProvider
       name: widget.name,
       focusNode: _focusNode,
       initialValue: widget.initialValue,
+      autovalidateMode: widget.autovalidateMode,
       validator: widget.validators != null ? FormBuilderValidators.compose(widget.validators!) : null,
       builder: (field) {
         return Column(
