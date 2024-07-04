@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/foundation.dart';
@@ -11,6 +13,7 @@ import 'package:glyph/components/horizontal_divider.dart';
 import 'package:glyph/components/img.dart';
 import 'package:glyph/components/post_card.dart';
 import 'package:glyph/components/pressable.dart';
+import 'package:glyph/const.dart';
 import 'package:glyph/context/bottom_menu.dart';
 import 'package:glyph/ferry/extension.dart';
 import 'package:glyph/ferry/widget.dart';
@@ -41,10 +44,22 @@ class _TagScreenState extends State<TagScreen> with SingleTickerProviderStateMix
   final _thumbnailKey = GlobalKey();
 
   bool _isOverThumbnail = false;
+  int _page = 1;
+  bool _fetching = false;
+  bool _eol = false;
+
+  late GTagScreen_QueryReq req;
 
   @override
   void initState() {
     super.initState();
+    req = GTagScreen_QueryReq(
+      (b) => b
+        ..requestId = 'TagScreen_Query'
+        ..vars.name = widget.name
+        ..vars.page = 1
+        ..vars.take = kPaginationSize,
+    );
 
     _appBarAnimationController = AnimationController(
       vsync: this,
@@ -64,9 +79,7 @@ class _TagScreenState extends State<TagScreen> with SingleTickerProviderStateMix
   @override
   Widget build(BuildContext context) {
     return GraphQLOperation(
-      operation: GTagScreen_QueryReq(
-        (b) => b..vars.name = widget.name,
-      ),
+      operation: req,
       builder: (context, client, data) {
         final hasThumbnail = data.tag.thumbnail != null;
         final safeAreaHeight = MediaQuery.of(context).padding.top;
@@ -145,6 +158,27 @@ class _TagScreenState extends State<TagScreen> with SingleTickerProviderStateMix
           ),
           body: NotificationListener<ScrollUpdateNotification>(
             onNotification: (notification) {
+              if (notification.metrics.extentAfter <= 200) {
+                if (!_fetching && !_eol) {
+                  _fetching = true;
+                  final newReq = req.rebuild(
+                    (b) => b
+                      ..vars.page = ++_page
+                      ..updateResult =
+                          (previous, result) => previous?.rebuild((b) => b..tag.posts.addAll(result?.tag.posts ?? [])),
+                  );
+
+                  unawaited(
+                    client.req(newReq).then((value) {
+                      _fetching = false;
+                      if (data.tag.posts.length == value.tag.posts.length) {
+                        _eol = true;
+                      }
+                    }),
+                  );
+                }
+              }
+
               final thumbnailBox = _thumbnailKey.currentContext?.findRenderObject() as RenderBox?;
 
               if (thumbnailBox != null) {

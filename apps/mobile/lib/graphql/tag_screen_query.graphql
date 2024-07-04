@@ -1,7 +1,7 @@
 # import './fragments/post_card_post.graphql';
 # import './fragments/img_image.graphql'
 
-query TagScreen_Query($name: String!) {
+query TagScreen_Query($name: String!, $page: Int!, $take: Int!) {
   tag(name: $name) {
     id
     name
@@ -10,7 +10,7 @@ query TagScreen_Query($name: String!) {
     followerCount
     postCount
 
-    posts {
+    posts(page: $page, take: $take) {
       id
       ...PostCard_post
     }
