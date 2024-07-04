@@ -254,123 +254,126 @@ class _SpaceCollectionScreenState extends State<SpaceCollectionScreen> with Sing
                       },
                     ),
                   ),
-                  if (data.spaceCollection.description != null && data.spaceCollection.description != '') ...[
-                    SliverToBoxAdapter(
-                      child: Container(
-                        padding: const Pad(horizontal: 20, vertical: 24),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              '컬렉션 설명',
-                              style: TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.w700,
-                                color: BrandColors.gray_400,
-                              ),
-                            ),
-                            const Gap(8),
-                            Text(data.spaceCollection.description ?? '', style: const TextStyle(fontSize: 13)),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SliverToBoxAdapter(
-                      child: HorizontalDivider(
-                        height: 8,
-                      ),
-                    ),
-                  ],
                   SliverToBoxAdapter(
                     child: Container(
                       key: _thumbnailKey,
-                      padding: const Pad(horizontal: 20, vertical: 24),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
-                            '스페이스',
-                            style: TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w700,
-                              color: BrandColors.gray_400,
-                            ),
-                          ),
-                          const Gap(12),
-                          Row(
-                            children: [
-                              Img(
-                                data.spaceCollection.space.icon,
-                                width: 38,
-                                height: 38,
-                              ),
-                              const Gap(8),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      data.spaceCollection.space.name,
-                                      maxLines: 2,
-                                      style: const TextStyle(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w700,
-                                      ),
+                          if (data.spaceCollection.description != null && data.spaceCollection.description != '') ...[
+                            Container(
+                              padding: const Pad(horizontal: 20, vertical: 24),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    '컬렉션 설명',
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w700,
+                                      color: BrandColors.gray_400,
                                     ),
-                                    const Gap(2),
-                                    Text(
-                                      'by ${data.spaceCollection.space.members[0].profile.name}',
-                                      maxLines: 2,
-                                      style: const TextStyle(
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.w500,
-                                        color: BrandColors.gray_500,
+                                  ),
+                                  const Gap(8),
+                                  Text(data.spaceCollection.description ?? '', style: const TextStyle(fontSize: 13)),
+                                ],
+                              ),
+                            ),
+                            const HorizontalDivider(
+                              height: 8,
+                            ),
+                          ],
+                          Container(
+                            padding: const Pad(horizontal: 20, vertical: 24),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  '스페이스',
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w700,
+                                    color: BrandColors.gray_400,
+                                  ),
+                                ),
+                                const Gap(12),
+                                Row(
+                                  children: [
+                                    Img(
+                                      data.spaceCollection.space.icon,
+                                      width: 38,
+                                      height: 38,
+                                    ),
+                                    const Gap(8),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            data.spaceCollection.space.name,
+                                            maxLines: 2,
+                                            style: const TextStyle(
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                          ),
+                                          const Gap(2),
+                                          Text(
+                                            'by ${data.spaceCollection.space.members[0].profile.name}',
+                                            maxLines: 2,
+                                            style: const TextStyle(
+                                              fontSize: 13,
+                                              fontWeight: FontWeight.w500,
+                                              color: BrandColors.gray_500,
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   ],
                                 ),
-                              ),
-                            ],
+                                if (data.spaceCollection.space.description != null &&
+                                    data.spaceCollection.space.description != '') ...[
+                                  const Gap(10),
+                                  Text(
+                                    data.spaceCollection.space.description ?? '',
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      color: BrandColors.gray_400,
+                                    ),
+                                  ),
+                                ],
+                                if (data.spaceCollection.space.meAsMember == null) ...[
+                                  const Gap(18),
+                                  Btn(
+                                    data.spaceCollection.space.followed ? '스페이스 구독중' : '스페이스 구독',
+                                    theme: data.spaceCollection.space.followed
+                                        ? BtnTheme.secondaryOutline
+                                        : BtnTheme.primary,
+                                    iconLeft: data.spaceCollection.space.followed ? Tabler.check : Tabler.plus,
+                                    onPressed: () async {
+                                      if (data.spaceCollection.space.followed) {
+                                        final req = GSpaceCollectionScreen_UnfollowSpace_MutationReq(
+                                          (b) => b..vars.input.spaceId = data.spaceCollection.space.id,
+                                        );
+                                        await client.req(req);
+                                      } else {
+                                        final req = GSpaceCollectionScreen_FollowSpace_MutationReq(
+                                          (b) => b..vars.input.spaceId = data.spaceCollection.space.id,
+                                        );
+                                        await client.req(req);
+                                      }
+                                    },
+                                  ),
+                                ],
+                              ],
+                            ),
                           ),
-                          if (data.spaceCollection.space.description != null &&
-                              data.spaceCollection.space.description != '') ...[
-                            const Gap(10),
-                            Text(
-                              data.spaceCollection.space.description ?? '',
-                              style: const TextStyle(
-                                fontSize: 12,
-                                color: BrandColors.gray_400,
-                              ),
-                            ),
-                          ],
-                          if (data.spaceCollection.space.meAsMember == null) ...[
-                            const Gap(18),
-                            Btn(
-                              data.spaceCollection.space.followed ? '스페이스 구독중' : '스페이스 구독',
-                              theme: data.spaceCollection.space.followed ? BtnTheme.secondaryOutline : BtnTheme.primary,
-                              iconLeft: data.spaceCollection.space.followed ? Tabler.check : Tabler.plus,
-                              onPressed: () async {
-                                if (data.spaceCollection.space.followed) {
-                                  final req = GSpaceCollectionScreen_UnfollowSpace_MutationReq(
-                                    (b) => b..vars.input.spaceId = data.spaceCollection.space.id,
-                                  );
-                                  await client.req(req);
-                                } else {
-                                  final req = GSpaceCollectionScreen_FollowSpace_MutationReq(
-                                    (b) => b..vars.input.spaceId = data.spaceCollection.space.id,
-                                  );
-                                  await client.req(req);
-                                }
-                              },
-                            ),
-                          ],
+                          const HorizontalDivider(
+                            height: 8,
+                          ),
                         ],
                       ),
-                    ),
-                  ),
-                  const SliverToBoxAdapter(
-                    child: HorizontalDivider(
-                      height: 8,
                     ),
                   ),
                   SliverToBoxAdapter(
