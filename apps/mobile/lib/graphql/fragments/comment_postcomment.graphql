@@ -2,6 +2,7 @@ fragment Comment_postComment on PostComment {
   id
   pinned
   visibility
+  state
   purchased
   liked
   likedByPostUser

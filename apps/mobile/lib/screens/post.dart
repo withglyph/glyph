@@ -1998,23 +1998,32 @@ class _Comment extends ConsumerWidget {
               const Gap(4),
               Padding(
                 padding: const Pad(right: 12),
-                child: invisible
+                child: comment.state == GPostCommentState.INACTIVE
                     ? const Text(
-                        '비밀댓글입니다',
+                        '삭제된 댓글입니다',
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w400,
                           color: BrandColors.gray_400,
                         ),
                       )
-                    : Text(
-                        comment.content,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w400,
-                          color: BrandColors.gray_900,
-                        ),
-                      ),
+                    : invisible
+                        ? const Text(
+                            '비밀댓글입니다',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                              color: BrandColors.gray_400,
+                            ),
+                          )
+                        : Text(
+                            comment.content,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                              color: BrandColors.gray_900,
+                            ),
+                          ),
               ),
               const Gap(12),
               Row(
