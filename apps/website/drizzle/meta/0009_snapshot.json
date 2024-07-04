@@ -1,5 +1,5 @@
 {
-  "version": "6",
+  "version": "7",
   "dialect": "postgresql",
   "tables": {
     "public.bookmark_posts": {
@@ -34,12 +34,25 @@
       },
       "indexes": {
         "bookmark_posts_bookmark_id_post_id_index": {
-          "name": "bookmark_posts_bookmark_id_post_id_index",
           "columns": [
-            "bookmark_id",
-            "post_id"
+            {
+              "expression": "bookmark_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "post_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": true
+          "with": {},
+          "name": "bookmark_posts_bookmark_id_post_id_index",
+          "isUnique": true,
+          "method": "btree",
+          "concurrently": false
         }
       },
       "foreignKeys": {
@@ -495,13 +508,31 @@
       },
       "indexes": {
         "point_balances_user_id_kind_created_at_index": {
-          "name": "point_balances_user_id_kind_created_at_index",
           "columns": [
-            "user_id",
-            "kind",
-            "created_at"
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "kind",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "created_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "with": {},
+          "name": "point_balances_user_id_kind_created_at_index",
+          "isUnique": false,
+          "method": "btree",
+          "concurrently": false
         }
       },
       "foreignKeys": {
@@ -739,12 +770,25 @@
       },
       "indexes": {
         "post_comment_likes_comment_id_user_id_index": {
-          "name": "post_comment_likes_comment_id_user_id_index",
           "columns": [
-            "comment_id",
-            "user_id"
+            {
+              "expression": "comment_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": true
+          "with": {},
+          "name": "post_comment_likes_comment_id_user_id_index",
+          "isUnique": true,
+          "method": "btree",
+          "concurrently": false
         }
       },
       "foreignKeys": {
@@ -866,12 +910,25 @@
       },
       "indexes": {
         "post_comments_post_id_created_at_index": {
-          "name": "post_comments_post_id_created_at_index",
           "columns": [
-            "post_id",
-            "created_at"
+            {
+              "expression": "post_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "created_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "with": {},
+          "name": "post_comments_post_id_created_at_index",
+          "isUnique": false,
+          "method": "btree",
+          "concurrently": false
         }
       },
       "foreignKeys": {
@@ -963,12 +1020,25 @@
       },
       "indexes": {
         "post_likes_post_id_user_id_index": {
-          "name": "post_likes_post_id_user_id_index",
           "columns": [
-            "post_id",
-            "user_id"
+            {
+              "expression": "post_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": true
+          "with": {},
+          "name": "post_likes_post_id_user_id_index",
+          "isUnique": true,
+          "method": "btree",
+          "concurrently": false
         }
       },
       "foreignKeys": {
@@ -1047,12 +1117,25 @@
       },
       "indexes": {
         "post_purchases_post_id_user_id_index": {
-          "name": "post_purchases_post_id_user_id_index",
           "columns": [
-            "post_id",
-            "user_id"
+            {
+              "expression": "post_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": true
+          "with": {},
+          "name": "post_purchases_post_id_user_id_index",
+          "isUnique": true,
+          "method": "btree",
+          "concurrently": false
         }
       },
       "foreignKeys": {
@@ -1137,20 +1220,46 @@
       },
       "indexes": {
         "post_reactions_created_at_index": {
-          "name": "post_reactions_created_at_index",
           "columns": [
-            "created_at"
+            {
+              "expression": "created_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "with": {},
+          "name": "post_reactions_created_at_index",
+          "isUnique": false,
+          "method": "btree",
+          "concurrently": false
         },
         "post_reactions_post_id_user_id_emoji_index": {
-          "name": "post_reactions_post_id_user_id_emoji_index",
           "columns": [
-            "post_id",
-            "user_id",
-            "emoji"
+            {
+              "expression": "post_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "emoji",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": true
+          "with": {},
+          "name": "post_reactions_post_id_user_id_emoji_index",
+          "isUnique": true,
+          "method": "btree",
+          "concurrently": false
         }
       },
       "foreignKeys": {
@@ -1316,12 +1425,25 @@
       },
       "indexes": {
         "post_revisions_post_id_created_at_index": {
-          "name": "post_revisions_post_id_created_at_index",
           "columns": [
-            "post_id",
-            "created_at"
+            {
+              "expression": "post_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "created_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "with": {},
+          "name": "post_revisions_post_id_created_at_index",
+          "isUnique": false,
+          "method": "btree",
+          "concurrently": false
         }
       },
       "foreignKeys": {
@@ -1419,20 +1541,46 @@
       },
       "indexes": {
         "post_tags_post_id_tag_id_kind_index": {
-          "name": "post_tags_post_id_tag_id_kind_index",
           "columns": [
-            "post_id",
-            "tag_id",
-            "kind"
+            {
+              "expression": "post_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "tag_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "kind",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": true
+          "with": {},
+          "name": "post_tags_post_id_tag_id_kind_index",
+          "isUnique": true,
+          "method": "btree",
+          "concurrently": false
         },
         "post_tags_tag_id_index": {
-          "name": "post_tags_tag_id_index",
           "columns": [
-            "tag_id"
+            {
+              "expression": "tag_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "with": {},
+          "name": "post_tags_tag_id_index",
+          "isUnique": false,
+          "method": "btree",
+          "concurrently": false
         }
       },
       "foreignKeys": {
@@ -1511,20 +1659,46 @@
       },
       "indexes": {
         "post_views_user_id_viewed_at_index": {
-          "name": "post_views_user_id_viewed_at_index",
           "columns": [
-            "user_id",
-            "viewed_at"
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "viewed_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "with": {},
+          "name": "post_views_user_id_viewed_at_index",
+          "isUnique": false,
+          "method": "btree",
+          "concurrently": false
         },
         "post_views_post_id_user_id_index": {
-          "name": "post_views_post_id_user_id_index",
           "columns": [
-            "post_id",
-            "user_id"
+            {
+              "expression": "post_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": true
+          "with": {},
+          "name": "post_views_post_id_user_id_index",
+          "isUnique": true,
+          "method": "btree",
+          "concurrently": false
         }
       },
       "foreignKeys": {
@@ -1704,37 +1878,94 @@
       },
       "indexes": {
         "posts_published_at_index": {
-          "name": "posts_published_at_index",
           "columns": [
-            "published_at"
+            {
+              "expression": "published_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "with": {},
+          "name": "posts_published_at_index",
+          "isUnique": false,
+          "method": "btree",
+          "concurrently": false
         },
         "posts_state_visibility_index": {
-          "name": "posts_state_visibility_index",
           "columns": [
-            "state",
-            "visibility"
+            {
+              "expression": "state",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "visibility",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "with": {},
+          "name": "posts_state_visibility_index",
+          "isUnique": false,
+          "method": "btree",
+          "concurrently": false
         },
         "posts_space_id_state_visibility_index": {
-          "name": "posts_space_id_state_visibility_index",
           "columns": [
-            "space_id",
-            "state",
-            "visibility"
+            {
+              "expression": "space_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "state",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "visibility",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "with": {},
+          "name": "posts_space_id_state_visibility_index",
+          "isUnique": false,
+          "method": "btree",
+          "concurrently": false
         },
         "posts_user_id_state_visibility_index": {
-          "name": "posts_user_id_state_visibility_index",
           "columns": [
-            "user_id",
-            "state",
-            "visibility"
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "state",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "visibility",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "with": {},
+          "name": "posts_user_id_state_visibility_index",
+          "isUnique": false,
+          "method": "btree",
+          "concurrently": false
         }
       },
       "foreignKeys": {
@@ -2171,12 +2402,25 @@
       },
       "indexes": {
         "space_collection_posts_collection_id_order_index": {
-          "name": "space_collection_posts_collection_id_order_index",
           "columns": [
-            "collection_id",
-            "order"
+            {
+              "expression": "collection_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "order",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": true
+          "with": {},
+          "name": "space_collection_posts_collection_id_order_index",
+          "isUnique": true,
+          "method": "btree",
+          "concurrently": false
         }
       },
       "foreignKeys": {
@@ -2262,12 +2506,25 @@
       },
       "indexes": {
         "space_collections_space_id_state_index": {
-          "name": "space_collections_space_id_state_index",
           "columns": [
-            "space_id",
-            "state"
+            {
+              "expression": "space_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "state",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "with": {},
+          "name": "space_collections_space_id_state_index",
+          "isUnique": false,
+          "method": "btree",
+          "concurrently": false
         }
       },
       "foreignKeys": {
@@ -2382,12 +2639,25 @@
       },
       "indexes": {
         "space_follows_user_id_space_id_index": {
-          "name": "space_follows_user_id_space_id_index",
           "columns": [
-            "user_id",
-            "space_id"
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "space_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": true
+          "with": {},
+          "name": "space_follows_user_id_space_id_index",
+          "isUnique": true,
+          "method": "btree",
+          "concurrently": false
         }
       },
       "foreignKeys": {
@@ -2465,12 +2735,25 @@
       },
       "indexes": {
         "space_masquerades_space_id_user_id_index": {
-          "name": "space_masquerades_space_id_user_id_index",
           "columns": [
-            "space_id",
-            "user_id"
+            {
+              "expression": "space_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": true
+          "with": {},
+          "name": "space_masquerades_space_id_user_id_index",
+          "isUnique": true,
+          "method": "btree",
+          "concurrently": false
         }
       },
       "foreignKeys": {
@@ -2680,30 +2963,79 @@
       },
       "indexes": {
         "space_members_space_id_user_id_index": {
-          "name": "space_members_space_id_user_id_index",
           "columns": [
-            "space_id",
-            "user_id"
+            {
+              "expression": "space_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": true
+          "with": {},
+          "name": "space_members_space_id_user_id_index",
+          "isUnique": true,
+          "method": "btree",
+          "concurrently": false
         },
         "space_members_space_id_user_id_state_index": {
-          "name": "space_members_space_id_user_id_state_index",
           "columns": [
-            "space_id",
-            "user_id",
-            "state"
+            {
+              "expression": "space_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "state",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "with": {},
+          "name": "space_members_space_id_user_id_state_index",
+          "isUnique": false,
+          "method": "btree",
+          "concurrently": false
         },
         "space_members_user_id_space_id_state_index": {
-          "name": "space_members_user_id_space_id_state_index",
           "columns": [
-            "user_id",
-            "space_id",
-            "state"
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "space_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "state",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "with": {},
+          "name": "space_members_user_id_space_id_state_index",
+          "isUnique": false,
+          "method": "btree",
+          "concurrently": false
         }
       },
       "foreignKeys": {
@@ -2874,20 +3206,46 @@
       },
       "indexes": {
         "spaces_slug_state_index": {
-          "name": "spaces_slug_state_index",
           "columns": [
-            "slug",
-            "state"
+            {
+              "expression": "slug",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "state",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "with": {},
+          "name": "spaces_slug_state_index",
+          "isUnique": false,
+          "method": "btree",
+          "concurrently": false
         },
         "spaces_state_visibility_index": {
-          "name": "spaces_state_visibility_index",
           "columns": [
-            "state",
-            "visibility"
+            {
+              "expression": "state",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "visibility",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "with": {},
+          "name": "spaces_state_visibility_index",
+          "isUnique": false,
+          "method": "btree",
+          "concurrently": false
         }
       },
       "foreignKeys": {
@@ -2940,12 +3298,25 @@
       },
       "indexes": {
         "tag_follows_user_id_tag_id_index": {
-          "name": "tag_follows_user_id_tag_id_index",
           "columns": [
-            "user_id",
-            "tag_id"
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "tag_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": true
+          "with": {},
+          "name": "tag_follows_user_id_tag_id_index",
+          "isUnique": true,
+          "method": "btree",
+          "concurrently": false
         }
       },
       "foreignKeys": {
@@ -3094,11 +3465,19 @@
       },
       "indexes": {
         "tag_wiki_revisions_created_at_index": {
-          "name": "tag_wiki_revisions_created_at_index",
           "columns": [
-            "created_at"
+            {
+              "expression": "created_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "with": {},
+          "name": "tag_wiki_revisions_created_at_index",
+          "isUnique": false,
+          "method": "btree",
+          "concurrently": false
         }
       },
       "foreignKeys": {
@@ -3209,11 +3588,19 @@
       },
       "indexes": {
         "tags_created_at_idx": {
-          "name": "tags_created_at_idx",
           "columns": [
-            "created_at"
+            {
+              "expression": "created_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "with": {},
+          "name": "tags_created_at_idx",
+          "isUnique": false,
+          "method": "btree",
+          "concurrently": false
         }
       },
       "foreignKeys": {},
@@ -3266,12 +3653,25 @@
       },
       "indexes": {
         "user_content_filter_preferences_user_id_category_index": {
-          "name": "user_content_filter_preferences_user_id_category_index",
           "columns": [
-            "user_id",
-            "category"
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "category",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": true
+          "with": {},
+          "name": "user_content_filter_preferences_user_id_category_index",
+          "isUnique": true,
+          "method": "btree",
+          "concurrently": false
         }
       },
       "foreignKeys": {
@@ -3417,12 +3817,25 @@
       },
       "indexes": {
         "user_event_enrollments_user_id_event_code_index": {
-          "name": "user_event_enrollments_user_id_event_code_index",
           "columns": [
-            "user_id",
-            "event_code"
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "event_code",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": true
+          "with": {},
+          "name": "user_event_enrollments_user_id_event_code_index",
+          "isUnique": true,
+          "method": "btree",
+          "concurrently": false
         }
       },
       "foreignKeys": {
@@ -3538,13 +3951,31 @@
       },
       "indexes": {
         "user_notification_preferences_user_id_category_method_index": {
-          "name": "user_notification_preferences_user_id_category_method_index",
           "columns": [
-            "user_id",
-            "category",
-            "method"
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "category",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "method",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": true
+          "with": {},
+          "name": "user_notification_preferences_user_id_category_method_index",
+          "isUnique": true,
+          "method": "btree",
+          "concurrently": false
         }
       },
       "foreignKeys": {
@@ -3615,11 +4046,19 @@
       },
       "indexes": {
         "user_notifications_created_at_index": {
-          "name": "user_notifications_created_at_index",
           "columns": [
-            "created_at"
+            {
+              "expression": "created_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "with": {},
+          "name": "user_notifications_created_at_index",
+          "isUnique": false,
+          "method": "btree",
+          "concurrently": false
         }
       },
       "foreignKeys": {
@@ -3915,20 +4354,46 @@
       },
       "indexes": {
         "user_single_sign_ons_user_id_provider_index": {
-          "name": "user_single_sign_ons_user_id_provider_index",
           "columns": [
-            "user_id",
-            "provider"
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "provider",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": true
+          "with": {},
+          "name": "user_single_sign_ons_user_id_provider_index",
+          "isUnique": true,
+          "method": "btree",
+          "concurrently": false
         },
         "user_single_sign_ons_provider_principal_index": {
-          "name": "user_single_sign_ons_provider_principal_index",
           "columns": [
-            "provider",
-            "principal"
+            {
+              "expression": "provider",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "principal",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": true
+          "with": {},
+          "name": "user_single_sign_ons_provider_principal_index",
+          "isUnique": true,
+          "method": "btree",
+          "concurrently": false
         }
       },
       "foreignKeys": {
@@ -3981,12 +4446,25 @@
       },
       "indexes": {
         "user_space_mutes_user_id_space_id_index": {
-          "name": "user_space_mutes_user_id_space_id_index",
           "columns": [
-            "user_id",
-            "space_id"
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "space_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": true
+          "with": {},
+          "name": "user_space_mutes_user_id_space_id_index",
+          "isUnique": true,
+          "method": "btree",
+          "concurrently": false
         }
       },
       "foreignKeys": {
@@ -4052,12 +4530,25 @@
       },
       "indexes": {
         "user_tag_mute_user_id_tag_id_index": {
-          "name": "user_tag_mute_user_id_tag_id_index",
           "columns": [
-            "user_id",
-            "tag_id"
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "tag_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": true
+          "with": {},
+          "name": "user_tag_mute_user_id_tag_id_index",
+          "isUnique": true,
+          "method": "btree",
+          "concurrently": false
         }
       },
       "foreignKeys": {
@@ -4187,12 +4678,25 @@
       },
       "indexes": {
         "users_email_state_index": {
-          "name": "users_email_state_index",
           "columns": [
-            "email",
-            "state"
+            {
+              "expression": "email",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "state",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": false
+          "with": {},
+          "name": "users_email_state_index",
+          "isUnique": false,
+          "method": "btree",
+          "concurrently": false
         }
       },
       "foreignKeys": {
