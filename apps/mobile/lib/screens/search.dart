@@ -319,27 +319,19 @@ class _TagButton extends StatelessWidget {
       onPressed: () async {
         await context.router.push(TagRoute(name: name));
       },
-      child: DecoratedBox(
+      child: Container(
+        padding: const Pad(horizontal: 8, vertical: 6),
         decoration: BoxDecoration(
-          border: Border.all(color: const Color(0xFFF5F5F5)),
-          borderRadius: BorderRadius.circular(3),
+          color: const Color(0xFFF5F5F5),
+          borderRadius: BorderRadius.circular(2),
         ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Box(
-              color: const Color(0xFFF3F3F3),
-              padding: const Pad(horizontal: 8, vertical: 6),
-              child: Text(
-                '#$name',
-                style: const TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                  color: BrandColors.gray_800,
-                ),
-              ),
-            ),
-          ],
+        child: Text(
+          '#$name',
+          style: const TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w500,
+            color: BrandColors.gray_800,
+          ),
         ),
       ),
     );
