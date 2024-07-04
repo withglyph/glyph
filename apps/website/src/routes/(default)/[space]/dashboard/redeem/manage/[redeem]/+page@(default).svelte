@@ -1,15 +1,17 @@
 <script lang="ts">
   import dayjs from 'dayjs';
+  import qs from 'query-string';
   import IconArrowLeft from '~icons/tabler/arrow-left';
   import IconCoin from '~icons/tabler/coin';
   import { goto } from '$app/navigation';
+  import { page } from '$app/stores';
   import { graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
-  import { Alert, Button, Helmet, Icon, Image } from '$lib/components';
+  import { Alert, Button, Helmet, Icon, Image, Pagination } from '$lib/components';
   import { comma } from '$lib/utils';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
-  import RedeemCodeQrList from '../../RedeemCodeQrList.svelte';
+  import RedeemCode from './RedeemCode.svelte';
 
   let revokeRedeemCodeGroupOpen = false;
 
@@ -25,7 +27,7 @@
 
         codes(page: $page, take: $take) {
           id
-          ...RedeemCodeQrList_redeem
+          ...RedeemCode_redeem
         }
 
         post {
@@ -62,6 +64,19 @@
       }
     }
   `);
+
+  let initialPage = Number($page.url.searchParams.get('page')) || 1;
+
+  const updatePage = (currentPage: number) => {
+    const stringifiedURL = qs.stringifyUrl({
+      url: `/${$query.redeemCodeGroup.post.space.slug}/dashboard/redeem/manage/${$query.redeemCodeGroup.id}`,
+      query: {
+        page: currentPage,
+      },
+    });
+
+    location.href = stringifiedURL;
+  };
 </script>
 
 <Helmet
@@ -239,10 +254,25 @@
     </p>
   </div>
 
-  <RedeemCodeQrList
-    $redeems={$query.redeemCodeGroup.codes}
-    codeCount={$query.redeemCodeGroup.codeCount}
-    url="/{$query.redeemCodeGroup.post.space.slug}/dashboard/redeem/manage/{$query.redeemCodeGroup.id}"
+  <ul
+    class={flex({
+      direction: 'column',
+      gap: '8px',
+      marginTop: { base: '34px', sm: '16px' },
+      width: 'full',
+      sm: { maxWidth: '860px' },
+    })}
+  >
+    {#each $query.redeemCodeGroup.codes as code (code.id)}
+      <RedeemCode $redeem={code} />
+    {/each}
+  </ul>
+
+  <Pagination
+    style={css.raw({ marginTop: '60px' })}
+    {initialPage}
+    onChange={updatePage}
+    totalItems={$query.redeemCodeGroup.codeCount}
   />
 </div>
 
