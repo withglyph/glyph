@@ -226,7 +226,7 @@ class _OnboardingCurationScreenState extends ConsumerState<OnboardingCurationScr
                               alignment: Alignment.center,
                               padding: const Pad(vertical: 15),
                               child: Text(
-                                '다음',
+                                '완료',
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w700,

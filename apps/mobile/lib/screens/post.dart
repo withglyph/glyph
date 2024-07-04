@@ -1354,8 +1354,8 @@ class _Tag extends StatelessWidget {
               ),
             ),
           ),
-          Pressable(
-            child: Flexible(
+          Flexible(
+            child: Pressable(
               child: Box(
                 color: const Color(0xFFF3F3F3),
                 padding: const Pad(horizontal: 6, vertical: 2),
@@ -1369,12 +1369,12 @@ class _Tag extends StatelessWidget {
                   ),
                 ),
               ),
+              onPressed: () async {
+                if (kind != '카테고리') {
+                  await context.router.push(TagRoute(name: name));
+                }
+              },
             ),
-            onPressed: () async {
-              if (kind != '카테고리') {
-                await context.router.push(TagRoute(name: name));
-              }
-            },
           ),
         ],
       ),
