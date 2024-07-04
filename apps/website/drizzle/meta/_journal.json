@@ -141,6 +141,13 @@
       "when": 1718594294536,
       "tag": "0019_next_maginty",
       "breakpoints": false
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1720077073393,
+      "tag": "0020_magical_the_phantom",
+      "breakpoints": false
     }
   ]
 }

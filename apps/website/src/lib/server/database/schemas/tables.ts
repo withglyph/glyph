@@ -1193,3 +1193,23 @@ export const RedeemCodeRedemptions = pgTable('redeem_code_redemptions', {
     .notNull()
     .default(sql`now()`),
 });
+
+export const UserArbitraryKeyValues = pgTable(
+  'user_arbitrary_key_values',
+  {
+    id: text('id')
+      .primaryKey()
+      .$defaultFn(() => createId()),
+    userId: text('user_id')
+      .notNull()
+      .references(() => Users.id),
+    key: text('key').notNull(),
+    value: jsonb('value').notNull(),
+    createdAt: datetime('created_at')
+      .notNull()
+      .default(sql`now()`),
+  },
+  (t) => ({
+    userIdKeyUniqIdx: uniqueIndex().on(t.userId, t.key),
+  }),
+);

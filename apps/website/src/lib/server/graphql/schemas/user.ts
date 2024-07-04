@@ -41,6 +41,7 @@ import {
   SpaceMembers,
   Spaces,
   TagFollows,
+  UserArbitraryKeyValues,
   UserContentFilterPreferences,
   UserEmailVerifications,
   UserEventEnrollments,
@@ -530,6 +531,17 @@ User.implement({
         }
 
         return enrollments[0].id;
+      },
+    }),
+
+    onboardingCompleted: t.boolean({
+      resolve: async (user) => {
+        const kvs = await database
+          .select({ id: UserArbitraryKeyValues.id })
+          .from(UserArbitraryKeyValues)
+          .where(and(eq(UserArbitraryKeyValues.userId, user.id), eq(UserArbitraryKeyValues.key, 'onboarding')));
+
+        return kvs.length > 0;
       },
     }),
 
@@ -1580,6 +1592,22 @@ builder.mutationFields((t) => ({
             eq(UserPushNotificationTokens.token, input.token),
           ),
         );
+    },
+  }),
+
+  completeOnboarding: t.withAuth({ user: true }).field({
+    type: User,
+    resolve: async (_, __, context) => {
+      await database
+        .insert(UserArbitraryKeyValues)
+        .values({
+          userId: context.session.userId,
+          key: 'onboarding',
+          value: {},
+        })
+        .onConflictDoNothing();
+
+      return context.session.userId;
     },
   }),
 }));

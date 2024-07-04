@@ -341,6 +341,7 @@ type Mutation {
   authorizeUserEmailToken(input: AuthorizeUserEmailTokenInput!): AuthorizeUserEmailTokenResult!
   blockMasquerade(input: BlockMasqueradeInput!): Space!
   bookmarkPost(input: BookmarkPostInput!): Post!
+  completeOnboarding: User!
   createComment(input: CreateCommentInput!): PostComment!
   createPost(input: CreatePostInput!): Post!
   createPostReaction(input: CreatePostReactionInput!): Post!
@@ -1242,6 +1243,7 @@ type User {
   mutedTags: [Tag!]!
   notificationPreferences: [UserNotificationPreference!]!
   notifications(category: UserNotificationCategory, unreadOnly: Boolean! = false): [IUserNotification!]!
+  onboardingCompleted: Boolean!
   personalIdentity: UserPersonalIdentity
   point(kind: PointKind): Int!
   points(amountFilter: Int! = 0): [IPointTransaction!]!
