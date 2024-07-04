@@ -5,6 +5,10 @@ query PostScreen_Query($permalink: String!) {
   me {
     id
     point
+    isAdulthood
+    personalIdentity {
+      id
+    }
   }
 
   post(permalink: $permalink) {
@@ -16,6 +20,11 @@ query PostScreen_Query($permalink: String!) {
     reactionCount
     commentCount
     publishedAt
+
+    ageRating
+    unlocked
+    blurredReason
+    hasPassword
 
     space {
       id
