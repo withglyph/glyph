@@ -12,6 +12,7 @@ import 'package:gap/gap.dart';
 import 'package:get_it/get_it.dart';
 import 'package:glyph/components/btn.dart';
 import 'package:glyph/components/dot.dart';
+import 'package:glyph/components/empty_state.dart';
 import 'package:glyph/components/heading.dart';
 import 'package:glyph/components/horizontal_divider.dart';
 import 'package:glyph/components/img.dart';
@@ -1629,40 +1630,18 @@ class _CommentsState extends ConsumerState<_Comments> with SingleTickerProviderS
               ),
               if (data.post.commentQualification == GPostCommentQualification.NONE)
                 const Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(TablerBold.message_circle_off, size: 40, color: Colors.black),
-                      Gap(16),
-                      Text(
-                        '댓글을 달 수 없어요',
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: BrandColors.gray_800),
-                      ),
-                      Gap(4),
-                      Text(
-                        '창작자가 댓글을 달 수 없도록 설정했어요',
-                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: BrandColors.gray_500),
-                      ),
-                    ],
+                  child: EmptyState(
+                    icon: TablerBold.message_circle_off,
+                    title: '댓글을 달 수 없어요',
+                    description: '창작자가 댓글을 달 수 없도록 설정했어요',
                   ),
                 )
               else if (data.post.comments.isEmpty)
                 const Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(TablerBold.mood_edit, size: 40, color: Colors.black),
-                      Gap(16),
-                      Text(
-                        '아직 댓글이 없어요',
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: BrandColors.gray_800),
-                      ),
-                      Gap(4),
-                      Text(
-                        '첫 번째 댓글을 달아보세요',
-                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: BrandColors.gray_500),
-                      ),
-                    ],
+                  child: EmptyState(
+                    icon: TablerBold.mood_edit,
+                    title: '아직 댓글이 없어요',
+                    description: '첫 번째 댓글을 달아보세요',
                   ),
                 )
               else
