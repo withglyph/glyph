@@ -5,6 +5,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:get_it/get_it.dart';
 import 'package:glyph/env.dart';
 import 'package:glyph/providers/auth.dart';
 
@@ -35,6 +37,9 @@ class WebView extends ConsumerStatefulWidget {
 class _WebviewState extends ConsumerState<WebView> {
   final GlobalKey _key = GlobalKey();
 
+  final _storage = GetIt.I<FlutterSecureStorage>();
+  final _deviceIdStorageKey = 'webview_device_id';
+
   // InAppWebViewController? _webViewController;
   InAppWebViewSettings get _settings => InAppWebViewSettings(
         allowsBackForwardNavigationGestures: false,
@@ -62,10 +67,21 @@ class _WebviewState extends ConsumerState<WebView> {
       initialSettings: _settings,
       preventGestureDelay: true,
       onWebViewCreated: (controller) async {
-        // _webViewController = controller;
+        final baseUri = WebUri(Env.baseUrl);
+        final deviceId = await _storage.read(key: _deviceIdStorageKey);
+
+        if (deviceId != null) {
+          await _cookieManager.setCookie(
+            url: baseUri,
+            name: 'glyph-did',
+            value: deviceId,
+            isSecure: Env.baseUrl.startsWith('https'),
+            isHttpOnly: true,
+          );
+        }
 
         await _cookieManager.setCookie(
-          url: WebUri(Env.baseUrl),
+          url: baseUri,
           name: 'glyph-at',
           value: accessToken!,
           isSecure: Env.baseUrl.startsWith('https'),
@@ -73,7 +89,7 @@ class _WebviewState extends ConsumerState<WebView> {
         );
 
         await _cookieManager.setCookie(
-          url: WebUri(Env.baseUrl),
+          url: baseUri,
           name: 'glyph-wb',
           value: 'true',
           isSecure: Env.baseUrl.startsWith('https'),
@@ -101,13 +117,16 @@ class _WebviewState extends ConsumerState<WebView> {
           );
         }
 
-        unawaited(
-          controller.loadUrl(
-            urlRequest: URLRequest(
-              url: WebUri('${Env.baseUrl}${widget.path}'),
-            ),
+        await controller.loadUrl(
+          urlRequest: URLRequest(
+            url: WebUri('${Env.baseUrl}${widget.path}'),
           ),
         );
+
+        final deviceIdCookie = await _cookieManager.getCookie(url: baseUri, name: 'glyph-did');
+        if (deviceIdCookie != null) {
+          await _storage.write(key: _deviceIdStorageKey, value: deviceIdCookie.value);
+        }
       },
       shouldOverrideUrlLoading: widget.onNavigate,
     );
