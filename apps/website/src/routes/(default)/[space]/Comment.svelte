@@ -529,8 +529,7 @@
           if (!$postComment.masquerade || !$query.post.space) return;
 
           mixpanel.track('comment:delete', {
-            masqueradeId: $postComment.masquerade.id,
-            spaceId: $query.post.space.id,
+            commentId: $postComment.id,
           });
 
           deleteCommentOpen = false;
