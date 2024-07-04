@@ -1006,7 +1006,7 @@ PostRevision.implement({
           ),
         );
 
-        return Math.ceil((charactersArray.reduce((acc, val) => acc + val, 0) / 700) * 60);
+        return Math.max(Math.ceil((charactersArray.reduce((acc, val) => acc + val, 0) / 700) * 60), 1);
       },
     }),
   }),
