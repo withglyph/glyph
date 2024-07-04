@@ -36,7 +36,7 @@ class PointPurchaseScreen extends ConsumerStatefulWidget {
 
 class _PointPurchaseScreenState extends ConsumerState<PointPurchaseScreen> {
   final _iap = GetIt.I<InAppPurchase>();
-  final _products = <ProductDetails>[];
+  final _products = <_Product>[];
 
   StreamSubscription<List<PurchaseDetails>>? _purchaseStreamSubscription;
 
@@ -198,7 +198,7 @@ class _PointPurchaseScreenState extends ConsumerState<PointPurchaseScreen> {
                       children: [
                         Expanded(
                           child: Text(
-                            product.title,
+                            product.name,
                             style: const TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.w700,
@@ -207,20 +207,29 @@ class _PointPurchaseScreenState extends ConsumerState<PointPurchaseScreen> {
                         ),
                         Container(
                           width: 78,
-                          padding: const Pad(vertical: 6),
+                          height: 31,
                           decoration: BoxDecoration(
                             color: BrandColors.gray_900,
                             borderRadius: BorderRadius.circular(2),
                           ),
                           child: Center(
-                            child: Text(
-                              product.price,
-                              style: const TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w700,
-                                color: BrandColors.gray_0,
-                              ),
-                            ),
+                            child: product.details == null
+                                ? const SizedBox(
+                                    width: 15,
+                                    height: 15,
+                                    child: CircularProgressIndicator(
+                                      color: BrandColors.gray_0,
+                                      strokeWidth: 1.5,
+                                    ),
+                                  )
+                                : Text(
+                                    product.details!.price,
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w700,
+                                      color: BrandColors.gray_0,
+                                    ),
+                                  ),
                           ),
                         ),
                       ],
@@ -229,14 +238,12 @@ class _PointPurchaseScreenState extends ConsumerState<PointPurchaseScreen> {
                   onPressed: () async {
                     context.loader.show();
 
-                    final pointAmount = int.parse(product.id.split('_').last);
-
                     final client = ref.read(ferryProvider);
                     final req = GPurchasePointScreen_PurchasePoint_MutationReq(
                       (b) => b
                         ..vars.input.paymentMethod =
                             kReleaseMode ? GPaymentMethod.IN_APP_PURCHASE : GPaymentMethod.DUMMY
-                        ..vars.input.pointAmount = pointAmount
+                        ..vars.input.pointAmount = product.pointAmount
                         ..vars.input.pointAgreement = true,
                     );
                     final resp = await client.req(req);
@@ -244,7 +251,7 @@ class _PointPurchaseScreenState extends ConsumerState<PointPurchaseScreen> {
                     if (kReleaseMode) {
                       await _iap.buyConsumable(
                         purchaseParam: PurchaseParam(
-                          productDetails: product,
+                          productDetails: product.details!,
                           applicationUserName: resp.purchasePoint.paymentData.asMap['uuid'],
                         ),
                       );
@@ -311,20 +318,16 @@ class _PointPurchaseScreenState extends ConsumerState<PointPurchaseScreen> {
   }
 
   Future<void> _fetchProducts() async {
-    final resp = await _iap.queryProductDetails({
-      'point_1000',
-      'point_3000',
-      'point_5000',
-      'point_10000',
-      'point_30000',
-      'point_50000',
-      'point_100000',
+    final points = [1000, 3000, 5000, 10000, 30000, 50000, 100000];
+    setState(() {
+      _products.addAll(points.map((point) => _Product(name: '${point.comma}P', pointAmount: point)));
     });
 
+    final resp = await _iap.queryProductDetails(points.map((point) => 'point_$point').toSet());
     setState(() {
-      _products.addAll(
-        resp.productDetails.sorted((a, b) => a.rawPrice.compareTo(b.rawPrice)),
-      );
+      for (final product in _products) {
+        product.details = resp.productDetails.firstWhereOrNull((v) => v.id == 'point_${product.pointAmount}');
+      }
     });
   }
 }
@@ -389,4 +392,15 @@ class _PurchaseCompleteBottomSheet extends StatelessWidget {
       ),
     );
   }
+}
+
+class _Product {
+  _Product({
+    required this.name,
+    required this.pointAmount,
+  });
+
+  final String name;
+  final int pointAmount;
+  ProductDetails? details;
 }
