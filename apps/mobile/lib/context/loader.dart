@@ -24,7 +24,7 @@ class LoaderController {
             canPop: false,
             child: Center(
               child: CircularProgressIndicator(
-                color: BrandColors.brand_600,
+                color: BrandColors.gray_900,
               ),
             ),
           );
