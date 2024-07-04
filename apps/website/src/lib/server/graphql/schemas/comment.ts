@@ -23,6 +23,10 @@ import { Profile } from './user';
  * * Types
  */
 
+const CommentInvisibleReason = builder.enumType('CommentInvisibleReason', {
+  values: ['DELETED', 'PRIVATE'] as const,
+});
+
 export const PostComment = createObjectRef('PostComment', PostComments);
 PostComment.implement({
   roleGranter: {
@@ -74,6 +78,44 @@ PostComment.implement({
     state: t.expose('state', { type: PostCommentState }),
     createdAt: t.expose('createdAt', { type: 'DateTime' }),
     updatedAt: t.expose('updatedAt', { type: 'DateTime', nullable: true }),
+
+    invisibleReason: t.field({
+      type: CommentInvisibleReason,
+      nullable: true,
+      resolve: async (comment, _, context) => {
+        if (comment.state === 'INACTIVE') {
+          return 'DELETED';
+        }
+
+        if (comment.visibility !== 'PUBLIC') {
+          if (!context.session) {
+            return 'PRIVATE';
+          }
+
+          if (context.session.userId !== comment.userId) {
+            const postLoader = Loader.postById(context);
+            const post = await postLoader.load(comment.postId);
+
+            if (post.userId !== context.session.userId) {
+              if (!post.spaceId) {
+                return 'PRIVATE';
+              }
+
+              const member = await getSpaceMember(context, post.spaceId);
+              if (!member) {
+                const parentComment = comment.parentId
+                  ? await PostComment.getDataloader(context).load(comment.parentId)
+                  : null;
+
+                if (parentComment?.userId !== context.session.userId) {
+                  return 'PRIVATE';
+                }
+              }
+            }
+          }
+        }
+      },
+    }),
 
     post: t.field({
       type: Post,

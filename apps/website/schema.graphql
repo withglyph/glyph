@@ -56,6 +56,11 @@ input BookmarkPostInput {
   postId: ID!
 }
 
+enum CommentInvisibleReason {
+  DELETED
+  PRIVATE
+}
+
 type CommentNotification implements IUserNotification {
   actor: Profile
   category: UserNotificationCategory!
@@ -550,6 +555,7 @@ type PostComment {
   content: String!
   createdAt: DateTime!
   id: ID!
+  invisibleReason: CommentInvisibleReason
   likeCount: Int!
   liked: Boolean!
   likedByPostUser: Boolean!
