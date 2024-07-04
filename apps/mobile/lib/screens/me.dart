@@ -303,14 +303,9 @@ class _MeScreenState extends ConsumerState<MeScreen> {
                   children: [
                     _MenuItem(
                       icon: Tabler.filter_cog,
-                      title: '콘텐츠 필터링',
+                      title: '컨텐츠 필터링',
                       onPressed: () async {
-                        await context.router.push(
-                          WebViewRoute(
-                            title: '콘텐츠 필터링',
-                            path: '/me/contentfilters',
-                          ),
-                        );
+                        await context.router.push(const ContentFiltersRoute());
                       },
                     ),
                   ],

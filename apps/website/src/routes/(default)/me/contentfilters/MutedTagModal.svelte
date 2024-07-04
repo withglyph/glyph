@@ -3,6 +3,7 @@
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
   import { Icon, Modal } from '$lib/components';
+  import { isWebView, postFlutterMessage } from '$lib/flutter';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
   import type { MeContentFiltersPage_MutedTagModal_user } from '$glitch';
@@ -57,12 +58,24 @@
           },
         })}
       >
-        <a
-          class={flex({ align: 'center', gap: '4px', grow: '1', paddingY: '16px', fontSize: '14px', truncate: true })}
-          href="/tag/{tag.name}"
-        >
-          #{tag.name}
-        </a>
+        {#if $isWebView}
+          <button
+            class={flex({ align: 'center', gap: '4px', grow: '1', paddingY: '16px', fontSize: '14px', truncate: true })}
+            type="button"
+            on:click={() => {
+              postFlutterMessage({ type: 'tag:view', name: tag.name });
+            }}
+          >
+            #{tag.name}
+          </button>
+        {:else}
+          <a
+            class={flex({ align: 'center', gap: '4px', grow: '1', paddingY: '16px', fontSize: '14px', truncate: true })}
+            href="/tag/{tag.name}"
+          >
+            #{tag.name}
+          </a>
+        {/if}
         <button
           class={css({ paddingY: '16px' })}
           type="button"

@@ -3,6 +3,7 @@
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
   import { Icon, Image, Modal } from '$lib/components';
+  import { isWebView, postFlutterMessage } from '$lib/flutter';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
   import type { MeContentFiltersPage_MutedSpaceModal_user } from '$glitch';
@@ -73,22 +74,51 @@
           },
         })}
       >
-        <a
-          class={flex({ align: 'center', gap: '4px', grow: '1', paddingY: '16px', truncate: true })}
-          href="/{space.slug}"
-        >
-          <Image
-            style={css.raw({
-              flex: 'none',
-              borderWidth: '[0.8px]',
-              borderColor: 'gray.100',
-              size: '18px',
+        {#if $isWebView}
+          <button
+            class={flex({
+              align: 'center',
+              gap: '4px',
+              grow: '1',
+              paddingY: '16px',
+              textAlign: 'left',
+              truncate: true,
             })}
-            $image={space.icon}
-            size={24}
-          />
-          <p class={css({ flexGrow: '1', fontSize: '14px', truncate: true })}>{space.name}</p>
-        </a>
+            type="button"
+            on:click={() => {
+              postFlutterMessage({ type: 'space:view', slug: space.slug });
+            }}
+          >
+            <Image
+              style={css.raw({
+                flex: 'none',
+                borderWidth: '[0.8px]',
+                borderColor: 'gray.100',
+                size: '18px',
+              })}
+              $image={space.icon}
+              size={24}
+            />
+            <p class={css({ flexGrow: '1', fontSize: '14px', truncate: true })}>{space.name}</p>
+          </button>
+        {:else}
+          <a
+            class={flex({ align: 'center', gap: '4px', grow: '1', paddingY: '16px', truncate: true })}
+            href="/{space.slug}"
+          >
+            <Image
+              style={css.raw({
+                flex: 'none',
+                borderWidth: '[0.8px]',
+                borderColor: 'gray.100',
+                size: '18px',
+              })}
+              $image={space.icon}
+              size={24}
+            />
+            <p class={css({ flexGrow: '1', fontSize: '14px', truncate: true })}>{space.name}</p>
+          </a>
+        {/if}
         <button
           class={css({ paddingY: '16px' })}
           type="button"
