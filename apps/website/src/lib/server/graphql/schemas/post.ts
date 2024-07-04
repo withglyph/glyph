@@ -683,6 +683,7 @@ Post.implement({
                     { terms: { 'tags.id': postTagIds } },
                     { term: { ['spaceId']: post.spaceId } },
                     { rank_feature: { field: 'trendingScore' } },
+                    { match_all: { boost: 0.1 } },
                   ],
                   must_not: makeQueryContainers([
                     {
