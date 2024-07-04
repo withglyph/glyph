@@ -39,7 +39,7 @@ class Heading extends StatelessWidget implements PreferredSizeWidget {
 
     return AnnotatedRegion(
       value: baseSystemUiOverlayStyle.copyWith(
-        statusBarColor: backgroundColor,
+        statusBarColor: Colors.transparent,
       ),
       child: DecoratedBox(
         decoration: BoxDecoration(
@@ -120,7 +120,7 @@ class EmptyHeading extends StatelessWidget implements PreferredSizeWidget {
 
     return AnnotatedRegion(
       value: baseSystemUiOverlayStyle.copyWith(
-        statusBarColor: backgroundColor,
+        statusBarColor: Colors.transparent,
       ),
       child: Box(
         color: backgroundColor,
