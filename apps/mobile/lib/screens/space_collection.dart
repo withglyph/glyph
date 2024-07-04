@@ -123,6 +123,35 @@ class _SpaceCollectionScreenState extends State<SpaceCollectionScreen> with Sing
                       );
                     },
                   ),
+                  if (data.spaceCollection.space.meAsMember != null) ...[
+                    const Gap(20),
+                    Pressable(
+                      child: Icon(
+                        Tabler.dots_vertical,
+                        color: _appBarForegroundColorAnimation.value,
+                      ),
+                      onPressed: () async {
+                        await context.showBottomMenu(
+                          title: '컬렉션',
+                          items: [
+                            BottomMenuItem(
+                              icon: Tabler.settings,
+                              title: '컬렉션 관리',
+                              onTap: () async {
+                                await context.router.push(
+                                  WebViewRoute(
+                                    title: '컬렉션 관리',
+                                    path:
+                                        '/${data.spaceCollection.space.slug}/dashboard/collections/${widget.collection}',
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                  ],
                 ],
               );
             },
