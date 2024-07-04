@@ -517,18 +517,28 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             if (data.post.thumbnail == null) Gap(safeAreaTopHeight + 54),
-                            if (data.post.collection != null) ...[
-                              Text(
-                                data.post.collection!.name,
-                                overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500,
-                                  color: BrandColors.gray_500,
+                            if (data.post.collection != null)
+                              Pressable(
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      data.post.collection!.name,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: const TextStyle(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w500,
+                                        color: BrandColors.gray_500,
+                                      ),
+                                    ),
+                                    const Gap(12),
+                                  ],
                                 ),
+                                onPressed: () async {
+                                  await context.router.push(
+                                    SpaceCollectionRoute(collection: data.post.collection!.id),
+                                  );
+                                },
                               ),
-                              const Gap(12),
-                            ],
                             Text(
                               data.post.publishedRevision!.title ?? '(제목 없음)',
                               style: const TextStyle(
