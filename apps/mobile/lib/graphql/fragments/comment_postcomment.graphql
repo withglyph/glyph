@@ -6,6 +6,7 @@ fragment Comment_postComment on PostComment {
   purchased
   liked
   likedByPostUser
+  invisibleReason
   masquerade {
     id
   }

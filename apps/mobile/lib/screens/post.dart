@@ -2152,7 +2152,6 @@ class _Comment extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isMyComment = comment.profile.id == commentProfile?.id;
-    final invisible = comment.visibility == GPostCommentVisibility.PRIVATE && !isMyComment && !isMyPost;
 
     return Stack(
       children: [
@@ -2237,32 +2236,33 @@ class _Comment extends ConsumerWidget {
               const Gap(4),
               Padding(
                 padding: const Pad(right: 12),
-                child: comment.state == GPostCommentState.INACTIVE
-                    ? const Text(
-                        '삭제된 댓글입니다',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w400,
-                          color: BrandColors.gray_400,
-                        ),
-                      )
-                    : invisible
-                        ? const Text(
-                            '비밀댓글입니다',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w400,
-                              color: BrandColors.gray_400,
-                            ),
-                          )
-                        : Text(
-                            comment.content,
-                            style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w400,
-                              color: BrandColors.gray_900,
-                            ),
-                          ),
+                child: switch (comment.invisibleReason) {
+                  GCommentInvisibleReason.DELETED => const Text(
+                      '삭제된 댓글입니다',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400,
+                        color: BrandColors.gray_400,
+                      ),
+                    ),
+                  GCommentInvisibleReason.PRIVATE => const Text(
+                      '비밀댓글입니다',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400,
+                        color: BrandColors.gray_400,
+                      ),
+                    ),
+                  null => Text(
+                      comment.content,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400,
+                        color: BrandColors.gray_900,
+                      ),
+                    ),
+                  _ => throw UnimplementedError(),
+                },
               ),
               const Gap(12),
               Row(
@@ -2642,11 +2642,6 @@ class _RepliesState extends ConsumerState<_Replies> with SingleTickerProviderSta
                             },
                             itemBuilder: (context, index) {
                               final commentReply = comment.children[index];
-
-                              // FIXME: comment visible 여부는 서버에서 주기로 했다
-                              final invisible = commentReply.visibility == GPostCommentVisibility.PRIVATE &&
-                                  data.post.space?.commentProfile?.id != commentReply.profile.id &&
-                                  data.post.space?.meAsMember == null;
 
                               return Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
