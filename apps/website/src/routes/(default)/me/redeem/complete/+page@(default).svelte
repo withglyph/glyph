@@ -3,6 +3,7 @@
   import IconCoin from '~icons/tabler/coin';
   import { graphql } from '$glitch';
   import { Button, Helmet, Icon, Image } from '$lib/components';
+  import { isWebView, postFlutterMessage } from '$lib/flutter';
   import { comma } from '$lib/utils';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
@@ -47,15 +48,18 @@
 <Helmet description="리딤코드 등록이 완료되었어요" title="리딤코드 등록 완료" />
 
 <div
-  class={flex({
-    direction: 'column',
-    align: 'center',
-    justify: 'center',
-    grow: '1',
-    backgroundColor: 'gray.50',
-    width: 'full',
-    smDown: { paddingX: '20px' },
-  })}
+  class={css(
+    {
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      flexGrow: '1',
+      backgroundColor: 'gray.50',
+      width: 'full',
+      smDown: { paddingX: '20px' },
+    },
+    $isWebView && { minHeight: 'dvh' },
+  )}
 >
   <div
     class={css({ paddingTop: '80px', paddingBottom: { base: '120px', sm: '160px' }, width: 'full', maxWidth: '600px' })}
@@ -144,13 +148,25 @@
       </dl>
     </div>
 
-    <Button
-      style={css.raw({ display: 'block' })}
-      href={`/${$query.redeemCodeRedemption.postPurchase.post.space.slug}/${$query.redeemCodeRedemption.postPurchase.post.permalink}`}
-      type="link"
-      variant="gradation-fill"
-    >
-      포스트 바로가기
-    </Button>
+    {#if $isWebView}
+      <Button
+        style={css.raw({ width: 'full' })}
+        variant="gradation-fill"
+        on:click={() => {
+          postFlutterMessage({ type: 'post:view', permalink: $query.redeemCodeRedemption.postPurchase.post.permalink });
+        }}
+      >
+        포스트 바로가기
+      </Button>
+    {:else}
+      <Button
+        style={css.raw({ display: 'block' })}
+        href={`/${$query.redeemCodeRedemption.postPurchase.post.space.slug}/${$query.redeemCodeRedemption.postPurchase.post.permalink}`}
+        type="link"
+        variant="gradation-fill"
+      >
+        포스트 바로가기
+      </Button>
+    {/if}
   </div>
 </div>
