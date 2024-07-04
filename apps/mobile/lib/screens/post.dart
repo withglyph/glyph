@@ -173,6 +173,14 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                                 color: BrandColors.red_600,
                                 onTap: () async {
                                   if (data.post.space!.muted) {
+                                    _mixpanel.track(
+                                      'space:unmute',
+                                      properties: {
+                                        'spaceId': data.post.space!.id,
+                                        'via': 'post',
+                                      },
+                                    );
+
                                     final req = GPostScreen_UnmuteSpace_MutationReq(
                                       (b) => b..vars.input.spaceId = data.post.space!.id,
                                     );
@@ -182,6 +190,14 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                                       context.toast.show('${data.post.space!.name} 스페이스 뮤트를 해제했어요');
                                     }
                                   } else {
+                                    _mixpanel.track(
+                                      'space:mute',
+                                      properties: {
+                                        'spaceId': data.post.space!.id,
+                                        'via': 'post',
+                                      },
+                                    );
+
                                     final req = GPostScreen_MuteSpace_MutationReq(
                                       (b) => b..vars.input.spaceId = data.post.space!.id,
                                     );
@@ -218,6 +234,15 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                                     confirmText: '삭제',
                                     onConfirmed: () async {
                                       final client = ref.read(ferryProvider);
+
+                                      _mixpanel.track(
+                                        'post:delete',
+                                        properties: {
+                                          'postId': data.post.id,
+                                          'via': 'post',
+                                        },
+                                      );
+
                                       final req = GPostScreen_DeletePost_MutationReq(
                                         (b) => b..vars.input.postId = data.post.id,
                                       );
@@ -303,11 +328,25 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                   child: Icon(data.post.bookmarkGroups.isEmpty ? Tabler.bookmark : Tabler.bookmark_filled),
                   onPressed: () async {
                     if (data.post.bookmarkGroups.isEmpty) {
+                      _mixpanel.track(
+                        'post:bookmark',
+                        properties: {
+                          'postId': data.post.id,
+                          'via': 'post',
+                        },
+                      );
                       final req = GPostScreen_BookmarkPost_MutationReq(
                         (b) => b..vars.input.postId = data.post.id,
                       );
                       await client.req(req);
                     } else {
+                      _mixpanel.track(
+                        'post:unbookmark',
+                        properties: {
+                          'postId': data.post.id,
+                          'via': 'post',
+                        },
+                      );
                       final req = GPostScreen_UnbookmarkPost_MutationReq(
                         (b) => b
                           ..vars.input.postId = data.post.id
@@ -1249,11 +1288,25 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                                 iconLeft: data.post.space!.followed ? Tabler.check : Tabler.plus,
                                 onPressed: () async {
                                   if (data.post.space!.followed) {
+                                    _mixpanel.track(
+                                      'space:unfollow',
+                                      properties: {
+                                        'spaceId': data.post.space!.id,
+                                        'via': 'post',
+                                      },
+                                    );
                                     final req = GPostScreen_UnfollowSpace_MutationReq(
                                       (b) => b..vars.input.spaceId = data.post.space!.id,
                                     );
                                     await client.req(req);
                                   } else {
+                                    _mixpanel.track(
+                                      'space:follow',
+                                      properties: {
+                                        'spaceId': data.post.space!.id,
+                                        'via': 'post',
+                                      },
+                                    );
                                     final req = GPostScreen_FollowSpace_MutationReq(
                                       (b) => b..vars.input.spaceId = data.post.space!.id,
                                     );
@@ -1750,6 +1803,7 @@ class _Comments extends ConsumerStatefulWidget {
 }
 
 class _CommentsState extends ConsumerState<_Comments> with SingleTickerProviderStateMixin {
+  final _mixpanel = GetIt.I<Mixpanel>();
   final _focusNode = FocusNode();
   final _textController = TextEditingController();
   final _scrollController = ScrollController();
@@ -1812,6 +1866,12 @@ class _CommentsState extends ConsumerState<_Comments> with SingleTickerProviderS
 
             _focusNode.unfocus();
 
+            _mixpanel.track(
+              'comment:create',
+              properties: {
+                'postId': data.post.id,
+              },
+            );
             final req = GPostScreen_Comments_CreateComment_MutationReq(
               (b) => b
                 ..vars.input.postId = data.post.id
@@ -1904,6 +1964,12 @@ class _CommentsState extends ConsumerState<_Comments> with SingleTickerProviderS
                             confirmText: '삭제',
                             onConfirmed: () async {
                               final client = ref.read(ferryProvider);
+                              _mixpanel.track(
+                                'comment:delete',
+                                properties: {
+                                  'commentId': comment.id,
+                                },
+                              );
                               final req = GPostScreen_Comments_DeleteComment_MutationReq(
                                 (b) => b..vars.input.commentId = comment.id,
                               );
@@ -1928,6 +1994,13 @@ class _CommentsState extends ConsumerState<_Comments> with SingleTickerProviderS
                             content: '차단된 유저는 스페이스의 모든 게시물을 볼 수 없으며, 댓글을 달 수 없어요. 차단 해지는 [스페이스 설정- 독자관리]에서 가능해요.',
                             confirmText: '차단',
                             onConfirmed: () async {
+                              _mixpanel.track(
+                                'space:masquerade:block',
+                                properties: {
+                                  'masqueradeId': comment.masquerade?.id,
+                                  'spaceId': data.post.space!.id,
+                                },
+                              );
                               final req = GPostScreen_Comments_BlockMasquerade_MutationReq(
                                 (b) => b
                                   ..vars.input.masqueradeId = comment.masquerade!.id
@@ -1956,11 +2029,23 @@ class _CommentsState extends ConsumerState<_Comments> with SingleTickerProviderS
                           isMyPost: data.post.space?.meAsMember != null,
                           onLike: () async {
                             if (comment.liked) {
+                              _mixpanel.track(
+                                'comment:unlike',
+                                properties: {
+                                  'commentId': comment.id,
+                                },
+                              );
                               final req = GPostScreen_Comments_UnlikeComment_MutationReq(
                                 (b) => b..vars.input.commentId = comment.id,
                               );
                               await client.req(req);
                             } else {
+                              _mixpanel.track(
+                                'comment:like',
+                                properties: {
+                                  'commentId': comment.id,
+                                },
+                              );
                               final req = GPostScreen_Comments_LikeComment_MutationReq(
                                 (b) => b..vars.input.commentId = comment.id,
                               );
@@ -2389,6 +2474,7 @@ class _Replies extends ConsumerStatefulWidget {
 }
 
 class _RepliesState extends ConsumerState<_Replies> with SingleTickerProviderStateMixin {
+  final _mixpanel = GetIt.I<Mixpanel>();
   final _focusNode = FocusNode();
   final _textController = TextEditingController();
   final _scrollController = ScrollController();
@@ -2447,11 +2533,23 @@ class _RepliesState extends ConsumerState<_Replies> with SingleTickerProviderSta
 
           onLike({required bool liked, required String id}) async {
             if (liked) {
+              _mixpanel.track(
+                'comment:unlike',
+                properties: {
+                  'commentId': id,
+                },
+              );
               final req = GPostScreen_Comments_UnlikeComment_MutationReq(
                 (b) => b..vars.input.commentId = id,
               );
               await client.req(req);
             } else {
+              _mixpanel.track(
+                'comment:like',
+                properties: {
+                  'commentId': id,
+                },
+              );
               final req = GPostScreen_Comments_LikeComment_MutationReq(
                 (b) => b..vars.input.commentId = id,
               );
@@ -2465,6 +2563,12 @@ class _RepliesState extends ConsumerState<_Replies> with SingleTickerProviderSta
               confirmText: '삭제',
               onConfirmed: () async {
                 final client = ref.read(ferryProvider);
+                _mixpanel.track(
+                  'comment:delete',
+                  properties: {
+                    'commentId': id,
+                  },
+                );
                 final req = GPostScreen_Comments_DeleteComment_MutationReq(
                   (b) => b..vars.input.commentId = id,
                 );
@@ -2489,6 +2593,13 @@ class _RepliesState extends ConsumerState<_Replies> with SingleTickerProviderSta
               content: '차단된 유저는 스페이스의 모든 게시물을 볼 수 없으며, 댓글을 달 수 없어요. 차단 해지는 [스페이스 설정- 독자관리]에서 가능해요.',
               confirmText: '차단',
               onConfirmed: () async {
+                _mixpanel.track(
+                  'space:masquerade:block',
+                  properties: {
+                    'masqueradeId': comment.masquerade?.id,
+                    'spaceId': data.post.space!.id,
+                  },
+                );
                 final req = GPostScreen_Comments_BlockMasquerade_MutationReq(
                   (b) => b
                     ..vars.input.masqueradeId = comment.masquerade!.id
@@ -2548,6 +2659,12 @@ class _RepliesState extends ConsumerState<_Replies> with SingleTickerProviderSta
 
             _focusNode.unfocus();
 
+            _mixpanel.track(
+              'comment:create',
+              properties: {
+                'postId': data.post.id,
+              },
+            );
             final req = GPostScreen_Comments_CreateComment_MutationReq(
               (b) => b
                 ..vars.input.postId = data.post.id
