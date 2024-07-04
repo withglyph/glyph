@@ -2,6 +2,7 @@ query AuthProvider_Query {
   me {
     id
     email
+    onboardingCompleted
 
     profile {
       id

@@ -4,6 +4,7 @@ query OnboardingCurationScreen_Query($page: Int!, $take: Int!, $seed: Int!) {
   recommendedTags(page: $page, take: $take, seed: $seed) {
     id
     name
+    followed
 
     thumbnail {
       id

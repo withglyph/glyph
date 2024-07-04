@@ -1,0 +1,6 @@
+mutation OnboardingCurationScreen_UnfollowTag_Mutation($input: UnfollowTagInput!) {
+  unfollowTag(input: $input) {
+    id
+    followed
+  }
+}

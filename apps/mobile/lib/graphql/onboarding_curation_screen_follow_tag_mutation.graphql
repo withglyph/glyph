@@ -1,0 +1,6 @@
+mutation OnboardingCurationScreen_FollowTag_Mutation($input: FollowTagInput!) {
+  followTag(input: $input) {
+    id
+    followed
+  }
+}

@@ -76,7 +76,7 @@ class AppRouter extends $AppRouter {
               usesPathAsKey: true,
             ),
             AutoRoute(page: PlaceholderRoute.page),
-            AutoRoute(page: OnboardingCurationRoute.page),
+            AutoRoute(page: OnboardingCurationRoute.page, fullscreenDialog: true),
             AutoRoute(page: NotificationRoute.page),
             AutoRoute(page: SettingsRoute.page),
             AutoRoute(page: ProfileRoute.page),

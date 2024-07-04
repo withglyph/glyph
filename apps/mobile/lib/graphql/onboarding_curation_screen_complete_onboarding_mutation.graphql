@@ -1,0 +1,6 @@
+mutation OnboardingCurationScreen_CompleteOnboarding_Mutation {
+  completeOnboarding {
+    id
+    onboardingCompleted
+  }
+}

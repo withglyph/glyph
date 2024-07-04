@@ -7,14 +7,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_randomcolor/flutter_randomcolor.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
+import 'package:glyph/components/heading.dart';
 import 'package:glyph/components/img.dart';
 import 'package:glyph/components/pressable.dart';
 import 'package:glyph/extensions/color.dart';
 import 'package:glyph/ferry/extension.dart';
 import 'package:glyph/ferry/widget.dart';
+import 'package:glyph/graphql/__generated__/onboarding_curation_screen_complete_onboarding_mutation.req.gql.dart';
+import 'package:glyph/graphql/__generated__/onboarding_curation_screen_follow_tag_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/onboarding_curation_screen_query.req.gql.dart';
+import 'package:glyph/graphql/__generated__/onboarding_curation_screen_unfollow_tag_mutation.req.gql.dart';
 import 'package:glyph/icons/tabler.dart';
-import 'package:glyph/routers/app.gr.dart';
+import 'package:glyph/providers/ferry.dart';
 import 'package:glyph/shells/default.dart';
 import 'package:glyph/themes/colors.dart';
 
@@ -27,9 +31,6 @@ class OnboardingCurationScreen extends ConsumerStatefulWidget {
 }
 
 class _OnboardingCurationScreenState extends ConsumerState<OnboardingCurationScreen> {
-  final Set<String> _selectedTagIds = {};
-  bool get _isValid => _selectedTagIds.length >= 2;
-
   int _page = 1;
   bool _fetching = false;
   bool _eol = false;
@@ -53,25 +54,30 @@ class _OnboardingCurationScreenState extends ConsumerState<OnboardingCurationScr
   @override
   Widget build(BuildContext context) {
     return DefaultShell(
-      bottomBorder: false,
-      actions: [
-        Pressable(
-          child: const Text(
-            'SKIP',
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-              color: BrandColors.gray_500,
+      appBar: Heading(
+        bottomBorder: false,
+        leading: const SizedBox.shrink(),
+        actions: [
+          Pressable(
+            child: const Text(
+              'SKIP',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: BrandColors.gray_500,
+              ),
             ),
+            onPressed: () async {
+              await _completeOnboarding();
+            },
           ),
-          onPressed: () async {
-            await context.router.navigate(const MainRouter());
-          },
-        ),
-      ],
+        ],
+      ),
       child: GraphQLOperation(
         operation: req,
         builder: (context, client, data) {
+          final followedCount = data.recommendedTags.where((tag) => tag.followed).length;
+
           return NotificationListener<ScrollUpdateNotification>(
             onNotification: (notification) {
               if (notification.metrics.extentAfter <= 400) {
@@ -155,7 +161,7 @@ class _OnboardingCurationScreenState extends ConsumerState<OnboardingCurationScr
                                         );
                                       },
                                     ),
-                                  if (_selectedTagIds.contains(tag.id)) ...[
+                                  if (tag.followed) ...[
                                     Positioned.fill(
                                       child: ColoredBox(color: BrandColors.gray_900.withOpacity(0.8)),
                                     ),
@@ -186,14 +192,18 @@ class _OnboardingCurationScreenState extends ConsumerState<OnboardingCurationScr
                                 ],
                               ),
                             ),
-                            onPressed: () {
-                              setState(() {
-                                if (_selectedTagIds.contains(tag.id)) {
-                                  _selectedTagIds.remove(tag.id);
-                                } else {
-                                  _selectedTagIds.add(tag.id);
-                                }
-                              });
+                            onPressed: () async {
+                              if (tag.followed) {
+                                final req = GOnboardingCurationScreen_UnfollowTag_MutationReq(
+                                  (b) => b..vars.input.tagId = tag.id,
+                                );
+                                await client.req(req);
+                              } else {
+                                final req = GOnboardingCurationScreen_FollowTag_MutationReq(
+                                  (b) => b..vars.input.tagId = tag.id,
+                                );
+                                await client.req(req);
+                              }
                             },
                           );
                         },
@@ -206,48 +216,57 @@ class _OnboardingCurationScreenState extends ConsumerState<OnboardingCurationScr
                   left: 0,
                   right: 0,
                   bottom: 0,
-                  child: Box(
-                    color: _isValid ? BrandColors.gray_900 : BrandColors.gray_150,
-                    child: SafeArea(
-                      child: Stack(
-                        children: [
-                          Box(
-                            alignment: Alignment.center,
-                            padding: const Pad(vertical: 15),
-                            child: Text(
-                              '다음',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w700,
-                                color: _isValid ? BrandColors.gray_0 : BrandColors.gray_400,
+                  child: Pressable(
+                    child: Box(
+                      color: followedCount > 0 ? BrandColors.gray_900 : BrandColors.gray_150,
+                      child: SafeArea(
+                        child: Stack(
+                          children: [
+                            Box(
+                              alignment: Alignment.center,
+                              padding: const Pad(vertical: 15),
+                              child: Text(
+                                '다음',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w700,
+                                  color: followedCount > 0 ? BrandColors.gray_0 : BrandColors.gray_400,
+                                ),
                               ),
                             ),
-                          ),
-                          if (_selectedTagIds.isNotEmpty)
-                            Positioned(
-                              top: 15,
-                              left: 20,
-                              child: Container(
-                                width: 24,
-                                height: 24,
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: _isValid ? BrandColors.gray_0 : BrandColors.gray_400,
-                                ),
-                                child: Text(
-                                  '${_selectedTagIds.length}',
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w900,
-                                    color: _isValid ? BrandColors.gray_900 : BrandColors.gray_0,
+                            if (followedCount > 0)
+                              Positioned(
+                                top: 15,
+                                left: 20,
+                                child: Container(
+                                  width: 24,
+                                  height: 24,
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: followedCount > 0 ? BrandColors.gray_0 : BrandColors.gray_400,
+                                  ),
+                                  child: Text(
+                                    '$followedCount',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w900,
+                                      color: followedCount > 0 ? BrandColors.gray_900 : BrandColors.gray_0,
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
+                    onPressed: () async {
+                      if (followedCount == 0) {
+                        return;
+                      }
+
+                      await _completeOnboarding();
+                    },
                   ),
                 ),
               ],
@@ -256,5 +275,15 @@ class _OnboardingCurationScreenState extends ConsumerState<OnboardingCurationScr
         },
       ),
     );
+  }
+
+  Future<void> _completeOnboarding() async {
+    final client = ref.read(ferryProvider);
+    final req = GOnboardingCurationScreen_CompleteOnboarding_MutationReq();
+    await client.req(req);
+
+    if (mounted) {
+      await context.router.maybePop();
+    }
   }
 }

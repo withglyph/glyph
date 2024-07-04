@@ -1,24 +1,41 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:glyph/components/heading.dart';
 import 'package:glyph/components/pressable.dart';
 import 'package:glyph/context/bottom_menu.dart';
 import 'package:glyph/icons/tabler.dart';
 import 'package:glyph/icons/tabler_bold.dart';
+import 'package:glyph/providers/auth.dart';
 import 'package:glyph/routers/app.gr.dart';
 import 'package:glyph/shells/default.dart';
 
 @RoutePage()
-class FeedScreen extends StatefulWidget {
+class FeedScreen extends ConsumerStatefulWidget {
   const FeedScreen({super.key});
 
   @override
   createState() => _FeedScreenState();
 }
 
-class _FeedScreenState extends State<FeedScreen> {
+class _FeedScreenState extends ConsumerState<FeedScreen> {
   bool _showBottomBorder = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final auth = ref.read(authProvider);
+      final onboardingCompleted =
+          auth.requireValue.whenOrNull(authenticated: (accessToken, me) => me.onboardingCompleted);
+
+      if (onboardingCompleted != true) {
+        await context.router.push(const OnboardingCurationRoute());
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
