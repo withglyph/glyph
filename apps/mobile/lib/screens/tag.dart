@@ -269,24 +269,31 @@ class _TagScreenState extends State<TagScreen> with SingleTickerProviderStateMix
                               ),
                               const Gap(24),
                               Btn(
-                                data.tag.followed ? '태그 구독중' : '태그 구독',
-                                iconLeft: data.tag.followed ? Tabler.check : Tabler.plus,
+                                data.tag.muted
+                                    ? '뮤트됨'
+                                    : data.tag.followed
+                                        ? '태그 구독중'
+                                        : '태그 구독',
+                                iconLeft: data.tag.muted
+                                    ? Tabler.volume_3
+                                    : data.tag.followed
+                                        ? Tabler.check
+                                        : Tabler.plus,
                                 theme: data.tag.followed ? BtnTheme.secondaryOutline : BtnTheme.primary,
-                                onPressed: data.tag.muted
-                                    ? null
-                                    : () async {
-                                        if (data.tag.followed) {
-                                          final req = GTagScreen_UnfollowTag_MutationReq(
-                                            (b) => b..vars.input.tagId = data.tag.id,
-                                          );
-                                          await client.req(req);
-                                        } else {
-                                          final req = GTagScreen_FollowTag_MutationReq(
-                                            (b) => b..vars.input.tagId = data.tag.id,
-                                          );
-                                          await client.req(req);
-                                        }
-                                      },
+                                enabled: !data.tag.muted,
+                                onPressed: () async {
+                                  if (data.tag.followed) {
+                                    final req = GTagScreen_UnfollowTag_MutationReq(
+                                      (b) => b..vars.input.tagId = data.tag.id,
+                                    );
+                                    await client.req(req);
+                                  } else {
+                                    final req = GTagScreen_FollowTag_MutationReq(
+                                      (b) => b..vars.input.tagId = data.tag.id,
+                                    );
+                                    await client.req(req);
+                                  }
+                                },
                               ),
                             ],
                           ),
