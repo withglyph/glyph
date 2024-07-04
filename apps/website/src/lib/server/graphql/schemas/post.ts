@@ -116,24 +116,6 @@ Post.implement({
     },
 
     view: async (post, context) => {
-      const spaceMasqueradeLoader = context.loader({
-        name: 'SpaceMasquerade(spaceId)',
-        nullable: true,
-        load: async (spaceIds: string[]) => {
-          if (!context.session) {
-            return [];
-          }
-
-          return await database
-            .select()
-            .from(SpaceMasquerades)
-            .where(
-              and(inArray(SpaceMasquerades.spaceId, spaceIds), eq(SpaceMasquerades.userId, context.session.userId)),
-            );
-        },
-        key: (masquerade) => masquerade?.spaceId,
-      });
-
       if (post.userId === context.session?.userId) {
         return true;
       }
@@ -145,13 +127,6 @@ Post.implement({
       if (post.password && post.userId !== context.session?.userId) {
         const unlock = await redis.hget(`Post:${post.id}:passwordUnlock`, context.deviceId);
         if (!unlock || dayjs(unlock).isBefore(dayjs())) {
-          return false;
-        }
-      }
-
-      if (post.spaceId) {
-        const masquerade = await spaceMasqueradeLoader.load(post.spaceId);
-        if (masquerade?.blockedAt) {
           return false;
         }
       }

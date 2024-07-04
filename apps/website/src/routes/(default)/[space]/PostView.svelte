@@ -722,13 +722,7 @@
 
     {#if !$query.post.hasPassword || $query.post.space?.meAsMember || $query.post.unlocked}
       <div>
-        {#if $query.post.space?.myMasquerade?.blocked}
-          <AlertText
-            description="해당 스페이스의 포스트를 볼 수 없어요"
-            title="차단당했습니다"
-            titleStyle={css.raw({ color: 'red.600' })}
-          />
-        {:else if blurContent}
+        {#if blurContent}
           {#if $query.post.ageRating === 'ALL'}
             <AlertText
               description="해당 포스트에는 민감한 내용이 포함되어 있어요"
