@@ -128,10 +128,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> with SingleTickerProv
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Text(
-                        '당신의\n애정을 담은\n창작을 응원합니다',
+                        '이야기가 모여\n즐거움이\n되다',
                         style: TextStyle(
                           height: 1.34,
-                          fontSize: 30,
+                          fontSize: 32,
                           fontWeight: FontWeight.w800,
                           color: BrandColors.gray_0,
                         ),
