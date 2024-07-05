@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:glyph/components/img.dart';
 import 'package:glyph/components/pressable.dart';
+import 'package:glyph/components/rectangle_chip.dart';
 import 'package:glyph/components/tag.dart';
 import 'package:glyph/context/bottom_menu.dart';
 import 'package:glyph/context/toast.dart';
@@ -15,6 +16,7 @@ import 'package:glyph/graphql/__generated__/post_card_follow_space_mutation.req.
 import 'package:glyph/graphql/__generated__/post_card_mute_space_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_card_unfollow_space_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_card_unmute_space_mutation.req.gql.dart';
+import 'package:glyph/graphql/__generated__/schema.schema.gql.dart';
 import 'package:glyph/graphql/fragments/__generated__/post_card_post.data.gql.dart';
 import 'package:glyph/icons/tabler.dart';
 import 'package:glyph/providers/ferry.dart';
@@ -49,13 +51,35 @@ class PostCard extends ConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      post.publishedRevision!.title ?? '(제목 없음)',
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w700,
-                      ),
+                    Row(
+                      children: [
+                        if (post.ageRating == GPostAgeRating.R15) ...[
+                          const RectangleChip('15세'),
+                          const Gap(4),
+                        ],
+                        if (post.ageRating == GPostAgeRating.R19) ...[
+                          const RectangleChip('성인', theme: RectangleChipTheme.pink),
+                          const Gap(4),
+                        ],
+                        if (post.hasPassword) ...[
+                          const RectangleChip('비밀글', theme: RectangleChipTheme.purple),
+                          const Gap(4),
+                        ],
+                        if (post.publishedRevision?.price != null && post.publishedRevision!.price! > 0) ...[
+                          const RectangleChip('유료', theme: RectangleChipTheme.blue),
+                          const Gap(4),
+                        ],
+                        Flexible(
+                          child: Text(
+                            post.publishedRevision!.title ?? '(제목 없음)',
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                     if (post.publishedRevision!.subtitle == null)
                       Expanded(

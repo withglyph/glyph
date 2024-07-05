@@ -6,6 +6,8 @@ fragment ThumbnailPostCard_post on Post {
   permalink
   shortlink
   publishedAt
+  ageRating
+  hasPassword
 
   publishedRevision {
     id
@@ -13,6 +15,7 @@ fragment ThumbnailPostCard_post on Post {
     subtitle
     previewText
     readingTime
+    price
   }
 
   thumbnail {

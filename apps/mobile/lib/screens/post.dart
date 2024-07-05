@@ -21,6 +21,7 @@ import 'package:glyph/components/img.dart';
 import 'package:glyph/components/post_card.dart';
 import 'package:glyph/components/post_warning.dart';
 import 'package:glyph/components/pressable.dart';
+import 'package:glyph/components/rectangle_chip.dart';
 import 'package:glyph/components/webview.dart';
 import 'package:glyph/context/bottom_menu.dart';
 import 'package:glyph/context/bottom_sheet.dart';
@@ -566,6 +567,32 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                                   );
                                 },
                               ),
+                            if (data.post.ageRating != GPostAgeRating.ALL ||
+                                data.post.hasPassword ||
+                                (data.post.publishedRevision?.price != null &&
+                                    data.post.publishedRevision!.price! > 0)) ...[
+                              Row(
+                                children: [
+                                  if (data.post.ageRating == GPostAgeRating.R15) ...[
+                                    const RectangleChip('15세'),
+                                    const Gap(4),
+                                  ],
+                                  if (data.post.ageRating == GPostAgeRating.R19) ...[
+                                    const RectangleChip('성인', theme: RectangleChipTheme.pink),
+                                    const Gap(4),
+                                  ],
+                                  if (data.post.hasPassword) ...[
+                                    const RectangleChip('비밀글', theme: RectangleChipTheme.purple),
+                                    const Gap(4),
+                                  ],
+                                  if (data.post.publishedRevision!.price! > 0) ...[
+                                    const RectangleChip('유료', theme: RectangleChipTheme.blue),
+                                    const Gap(4),
+                                  ],
+                                ],
+                              ),
+                              const Gap(6),
+                            ],
                             Text(
                               data.post.publishedRevision!.title ?? '(제목 없음)',
                               style: const TextStyle(

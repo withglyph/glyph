@@ -5,12 +5,15 @@ fragment PostCard_post on Post {
   id
   permalink
   publishedAt
+  ageRating
+  hasPassword
 
   publishedRevision {
     id
     title
     subtitle
     previewText
+    price
   }
 
   thumbnail {
