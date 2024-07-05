@@ -1,0 +1,12 @@
+query PostScreen_Reactions_Query($permalink: String!) {
+  post(permalink: $permalink) {
+    id
+    reactionCount
+
+    reactions {
+      id
+      emoji
+      mine
+    }
+  }
+}

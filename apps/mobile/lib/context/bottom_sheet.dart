@@ -26,6 +26,7 @@ extension BottomSheetX on BuildContext {
         return SafeArea(
           child: Column(
             mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               SizedBox(
                 width: double.infinity,

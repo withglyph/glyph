@@ -1,0 +1,12 @@
+mutation PostScreen_Reactions_DeletePostReaction_Mutation($input: DeletePostReactionInput!) {
+  deletePostReaction(input: $input) {
+    id
+    reactionCount
+
+    reactions {
+      id
+      emoji
+      mine
+    }
+  }
+}

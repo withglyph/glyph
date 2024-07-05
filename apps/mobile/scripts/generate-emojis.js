@@ -27,7 +27,9 @@ const entries = Object.entries(emojis).map(([codepoint, code]) => {
     code = [code];
   }
 
-  return code.map(code => {
+  return code.map(orig => {
+    let code = orig;
+
     if (dartKeywords.has(code)) {
       code = `${code}_`;
     }
@@ -44,7 +46,7 @@ const entries = Object.entries(emojis).map(([codepoint, code]) => {
 
     code = code.replaceAll(/[^\da-z]/g, '_');
 
-    return `static const EmojiData ${code} = EmojiData('${codepoint.toLowerCase()}');`;
+    return `static const EmojiData ${code} = EmojiData('${orig}', '${codepoint.toLowerCase()}');`;
   });
 });
 
@@ -55,6 +57,7 @@ const entries2 = Object.entries(emojis).map(([, code]) => {
 
   return code.map(orig => {
     let code = orig;
+
     if (dartKeywords.has(code)) {
       code = `${code}_`;
     }

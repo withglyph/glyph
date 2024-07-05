@@ -22,7 +22,8 @@ class Emoji extends StatelessWidget {
 }
 
 class EmojiData {
-  const EmojiData(this.codepoint);
+  const EmojiData(this.name, this.codepoint);
 
+  final String name;
   final String codepoint;
 }

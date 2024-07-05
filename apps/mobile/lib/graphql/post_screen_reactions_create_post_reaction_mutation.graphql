@@ -1,0 +1,12 @@
+mutation PostScreen_Reactions_CreatePostReaction_Mutation($input: CreatePostReactionInput!) {
+  createPostReaction(input: $input) {
+    id
+    reactionCount
+
+    reactions {
+      id
+      emoji
+      mine
+    }
+  }
+}

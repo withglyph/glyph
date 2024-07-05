@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -27,6 +28,9 @@ import 'package:glyph/context/dialog.dart';
 import 'package:glyph/context/floating_bottom_sheet.dart';
 import 'package:glyph/context/modal.dart';
 import 'package:glyph/context/toast.dart';
+import 'package:glyph/emojis/data.dart';
+import 'package:glyph/emojis/emoji.dart';
+import 'package:glyph/emojis/subset.dart';
 import 'package:glyph/extensions/build_context.dart';
 import 'package:glyph/extensions/int.dart';
 import 'package:glyph/extensions/iterable.dart';
@@ -46,6 +50,9 @@ import 'package:glyph/graphql/__generated__/post_screen_delete_post_mutation.req
 import 'package:glyph/graphql/__generated__/post_screen_follow_space_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_screen_mute_space_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_screen_query.req.gql.dart';
+import 'package:glyph/graphql/__generated__/post_screen_reactions_create_post_reaction_mutation.req.gql.dart';
+import 'package:glyph/graphql/__generated__/post_screen_reactions_delete_post_reaction_mutation.req.gql.dart';
+import 'package:glyph/graphql/__generated__/post_screen_reactions_query.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_screen_space_post_list_query.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_screen_unbookmark_post_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_screen_unfollow_space_mutation.req.gql.dart';
@@ -62,6 +69,7 @@ import 'package:glyph/themes/colors.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:sliver_tools/sliver_tools.dart';
 
 @RoutePage()
 class PostScreen extends ConsumerStatefulWidget {
@@ -287,7 +295,25 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                       ),
                     ],
                   ),
-                  onPressed: () {},
+                  onPressed: () async {
+                    if (data.post.reactionCount > 0) {
+                      await context.showBottomSheet(
+                        title: '이모지 ${data.post.reactionCount}',
+                        builder: (context) {
+                          return _Reactions(
+                            permalink: widget.permalink,
+                          );
+                        },
+                      );
+                    } else {
+                      await context.showFullScreenModal(
+                        title: '이모지 삽입',
+                        builder: (context) {
+                          return _EmojiPicker(postId: data.post.id);
+                        },
+                      );
+                    }
+                  },
                 ),
                 const Gap(20),
                 Pressable(
@@ -306,7 +332,8 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                     ],
                   ),
                   onPressed: () async {
-                    await context.showModal(
+                    await context.showFullScreenModal(
+                      title: '댓글 ${data.post.commentCount}',
                       builder: (context) {
                         return _Comments(
                           permalink: widget.permalink,
@@ -1829,6 +1856,173 @@ class _CollectionPostListState extends State<_CollectionPostList> {
   }
 }
 
+class _Reactions extends StatelessWidget {
+  const _Reactions({required this.permalink});
+
+  final String permalink;
+
+  @override
+  Widget build(BuildContext context) {
+    return GraphQLOperation(
+      operation: GPostScreen_Reactions_QueryReq(
+        (b) => b..vars.permalink = permalink,
+      ),
+      builder: (context, client, data) {
+        final reactions =
+            data.post.reactions.groupListsBy((element) => element.emoji).entries.sortedBy((element) => element.key);
+
+        return Padding(
+          padding: const Pad(all: 20),
+          child: Wrap(
+            spacing: 12,
+            runSpacing: 14,
+            children: [
+              ...reactions.map(
+                (entry) {
+                  final emoji = entry.key;
+                  final reactions = entry.value;
+                  final hasReacted = reactions.any((element) => element.mine);
+
+                  return Pressable(
+                    child: Container(
+                      padding: const Pad(horizontal: 12, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: hasReacted ? BrandColors.gray_200 : BrandColors.gray_50,
+                        border: Border.all(
+                          color: hasReacted ? BrandColors.gray_900 : BrandColors.gray_150,
+                        ),
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Emoji(Emojis.fromShortCode(emoji), size: 20),
+                          const Gap(6),
+                          Text(
+                            reactions.length.toString(),
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w700,
+                              color: hasReacted ? BrandColors.gray_900 : BrandColors.gray_500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    onPressed: () async {
+                      if (hasReacted) {
+                        final req = GPostScreen_Reactions_DeletePostReaction_MutationReq(
+                          (b) => b
+                            ..vars.input.postId = data.post.id
+                            ..vars.input.emoji = emoji,
+                        );
+                        await client.req(req);
+                      } else {
+                        final req = GPostScreen_Reactions_CreatePostReaction_MutationReq(
+                          (b) => b
+                            ..vars.input.postId = data.post.id
+                            ..vars.input.emoji = emoji,
+                        );
+                        await client.req(req);
+                      }
+                    },
+                  );
+                },
+              ),
+              Pressable(
+                child: Container(
+                  padding: const Pad(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: BrandColors.gray_50,
+                    border: Border.all(color: BrandColors.gray_150),
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  child: const Icon(TablerBold.mood_plus, size: 20, color: BrandColors.gray_500),
+                ),
+                onPressed: () async {
+                  await context.showFullScreenModal(
+                    title: '이모지 삽입',
+                    builder: (context) {
+                      return _EmojiPicker(postId: data.post.id);
+                    },
+                  );
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _EmojiPicker extends ConsumerWidget {
+  const _EmojiPicker({required this.postId});
+
+  final String postId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return CustomScrollView(
+      physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+      slivers: [
+        SliverPadding(
+          padding: const Pad(horizontal: 20, vertical: 16),
+          sliver: MultiSliver(
+            children: [
+              ...EmojiSubsets.sections.map((section) {
+                return MultiSliver(
+                  children: [
+                    SliverToBoxAdapter(
+                      child: Text(
+                        section.name,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                          color: BrandColors.gray_800,
+                        ),
+                      ),
+                    ),
+                    const SliverGap(8),
+                    SliverGrid.builder(
+                      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                        maxCrossAxisExtent: 40,
+                        mainAxisSpacing: 10,
+                        crossAxisSpacing: 10,
+                      ),
+                      itemCount: section.emojis.length,
+                      itemBuilder: (context, index) {
+                        final emoji = section.emojis[index];
+                        return Pressable(
+                          child: Center(child: Emoji(emoji, size: 28)),
+                          onPressed: () async {
+                            final client = ref.read(ferryProvider);
+                            final req = GPostScreen_Reactions_CreatePostReaction_MutationReq(
+                              (b) => b
+                                ..vars.input.postId = postId
+                                ..vars.input.emoji = emoji.name,
+                            );
+                            await client.req(req);
+
+                            if (context.mounted) {
+                              await context.router.maybePop();
+                            }
+                          },
+                        );
+                      },
+                    ),
+                    const SliverGap(36),
+                  ],
+                );
+              }),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 class _Comments extends ConsumerStatefulWidget {
   const _Comments({required this.permalink});
 
@@ -1844,39 +2038,12 @@ class _CommentsState extends ConsumerState<_Comments> with SingleTickerProviderS
   final _textController = TextEditingController();
   final _scrollController = ScrollController();
 
-  late AnimationController _textFieldAnimationController;
-  late Animation<Color?> _textFieldFillColorAnimation;
-
   bool _isEmpty = true;
   GPostCommentVisibility _visibility = GPostCommentVisibility.PUBLIC;
 
   @override
-  void initState() {
-    super.initState();
-
-    _textFieldAnimationController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 150),
-    );
-
-    _textFieldFillColorAnimation = ColorTween(
-      begin: BrandColors.gray_0,
-      end: BrandColors.gray_50,
-    ).animate(_textFieldAnimationController);
-
-    _focusNode.addListener(() {
-      if (_focusNode.hasFocus) {
-        _textFieldAnimationController.forward();
-      } else {
-        _textFieldAnimationController.reverse();
-      }
-    });
-  }
-
-  @override
   void dispose() {
     _focusNode.dispose();
-    _textFieldAnimationController.dispose();
     _scrollController.dispose();
 
     super.dispose();
@@ -1884,388 +2051,336 @@ class _CommentsState extends ConsumerState<_Comments> with SingleTickerProviderS
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: GraphQLOperation(
-        operation: GPostScreen_Comnments_QueryReq(
-          (b) => b..vars.permalink = widget.permalink,
-        ),
-        builder: (context, client, data) {
-          final isCommentEnabled = data.post.commentQualification == GPostCommentQualification.ANY ||
-              (data.post.commentQualification == GPostCommentQualification.IDENTIFIED &&
-                  data.me!.personalIdentity != null);
+    return GraphQLOperation(
+      operation: GPostScreen_Comnments_QueryReq(
+        (b) => b..vars.permalink = widget.permalink,
+      ),
+      builder: (context, client, data) {
+        final isCommentEnabled = data.post.commentQualification == GPostCommentQualification.ANY ||
+            (data.post.commentQualification == GPostCommentQualification.IDENTIFIED &&
+                data.me!.personalIdentity != null);
 
-          Future<void> onSubmit() async {
-            final value = _textController.text;
-            if (value.isEmpty) {
-              return;
-            }
+        Future<void> onSubmit() async {
+          final value = _textController.text;
+          if (value.isEmpty) {
+            return;
+          }
 
-            _focusNode.unfocus();
+          _focusNode.unfocus();
 
-            _mixpanel.track(
-              'comment:create',
-              properties: {
-                'postId': data.post.id,
-              },
-            );
-            final req = GPostScreen_Comments_CreateComment_MutationReq(
-              (b) => b
-                ..vars.input.postId = data.post.id
-                ..vars.input.content = value
-                ..vars.input.visibility = _visibility,
-            );
-            await client.req(req);
-            await client.req(
-              GPostScreen_Comnments_QueryReq(
-                (b) => b..vars.permalink = widget.permalink,
-              ),
-            );
+          _mixpanel.track(
+            'comment:create',
+            properties: {
+              'postId': data.post.id,
+            },
+          );
+          final req = GPostScreen_Comments_CreateComment_MutationReq(
+            (b) => b
+              ..vars.input.postId = data.post.id
+              ..vars.input.content = value
+              ..vars.input.visibility = _visibility,
+          );
+          await client.req(req);
+          await client.req(
+            GPostScreen_Comnments_QueryReq(
+              (b) => b..vars.permalink = widget.permalink,
+            ),
+          );
 
-            _textController.clear();
-            setState(() {
-              _isEmpty = true;
-            });
+          _textController.clear();
+          setState(() {
+            _isEmpty = true;
+          });
 
+          if (_scrollController.hasClients) {
             await _scrollController.animateTo(
               _scrollController.position.maxScrollExtent,
               duration: const Duration(milliseconds: 300),
               curve: Curves.easeInOut,
             );
           }
+        }
 
-          return Column(
-            children: [
-              // FIXME: modal 사용
-              Container(
-                height: 54,
-                decoration: const BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(
-                      color: BrandColors.gray_50,
-                    ),
-                  ),
+        return Column(
+          children: [
+            if (data.post.commentQualification == GPostCommentQualification.NONE)
+              const Expanded(
+                child: EmptyState(
+                  icon: TablerBold.message_circle_off,
+                  title: '댓글을 달 수 없어요',
+                  description: '창작자가 댓글을 달 수 없도록 설정했어요',
                 ),
-                child: Stack(
-                  children: [
-                    NavigationToolbar(
-                      middle: Text(
-                        '댓글 ${data.post.commentCount}',
-                        style: const TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      trailing: Padding(
-                        padding: const Pad(right: 20),
-                        child: Pressable(
-                          child: const Icon(Tabler.x),
-                          onPressed: () async {
-                            await context.router.maybePop();
-                          },
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      left: 0,
-                      right: 0,
-                      top: 4,
-                      child: Center(
-                        child: Container(
-                          width: 40,
-                          height: 4,
-                          decoration: BoxDecoration(
-                            color: BrandColors.gray_150,
-                            borderRadius: BorderRadius.circular(2),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
+              )
+            else if (data.post.comments.isEmpty)
+              const Expanded(
+                child: EmptyState(
+                  icon: TablerBold.mood_edit,
+                  title: '아직 댓글이 없어요',
+                  description: '첫 번째 댓글을 달아보세요',
                 ),
-              ),
-              if (data.post.commentQualification == GPostCommentQualification.NONE)
-                const Expanded(
-                  child: EmptyState(
-                    icon: TablerBold.message_circle_off,
-                    title: '댓글을 달 수 없어요',
-                    description: '창작자가 댓글을 달 수 없도록 설정했어요',
-                  ),
-                )
-              else if (data.post.comments.isEmpty)
-                const Expanded(
-                  child: EmptyState(
-                    icon: TablerBold.mood_edit,
-                    title: '아직 댓글이 없어요',
-                    description: '첫 번째 댓글을 달아보세요',
-                  ),
-                )
-              else
-                Expanded(
-                  child: Padding(
-                    padding: const Pad(horizontal: 20),
-                    child: ListView.separated(
-                      padding: const Pad(bottom: 32),
-                      physics: const AlwaysScrollableScrollPhysics(
-                        parent: BouncingScrollPhysics(),
-                      ),
-                      controller: _scrollController,
-                      itemCount: data.post.comments.length,
-                      itemBuilder: (context, index) {
-                        final comment = data.post.comments[index];
-                        final isMyComment = comment.profile.id == data.post.space?.commentProfile?.id;
-                        final client = ref.read(ferryProvider);
+              )
+            else
+              Expanded(
+                child: Padding(
+                  padding: const Pad(horizontal: 20),
+                  child: ListView.separated(
+                    padding: const Pad(bottom: 32),
+                    physics: const AlwaysScrollableScrollPhysics(
+                      parent: BouncingScrollPhysics(),
+                    ),
+                    controller: _scrollController,
+                    itemCount: data.post.comments.length,
+                    itemBuilder: (context, index) {
+                      final comment = data.post.comments[index];
+                      final isMyComment = comment.profile.id == data.post.space?.commentProfile?.id;
+                      final client = ref.read(ferryProvider);
 
-                        onDelete() async {
-                          await context.showDialog(
-                            title: '댓글을 삭제하시겠어요?',
-                            confirmText: '삭제',
-                            onConfirmed: () async {
-                              final client = ref.read(ferryProvider);
-                              _mixpanel.track(
-                                'comment:delete',
-                                properties: {
-                                  'commentId': comment.id,
-                                },
-                              );
-                              final req = GPostScreen_Comments_DeleteComment_MutationReq(
-                                (b) => b..vars.input.commentId = comment.id,
-                              );
-                              await client.req(req);
-
-                              if (context.mounted) {
-                                context.toast.show('댓글이 삭제되었어요', type: ToastType.error);
-                              }
-
-                              await client.req(
-                                GPostScreen_Comnments_QueryReq(
-                                  (b) => b..vars.permalink = widget.permalink,
-                                ),
-                              );
-                            },
-                          );
-                        }
-
-                        onBlock() async {
-                          await context.showDialog(
-                            title: '${comment.profile.name}님을 차단할까요?',
-                            content: '차단된 유저는 스페이스의 모든 게시물을 볼 수 없으며, 댓글을 달 수 없어요. 차단 해지는 [스페이스 설정- 독자관리]에서 가능해요.',
-                            confirmText: '차단',
-                            onConfirmed: () async {
-                              _mixpanel.track(
-                                'space:masquerade:block',
-                                properties: {
-                                  'masqueradeId': comment.masquerade?.id,
-                                  'spaceId': data.post.space!.id,
-                                },
-                              );
-                              final req = GPostScreen_Comments_BlockMasquerade_MutationReq(
-                                (b) => b
-                                  ..vars.input.masqueradeId = comment.masquerade!.id
-                                  ..vars.input.spaceId = data.post.space!.id,
-                              );
-                              await client.req(req);
-
-                              if (context.mounted) {
-                                context.toast.show('${comment.profile.name}님이 차단되었습니다.');
-                              }
-
-                              await client.req(
-                                GPostScreen_Comnments_QueryReq(
-                                  (b) => b..vars.permalink = widget.permalink,
-                                ),
-                              );
-                            },
-                          );
-                        }
-
-                        return _Comment(
-                          comment: comment,
-                          children: comment.children.toList(),
-                          commentProfile: data.post.space?.commentProfile,
-                          postAuthorProfile: data.post.member!.profile,
-                          isMyPost: data.post.space?.meAsMember != null,
-                          onLike: () async {
-                            if (comment.liked) {
-                              _mixpanel.track(
-                                'comment:unlike',
-                                properties: {
-                                  'commentId': comment.id,
-                                },
-                              );
-                              final req = GPostScreen_Comments_UnlikeComment_MutationReq(
-                                (b) => b..vars.input.commentId = comment.id,
-                              );
-                              await client.req(req);
-                            } else {
-                              _mixpanel.track(
-                                'comment:like',
-                                properties: {
-                                  'commentId': comment.id,
-                                },
-                              );
-                              final req = GPostScreen_Comments_LikeComment_MutationReq(
-                                (b) => b..vars.input.commentId = comment.id,
-                              );
-                              await client.req(req);
-                            }
-                          },
-                          onMore: () async {
-                            await context.showBottomMenu(
-                              title: '댓글',
-                              items: isMyComment
-                                  ? [
-                                      BottomMenuItem(
-                                        icon: Tabler.x,
-                                        iconColor: BrandColors.red_600,
-                                        title: '삭제',
-                                        color: BrandColors.red_600,
-                                        onTap: onDelete,
-                                      ),
-                                    ]
-                                  : [
-                                      BottomMenuItem(
-                                        icon: Tabler.x,
-                                        iconColor: BrandColors.gray_600,
-                                        title: '삭제',
-                                        onTap: onDelete,
-                                      ),
-                                      BottomMenuItem(
-                                        icon: Tabler.user_x,
-                                        iconColor: BrandColors.red_600,
-                                        title: '차단',
-                                        color: BrandColors.red_600,
-                                        onTap: onBlock,
-                                      ),
-                                    ],
-                            );
-                          },
-                          onReply: () async {
-                            await context.showModal(
-                              builder: (context) {
-                                return _Replies(
-                                  parentId: comment.id,
-                                  permalink: widget.permalink,
-                                );
+                      onDelete() async {
+                        await context.showDialog(
+                          title: '댓글을 삭제하시겠어요?',
+                          confirmText: '삭제',
+                          onConfirmed: () async {
+                            final client = ref.read(ferryProvider);
+                            _mixpanel.track(
+                              'comment:delete',
+                              properties: {
+                                'commentId': comment.id,
                               },
+                            );
+                            final req = GPostScreen_Comments_DeleteComment_MutationReq(
+                              (b) => b..vars.input.commentId = comment.id,
+                            );
+                            await client.req(req);
+
+                            if (context.mounted) {
+                              context.toast.show('댓글이 삭제되었어요', type: ToastType.error);
+                            }
+
+                            await client.req(
+                              GPostScreen_Comnments_QueryReq(
+                                (b) => b..vars.permalink = widget.permalink,
+                              ),
                             );
                           },
                         );
-                      },
-                      separatorBuilder: (context, index) {
-                        return const HorizontalDivider(color: BrandColors.gray_50);
-                      },
-                    ),
-                  ),
-                ),
-              Container(
-                padding: const Pad(horizontal: 20, vertical: 14),
-                decoration: const BoxDecoration(
-                  border: Border(
-                    top: BorderSide(
-                      color: BrandColors.gray_150,
-                    ),
-                  ),
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      data.post.space!.commentProfile?.name ?? '(알 수 없음)',
-                      style: const TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        color: BrandColors.gray_500,
-                      ),
-                    ),
-                    const Gap(4),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Expanded(
-                          child: AnimatedBuilder(
-                            animation: _textFieldAnimationController,
-                            builder: (context, child) {
-                              return TextField(
-                                controller: _textController,
-                                focusNode: _focusNode,
-                                enabled: isCommentEnabled,
-                                textInputAction: TextInputAction.newline,
-                                minLines: 1,
-                                maxLines: 4,
-                                decoration: InputDecoration(
-                                  isCollapsed: true,
-                                  enabledBorder: InputBorder.none,
-                                  focusedBorder: InputBorder.none,
-                                  disabledBorder: InputBorder.none,
-                                  contentPadding: const Pad(vertical: 2),
-                                  hintText: isCommentEnabled
-                                      ? '창작자에게 응원의 글을 남겨주세요'
-                                      : (data.post.commentQualification == GPostCommentQualification.IDENTIFIED
-                                          ? '본인인증이 된 계정만 댓글을 달 수 있어요'
-                                          : '댓글을 달 수 없는 포스트에요'),
-                                  hintStyle: const TextStyle(
-                                    color: BrandColors.gray_400,
-                                  ),
-                                ),
-                                style: const TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w400,
-                                  color: BrandColors.gray_900,
-                                ),
-                                onChanged: (value) {
-                                  setState(() {
-                                    _isEmpty = value.isEmpty;
-                                  });
-                                },
-                                onSubmitted: (value) async {
-                                  await onSubmit();
-                                },
+                      }
+
+                      onBlock() async {
+                        await context.showDialog(
+                          title: '${comment.profile.name}님을 차단할까요?',
+                          content: '차단된 유저는 스페이스의 모든 게시물을 볼 수 없으며, 댓글을 달 수 없어요. 차단 해지는 [스페이스 설정- 독자관리]에서 가능해요.',
+                          confirmText: '차단',
+                          onConfirmed: () async {
+                            _mixpanel.track(
+                              'space:masquerade:block',
+                              properties: {
+                                'masqueradeId': comment.masquerade?.id,
+                                'spaceId': data.post.space!.id,
+                              },
+                            );
+                            final req = GPostScreen_Comments_BlockMasquerade_MutationReq(
+                              (b) => b
+                                ..vars.input.masqueradeId = comment.masquerade!.id
+                                ..vars.input.spaceId = data.post.space!.id,
+                            );
+                            await client.req(req);
+
+                            if (context.mounted) {
+                              context.toast.show('${comment.profile.name}님이 차단되었습니다.');
+                            }
+
+                            await client.req(
+                              GPostScreen_Comnments_QueryReq(
+                                (b) => b..vars.permalink = widget.permalink,
+                              ),
+                            );
+                          },
+                        );
+                      }
+
+                      return _Comment(
+                        comment: comment,
+                        children: comment.children.toList(),
+                        commentProfile: data.post.space?.commentProfile,
+                        postAuthorProfile: data.post.member!.profile,
+                        isMyPost: data.post.space?.meAsMember != null,
+                        onLike: () async {
+                          if (comment.liked) {
+                            _mixpanel.track(
+                              'comment:unlike',
+                              properties: {
+                                'commentId': comment.id,
+                              },
+                            );
+                            final req = GPostScreen_Comments_UnlikeComment_MutationReq(
+                              (b) => b..vars.input.commentId = comment.id,
+                            );
+                            await client.req(req);
+                          } else {
+                            _mixpanel.track(
+                              'comment:like',
+                              properties: {
+                                'commentId': comment.id,
+                              },
+                            );
+                            final req = GPostScreen_Comments_LikeComment_MutationReq(
+                              (b) => b..vars.input.commentId = comment.id,
+                            );
+                            await client.req(req);
+                          }
+                        },
+                        onMore: () async {
+                          await context.showBottomMenu(
+                            title: '댓글',
+                            items: isMyComment
+                                ? [
+                                    BottomMenuItem(
+                                      icon: Tabler.x,
+                                      iconColor: BrandColors.red_600,
+                                      title: '삭제',
+                                      color: BrandColors.red_600,
+                                      onTap: onDelete,
+                                    ),
+                                  ]
+                                : [
+                                    BottomMenuItem(
+                                      icon: Tabler.x,
+                                      iconColor: BrandColors.gray_600,
+                                      title: '삭제',
+                                      onTap: onDelete,
+                                    ),
+                                    BottomMenuItem(
+                                      icon: Tabler.user_x,
+                                      iconColor: BrandColors.red_600,
+                                      title: '차단',
+                                      color: BrandColors.red_600,
+                                      onTap: onBlock,
+                                    ),
+                                  ],
+                          );
+                        },
+                        onReply: () async {
+                          await context.showFullScreenModal(
+                            title: '답글 ${comment.children.length}',
+                            builder: (context) {
+                              return _Replies(
+                                parentId: comment.id,
+                                permalink: widget.permalink,
                               );
                             },
-                          ),
-                        ),
-                        const Gap(10),
-                        Row(
-                          children: [
-                            Pressable(
-                              onPressed: () {
-                                setState(() {
-                                  if (_visibility == GPostCommentVisibility.PUBLIC) {
-                                    _visibility = GPostCommentVisibility.PRIVATE;
-                                  } else if (_visibility == GPostCommentVisibility.PRIVATE) {
-                                    _visibility = GPostCommentVisibility.PUBLIC;
-                                  }
-                                });
-                              },
-                              child: Icon(
-                                _visibility == GPostCommentVisibility.PRIVATE ? Tabler.lock : Tabler.lock_open,
-                                size: 24,
-                                color: _visibility == GPostCommentVisibility.PRIVATE
-                                    ? BrandColors.gray_900
-                                    : BrandColors.gray_300,
-                              ),
-                            ),
-                            const Gap(20),
-                            Pressable(
-                              onPressed: onSubmit,
-                              child: Icon(
-                                Tabler.circle_arrow_up_filled,
-                                size: 24,
-                                color: _isEmpty ? BrandColors.gray_300 : BrandColors.gray_900,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ],
+                          );
+                        },
+                      );
+                    },
+                    separatorBuilder: (context, index) {
+                      return const HorizontalDivider(color: BrandColors.gray_50);
+                    },
+                  ),
                 ),
               ),
-            ],
-          );
-        },
-      ),
+            Container(
+              padding: const Pad(horizontal: 20, vertical: 14),
+              decoration: const BoxDecoration(
+                border: Border(
+                  top: BorderSide(
+                    color: BrandColors.gray_150,
+                  ),
+                ),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    data.post.space!.commentProfile?.name ?? '(알 수 없음)',
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: BrandColors.gray_500,
+                    ),
+                  ),
+                  const Gap(4),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: _textController,
+                          focusNode: _focusNode,
+                          enabled: isCommentEnabled,
+                          textInputAction: TextInputAction.newline,
+                          minLines: 1,
+                          maxLines: 4,
+                          decoration: InputDecoration(
+                            isCollapsed: true,
+                            enabledBorder: InputBorder.none,
+                            focusedBorder: InputBorder.none,
+                            disabledBorder: InputBorder.none,
+                            contentPadding: const Pad(vertical: 2),
+                            hintText: isCommentEnabled
+                                ? '창작자에게 응원의 글을 남겨주세요'
+                                : (data.post.commentQualification == GPostCommentQualification.IDENTIFIED
+                                    ? '본인인증이 된 계정만 댓글을 달 수 있어요'
+                                    : '댓글을 달 수 없는 포스트에요'),
+                            hintStyle: const TextStyle(
+                              color: BrandColors.gray_400,
+                            ),
+                          ),
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w400,
+                            color: BrandColors.gray_900,
+                          ),
+                          onChanged: (value) {
+                            setState(() {
+                              _isEmpty = value.isEmpty;
+                            });
+                          },
+                          onSubmitted: (value) async {
+                            await onSubmit();
+                          },
+                        ),
+                      ),
+                      const Gap(10),
+                      Row(
+                        children: [
+                          Pressable(
+                            onPressed: () {
+                              setState(() {
+                                if (_visibility == GPostCommentVisibility.PUBLIC) {
+                                  _visibility = GPostCommentVisibility.PRIVATE;
+                                } else if (_visibility == GPostCommentVisibility.PRIVATE) {
+                                  _visibility = GPostCommentVisibility.PUBLIC;
+                                }
+                              });
+                            },
+                            child: Icon(
+                              _visibility == GPostCommentVisibility.PRIVATE ? Tabler.lock : Tabler.lock_open,
+                              size: 24,
+                              color: _visibility == GPostCommentVisibility.PRIVATE
+                                  ? BrandColors.gray_900
+                                  : BrandColors.gray_300,
+                            ),
+                          ),
+                          const Gap(20),
+                          Pressable(
+                            onPressed: onSubmit,
+                            child: Icon(
+                              Tabler.circle_arrow_up_filled,
+                              size: 24,
+                              color: _isEmpty ? BrandColors.gray_300 : BrandColors.gray_900,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }
@@ -2533,39 +2648,12 @@ class _RepliesState extends ConsumerState<_Replies> with SingleTickerProviderSta
   final _textController = TextEditingController();
   final _scrollController = ScrollController();
 
-  late AnimationController _textFieldAnimationController;
-  late Animation<Color?> _textFieldFillColorAnimation;
-
   bool _isEmpty = true;
   GPostCommentVisibility _visibility = GPostCommentVisibility.PUBLIC;
 
   @override
-  void initState() {
-    super.initState();
-
-    _textFieldAnimationController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 150),
-    );
-
-    _textFieldFillColorAnimation = ColorTween(
-      begin: BrandColors.gray_0,
-      end: BrandColors.gray_50,
-    ).animate(_textFieldAnimationController);
-
-    _focusNode.addListener(() {
-      if (_focusNode.hasFocus) {
-        _textFieldAnimationController.forward();
-      } else {
-        _textFieldAnimationController.reverse();
-      }
-    });
-  }
-
-  @override
   void dispose() {
     _focusNode.dispose();
-    _textFieldAnimationController.dispose();
     _scrollController.dispose();
 
     super.dispose();
@@ -2573,414 +2661,361 @@ class _RepliesState extends ConsumerState<_Replies> with SingleTickerProviderSta
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: GraphQLOperation(
-        operation: GPostScreen_Comnments_QueryReq(
-          (b) => b..vars.permalink = widget.permalink,
-        ),
-        builder: (context, client, data) {
-          final isCommentEnabled = data.post.commentQualification == GPostCommentQualification.ANY ||
-              (data.post.commentQualification == GPostCommentQualification.IDENTIFIED &&
-                  data.me!.personalIdentity != null);
+    return GraphQLOperation(
+      operation: GPostScreen_Comnments_QueryReq(
+        (b) => b..vars.permalink = widget.permalink,
+      ),
+      builder: (context, client, data) {
+        final isCommentEnabled = data.post.commentQualification == GPostCommentQualification.ANY ||
+            (data.post.commentQualification == GPostCommentQualification.IDENTIFIED &&
+                data.me!.personalIdentity != null);
 
-          final comment = data.post.comments.firstWhere((comment) => comment.id == widget.parentId);
+        final comment = data.post.comments.firstWhere((comment) => comment.id == widget.parentId);
 
-          onLike({required bool liked, required String id}) async {
-            if (liked) {
-              _mixpanel.track(
-                'comment:unlike',
-                properties: {
-                  'commentId': id,
-                },
-              );
-              final req = GPostScreen_Comments_UnlikeComment_MutationReq(
-                (b) => b..vars.input.commentId = id,
-              );
-              await client.req(req);
-            } else {
-              _mixpanel.track(
-                'comment:like',
-                properties: {
-                  'commentId': id,
-                },
-              );
-              final req = GPostScreen_Comments_LikeComment_MutationReq(
-                (b) => b..vars.input.commentId = id,
-              );
-              await client.req(req);
-            }
-          }
-
-          onDelete({required String id}) async {
-            await context.showDialog(
-              title: '댓글을 삭제하시겠어요?',
-              confirmText: '삭제',
-              onConfirmed: () async {
-                final client = ref.read(ferryProvider);
-                _mixpanel.track(
-                  'comment:delete',
-                  properties: {
-                    'commentId': id,
-                  },
-                );
-                final req = GPostScreen_Comments_DeleteComment_MutationReq(
-                  (b) => b..vars.input.commentId = id,
-                );
-                await client.req(req);
-
-                if (context.mounted) {
-                  context.toast.show('댓글이 삭제되었어요', type: ToastType.error);
-                }
-
-                await client.req(
-                  GPostScreen_Comnments_QueryReq(
-                    (b) => b..vars.permalink = widget.permalink,
-                  ),
-                );
-              },
-            );
-          }
-
-          onBlock({required GComment_postComment comment}) async {
-            await context.showDialog(
-              title: '${comment.profile.name}님을 차단할까요?',
-              content: '차단된 유저는 스페이스의 모든 게시물을 볼 수 없으며, 댓글을 달 수 없어요. 차단 해지는 [스페이스 설정- 독자관리]에서 가능해요.',
-              confirmText: '차단',
-              onConfirmed: () async {
-                _mixpanel.track(
-                  'space:masquerade:block',
-                  properties: {
-                    'masqueradeId': comment.masquerade?.id,
-                    'spaceId': data.post.space!.id,
-                  },
-                );
-                final req = GPostScreen_Comments_BlockMasquerade_MutationReq(
-                  (b) => b
-                    ..vars.input.masqueradeId = comment.masquerade!.id
-                    ..vars.input.spaceId = data.post.space!.id,
-                );
-                await client.req(req);
-
-                if (context.mounted) {
-                  context.toast.show('${comment.profile.name}님이 차단되었습니다.');
-                }
-
-                await client.req(
-                  GPostScreen_Comnments_QueryReq(
-                    (b) => b..vars.permalink = widget.permalink,
-                  ),
-                );
-              },
-            );
-          }
-
-          onMore({required GComment_postComment comment}) async {
-            await context.showBottomMenu(
-              title: '댓글',
-              items: comment.profile.id == data.post.space?.commentProfile?.id // isMyComment
-                  ? [
-                      BottomMenuItem(
-                        icon: Tabler.x,
-                        iconColor: BrandColors.red_600,
-                        title: '삭제',
-                        color: BrandColors.red_600,
-                        onTap: () => onDelete(id: comment.id),
-                      ),
-                    ]
-                  : [
-                      BottomMenuItem(
-                        icon: Tabler.x,
-                        iconColor: BrandColors.gray_600,
-                        title: '삭제',
-                        onTap: () => onDelete(id: comment.id),
-                      ),
-                      BottomMenuItem(
-                        icon: Tabler.user_x,
-                        iconColor: BrandColors.red_600,
-                        title: '차단',
-                        color: BrandColors.red_600,
-                        onTap: () => onBlock(comment: comment),
-                      ),
-                    ],
-            );
-          }
-
-          Future<void> onSubmit() async {
-            final value = _textController.text;
-            if (value.isEmpty) {
-              return;
-            }
-
-            _focusNode.unfocus();
-
+        onLike({required bool liked, required String id}) async {
+          if (liked) {
             _mixpanel.track(
-              'comment:create',
+              'comment:unlike',
               properties: {
-                'postId': data.post.id,
+                'commentId': id,
               },
             );
-            final req = GPostScreen_Comments_CreateComment_MutationReq(
-              (b) => b
-                ..vars.input.postId = data.post.id
-                ..vars.input.parentId = widget.parentId
-                ..vars.input.content = value
-                ..vars.input.visibility = _visibility,
+            final req = GPostScreen_Comments_UnlikeComment_MutationReq(
+              (b) => b..vars.input.commentId = id,
             );
             await client.req(req);
-            await client.req(
-              GPostScreen_Comnments_QueryReq(
-                (b) => b..vars.permalink = widget.permalink,
-              ),
+          } else {
+            _mixpanel.track(
+              'comment:like',
+              properties: {
+                'commentId': id,
+              },
             );
+            final req = GPostScreen_Comments_LikeComment_MutationReq(
+              (b) => b..vars.input.commentId = id,
+            );
+            await client.req(req);
+          }
+        }
 
-            _textController.clear();
-            setState(() {
-              _isEmpty = true;
-            });
+        onDelete({required String id}) async {
+          await context.showDialog(
+            title: '댓글을 삭제하시겠어요?',
+            confirmText: '삭제',
+            onConfirmed: () async {
+              final client = ref.read(ferryProvider);
+              _mixpanel.track(
+                'comment:delete',
+                properties: {
+                  'commentId': id,
+                },
+              );
+              final req = GPostScreen_Comments_DeleteComment_MutationReq(
+                (b) => b..vars.input.commentId = id,
+              );
+              await client.req(req);
 
+              if (context.mounted) {
+                context.toast.show('댓글이 삭제되었어요', type: ToastType.error);
+              }
+
+              await client.req(
+                GPostScreen_Comnments_QueryReq(
+                  (b) => b..vars.permalink = widget.permalink,
+                ),
+              );
+            },
+          );
+        }
+
+        onBlock({required GComment_postComment comment}) async {
+          await context.showDialog(
+            title: '${comment.profile.name}님을 차단할까요?',
+            content: '차단된 유저는 스페이스의 모든 게시물을 볼 수 없으며, 댓글을 달 수 없어요. 차단 해지는 [스페이스 설정- 독자관리]에서 가능해요.',
+            confirmText: '차단',
+            onConfirmed: () async {
+              _mixpanel.track(
+                'space:masquerade:block',
+                properties: {
+                  'masqueradeId': comment.masquerade?.id,
+                  'spaceId': data.post.space!.id,
+                },
+              );
+              final req = GPostScreen_Comments_BlockMasquerade_MutationReq(
+                (b) => b
+                  ..vars.input.masqueradeId = comment.masquerade!.id
+                  ..vars.input.spaceId = data.post.space!.id,
+              );
+              await client.req(req);
+
+              if (context.mounted) {
+                context.toast.show('${comment.profile.name}님이 차단되었습니다.');
+              }
+
+              await client.req(
+                GPostScreen_Comnments_QueryReq(
+                  (b) => b..vars.permalink = widget.permalink,
+                ),
+              );
+            },
+          );
+        }
+
+        onMore({required GComment_postComment comment}) async {
+          await context.showBottomMenu(
+            title: '댓글',
+            items: comment.profile.id == data.post.space?.commentProfile?.id // isMyComment
+                ? [
+                    BottomMenuItem(
+                      icon: Tabler.x,
+                      iconColor: BrandColors.red_600,
+                      title: '삭제',
+                      color: BrandColors.red_600,
+                      onTap: () => onDelete(id: comment.id),
+                    ),
+                  ]
+                : [
+                    BottomMenuItem(
+                      icon: Tabler.x,
+                      iconColor: BrandColors.gray_600,
+                      title: '삭제',
+                      onTap: () => onDelete(id: comment.id),
+                    ),
+                    BottomMenuItem(
+                      icon: Tabler.user_x,
+                      iconColor: BrandColors.red_600,
+                      title: '차단',
+                      color: BrandColors.red_600,
+                      onTap: () => onBlock(comment: comment),
+                    ),
+                  ],
+          );
+        }
+
+        Future<void> onSubmit() async {
+          final value = _textController.text;
+          if (value.isEmpty) {
+            return;
+          }
+
+          _focusNode.unfocus();
+
+          _mixpanel.track(
+            'comment:create',
+            properties: {
+              'postId': data.post.id,
+            },
+          );
+          final req = GPostScreen_Comments_CreateComment_MutationReq(
+            (b) => b
+              ..vars.input.postId = data.post.id
+              ..vars.input.parentId = widget.parentId
+              ..vars.input.content = value
+              ..vars.input.visibility = _visibility,
+          );
+          await client.req(req);
+          await client.req(
+            GPostScreen_Comnments_QueryReq(
+              (b) => b..vars.permalink = widget.permalink,
+            ),
+          );
+
+          _textController.clear();
+          setState(() {
+            _isEmpty = true;
+          });
+
+          if (_scrollController.hasClients) {
             await _scrollController.animateTo(
               _scrollController.position.maxScrollExtent,
               duration: const Duration(milliseconds: 300),
               curve: Curves.easeInOut,
             );
           }
+        }
 
-          return Column(
-            children: [
-              // FIXME: modal 사용
-              Container(
-                height: 54,
-                decoration: const BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(
-                      color: BrandColors.gray_50,
-                    ),
-                  ),
+        return Column(
+          children: [
+            Expanded(
+              child: Padding(
+                padding: const Pad(
+                  horizontal: 20,
                 ),
-                child: Stack(
+                child: Column(
                   children: [
-                    NavigationToolbar(
-                      middle: Text(
-                        '답글 ${comment.children.length}',
-                        style: const TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.w700,
-                        ),
+                    _Comment(
+                      comment: comment,
+                      commentProfile: data.post.space?.commentProfile,
+                      postAuthorProfile: data.post.member!.profile,
+                      isMyPost: data.post.space?.meAsMember != null,
+                      onLike: () async => onLike(
+                        liked: comment.liked,
+                        id: comment.id,
                       ),
-                      trailing: Padding(
-                        padding: const Pad(right: 20),
-                        child: Pressable(
-                          child: const Icon(Tabler.x),
-                          onPressed: () async {
-                            await context.router.maybePop();
+                      onMore: () async => onMore(comment: comment),
+                    ),
+                    if (comment.children.isNotEmpty) ...[
+                      const HorizontalDivider(
+                        color: BrandColors.gray_50,
+                      ),
+                      Expanded(
+                        child: ListView.separated(
+                          padding: const Pad(bottom: 32),
+                          physics: const AlwaysScrollableScrollPhysics(
+                            parent: BouncingScrollPhysics(),
+                          ),
+                          controller: _scrollController,
+                          itemCount: comment.children.length,
+                          separatorBuilder: (context, index) {
+                            return const Padding(
+                              padding: Pad(left: 24),
+                              child: HorizontalDivider(
+                                color: BrandColors.gray_50,
+                              ),
+                            );
+                          },
+                          itemBuilder: (context, index) {
+                            final commentReply = comment.children[index];
+
+                            return Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Padding(
+                                  padding: Pad(vertical: 20),
+                                  child: Icon(Tabler.chevron_down_left, size: 16, color: BrandColors.gray_400),
+                                ),
+                                const Gap(8),
+                                Expanded(
+                                  child: _Comment(
+                                    comment: commentReply,
+                                    commentProfile: data.post.space?.commentProfile,
+                                    postAuthorProfile: data.post.member!.profile,
+                                    isMyPost: data.post.space?.meAsMember != null,
+                                    onLike: () async => onLike(
+                                      liked: commentReply.liked,
+                                      id: commentReply.id,
+                                    ),
+                                    onMore: () async => onMore(comment: commentReply),
+                                  ),
+                                ),
+                              ],
+                            );
                           },
                         ),
                       ),
-                    ),
-                    Positioned(
-                      left: 0,
-                      right: 0,
-                      top: 4,
-                      child: Center(
-                        child: Container(
-                          width: 40,
-                          height: 4,
-                          decoration: BoxDecoration(
-                            color: BrandColors.gray_150,
-                            borderRadius: BorderRadius.circular(2),
-                          ),
-                        ),
-                      ),
-                    ),
+                    ],
                   ],
                 ),
               ),
-              Expanded(
-                child: Padding(
-                  padding: const Pad(
-                    horizontal: 20,
+            ),
+            Container(
+              padding: const Pad(
+                horizontal: 20,
+                vertical: 14,
+              ),
+              decoration: const BoxDecoration(
+                border: Border(
+                  top: BorderSide(
+                    color: BrandColors.gray_150,
                   ),
-                  child: Column(
+                ),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    data.post.space!.commentProfile?.name ?? '(알 수 없음)',
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: BrandColors.gray_500,
+                    ),
+                  ),
+                  const Gap(4),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      _Comment(
-                        comment: comment,
-                        commentProfile: data.post.space?.commentProfile,
-                        postAuthorProfile: data.post.member!.profile,
-                        isMyPost: data.post.space?.meAsMember != null,
-                        onLike: () async => onLike(
-                          liked: comment.liked,
-                          id: comment.id,
-                        ),
-                        onMore: () async => onMore(comment: comment),
-                      ),
-                      if (comment.children.isNotEmpty) ...[
-                        const HorizontalDivider(
-                          color: BrandColors.gray_50,
-                        ),
-                        Expanded(
-                          child: ListView.separated(
-                            padding: const Pad(bottom: 32),
-                            physics: const AlwaysScrollableScrollPhysics(
-                              parent: BouncingScrollPhysics(),
+                      Expanded(
+                        child: TextField(
+                          controller: _textController,
+                          focusNode: _focusNode,
+                          enabled: isCommentEnabled,
+                          textInputAction: TextInputAction.newline,
+                          minLines: 1,
+                          maxLines: 4,
+                          decoration: InputDecoration(
+                            isCollapsed: true,
+                            enabledBorder: InputBorder.none,
+                            focusedBorder: InputBorder.none,
+                            disabledBorder: InputBorder.none,
+                            contentPadding: const Pad(
+                              vertical: 2,
                             ),
-                            controller: _scrollController,
-                            itemCount: comment.children.length,
-                            separatorBuilder: (context, index) {
-                              return const Padding(
-                                padding: Pad(left: 24),
-                                child: HorizontalDivider(
-                                  color: BrandColors.gray_50,
-                                ),
-                              );
-                            },
-                            itemBuilder: (context, index) {
-                              final commentReply = comment.children[index];
-
-                              return Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Padding(
-                                    padding: Pad(vertical: 20),
-                                    child: Icon(Tabler.chevron_down_left, size: 16, color: BrandColors.gray_400),
-                                  ),
-                                  const Gap(8),
-                                  Expanded(
-                                    child: _Comment(
-                                      comment: commentReply,
-                                      commentProfile: data.post.space?.commentProfile,
-                                      postAuthorProfile: data.post.member!.profile,
-                                      isMyPost: data.post.space?.meAsMember != null,
-                                      onLike: () async => onLike(
-                                        liked: commentReply.liked,
-                                        id: commentReply.id,
-                                      ),
-                                      onMore: () async => onMore(comment: commentReply),
-                                    ),
-                                  ),
-                                ],
-                              );
-                            },
+                            hintText: isCommentEnabled
+                                ? '답글을 입력해주세요'
+                                : (data.post.commentQualification == GPostCommentQualification.IDENTIFIED
+                                    ? '본인인증이 된 계정만 댓글을 달 수 있어요'
+                                    : '댓글을 달 수 없는 포스트에요'),
+                            hintStyle: const TextStyle(
+                              color: BrandColors.gray_400,
+                            ),
                           ),
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w400,
+                            color: BrandColors.gray_900,
+                          ),
+                          onChanged: (value) {
+                            setState(() {
+                              _isEmpty = value.isEmpty;
+                            });
+                          },
+                          onSubmitted: (value) async {
+                            await onSubmit();
+                          },
                         ),
-                      ],
+                      ),
+                      const Gap(10),
+                      Row(
+                        children: [
+                          Pressable(
+                            onPressed: () {
+                              setState(() {
+                                if (_visibility == GPostCommentVisibility.PUBLIC) {
+                                  _visibility = GPostCommentVisibility.PRIVATE;
+                                } else if (_visibility == GPostCommentVisibility.PRIVATE) {
+                                  _visibility = GPostCommentVisibility.PUBLIC;
+                                }
+                              });
+                            },
+                            child: Icon(
+                              _visibility == GPostCommentVisibility.PRIVATE ? Tabler.lock : Tabler.lock_open,
+                              size: 24,
+                              color: _visibility == GPostCommentVisibility.PRIVATE
+                                  ? BrandColors.gray_900
+                                  : BrandColors.gray_300,
+                            ),
+                          ),
+                          const Gap(20),
+                          Pressable(
+                            onPressed: onSubmit,
+                            child: Icon(
+                              Tabler.circle_arrow_up_filled,
+                              size: 24,
+                              color: _isEmpty ? BrandColors.gray_300 : BrandColors.gray_900,
+                            ),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
-                ),
+                ],
               ),
-              Container(
-                padding: const Pad(
-                  horizontal: 20,
-                  vertical: 14,
-                ),
-                decoration: const BoxDecoration(
-                  border: Border(
-                    top: BorderSide(
-                      color: BrandColors.gray_150,
-                    ),
-                  ),
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      data.post.space!.commentProfile?.name ?? '(알 수 없음)',
-                      style: const TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        color: BrandColors.gray_500,
-                      ),
-                    ),
-                    const Gap(4),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Expanded(
-                          child: AnimatedBuilder(
-                            animation: _textFieldAnimationController,
-                            builder: (context, child) {
-                              return TextField(
-                                controller: _textController,
-                                focusNode: _focusNode,
-                                enabled: isCommentEnabled,
-                                textInputAction: TextInputAction.newline,
-                                minLines: 1,
-                                maxLines: 4,
-                                decoration: InputDecoration(
-                                  isCollapsed: true,
-                                  enabledBorder: InputBorder.none,
-                                  focusedBorder: InputBorder.none,
-                                  disabledBorder: InputBorder.none,
-                                  contentPadding: const Pad(
-                                    vertical: 2,
-                                  ),
-                                  hintText: isCommentEnabled
-                                      ? '답글을 입력해주세요'
-                                      : (data.post.commentQualification == GPostCommentQualification.IDENTIFIED
-                                          ? '본인인증이 된 계정만 댓글을 달 수 있어요'
-                                          : '댓글을 달 수 없는 포스트에요'),
-                                  hintStyle: const TextStyle(
-                                    color: BrandColors.gray_400,
-                                  ),
-                                ),
-                                style: const TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w400,
-                                  color: BrandColors.gray_900,
-                                ),
-                                onChanged: (value) {
-                                  setState(() {
-                                    _isEmpty = value.isEmpty;
-                                  });
-                                },
-                                onSubmitted: (value) async {
-                                  await onSubmit();
-                                },
-                              );
-                            },
-                          ),
-                        ),
-                        const Gap(10),
-                        Row(
-                          children: [
-                            Pressable(
-                              onPressed: () {
-                                setState(() {
-                                  if (_visibility == GPostCommentVisibility.PUBLIC) {
-                                    _visibility = GPostCommentVisibility.PRIVATE;
-                                  } else if (_visibility == GPostCommentVisibility.PRIVATE) {
-                                    _visibility = GPostCommentVisibility.PUBLIC;
-                                  }
-                                });
-                              },
-                              child: Icon(
-                                _visibility == GPostCommentVisibility.PRIVATE ? Tabler.lock : Tabler.lock_open,
-                                size: 24,
-                                color: _visibility == GPostCommentVisibility.PRIVATE
-                                    ? BrandColors.gray_900
-                                    : BrandColors.gray_300,
-                              ),
-                            ),
-                            const Gap(20),
-                            Pressable(
-                              onPressed: onSubmit,
-                              child: Icon(
-                                Tabler.circle_arrow_up_filled,
-                                size: 24,
-                                color: _isEmpty ? BrandColors.gray_300 : BrandColors.gray_900,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          );
-        },
-      ),
+            ),
+          ],
+        );
+      },
     );
   }
 }
