@@ -421,6 +421,7 @@ type Mutation {
   updateUserNotificationPreference(input: UpdateUserNotificationPreferenceInput!): User!
   updateUserProfile(input: UpdateUserProfileInput!): Profile!
   verifyPassportIdentity(input: VerifyPassportIdentityInput!): User!
+  verifyPersonalIdentity(input: VerifyPersonalIdentityInput!): UserPersonalIdentity!
   verifySettlementIdentity(input: VerifySettlementIdentityInput!): UserSettlementIdentity!
 }
 
@@ -1400,6 +1401,10 @@ input VerifyPassportIdentityInput {
   issuedDate: String!
   name: String!
   passportNumber: String!
+}
+
+input VerifyPersonalIdentityInput {
+  uid: String!
 }
 
 input VerifySettlementIdentityInput {
