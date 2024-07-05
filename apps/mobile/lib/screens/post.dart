@@ -585,7 +585,8 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                                     const RectangleChip('비밀글', theme: RectangleChipTheme.purple),
                                     const Gap(4),
                                   ],
-                                  if (data.post.publishedRevision!.price! > 0) ...[
+                                  if (data.post.publishedRevision!.price != null &&
+                                      data.post.publishedRevision!.price! > 0) ...[
                                     const RectangleChip('유료', theme: RectangleChipTheme.blue),
                                     const Gap(4),
                                   ],
@@ -701,41 +702,33 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                       ),
                       if (_blurContent)
                         switch (data.post.blurredReason) {
+                          GPostBlurredReason.NOT_IDENTIFIED => PostWarning(
+                              title: switch (data.post.ageRating) {
+                                GPostAgeRating.R15 => '15세 콘텐츠',
+                                GPostAgeRating.R19 => '성인용 콘텐츠',
+                                _ => throw UnimplementedError()
+                              },
+                              description: '해당 내용을 감상하려면 본인 인증이 필요해요',
+                              buttonTitle: '본인인증하기',
+                              onPressed: onGoToIdentification,
+                            ),
                           GPostBlurredReason.ADULT_HIDDEN => PostWarning(
                               title: '성인용 콘텐츠',
-                              description: '해당 내용은 20세 이상만 열람할 수 있어요',
+                              description: '해당 내용은 성인용 콘텐츠를 담고 있어요',
                               onPressed: onUnblurPost,
                             ),
-                          GPostBlurredReason.AGE_RATING => switch (data.post.ageRating) {
-                              GPostAgeRating.R15 => data.me?.personalIdentity == null
-                                  ? PostWarning(
-                                      title: '15세 콘텐츠',
-                                      description: '해당 내용을 감상하려면 본인 인증이 필요해요',
-                                      buttonTitle: '본인인증하기',
-                                      onPressed: onGoToIdentification,
-                                    )
-                                  : PostWarning(
-                                      title: '15세 콘텐츠',
-                                      description: '해당 내용은 15세 이상만 열람할 수 있어요',
-                                      onPressed: onUnblurPost,
-                                    ),
-                              GPostAgeRating.R19 => data.me?.personalIdentity == null
-                                  ? PostWarning(
-                                      title: '성인용 콘텐츠',
-                                      description: '해당 내용을 감상하려면 본인 인증이 필요해요',
-                                      buttonTitle: '본인인증하기',
-                                      onPressed: onGoToIdentification,
-                                    )
-                                  : PostWarning(
-                                      title: '성인용 콘텐츠',
-                                      description: '해당 내용은 20세 이상만 열람할 수 있어요',
-                                      buttonTitle: '돌아가기',
-                                      onPressed: () async {
-                                        await context.router.maybePop();
-                                      },
-                                    ),
-                              _ => throw UnimplementedError(),
-                            },
+                          GPostBlurredReason.AGE_RATING => PostWarning(
+                              title: switch (data.post.ageRating) {
+                                GPostAgeRating.R15 => '15세 콘텐츠',
+                                GPostAgeRating.R19 => '성인용 콘텐츠',
+                                _ => throw UnimplementedError()
+                              },
+                              description: '해당 내용은 나이 제한이 있어 볼 수 없어요',
+                              buttonTitle: '돌아가기',
+                              onPressed: () async {
+                                await context.router.maybePop();
+                              },
+                            ),
                           GPostBlurredReason.PASSWORD => _PasswordedPostGuard(
                               onSubmit: onUnlockPasswordedPost,
                             ),
