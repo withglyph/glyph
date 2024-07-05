@@ -2545,75 +2545,77 @@ class _Comment extends ConsumerWidget {
                   ),
                 _ => throw UnimplementedError(),
               },
-              const Gap(12),
-              Row(
-                children: [
-                  Expanded(
-                    child: Row(
-                      children: [
-                        if (children != null) ...[
+              if (comment.visibility == GPostCommentVisibility.PUBLIC || isMyComment || isMyPost) ...[
+                const Gap(12),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Row(
+                        children: [
+                          if (children != null) ...[
+                            Pressable(
+                              onPressed: onReply,
+                              child: Row(
+                                children: [
+                                  const Icon(
+                                    Tabler.message,
+                                    size: 16,
+                                    color: BrandColors.gray_400,
+                                  ),
+                                  const Gap(3),
+                                  Text(
+                                    '답글${(children!.isEmpty) ? '' : ' ${children!.length}'}',
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w500,
+                                      color: BrandColors.gray_400,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const Gap(12),
+                            Container(
+                              width: 1,
+                              height: 10,
+                              color: BrandColors.gray_100,
+                            ),
+                            const Gap(12),
+                          ],
                           Pressable(
-                            onPressed: onReply,
+                            onPressed: onLike,
                             child: Row(
                               children: [
-                                const Icon(
-                                  Tabler.message,
-                                  size: 16,
-                                  color: BrandColors.gray_400,
-                                ),
+                                if (comment.liked)
+                                  const Icon(
+                                    Tabler.heart_filled,
+                                    size: 16,
+                                    color: BrandColors.gray_900,
+                                  )
+                                else
+                                  const Icon(
+                                    Tabler.heart,
+                                    size: 16,
+                                    color: BrandColors.gray_400,
+                                  ),
                                 const Gap(3),
                                 Text(
-                                  '답글${(children!.isEmpty) ? '' : ' ${children!.length}'}',
-                                  style: const TextStyle(
+                                  '좋아요${comment.likeCount > 0 ? ' ${comment.likeCount}' : ''}',
+                                  style: TextStyle(
                                     fontSize: 12,
                                     fontWeight: FontWeight.w500,
-                                    color: BrandColors.gray_400,
+                                    color: comment.liked ? BrandColors.gray_900 : BrandColors.gray_400,
                                   ),
                                 ),
                               ],
                             ),
                           ),
-                          const Gap(12),
-                          Container(
-                            width: 1,
-                            height: 10,
-                            color: BrandColors.gray_100,
-                          ),
-                          const Gap(12),
                         ],
-                        Pressable(
-                          onPressed: onLike,
-                          child: Row(
-                            children: [
-                              if (comment.liked)
-                                const Icon(
-                                  Tabler.heart_filled,
-                                  size: 16,
-                                  color: BrandColors.gray_900,
-                                )
-                              else
-                                const Icon(
-                                  Tabler.heart,
-                                  size: 16,
-                                  color: BrandColors.gray_400,
-                                ),
-                              const Gap(3),
-                              Text(
-                                '좋아요${comment.likeCount > 0 ? ' ${comment.likeCount}' : ''}',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500,
-                                  color: comment.liked ? BrandColors.gray_900 : BrandColors.gray_400,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
-                  ),
-                ],
-              ),
+                  ],
+                ),
+              ],
             ],
           ),
         ),

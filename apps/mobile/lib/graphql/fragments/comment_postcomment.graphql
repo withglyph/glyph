@@ -7,12 +7,14 @@ fragment Comment_postComment on PostComment {
   liked
   likedByPostUser
   invisibleReason
-  masquerade {
-    id
-  }
   likeCount
   content
   createdAt
+
+  masquerade {
+    id
+  }
+  
 
   profile {
     id
