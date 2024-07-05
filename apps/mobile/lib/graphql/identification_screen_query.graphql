@@ -1,10 +1,11 @@
 query IdentificationScreen_Query {
   me {
     id
+    isAdulthood
 
     personalIdentity {
       id
-      name
+      expiresAt
     }
   }
 }

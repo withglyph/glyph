@@ -1,0 +1,5 @@
+mutation IdentificationScreen_VerifyPersonalIdentity_Mutation($input: VerifyPersonalIdentityInput!) {
+  verifyPersonalIdentity(input: $input) {
+    id
+  }
+}
