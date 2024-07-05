@@ -226,6 +226,7 @@ class _SpaceScreenState extends State<SpaceScreen> with SingleTickerProviderStat
                                         fontWeight: FontWeight.w700,
                                       ),
                                     ),
+                                    const Gap(2),
                                     Text(
                                       'by ${data.space.members[0].profile.name}',
                                       style: const TextStyle(
@@ -233,7 +234,7 @@ class _SpaceScreenState extends State<SpaceScreen> with SingleTickerProviderStat
                                         fontWeight: FontWeight.w500,
                                       ),
                                     ),
-                                    const Gap(14),
+                                    const Gap(10),
                                     Row(
                                       children: [
                                         const Icon(
@@ -245,7 +246,7 @@ class _SpaceScreenState extends State<SpaceScreen> with SingleTickerProviderStat
                                         Text(
                                           '${data.space.followerCount}명',
                                           style: const TextStyle(
-                                            fontSize: 13,
+                                            fontSize: 12,
                                             fontWeight: FontWeight.w500,
                                             color: BrandColors.gray_500,
                                           ),
@@ -260,14 +261,14 @@ class _SpaceScreenState extends State<SpaceScreen> with SingleTickerProviderStat
                                         Text(
                                           '${data.space.postCount}개',
                                           style: const TextStyle(
-                                            fontSize: 13,
+                                            fontSize: 12,
                                             fontWeight: FontWeight.w500,
                                             color: BrandColors.gray_500,
                                           ),
                                         ),
                                       ],
                                     ),
-                                    const Gap(20),
+                                    const Gap(34),
                                     Btn(
                                       data.space.muted
                                           ? '뮤트됨'
