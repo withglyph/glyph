@@ -4,6 +4,7 @@
   import { page } from '$app/stores';
   import { graphql } from '$glitch';
   import { Helmet, Image, Pagination } from '$lib/components';
+  import { isWebView, postFlutterMessage } from '$lib/flutter';
   import { comma } from '$lib/utils';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
@@ -89,19 +90,27 @@
         })}
       >
         <svelte:element
-          this={revenue.post?.state === 'DELETED' ? 'div' : 'a'}
+          this={$isWebView ? 'button' : revenue.post?.state === 'DELETED' ? 'div' : 'a'}
           class={css(
             {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
               gap: { base: '14px', sm: '80px' },
+              textAlign: 'left',
+              width: 'full',
             },
             revenue.post?.state === 'DELETED' && { color: 'gray.400' },
           )}
-          href={revenue.post?.state === 'DELETED'
+          href={revenue.post?.state === 'DELETED' || $isWebView
             ? undefined
             : `/${revenue.post?.space?.slug}/${revenue.post?.permalink}`}
+          role={$isWebView ? 'button' : revenue.post?.state === 'DELETED' ? 'div' : 'a'}
+          on:click={() => {
+            if ($isWebView) {
+              postFlutterMessage({ type: 'post:view', permalink: revenue.post?.permalink });
+            }
+          }}
         >
           <div class={flex({ flexDirection: 'column', truncate: true })}>
             <div class={flex({ align: 'center', marginBottom: '2px', fontSize: '12px', wrap: 'wrap' })}>

@@ -279,12 +279,7 @@ class _MeScreenState extends ConsumerState<MeScreen> {
                       icon: Tabler.pig_money,
                       title: '수익/출금',
                       onPressed: () async {
-                        await context.router.push(
-                          WebViewRoute(
-                            title: '수익/출금',
-                            path: '/me/revenue',
-                          ),
-                        );
+                        await context.router.push(const RevenueRoute());
                       },
                     ),
                     _MenuItem(
