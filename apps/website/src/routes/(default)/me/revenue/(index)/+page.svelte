@@ -101,7 +101,7 @@
           )}
           href={revenue.post?.state === 'DELETED'
             ? undefined
-            : `/${revenue.post?.space?.slug}/${revenue.post?.permalink}}`}
+            : `/${revenue.post?.space?.slug}/${revenue.post?.permalink}`}
         >
           <div class={flex({ flexDirection: 'column', truncate: true })}>
             <div class={flex({ align: 'center', marginBottom: '2px', fontSize: '12px', wrap: 'wrap' })}>
