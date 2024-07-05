@@ -270,8 +270,8 @@ class _SpaceCollectionScreenState extends State<SpaceCollectionScreen> with Sing
                                     '컬렉션 설명',
                                     style: TextStyle(
                                       fontSize: 13,
-                                      fontWeight: FontWeight.w700,
-                                      color: BrandColors.gray_400,
+                                      fontWeight: FontWeight.w600,
+                                      color: BrandColors.gray_500,
                                     ),
                                   ),
                                   const Gap(8),
@@ -292,8 +292,8 @@ class _SpaceCollectionScreenState extends State<SpaceCollectionScreen> with Sing
                                   '스페이스',
                                   style: TextStyle(
                                     fontSize: 13,
-                                    fontWeight: FontWeight.w700,
-                                    color: BrandColors.gray_400,
+                                    fontWeight: FontWeight.w600,
+                                    color: BrandColors.gray_500,
                                   ),
                                 ),
                                 const Gap(12),

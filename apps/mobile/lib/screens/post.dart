@@ -979,7 +979,7 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                               '태그',
                               style: TextStyle(
                                 fontSize: 13,
-                                fontWeight: FontWeight.w700,
+                                fontWeight: FontWeight.w600,
                                 color: BrandColors.gray_400,
                               ),
                             ),
@@ -1033,7 +1033,7 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                               '이전 포스트 / 다음 포스트',
                               style: TextStyle(
                                 fontSize: 13,
-                                fontWeight: FontWeight.w700,
+                                fontWeight: FontWeight.w600,
                                 color: BrandColors.gray_400,
                               ),
                             ),
@@ -1225,7 +1225,7 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                                 '컬렉션',
                                 style: TextStyle(
                                   fontSize: 13,
-                                  fontWeight: FontWeight.w700,
+                                  fontWeight: FontWeight.w600,
                                   color: BrandColors.gray_400,
                                 ),
                               ),
@@ -1292,7 +1292,7 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                               '스페이스',
                               style: TextStyle(
                                 fontSize: 13,
-                                fontWeight: FontWeight.w700,
+                                fontWeight: FontWeight.w600,
                                 color: BrandColors.gray_400,
                               ),
                             ),
