@@ -1256,6 +1256,7 @@ type User {
   marketingConsent: UserMarketingConsent
   mutedSpaces: [Space!]!
   mutedTags: [Tag!]!
+  notificationCount(unreadOnly: Boolean! = false): Int!
   notificationPreferences: [UserNotificationPreference!]!
   notifications(category: UserNotificationCategory, unreadOnly: Boolean! = false): [IUserNotification!]!
   onboardingCompleted: Boolean!

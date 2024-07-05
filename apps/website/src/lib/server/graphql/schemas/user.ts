@@ -516,6 +516,24 @@ User.implement({
       },
     }),
 
+    notificationCount: t.int({
+      args: {
+        unreadOnly: t.arg.boolean({ defaultValue: false }),
+      },
+      resolve: async (user, args) => {
+        return await database
+          .select({ count: count() })
+          .from(UserNotifications)
+          .where(
+            and(
+              eq(UserNotifications.userId, user.id),
+              args.unreadOnly ? eq(UserNotifications.state, 'UNREAD') : undefined,
+            ),
+          )
+          .then((rows) => rows[0]?.count ?? 0);
+      },
+    }),
+
     eventEnrollment: t.field({
       type: UserEventEnrollment,
       nullable: true,
