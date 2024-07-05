@@ -1,8 +1,8 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:glyph/components/heading.dart';
 import 'package:glyph/components/webview.dart';
 import 'package:glyph/routers/app.gr.dart';
+import 'package:glyph/shells/default.dart';
 
 @RoutePage()
 class SpaceDashboardScreen extends StatelessWidget {
@@ -12,17 +12,9 @@ class SpaceDashboardScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: const Heading(
-        title: Text(
-          '스페이스 관리',
-          style: TextStyle(
-            fontSize: 17,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-      ),
-      body: WebView(
+    return DefaultShell(
+      title: '스페이스 관리',
+      child: WebView(
         path: '/$slug/dashboard/settings',
         onJsMessage: (data, reply, controller) async {
           if (data['type'] == 'post:view') {

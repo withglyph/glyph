@@ -1,9 +1,9 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:glyph/components/heading.dart';
 import 'package:glyph/components/webview.dart';
 import 'package:glyph/routers/app.gr.dart';
+import 'package:glyph/shells/default.dart';
 
 @RoutePage()
 class ContentFiltersScreen extends ConsumerWidget {
@@ -11,17 +11,9 @@ class ContentFiltersScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Scaffold(
-      appBar: const Heading(
-        title: Text(
-          '컨텐츠 필터링',
-          style: TextStyle(
-            fontSize: 17,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-      ),
-      body: WebView(
+    return DefaultShell(
+      title: '컨텐츠 필터링',
+      child: WebView(
         path: '/me/contentfilters',
         onJsMessage: (data, reply, controller) async {
           if (data['type'] == 'space:view') {

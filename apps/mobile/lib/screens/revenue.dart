@@ -1,8 +1,8 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:glyph/components/heading.dart';
 import 'package:glyph/components/webview.dart';
 import 'package:glyph/routers/app.gr.dart';
+import 'package:glyph/shells/default.dart';
 
 @RoutePage()
 class RevenueScreen extends StatelessWidget {
@@ -10,17 +10,9 @@ class RevenueScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: const Heading(
-        title: Text(
-          '수익/출금',
-          style: TextStyle(
-            fontSize: 17,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-      ),
-      body: WebView(
+    return DefaultShell(
+      title: '수익/출금',
+      child: WebView(
         path: '/me/revenue',
         onJsMessage: (data, reply, controller) async {
           if (data['type'] == 'post:view') {
