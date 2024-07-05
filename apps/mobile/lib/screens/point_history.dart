@@ -179,24 +179,15 @@ class _PointHistoryState extends ConsumerState<PointHistoryScreen> {
                           ),
                           if (point.G__typename == 'UnlockContentPointTransaction') ...[
                             const Gap(18),
-                            // ignore: use_decorated_box
-                            Container(
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  width: 0.8,
-                                  color: BrandColors.gray_50,
-                                ),
-                                borderRadius: BorderRadius.circular(4),
+                            Img(
+                              point.maybeWhen(
+                                unlockContentPointTransaction: (transaction) => transaction.post.thumbnail,
+                                orElse: () => null,
                               ),
-                              child: Img(
-                                point.maybeWhen(
-                                  unlockContentPointTransaction: (transaction) => transaction.post.thumbnail,
-                                  orElse: () => null,
-                                ),
-                                width: 78,
-                                aspectRatio: 16 / 10,
-                                borderRadius: 4,
-                              ),
+                              width: 78,
+                              aspectRatio: 16 / 10,
+                              borderWidth: 1,
+                              borderRadius: 4,
                             ),
                           ],
                         ],

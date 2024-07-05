@@ -1185,6 +1185,7 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                                         data.post.collection?.thumbnail,
                                         width: 67,
                                         aspectRatio: 3 / 4,
+                                        borderWidth: 1,
                                       ),
                                       const Gap(14),
                                       Expanded(

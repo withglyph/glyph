@@ -54,6 +54,7 @@ class ThumbnailPostCard extends ConsumerWidget {
                         width: 20,
                         height: 20,
                         aspectRatio: 1 / 1,
+                        borderWidth: 1,
                       ),
                       const Gap(4),
                       Text(

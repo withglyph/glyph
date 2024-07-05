@@ -100,7 +100,12 @@ class PostCard extends ConsumerWidget {
                     const Gap(10),
                     Row(
                       children: [
-                        Img(post.space!.icon, width: 18, height: 18),
+                        Img(
+                          post.space!.icon,
+                          width: 18,
+                          height: 18,
+                          borderWidth: 1,
+                        ),
                         const Gap(4),
                         Flexible(
                           child: Text(
@@ -131,20 +136,11 @@ class PostCard extends ConsumerWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  // ignore: use_decorated_box
-                  Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        width: 0.8,
-                        color: BrandColors.gray_50,
-                      ),
-                      borderRadius: BorderRadius.circular(2),
-                    ),
-                    child: Img(
-                      post.thumbnail,
-                      width: 78,
-                      aspectRatio: 16 / 10,
-                    ),
+                  Img(
+                    post.thumbnail,
+                    width: 78,
+                    aspectRatio: 16 / 10,
+                    borderWidth: 1,
                   ),
                   if (dots) ...[
                     const Spacer(),
