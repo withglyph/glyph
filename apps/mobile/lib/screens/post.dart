@@ -1899,7 +1899,7 @@ class _Reactions extends StatelessWidget {
             data.post.reactions.groupListsBy((element) => element.emoji).entries.sortedBy((element) => element.key);
 
         return Padding(
-          padding: const Pad(all: 20),
+          padding: const Pad(all: 20, bottom: 40),
           child: Wrap(
             spacing: 12,
             runSpacing: 14,
