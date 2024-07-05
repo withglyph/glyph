@@ -1,0 +1,6 @@
+query FeedScreen_Query {
+  me {
+    id
+    notificationCount(unreadOnly: true)
+  }
+}
