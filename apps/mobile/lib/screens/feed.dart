@@ -1,8 +1,12 @@
+import 'dart:io';
+
 import 'package:auto_route/auto_route.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
+import 'package:get_it/get_it.dart';
 import 'package:glyph/components/heading.dart';
 import 'package:glyph/components/pressable.dart';
 import 'package:glyph/context/bottom_menu.dart';
@@ -24,6 +28,8 @@ class FeedScreen extends ConsumerStatefulWidget {
 }
 
 class _FeedScreenState extends ConsumerState<FeedScreen> {
+  final messaging = GetIt.I<FirebaseMessaging>();
+
   bool _showBottomBorder = false;
 
   final req = GFeedScreen_QueryReq((b) => b..requestId = 'FeedScreen_Query');
@@ -33,12 +39,26 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (Platform.isIOS) {
+        final message = await messaging.getInitialMessage();
+        if (message != null) {
+          final path = message.data['path'];
+          if (path != null) {
+            if (mounted) {
+              await context.router.navigateNamed(path);
+            }
+          }
+        }
+      }
+
       final auth = ref.read(authProvider);
       final onboardingCompleted =
           auth.requireValue.whenOrNull(authenticated: (accessToken, me) => me.onboardingCompleted);
 
       if (onboardingCompleted != true) {
-        await context.router.push(const OnboardingCurationRoute());
+        if (mounted) {
+          await context.router.push(const OnboardingCurationRoute());
+        }
       }
     });
   }

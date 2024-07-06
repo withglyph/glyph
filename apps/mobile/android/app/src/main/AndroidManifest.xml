@@ -10,6 +10,8 @@
       android:hardwareAccelerated="true"
       android:windowSoftInputMode="adjustResize"
       android:screenOrientation="portrait"
+      android:showWhenLocked="true"
+      android:turnScreenOn="true"
     >
       <!-- Specifies an Android theme to apply to this Activity as soon as
                  the Android process has started. This theme is visible to the user
@@ -37,6 +39,12 @@
         <data android:host="staging.withglyph.com" />
         <data android:host="withglyph.com" />
       </intent-filter>
+
+      <intent-filter>
+        <action android:name="FLUTTER_NOTIFICATION_CLICK" />
+
+        <category android:name="android.intent.category.DEFAULT" />
+      </intent-filter>
     </activity>
 
     <!-- Don't delete the meta-data below.
@@ -45,6 +53,7 @@
     <!-- <meta-data android:name="io.flutter.embedding.android.EnableImpeller" android:value="true" /> -->
 
     <meta-data android:name="com.google.firebase.messaging.default_notification_icon" android:resource="@drawable/ic_notification" />
+    <meta-data android:name="com.google.firebase.messaging.default_notification_channel_id" android:value="@string/default_notification_channel_id" />
 
     <meta-data android:name="com.naver.sdk.clientId" android:value="D2mh8VeGrpMV5Z8eWRKi"/>
     <meta-data android:name="com.naver.sdk.clientSecret" android:value="66kb3ApsAQ"/>

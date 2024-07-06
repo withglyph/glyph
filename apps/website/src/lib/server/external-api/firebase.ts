@@ -20,8 +20,9 @@ type SendPushNotificationParams = {
   userId: string;
   title: string;
   body: string;
+  path?: string;
 };
-export const sendPushNotification = async ({ userId, title, body }: SendPushNotificationParams) => {
+export const sendPushNotification = async ({ userId, title, body, path }: SendPushNotificationParams) => {
   const tokens = await database
     .select({ token: UserPushNotificationTokens.token })
     .from(UserPushNotificationTokens)
@@ -36,6 +37,10 @@ export const sendPushNotification = async ({ userId, title, body }: SendPushNoti
     notification: {
       title,
       body,
+    },
+    data: {
+      click_action: 'FLUTTER_NOTIFICATION_CLICK',
+      ...(path && { path }),
     },
     apns: {
       payload: {
