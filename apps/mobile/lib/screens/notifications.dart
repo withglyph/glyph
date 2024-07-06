@@ -26,8 +26,8 @@ import 'package:glyph/themes/colors.dart';
 import 'package:jiffy/jiffy.dart';
 
 @RoutePage()
-class NotificationScreen extends ConsumerWidget {
-  const NotificationScreen({super.key});
+class NotificationsScreen extends ConsumerWidget {
+  const NotificationsScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

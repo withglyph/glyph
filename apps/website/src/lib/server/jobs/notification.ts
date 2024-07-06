@@ -35,60 +35,72 @@ export const createNotificationJob = defineJob('createNotification', async (para
     ...(await match(params)
       .with({ category: 'COMMENT' }, async ({ data }) => {
         const notificationData = await database
-          .select({ postTitle: PostRevisions.title, commentContent: PostComments.content })
+          .select({
+            slug: Spaces.slug,
+            permalink: Posts.permalink,
+            title: PostRevisions.title,
+            content: PostComments.content,
+          })
           .from(PostComments)
           .innerJoin(Posts, eq(PostComments.postId, Posts.id))
           .innerJoin(PostRevisions, eq(Posts.publishedRevisionId, PostRevisions.id))
+          .innerJoin(Spaces, eq(Posts.spaceId, Spaces.id))
           .where(eq(PostComments.id, data.commentId))
           .then(useFirstRowOrThrow());
 
         return {
-          title: notificationData.postTitle ?? '(제목 없음)',
-          body: `${actorProfile.name}님이 "${notificationData.commentContent}" 댓글을 남겼어요.`,
+          title: notificationData.title ?? '(제목 없음)',
+          body: `${actorProfile.name}님이 "${notificationData.content}" 댓글을 남겼어요.`,
+          path: `/${notificationData.slug}/${notificationData.permalink}`,
         };
       })
       .with({ category: 'EMOJI_REACTION' }, async ({ data }) => {
         const notificationData = await database
-          .select({ postTitle: PostRevisions.title })
+          .select({ slug: Spaces.slug, permalink: Posts.permalink, title: PostRevisions.title })
           .from(Posts)
           .innerJoin(PostRevisions, eq(Posts.publishedRevisionId, PostRevisions.id))
+          .innerJoin(Spaces, eq(Posts.spaceId, Spaces.id))
           .where(eq(Posts.id, data.postId))
           .then(useFirstRowOrThrow());
 
         return {
-          title: notificationData.postTitle ?? '(제목 없음)',
+          title: notificationData.title ?? '(제목 없음)',
           body: `${actorProfile.name}님이 이모지를 남겼어요.`,
+          path: `/${notificationData.slug}/${notificationData.permalink}`,
         };
       })
       .with({ category: 'PURCHASE' }, async ({ data }) => {
         const notificationData = await database
-          .select({ postTitle: PostRevisions.title })
+          .select({ title: PostRevisions.title })
           .from(Posts)
           .innerJoin(PostRevisions, eq(Posts.publishedRevisionId, PostRevisions.id))
           .where(eq(Posts.id, data.postId))
           .then(useFirstRowOrThrow());
 
         return {
-          title: notificationData.postTitle ?? '(제목 없음)',
+          title: notificationData.title ?? '(제목 없음)',
           body: `${actorProfile.name}님이 포스트를 구매했어요.`,
+          path: '/me/revenue',
         };
       })
       .with({ category: 'SUBSCRIBE' }, async ({ data }) => {
         const notificationData = await database
-          .select({ spaceName: Spaces.name })
+          .select({ slug: Spaces.slug, name: Spaces.name })
           .from(Spaces)
           .where(eq(Spaces.id, data.spaceId))
           .then(useFirstRowOrThrow());
 
         return {
-          title: notificationData.spaceName,
+          title: notificationData.name,
           body: `${actorProfile.name}님이 스페이스를 구독했어요.`,
+          path: `/${notificationData.slug}`,
         };
       })
       .otherwise(() => {
         return {
           title: '알림이 도착했어요.',
           body: '앱에서 자세한 내용을 확인해보세요.',
+          path: '/me/notifications',
         };
       })),
   });

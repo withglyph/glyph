@@ -67,7 +67,6 @@ class AppRouter extends $AppRouter {
             AutoRoute(page: EmailRoute.page),
             AutoRoute(page: IdentificationIamportRoute.page),
             AutoRoute(page: IdentificationRoute.page),
-            AutoRoute(page: NotificationRoute.page),
             AutoRoute(page: OnboardingCurationRoute.page, fullscreenDialog: true),
             AutoRoute(page: OssLicensesDetailsRoute.page),
             AutoRoute(page: OssLicensesRoute.page),
@@ -80,12 +79,13 @@ class AppRouter extends $AppRouter {
             ),
             AutoRoute(page: ProfileRoute.page),
             AutoRoute(page: RedeemRoute.page),
-            AutoRoute(page: RevenueRoute.page),
             AutoRoute(page: SearchResultRoute.page),
             AutoRoute(page: SettingsRoute.page),
             AutoRoute(page: SpaceDashboardRoute.page),
 
             // 딥링크 페이지들
+            AutoRoute(page: NotificationsRoute.page, path: 'me/notifications'),
+            AutoRoute(page: RevenueRoute.page, path: 'me/revenue'),
             AutoRoute(page: TagRoute.page, path: 'tag/:name'),
             AutoRoute(page: SpaceCollectionRoute.page, path: ':space/collections/:id'),
             AutoRoute(page: PostRoute.page, path: ':space/:permalink'),
