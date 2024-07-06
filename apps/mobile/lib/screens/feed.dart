@@ -83,6 +83,7 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
                 bottomBorder: _showBottomBorder,
                 leading: Pressable(
                   child: Row(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
                         switch (tabsRouter.activeIndex) {

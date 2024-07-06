@@ -22,7 +22,7 @@ extension FloatingBottomSheetX on BuildContext {
 
         return SafeArea(
           child: Container(
-            margin: const Pad(horizontal: 10),
+            margin: const Pad(horizontal: 10, bottom: 10),
             padding: const Pad(left: 24, top: 8, right: 24, bottom: 20),
             clipBehavior: Clip.antiAlias,
             decoration: BoxDecoration(
