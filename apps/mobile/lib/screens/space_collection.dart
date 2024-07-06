@@ -28,13 +28,13 @@ import 'package:share_plus/share_plus.dart';
 @RoutePage()
 class SpaceCollectionScreen extends StatefulWidget {
   const SpaceCollectionScreen({
-    required this.collection,
+    @PathParam() required this.id,
     this.order = GSpaceCollectionPostOrderByKind.LATEST,
     super.key,
   });
 
   final GSpaceCollectionPostOrderByKind order;
-  final String collection;
+  final String id;
 
   @override
   createState() => _SpaceCollectionScreenState();
@@ -78,7 +78,7 @@ class _SpaceCollectionScreenState extends State<SpaceCollectionScreen> with Sing
       body: GraphQLOperation(
         operation: GSpaceCollectionScreen_QueryReq(
           (b) => b
-            ..vars.slug = widget.collection
+            ..vars.slug = widget.id
             ..vars.order = order,
         ),
         builder: (context, client, data) {
@@ -119,7 +119,7 @@ class _SpaceCollectionScreenState extends State<SpaceCollectionScreen> with Sing
                       onPressed: () async {
                         await Share.shareUri(
                           Uri.parse(
-                            'https://withglyph.com/${data.spaceCollection.space.slug}/collections/${widget.collection}',
+                            'https://withglyph.com/${data.spaceCollection.space.slug}/collections/${widget.id}',
                           ),
                         );
                       },
@@ -142,8 +142,7 @@ class _SpaceCollectionScreenState extends State<SpaceCollectionScreen> with Sing
                                   await context.router.push(
                                     WebViewRoute(
                                       title: '컬렉션 관리',
-                                      path:
-                                          '/${data.spaceCollection.space.slug}/dashboard/collections/${widget.collection}',
+                                      path: '/${data.spaceCollection.space.slug}/dashboard/collections/${widget.id}',
                                     ),
                                   );
                                 },

@@ -563,7 +563,7 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                                 ),
                                 onPressed: () async {
                                   await context.router.push(
-                                    SpaceCollectionRoute(collection: data.post.collection!.id),
+                                    SpaceCollectionRoute(id: data.post.collection!.id),
                                   );
                                 },
                               ),
@@ -1271,7 +1271,7 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                                   ),
                                   onPressed: () async {
                                     await context.router
-                                        .push(SpaceCollectionRoute(collection: data.post.collection!.id));
+                                        .push(SpaceCollectionRoute(id: data.post.collection!.id));
                                   },
                                 ),
                               ),

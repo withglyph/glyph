@@ -7,7 +7,10 @@ import 'package:glyph/shells/default.dart';
 
 @RoutePage()
 class EditorScreen extends StatefulWidget {
-  const EditorScreen({@PathParam() required this.permalink, super.key});
+  const EditorScreen({
+    @PathParam() required this.permalink,
+    super.key,
+  });
 
   final String permalink;
 

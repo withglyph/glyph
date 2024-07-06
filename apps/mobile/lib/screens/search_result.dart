@@ -31,7 +31,7 @@ enum _SearchOrderByKind {
 
 @RoutePage()
 class SearchResultScreen extends ConsumerStatefulWidget {
-  const SearchResultScreen({@PathParam() this.query = '', super.key});
+  const SearchResultScreen({this.query = '', super.key});
 
   final String query;
 

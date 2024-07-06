@@ -16,7 +16,10 @@ import 'package:glyph/themes/colors.dart';
 
 @RoutePage()
 class SpaceCollectionsScreen extends ConsumerWidget {
-  const SpaceCollectionsScreen({required this.slug, super.key});
+  const SpaceCollectionsScreen({
+    @PathParam.inherit() required this.slug,
+    super.key,
+  });
 
   final String slug;
 
@@ -107,7 +110,7 @@ class SpaceCollectionsScreen extends ConsumerWidget {
                               ),
                             ),
                             onPressed: () async {
-                              await context.router.push(SpaceCollectionRoute(collection: collection.id));
+                              await context.router.push(SpaceCollectionRoute(id: collection.id));
                             },
                           );
                         },

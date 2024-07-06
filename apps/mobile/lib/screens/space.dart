@@ -29,7 +29,7 @@ import 'package:sliver_tools/sliver_tools.dart';
 @RoutePage()
 class SpaceScreen extends StatefulWidget {
   const SpaceScreen({
-    required this.slug,
+    @PathParam() required this.slug,
     super.key,
   });
 
@@ -52,8 +52,8 @@ class _SpaceScreenState extends State<SpaceScreen> with SingleTickerProviderStat
     return Scaffold(
       body: AutoTabsRouter.tabBar(
         routes: [
-          SpacePostsRoute(slug: widget.slug),
-          SpaceCollectionsRoute(slug: widget.slug),
+          SpacePostsRoute(),
+          SpaceCollectionsRoute(),
         ],
         builder: (context, child, tabController) {
           return GraphQLOperation(

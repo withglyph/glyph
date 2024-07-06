@@ -29,7 +29,10 @@ import 'package:glyph/themes/colors.dart';
 
 @RoutePage()
 class TagScreen extends StatefulWidget {
-  const TagScreen({required this.name, super.key});
+  const TagScreen({
+    @PathParam() required this.name,
+    super.key,
+  });
 
   final String name;
 

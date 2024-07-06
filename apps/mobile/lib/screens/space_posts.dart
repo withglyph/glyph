@@ -14,7 +14,10 @@ import 'package:glyph/themes/colors.dart';
 
 @RoutePage()
 class SpacePostsScreen extends ConsumerWidget {
-  const SpacePostsScreen({required this.slug, super.key});
+  const SpacePostsScreen({
+    @PathParam.inherit() required this.slug,
+    super.key,
+  });
 
   final String slug;
 
