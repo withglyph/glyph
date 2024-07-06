@@ -61,16 +61,19 @@ platform :android do
   end
 
   lane :release do
-    current_build_number = google_play_track_version_codes(
-      track: "internal",
-    )[0]
+    latest_release = firebase_app_distribution_get_latest_release(
+      service_credentials_json_data: ENV["GOOGLE_SERVICE_ACCOUNT"],
+      app: "1:58678861052:android:a1ecff4792b696f9bd8b79",
+    )
+    target_build_number = latest_release[:buildVersion].to_i
+
+    Dir.chdir("../..") do
+      sh "echo $PLAY_STORE_UPLOAD_KEYSTORE | base64 -d > android/keystore.jks"
+      sh "flutter build appbundle --build-number=#{target_build_number} --dart-define=ENV=release"
+    end
 
     upload_to_play_store(
-      version_code: current_build_number,
-      track: "internal",
-      track_promote_to: 'production',
-      skip_upload_apk: true,
-      skip_upload_aab: true,
+      aab: "../build/app/outputs/bundle/release/app-release.aab",
       sync_image_upload: true,
     )
   end

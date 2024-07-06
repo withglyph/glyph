@@ -5,7 +5,7 @@
   ],
   "products" : [
     {
-      "displayPrice" : "0.99",
+      "displayPrice" : "1200",
       "familyShareable" : false,
       "internalID" : "6504187920",
       "localizations" : [
@@ -20,7 +20,37 @@
       "type" : "Consumable"
     },
     {
-      "displayPrice" : "2.99",
+      "displayPrice" : "12000",
+      "familyShareable" : false,
+      "internalID" : "6504233663",
+      "localizations" : [
+        {
+          "description" : "글리프 10,000P",
+          "displayName" : "글리프 10,000P",
+          "locale" : "ko"
+        }
+      ],
+      "productID" : "point_10000",
+      "referenceName" : "글리프 10,000P",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "120000",
+      "familyShareable" : false,
+      "internalID" : "6504233626",
+      "localizations" : [
+        {
+          "description" : "글리프 100,000P",
+          "displayName" : "글리프 100,000P",
+          "locale" : "ko"
+        }
+      ],
+      "productID" : "point_100000",
+      "referenceName" : "글리프 100,000P",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "3600",
       "familyShareable" : false,
       "internalID" : "6504187966",
       "localizations" : [
@@ -35,7 +65,22 @@
       "type" : "Consumable"
     },
     {
-      "displayPrice" : "3.99",
+      "displayPrice" : "36000",
+      "familyShareable" : false,
+      "internalID" : "6504233724",
+      "localizations" : [
+        {
+          "description" : "글리프 30,000P",
+          "displayName" : "글리프 30,000P",
+          "locale" : "ko"
+        }
+      ],
+      "productID" : "point_30000",
+      "referenceName" : "글리프 30,000P",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "6000",
       "familyShareable" : false,
       "internalID" : "6504188209",
       "localizations" : [
@@ -48,15 +93,31 @@
       "productID" : "point_5000",
       "referenceName" : "글리프 5,000P",
       "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "60000",
+      "familyShareable" : false,
+      "internalID" : "6504233733",
+      "localizations" : [
+        {
+          "description" : "글리프 50,000P",
+          "displayName" : "글리프 50,000P",
+          "locale" : "ko"
+        }
+      ],
+      "productID" : "point_50000",
+      "referenceName" : "글리프 50,000P",
+      "type" : "Consumable"
     }
   ],
   "settings" : {
     "_applicationInternalID" : "6502156007",
     "_developerTeamID" : "4V96GK9874",
+    "_disableDialogs" : true,
     "_failTransactionsEnabled" : false,
-    "_lastSynchronizedDate" : 739775978.95983696,
-    "_locale" : "en_US",
-    "_storefront" : "USA",
+    "_lastSynchronizedDate" : 741942635.70893395,
+    "_locale" : "ko",
+    "_storefront" : "KOR",
     "_storeKitErrors" : [
       {
         "current" : null,

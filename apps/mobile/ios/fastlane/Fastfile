@@ -85,28 +85,38 @@ platform :ios do
   end
 
   lane :release do
+    latest_release = firebase_app_distribution_get_latest_release(
+      service_credentials_json_data: ENV["GOOGLE_SERVICE_ACCOUNT"],
+      app: "1:58678861052:ios:65d590f2311a51d6bd8b79",
+    )
+    target_build_number = latest_release[:buildVersion].to_i
+
+    Dir.chdir("../..") do
+      sh "flutter build ipa --build-number=#{target_build_number} --dart-define=ENV=release --no-codesign"
+    end
+
     match(type: "appstore", readonly: true)
+    build_app(
+      output_directory: 'build',
+      output_name: 'Runner.ipa',
+      archive_path: 'build/Runner.xcarchive',
+      skip_package_dependencies_resolution: true,
+    )
 
     app_store_connect_api_key(
       issuer_id: "790503b8-57bb-4621-a1e1-4cf096032add",
       key_id: "JSJ3753N49",
     )
 
-    latest_release = firebase_app_distribution_get_latest_release()
-
-    Dir.chdir("../..") do
-      sh "flutter build ipa --dart-define=ENV=release --build-number=#{current_build_number + 1} --export-options-plist=ios/ExportOptions/release.plist"
-    end
-
     upload_to_app_store(
+      ipa: "build/Runner.ipa",
+      sync_screenshots: true,
       force: true,
-      skip_binary_upload: true,
       reject_if_possible: true,
       submit_for_review: true,
       automatic_release: true,
       submission_information: { add_id_info_uses_idfa: false },
-      precheck_include_in_app_purchases: false,
-      sync_screenshots: true,
+      run_precheck_before_submit: false,
     )
   end
 end

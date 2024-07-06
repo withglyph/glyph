@@ -20,11 +20,7 @@ class SplashScreen extends ConsumerWidget {
           color: BrandColors.gray_900,
         ),
         child: Center(
-          child: SvgImage(
-            'logos/compact',
-            height: 72,
-            color: BrandColors.gray_0,
-          ),
+          child: SvgImage('logos/splash', width: 72, height: 72),
         ),
       ),
     );
