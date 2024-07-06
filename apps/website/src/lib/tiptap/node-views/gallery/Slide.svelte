@@ -3,6 +3,7 @@
   import IconChevronLeft from '~icons/tabler/chevron-left';
   import IconChevronRight from '~icons/tabler/chevron-right';
   import { Icon } from '$lib/components';
+  import { isWebView, postFlutterMessage } from '$lib/flutter';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
   import Image from './Image.svelte';
@@ -154,7 +155,11 @@
         tabindex="-1"
         on:click={() => {
           if (!editor?.isEditable) {
-            viewerOpen = true;
+            if ($isWebView) {
+              postFlutterMessage({ type: 'image:view', id });
+            } else {
+              viewerOpen = true;
+            }
           }
         }}
         on:keypress={null}

@@ -10,6 +10,7 @@
   import { graphql } from '$glitch';
   import { Icon, Image } from '$lib/components';
   import { RingSpinner } from '$lib/components/spinners';
+  import { isWebView, postFlutterMessage } from '$lib/flutter';
   import { portal, scrollLock } from '$lib/svelte/actions';
   import { NodeView } from '$lib/tiptap';
   import { TiptapNodeViewBubbleMenu } from '$lib/tiptap/components';
@@ -77,7 +78,11 @@
     role={editor?.isEditable ? 'presentation' : 'button'}
     on:click={() => {
       if (!editor?.isEditable) {
-        viewerOpen = true;
+        if ($isWebView) {
+          postFlutterMessage({ type: 'image:view', id: node.attrs.id });
+        } else {
+          viewerOpen = true;
+        }
       }
     }}
     on:keypress={null}

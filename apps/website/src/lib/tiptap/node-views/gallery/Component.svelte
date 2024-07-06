@@ -7,6 +7,7 @@
   import IconEdit from '~icons/tabler/edit';
   import IconTrash from '~icons/tabler/trash';
   import { Icon } from '$lib/components';
+  import { isWebView, postFlutterMessage } from '$lib/flutter';
   import { NodeView } from '$lib/tiptap';
   import { TiptapNodeViewBubbleMenu } from '$lib/tiptap/components';
   import { css } from '$styled-system/css';
@@ -73,22 +74,33 @@
         role="button"
         tabindex="-1"
         on:click={() => {
-          if (!editor?.isEditable) {
+          if (!editor?.isEditable && !$isWebView) {
             viewerOpen = true;
           }
         }}
         on:keypress={null}
       >
         {#each node.attrs.ids as id (id)}
-          <Image
-            {id}
-            style={css.raw(
-              { objectFit: 'cover' },
-              (node.attrs.size === 'full' || node.attrs.layout === 'grid-2' || node.attrs.layout === 'grid-3') && {
-                width: 'full',
-              },
-            )}
-          />
+          <div
+            role="button"
+            tabindex="-1"
+            on:click={() => {
+              if (!editor?.isEditable && $isWebView) {
+                postFlutterMessage({ type: 'image:view', id });
+              }
+            }}
+            on:keypress={null}
+          >
+            <Image
+              {id}
+              style={css.raw(
+                { objectFit: 'cover' },
+                (node.attrs.size === 'full' || node.attrs.layout === 'grid-2' || node.attrs.layout === 'grid-3') && {
+                  width: 'full',
+                },
+              )}
+            />
+          </div>
         {/each}
       </div>
     {/if}
