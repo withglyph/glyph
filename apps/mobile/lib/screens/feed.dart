@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -31,8 +32,6 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
   final messaging = GetIt.I<FirebaseMessaging>();
 
   bool _showBottomBorder = false;
-
-  final req = GFeedScreen_QueryReq((b) => b..requestId = 'FeedScreen_Query');
 
   @override
   void initState() {
@@ -66,9 +65,9 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
   @override
   Widget build(BuildContext context) {
     return GraphQLOperation(
-      operation: req,
+      operation: GFeedScreen_QueryReq(),
       builder: (context, client, data) {
-        final notificationCount = data.me?.notificationCount ?? 0;
+        final notificationCount = data.me!.notificationCount;
 
         return AutoTabsRouter(
           routes: const [
@@ -132,7 +131,6 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
                     const Gap(20),
                   ],
                   Pressable(
-                    // child: const Icon(Tabler.bell),
                     child: Stack(
                       clipBehavior: Clip.none,
                       children: [
@@ -142,18 +140,18 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
                             left: 12,
                             top: -1,
                             child: Container(
-                              padding: const EdgeInsets.symmetric(vertical: 1, horizontal: 5),
+                              padding: const Pad(horizontal: 5, vertical: 1),
                               decoration: BoxDecoration(
                                 color: BrandColors.brand_600,
                                 border: Border.all(color: BrandColors.gray_0),
-                                borderRadius: const BorderRadius.all(Radius.circular(100)),
+                                borderRadius: BorderRadius.circular(999),
                               ),
                               child: Text(
-                                notificationCount <= 99 ? '$notificationCount' : '99+',
+                                notificationCount <= 99 ? notificationCount.toString() : '99+',
                                 style: const TextStyle(
-                                  color: BrandColors.gray_0,
                                   fontSize: 9,
                                   fontWeight: FontWeight.w800,
+                                  color: BrandColors.gray_0,
                                 ),
                               ),
                             ),
@@ -161,9 +159,7 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
                       ],
                     ),
                     onPressed: () async {
-                      await context.router.push(
-                        const NotificationsRoute(),
-                      );
+                      await context.router.push(const NotificationsRoute());
                     },
                   ),
                 ],

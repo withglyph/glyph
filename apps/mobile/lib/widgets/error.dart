@@ -5,7 +5,6 @@ import 'package:gap/gap.dart';
 import 'package:glyph/components/btn.dart';
 import 'package:glyph/components/empty_state.dart';
 import 'package:glyph/icons/tabler_bold.dart';
-import 'package:glyph/routers/app.gr.dart';
 
 class AppErrorWidget extends StatelessWidget {
   const AppErrorWidget({super.key});
@@ -25,9 +24,9 @@ class AppErrorWidget extends StatelessWidget {
           Padding(
             padding: const Pad(horizontal: 50),
             child: Btn(
-              '글리프 홈으로 가기',
+              '뒤로 가기',
               onPressed: () async {
-                await context.router.replace(const MeRoute());
+                await context.router.maybePop();
               },
             ),
           ),
