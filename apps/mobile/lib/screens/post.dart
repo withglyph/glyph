@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -49,6 +50,7 @@ import 'package:glyph/graphql/__generated__/post_screen_comments_query.req.gql.d
 import 'package:glyph/graphql/__generated__/post_screen_comments_unlike_comment_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_screen_delete_post_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_screen_follow_space_mutation.req.gql.dart';
+import 'package:glyph/graphql/__generated__/post_screen_image_viewer_query.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_screen_mute_space_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_screen_query.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_screen_reactions_create_post_reaction_mutation.req.gql.dart';
@@ -761,6 +763,14 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                                     _webViewLoaded = true;
                                   });
                                 }
+                              } else if (message['type'] == 'image:view') {
+                                await showDialog(
+                                  context: context,
+                                  useSafeArea: false,
+                                  builder: (context) {
+                                    return _ImageViewer(id: message['id']);
+                                  },
+                                );
                               } else if (message['type'] == 'purchase') {
                                 await context.showBottomSheet(
                                   title: '포스트 구매',
@@ -1270,8 +1280,7 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                                     ],
                                   ),
                                   onPressed: () async {
-                                    await context.router
-                                        .push(SpaceCollectionRoute(id: data.post.collection!.id));
+                                    await context.router.push(SpaceCollectionRoute(id: data.post.collection!.id));
                                   },
                                 ),
                               ),
@@ -1577,6 +1586,56 @@ class _Tag extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _ImageViewer extends StatelessWidget {
+  const _ImageViewer({required this.id});
+
+  final String id;
+
+  @override
+  Widget build(BuildContext context) {
+    return Box(
+      color: BrandColors.gray_900,
+      child: GraphQLOperation(
+        operation: GPostScreen_ImageViewer_QueryReq(
+          (b) => b..vars.id = id,
+        ),
+        builder: (context, client, data) {
+          final safeAreaTopHeight = MediaQuery.of(context).padding.top;
+
+          return Stack(
+            children: [
+              InteractiveViewer(
+                maxScale: 8.0,
+                boundaryMargin: const Pad(all: 100),
+                child: Center(
+                  child: CachedNetworkImage(
+                    imageUrl: data.image.url,
+                    fadeInDuration: const Duration(milliseconds: 150),
+                    fadeOutDuration: Duration.zero,
+                    placeholder: (context, url) {
+                      return const Center(child: CircularProgressIndicator(color: BrandColors.gray_200));
+                    },
+                  ),
+                ),
+              ),
+              Positioned(
+                top: safeAreaTopHeight + 16,
+                right: 20,
+                child: Pressable(
+                  child: const Icon(Tabler.x, color: BrandColors.gray_200),
+                  onPressed: () async {
+                    await context.router.maybePop();
+                  },
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
