@@ -31,16 +31,8 @@ class _AppState extends State<App> {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         fontFamily: 'SUIT',
+        fontFamilyFallback: const ['Pretendard'],
         scaffoldBackgroundColor: Colors.white,
-        appBarTheme: const AppBarTheme(
-          backgroundColor: BrandColors.gray_0,
-          scrolledUnderElevation: 0,
-          toolbarHeight: 54,
-        ),
-        dividerTheme: const DividerThemeData(
-          color: BrandColors.gray_100,
-          space: 0,
-        ),
         iconTheme: const IconThemeData(
           color: BrandColors.gray_900,
           size: 24,
@@ -68,7 +60,9 @@ class _AppState extends State<App> {
           return const AppErrorWidget();
         };
 
-        return KeyboardDismiss(child: child!);
+        return KeyboardDismiss(
+          child: child!,
+        );
       },
     );
   }

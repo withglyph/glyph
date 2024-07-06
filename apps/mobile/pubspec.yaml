@@ -80,30 +80,49 @@ flutter:
 
   assets:
     - assets/emojis/
-    - assets/images/
     - assets/icons/
     - assets/logos/
 
   fonts:
     - family: SUIT
       fonts:
-        - asset: assets/fonts/SUIT-Thin.ttf
+        - asset: assets/fonts/SUIT-Thin.woff2
           weight: 100
-        - asset: assets/fonts/SUIT-ExtraLight.ttf
+        - asset: assets/fonts/SUIT-ExtraLight.woff2
           weight: 200
-        - asset: assets/fonts/SUIT-Light.ttf
+        - asset: assets/fonts/SUIT-Light.woff2
           weight: 300
-        - asset: assets/fonts/SUIT-Regular.ttf
+        - asset: assets/fonts/SUIT-Regular.woff2
           weight: 400
-        - asset: assets/fonts/SUIT-Medium.ttf
+        - asset: assets/fonts/SUIT-Medium.woff2
           weight: 500
-        - asset: assets/fonts/SUIT-SemiBold.ttf
+        - asset: assets/fonts/SUIT-SemiBold.woff2
           weight: 600
-        - asset: assets/fonts/SUIT-Bold.ttf
+        - asset: assets/fonts/SUIT-Bold.woff2
           weight: 700
-        - asset: assets/fonts/SUIT-ExtraBold.ttf
+        - asset: assets/fonts/SUIT-ExtraBold.woff2
           weight: 800
-        - asset: assets/fonts/SUIT-Heavy.ttf
+        - asset: assets/fonts/SUIT-Heavy.woff2
+          weight: 900
+    - family: Pretendard
+      fonts:
+        - asset: assets/fonts/Pretendard-Thin.woff2
+          weight: 100
+        - asset: assets/fonts/Pretendard-ExtraLight.woff2
+          weight: 200
+        - asset: assets/fonts/Pretendard-Light.woff2
+          weight: 300
+        - asset: assets/fonts/Pretendard-Regular.woff2
+          weight: 400
+        - asset: assets/fonts/Pretendard-Medium.woff2
+          weight: 500
+        - asset: assets/fonts/Pretendard-SemiBold.woff2
+          weight: 600
+        - asset: assets/fonts/Pretendard-Bold.woff2
+          weight: 700
+        - asset: assets/fonts/Pretendard-ExtraBold.woff2
+          weight: 800
+        - asset: assets/fonts/Pretendard-Black.woff2
           weight: 900
     - family: TablerIcons
       fonts:
@@ -114,19 +133,3 @@ flutter:
     - family: GlyphIcons
       fonts:
         - asset: assets/fonts/GlyphIcons.ttf
-
-flutter_launcher_icons:
-  image_path: assets/images/icon.png
-
-  android: true
-  adaptive_icon_background: '#171717'
-  adaptive_icon_foreground: assets/images/adaptive_icon_foreground.png
-
-  ios: true
-
-flutter_native_splash:
-  color: '#171717'
-  image: assets/images/splash.png
-
-  android_12:
-    color: '#171717'
