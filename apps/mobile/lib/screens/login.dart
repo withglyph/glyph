@@ -72,11 +72,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> with SingleTickerProv
       appBar: Heading.empty(systemUiOverlayStyle: SystemUiOverlayStyle.light),
       body: Stack(
         children: [
-          GraphQLOperation(
-            operation: GLoginScreen_QueryReq(),
-            builder: (context, client, data) {
-              return Positioned.fill(
-                child: AnimatedBuilder(
+          Positioned.fill(
+            child: GraphQLOperation(
+              operation: GLoginScreen_QueryReq(),
+              builder: (context, client, data) {
+                return AnimatedBuilder(
                   animation: _animationController,
                   builder: (context, child) {
                     return UnconstrainedBox(
@@ -99,9 +99,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> with SingleTickerProv
                         )
                         .toList(),
                   ),
-                ),
-              );
-            },
+                );
+              },
+            ),
           ),
           const Positioned.fill(
             child: DecoratedBox(

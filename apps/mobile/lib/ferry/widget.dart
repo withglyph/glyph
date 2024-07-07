@@ -23,8 +23,25 @@ class GraphQLOperation<TData, TVars> extends ConsumerStatefulWidget {
   createState() => _GraphQLOperationState<TData, TVars>();
 }
 
-class _GraphQLOperationState<TData, TVars> extends ConsumerState<GraphQLOperation<TData, TVars>> {
+class _GraphQLOperationState<TData, TVars> extends ConsumerState<GraphQLOperation<TData, TVars>>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _animationController;
+  late final Animation<double> _opacityAnimation;
+
   bool _loaded = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 200),
+    );
+
+    final curve = CurvedAnimation(parent: _animationController, curve: Curves.easeInOut);
+    _opacityAnimation = Tween<double>(begin: 0, end: 1).animate(curve);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,19 +83,17 @@ class _GraphQLOperationState<TData, TVars> extends ConsumerState<GraphQLOperatio
 
         if (!_loaded) {
           _loaded = true;
+
           WidgetsBinding.instance.addPostFrameCallback((_) async {
-            await widget.onDataLoaded?.call(context, notifier, data);
+            unawaited(_animationController.forward());
+            widget.onDataLoaded?.call(context, notifier, data);
           });
         }
 
-        // return AnimatedOpacity(
-        //   opacity: 1,
-        //   duration: const Duration(milliseconds: 200),
-        //   curve: Curves.easeInOut,
-        //   child: widget.builder(context, client, data),
-        // );
-
-        return widget.builder(context, notifier, data);
+        return FadeTransition(
+          opacity: _opacityAnimation,
+          child: widget.builder(context, notifier, data),
+        );
       },
     );
   }
