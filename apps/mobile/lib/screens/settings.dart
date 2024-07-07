@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:glyph/components/pressable.dart';
 import 'package:glyph/components/toggle_switch.dart';
+import 'package:glyph/context/alert.dart';
 import 'package:glyph/context/loader.dart';
 import 'package:glyph/ferry/extension.dart';
 import 'package:glyph/ferry/widget.dart';
@@ -103,7 +104,17 @@ class SettingsScreen extends ConsumerWidget {
                                 final req = GSettingsScreen_UpdateUserMarketingConsent_MutationReq(
                                   (b) => b..vars.input.consent = value,
                                 );
-                                await client.req(req);
+                                final resp = await client.req(req);
+
+                                if (context.mounted && value) {
+                                  await context.showAlert(
+                                    title: '글리프 마케팅 수신동의',
+                                    content: '${Jiffy.parse(
+                                      resp.updateUserMarketingConsent.marketingConsent!.createdAt.value,
+                                      isUtc: true,
+                                    ).format(pattern: 'yyyy.MM.dd')} 동의처리 되었어요',
+                                  );
+                                }
                               },
                             ),
                           ],
