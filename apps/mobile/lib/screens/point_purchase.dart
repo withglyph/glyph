@@ -323,11 +323,13 @@ class _PointPurchaseScreenState extends ConsumerState<PointPurchaseScreen> {
     });
 
     final resp = await _iap.queryProductDetails(points.map((point) => 'point_$point').toSet());
-    setState(() {
-      for (final product in _products) {
-        product.details = resp.productDetails.firstWhereOrNull((v) => v.id == 'point_${product.pointAmount}');
-      }
-    });
+    if (mounted) {
+      setState(() {
+        for (final product in _products) {
+          product.details = resp.productDetails.firstWhereOrNull((v) => v.id == 'point_${product.pointAmount}');
+        }
+      });
+    }
   }
 }
 
