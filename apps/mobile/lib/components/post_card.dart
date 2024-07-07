@@ -166,7 +166,7 @@ class PostCard extends ConsumerWidget {
                     aspectRatio: 16 / 10,
                     borderWidth: 1,
                   ),
-                  if (dots) ...[
+                  if (dots && post.space!.meAsMember == null) ...[
                     const Spacer(),
                     Pressable(
                       child: const Icon(
