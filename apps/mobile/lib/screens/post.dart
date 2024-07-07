@@ -790,11 +790,13 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                                                   children: [
                                                     const Icon(Tabler.notes, size: 16),
                                                     const Gap(3),
-                                                    Text(
-                                                      data.post.publishedRevision!.title ?? '(제목 없음)',
-                                                      overflow: TextOverflow.ellipsis,
-                                                      style: const TextStyle(
-                                                        color: BrandColors.gray_500,
+                                                    Expanded(
+                                                      child: Text(
+                                                        data.post.publishedRevision!.title ?? '(제목 없음)',
+                                                        overflow: TextOverflow.ellipsis,
+                                                        style: const TextStyle(
+                                                          color: BrandColors.gray_500,
+                                                        ),
                                                       ),
                                                     ),
                                                   ],
