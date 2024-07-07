@@ -1,0 +1,5 @@
+mutation DraftsScreen_DeletePost_Mutation($input: DeletePostInput!) {
+  deletePost(input: $input) {
+    id
+  }
+}

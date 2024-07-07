@@ -24,6 +24,7 @@ class EmptyState extends StatelessWidget {
           const Gap(16),
           Text(
             title,
+            textAlign: TextAlign.center,
             style: const TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w700,

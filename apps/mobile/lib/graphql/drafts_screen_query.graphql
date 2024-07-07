@@ -1,0 +1,20 @@
+query DraftsScreen_Query {
+  me {
+    id
+
+    posts(state: DRAFT) {
+      id
+      permalink
+
+      contentState {
+        id
+        title
+        previewText
+        characters
+        files
+        images
+        updatedAt
+      }
+    }
+  }
+}

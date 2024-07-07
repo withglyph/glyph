@@ -63,6 +63,7 @@ class AppRouter extends $AppRouter {
             ),
             AutoRoute(page: ContentFiltersRoute.page),
             AutoRoute(page: DeactivateRoute.page),
+            AutoRoute(page: DraftsRoute.page),
             AutoRoute(page: EditorRoute.page, fullscreenDialog: true),
             AutoRoute(page: EmailRoute.page),
             AutoRoute(page: IdentificationIamportRoute.page),
