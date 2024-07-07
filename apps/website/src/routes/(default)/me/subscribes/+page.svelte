@@ -1,6 +1,7 @@
 <script lang="ts">
   import { graphql } from '$glitch';
   import { Helmet, Tag } from '$lib/components';
+  import { isWebView, postFlutterMessage } from '$lib/flutter';
   import { css } from '$styled-system/css';
   import { flex, grid } from '$styled-system/patterns';
   import FollowTagModal from './FollowTagModal.svelte';
@@ -61,7 +62,17 @@
     <ul class={flex({ align: 'center', wrap: 'wrap', gap: '8px' })}>
       {#each $query.me.followedTags as tag (tag.id)}
         <li class={css({ truncate: true })}>
-          <Tag href="/tag/{tag.name}">#{tag.name}</Tag>
+          <Tag
+            as={$isWebView ? 'button' : 'a'}
+            href={$isWebView ? undefined : `/tag/${tag.name}`}
+            on:click={() => {
+              if ($isWebView) {
+                postFlutterMessage({ type: 'tag:view', name: tag.name });
+              }
+            }}
+          >
+            #{tag.name}
+          </Tag>
         </li>
       {/each}
     </ul>

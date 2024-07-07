@@ -7,12 +7,13 @@
   export let theme: 'dark' | 'light' = 'light';
   export let style: SystemStyleObject | undefined = undefined;
 
-  export let as: 'div' | 'a' | 'label' = 'a';
+  export let as: 'div' | 'a' | 'label' | 'button' = 'a';
   export let checked = false;
   export let name: string | undefined = undefined;
 
   type $$Events = {
     change: Parameters<NonNullable<HTMLInputAttributes['on:change']>>[0];
+    click: Event & { currentTarget: HTMLButtonElement };
   };
 
   const recipe = cva({
@@ -73,6 +74,8 @@
     },
     style,
   )}
+  role={as}
+  on:click
   {...$$restProps}
 >
   {#if as === 'label'}

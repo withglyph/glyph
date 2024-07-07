@@ -121,12 +121,7 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
                     Pressable(
                       child: const Icon(Tabler.settings),
                       onPressed: () async {
-                        await context.router.push(
-                          WebViewRoute(
-                            title: '구독 설정',
-                            path: '/me/subscribes',
-                          ),
-                        );
+                        await context.router.push(const SubscribesRoute());
                       },
                     ),
                     const Gap(20),

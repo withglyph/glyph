@@ -82,6 +82,7 @@ class AppRouter extends $AppRouter {
             AutoRoute(page: SearchResultRoute.page),
             AutoRoute(page: SettingsRoute.page),
             AutoRoute(page: SpaceDashboardRoute.page),
+            AutoRoute(page: SubscribesRoute.page),
             AutoRoute(page: WebViewRoute.page),
 
             // 딥링크 페이지들

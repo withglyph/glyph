@@ -2,6 +2,7 @@
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
   import { Avatar, Button, Image } from '$lib/components';
+  import { isWebView, postFlutterMessage } from '$lib/flutter';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
   import type { Space_space } from '$glitch';
@@ -54,9 +55,16 @@
     smDown: { borderBottomWidth: '1px' },
   })}
 >
-  <a
-    class={flex({ gap: '12px', paddingX: { sm: '16px' }, paddingTop: { base: '20px', sm: '16px' } })}
-    href="/{$space.slug}"
+  <svelte:element
+    this={$isWebView ? 'button' : 'a'}
+    class={flex({ gap: '12px', paddingX: { sm: '16px' }, paddingTop: { base: '20px', sm: '16px' }, textAlign: 'left' })}
+    href={$isWebView ? undefined : `/${$space.slug}`}
+    role={$isWebView ? 'button' : undefined}
+    on:click={() => {
+      if ($isWebView) {
+        postFlutterMessage({ type: 'space:view', slug: $space.slug });
+      }
+    }}
   >
     <div class={css({ position: 'relative', flex: 'none', height: 'fit' })}>
       <Image
@@ -90,7 +98,7 @@
         {$space.description ?? ''}
       </p>
     </div>
-  </a>
+  </svelte:element>
 
   <Button
     style={css.raw({ marginTop: '8px', marginLeft: 'auto', marginRight: { sm: '16px' }, width: '68px' })}
