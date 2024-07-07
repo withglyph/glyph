@@ -19,6 +19,7 @@ import 'package:glyph/components/pressable.dart';
 import 'package:glyph/components/rectangle_chip.dart';
 import 'package:glyph/context/modal.dart';
 import 'package:glyph/context/toast.dart';
+import 'package:glyph/extensions/build_context.dart';
 import 'package:glyph/extensions/int.dart';
 import 'package:glyph/ferry/extension.dart';
 import 'package:glyph/ferry/widget.dart';
@@ -864,11 +865,12 @@ class _CreateSpaceState extends ConsumerState<_CreateSpace> {
                           ..vars.input.slug = values['slug'],
                       );
 
-                      await client.req(req);
+                      final resp = await client.req(req);
+                      client.requestController.add(GMeScreen_QueryReq());
 
                       if (context.mounted) {
                         context.toast.show('스페이스가 생성되었어요');
-                        await context.router.popAndPush(SpaceRoute(slug: values['slug']));
+                        await context.popWaitAndPush(SpaceRoute(slug: resp.createSpace.slug));
                       }
                     },
                   ),

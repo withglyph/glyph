@@ -13,6 +13,7 @@ import 'package:glyph/context/bottom_menu.dart';
 import 'package:glyph/context/toast.dart';
 import 'package:glyph/ferry/extension.dart';
 import 'package:glyph/ferry/widget.dart';
+import 'package:glyph/graphql/__generated__/me_screen_query.req.gql.dart';
 import 'package:glyph/graphql/__generated__/space_screen_create_post_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/space_screen_follow_space_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/space_screen_mute_space_mutation.req.gql.dart';
@@ -126,9 +127,21 @@ class _SpaceScreenState extends State<SpaceScreen> with SingleTickerProviderStat
                                 title: '스페이스 관리',
                                 iconColor: BrandColors.gray_400,
                                 onTap: () async {
-                                  await context.router.push(
+                                  final res = await context.router.push(
                                     SpaceDashboardRoute(slug: data.space.slug),
                                   );
+
+                                  client.requestController
+                                    ..add(
+                                      GSpaceScreen_QueryReq(
+                                        (b) => b..vars.slug = widget.slug,
+                                      ),
+                                    )
+                                    ..add(GMeScreen_QueryReq());
+
+                                  if (res == 'space:delete' && context.mounted) {
+                                    await context.router.maybePop();
+                                  }
                                 },
                               ),
                           ],

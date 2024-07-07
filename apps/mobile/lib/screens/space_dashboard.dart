@@ -22,7 +22,7 @@ class SpaceDashboardScreen extends StatelessWidget {
               PostRoute(permalink: data['permalink']),
             );
           } else if (data['type'] == 'space:delete') {
-            await context.router.navigate(const MainRouter());
+            await context.router.maybePop('space:delete');
           }
         },
       ),
