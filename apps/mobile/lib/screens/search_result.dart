@@ -15,7 +15,6 @@ import 'package:glyph/components/pressable.dart';
 import 'package:glyph/components/search_input.dart';
 import 'package:glyph/context/bottom_sheet.dart';
 import 'package:glyph/extensions/iterable.dart';
-import 'package:glyph/ferry/extension.dart';
 import 'package:glyph/ferry/widget.dart';
 import 'package:glyph/graphql/__generated__/schema.schema.gql.dart';
 import 'package:glyph/graphql/__generated__/search_result_screen_query.req.gql.dart';
@@ -112,7 +111,7 @@ class _SearchResultScreenState extends ConsumerState<SearchResultScreen> with Si
                     context.router.maybePop();
                     _fetching = true;
                     unawaited(
-                      client.req(req).then((value) {
+                      client.request(req).then((value) {
                         _fetching = false;
                         _eol = posts.length == value.searchPosts.posts.length;
                       }),
@@ -159,7 +158,7 @@ class _SearchResultScreenState extends ConsumerState<SearchResultScreen> with Si
 
                         _fetching = true;
                         unawaited(
-                          client.req(req).then((value) {
+                          client.request(req).then((value) {
                             _fetching = false;
                             _eol = posts.length == value.searchPosts.posts.length;
                           }),
@@ -241,7 +240,7 @@ class _SearchResultScreenState extends ConsumerState<SearchResultScreen> with Si
                               );
 
                               unawaited(
-                                client.req(newReq).then((value) {
+                                client.request(newReq).then((value) {
                                   _fetching = false;
                                   if (posts.length == value.searchPosts.posts.length) {
                                     _eol = true;

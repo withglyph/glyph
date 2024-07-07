@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:glyph/components/horizontal_divider.dart';
 import 'package:glyph/components/thumbnail_post_card.dart';
 import 'package:glyph/const.dart';
-import 'package:glyph/ferry/extension.dart';
 import 'package:glyph/ferry/widget.dart';
 import 'package:glyph/graphql/__generated__/feed_recommend_screen_query.req.gql.dart';
 import 'package:glyph/themes/colors.dart';
@@ -53,7 +52,7 @@ class _FeedRecommendScreenState extends State<FeedRecommendScreen> {
                 );
 
                 unawaited(
-                  client.req(newReq).then((value) {
+                  client.request(newReq).then((value) {
                     _fetching = false;
                     if (posts.length == value.recommendFeed.length) {
                       _eol = true;

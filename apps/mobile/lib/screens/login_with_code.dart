@@ -7,7 +7,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:glyph/ferry/error.dart';
-import 'package:glyph/ferry/extension.dart';
 import 'package:glyph/graphql/__generated__/login_with_code_screen_authorize_user_email_token_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/login_with_code_screen_issue_user_email_authorization_token_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/schema.schema.gql.dart';
@@ -140,7 +139,7 @@ class _LoginWithCodeScreenState extends ConsumerState<LoginWithCodeScreen> {
                 await _transitionCompleter.future;
                 _pinFocusNode.requestFocus();
 
-                final client = ref.read(ferryProvider);
+                final client = ref.read(ferryProvider.notifier);
 
                 try {
                   final req1 = GLoginWithCodeScreen_IssueUserEmailAuthorizationToken_MutationReq(
@@ -148,12 +147,12 @@ class _LoginWithCodeScreenState extends ConsumerState<LoginWithCodeScreen> {
                       ..vars.input.email = widget.email
                       ..vars.input.code = value,
                   );
-                  final resp1 = await client.req(req1);
+                  final resp1 = await client.request(req1);
 
                   final req2 = GLoginWithCodeScreen_AuthorizeUserEmailToken_MutationReq(
                     (b) => b..vars.input.token = resp1.issueUserEmailAuthorizationToken.token,
                   );
-                  final resp2 = await client.req(req2);
+                  final resp2 = await client.request(req2);
 
                   if (resp2.authorizeUserEmailToken.kind == GAuthTokenKind.ACCESS_TOKEN) {
                     await ref.read(authProvider.notifier).setAccessToken(resp2.authorizeUserEmailToken.token);

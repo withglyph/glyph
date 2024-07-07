@@ -37,7 +37,6 @@ import 'package:glyph/extensions/build_context.dart';
 import 'package:glyph/extensions/int.dart';
 import 'package:glyph/extensions/iterable.dart';
 import 'package:glyph/ferry/error.dart';
-import 'package:glyph/ferry/extension.dart';
 import 'package:glyph/ferry/widget.dart';
 import 'package:glyph/graphql/__generated__/post_screen_bookmark_post_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_screen_collection_post_list_query.req.gql.dart';
@@ -142,7 +141,7 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
           final req = GPostScreen_UpdatePostView_MutationReq(
             (b) => b..vars.input.postId = data.post.id,
           );
-          await client.req(req);
+          await client.request(req);
         },
         builder: (context, client, data) {
           final hasThumbnail = data.post.thumbnail != null;
@@ -198,7 +197,7 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                                     final req = GPostScreen_UnmuteSpace_MutationReq(
                                       (b) => b..vars.input.spaceId = data.post.space!.id,
                                     );
-                                    await client.req(req);
+                                    await client.request(req);
 
                                     if (context.mounted) {
                                       context.toast.show('${data.post.space!.name} 스페이스 뮤트를 해제했어요');
@@ -215,7 +214,7 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                                     final req = GPostScreen_MuteSpace_MutationReq(
                                       (b) => b..vars.input.spaceId = data.post.space!.id,
                                     );
-                                    await client.req(req);
+                                    await client.request(req);
 
                                     if (context.mounted) {
                                       context.toast.show('${data.post.space!.name} 스페이스를 뮤트했어요', type: ToastType.error);
@@ -247,7 +246,7 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                                     content: '삭제된 글은 복구할 수 없어요',
                                     confirmText: '삭제',
                                     onConfirmed: () async {
-                                      final client = ref.read(ferryProvider);
+                                      final client = ref.read(ferryProvider.notifier);
 
                                       _mixpanel.track(
                                         'post:delete',
@@ -260,7 +259,7 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                                       final req = GPostScreen_DeletePost_MutationReq(
                                         (b) => b..vars.input.postId = data.post.id,
                                       );
-                                      await client.req(req);
+                                      await client.request(req);
 
                                       if (context.mounted) {
                                         context.toast.show('포스트가 삭제되었어요', type: ToastType.error);
@@ -371,7 +370,7 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                       final req = GPostScreen_BookmarkPost_MutationReq(
                         (b) => b..vars.input.postId = data.post.id,
                       );
-                      await client.req(req);
+                      await client.request(req);
                     } else {
                       _mixpanel.track(
                         'post:unbookmark',
@@ -385,7 +384,7 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                           ..vars.input.postId = data.post.id
                           ..vars.input.bookmarkGroupId = data.post.bookmarkGroups.first.id,
                       );
-                      await client.req(req);
+                      await client.request(req);
                     }
                   },
                 ),
@@ -437,7 +436,7 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                 ..vars.input.password = password,
             );
 
-            await client.req(req).then((_) async {
+            await client.request(req).then((_) async {
               _blurContent = false;
               setState(() {});
             });
@@ -1392,7 +1391,7 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                                     final req = GPostScreen_UnfollowSpace_MutationReq(
                                       (b) => b..vars.input.spaceId = data.post.space!.id,
                                     );
-                                    await client.req(req);
+                                    await client.request(req);
                                   } else {
                                     _mixpanel.track(
                                       'space:follow',
@@ -1404,7 +1403,7 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                                     final req = GPostScreen_FollowSpace_MutationReq(
                                       (b) => b..vars.input.spaceId = data.post.space!.id,
                                     );
-                                    await client.req(req);
+                                    await client.request(req);
                                   }
                                 },
                               ),
@@ -1997,14 +1996,14 @@ class _Reactions extends StatelessWidget {
                             ..vars.input.postId = data.post.id
                             ..vars.input.emoji = emoji,
                         );
-                        await client.req(req);
+                        await client.request(req);
                       } else {
                         final req = GPostScreen_Reactions_CreatePostReaction_MutationReq(
                           (b) => b
                             ..vars.input.postId = data.post.id
                             ..vars.input.emoji = emoji,
                         );
-                        await client.req(req);
+                        await client.request(req);
                       }
                     },
                   );
@@ -2077,13 +2076,13 @@ class _EmojiPicker extends ConsumerWidget {
                         return Pressable(
                           child: Center(child: Emoji(emoji, size: 28)),
                           onPressed: () async {
-                            final client = ref.read(ferryProvider);
+                            final client = ref.read(ferryProvider.notifier);
                             final req = GPostScreen_Reactions_CreatePostReaction_MutationReq(
                               (b) => b
                                 ..vars.input.postId = postId
                                 ..vars.input.emoji = emoji.name,
                             );
-                            await client.req(req);
+                            await client.request(req);
 
                             if (context.mounted) {
                               await context.router.maybePop();
@@ -2161,8 +2160,8 @@ class _CommentsState extends ConsumerState<_Comments> with SingleTickerProviderS
               ..vars.input.content = value
               ..vars.input.visibility = _visibility,
           );
-          await client.req(req);
-          await client.req(
+          await client.request(req);
+          await client.request(
             GPostScreen_Comnments_QueryReq(
               (b) => b..vars.permalink = widget.permalink,
             ),
@@ -2214,14 +2213,14 @@ class _CommentsState extends ConsumerState<_Comments> with SingleTickerProviderS
                     itemBuilder: (context, index) {
                       final comment = data.post.comments[index];
                       final isMyComment = comment.profile.id == data.post.space?.commentProfile?.id;
-                      final client = ref.read(ferryProvider);
+                      final client = ref.read(ferryProvider.notifier);
 
                       onDelete() async {
                         await context.showDialog(
                           title: '댓글을 삭제하시겠어요?',
                           confirmText: '삭제',
                           onConfirmed: () async {
-                            final client = ref.read(ferryProvider);
+                            final client = ref.read(ferryProvider.notifier);
                             _mixpanel.track(
                               'comment:delete',
                               properties: {
@@ -2231,13 +2230,13 @@ class _CommentsState extends ConsumerState<_Comments> with SingleTickerProviderS
                             final req = GPostScreen_Comments_DeleteComment_MutationReq(
                               (b) => b..vars.input.commentId = comment.id,
                             );
-                            await client.req(req);
+                            await client.request(req);
 
                             if (context.mounted) {
                               context.toast.show('댓글이 삭제되었어요', type: ToastType.error);
                             }
 
-                            await client.req(
+                            await client.request(
                               GPostScreen_Comnments_QueryReq(
                                 (b) => b..vars.permalink = widget.permalink,
                               ),
@@ -2264,13 +2263,13 @@ class _CommentsState extends ConsumerState<_Comments> with SingleTickerProviderS
                                 ..vars.input.masqueradeId = comment.masquerade!.id
                                 ..vars.input.spaceId = data.post.space!.id,
                             );
-                            await client.req(req);
+                            await client.request(req);
 
                             if (context.mounted) {
                               context.toast.show('${comment.profile.name}님이 차단되었습니다.');
                             }
 
-                            await client.req(
+                            await client.request(
                               GPostScreen_Comnments_QueryReq(
                                 (b) => b..vars.permalink = widget.permalink,
                               ),
@@ -2296,7 +2295,7 @@ class _CommentsState extends ConsumerState<_Comments> with SingleTickerProviderS
                             final req = GPostScreen_Comments_UnlikeComment_MutationReq(
                               (b) => b..vars.input.commentId = comment.id,
                             );
-                            await client.req(req);
+                            await client.request(req);
                           } else {
                             _mixpanel.track(
                               'comment:like',
@@ -2307,7 +2306,7 @@ class _CommentsState extends ConsumerState<_Comments> with SingleTickerProviderS
                             final req = GPostScreen_Comments_LikeComment_MutationReq(
                               (b) => b..vars.input.commentId = comment.id,
                             );
-                            await client.req(req);
+                            await client.request(req);
                           }
                         },
                         onMore: () async {
@@ -2766,7 +2765,7 @@ class _RepliesState extends ConsumerState<_Replies> with SingleTickerProviderSta
             final req = GPostScreen_Comments_UnlikeComment_MutationReq(
               (b) => b..vars.input.commentId = id,
             );
-            await client.req(req);
+            await client.request(req);
           } else {
             _mixpanel.track(
               'comment:like',
@@ -2777,7 +2776,7 @@ class _RepliesState extends ConsumerState<_Replies> with SingleTickerProviderSta
             final req = GPostScreen_Comments_LikeComment_MutationReq(
               (b) => b..vars.input.commentId = id,
             );
-            await client.req(req);
+            await client.request(req);
           }
         }
 
@@ -2786,7 +2785,7 @@ class _RepliesState extends ConsumerState<_Replies> with SingleTickerProviderSta
             title: '댓글을 삭제하시겠어요?',
             confirmText: '삭제',
             onConfirmed: () async {
-              final client = ref.read(ferryProvider);
+              final client = ref.read(ferryProvider.notifier);
               _mixpanel.track(
                 'comment:delete',
                 properties: {
@@ -2796,13 +2795,13 @@ class _RepliesState extends ConsumerState<_Replies> with SingleTickerProviderSta
               final req = GPostScreen_Comments_DeleteComment_MutationReq(
                 (b) => b..vars.input.commentId = id,
               );
-              await client.req(req);
+              await client.request(req);
 
               if (context.mounted) {
                 context.toast.show('댓글이 삭제되었어요', type: ToastType.error);
               }
 
-              await client.req(
+              await client.request(
                 GPostScreen_Comnments_QueryReq(
                   (b) => b..vars.permalink = widget.permalink,
                 ),
@@ -2829,13 +2828,13 @@ class _RepliesState extends ConsumerState<_Replies> with SingleTickerProviderSta
                   ..vars.input.masqueradeId = comment.masquerade!.id
                   ..vars.input.spaceId = data.post.space!.id,
               );
-              await client.req(req);
+              await client.request(req);
 
               if (context.mounted) {
                 context.toast.show('${comment.profile.name}님이 차단되었습니다.');
               }
 
-              await client.req(
+              await client.request(
                 GPostScreen_Comnments_QueryReq(
                   (b) => b..vars.permalink = widget.permalink,
                 ),
@@ -2896,8 +2895,8 @@ class _RepliesState extends ConsumerState<_Replies> with SingleTickerProviderSta
               ..vars.input.content = value
               ..vars.input.visibility = _visibility,
           );
-          await client.req(req);
-          await client.req(
+          await client.request(req);
+          await client.request(
             GPostScreen_Comnments_QueryReq(
               (b) => b..vars.permalink = widget.permalink,
             ),

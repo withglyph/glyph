@@ -4,7 +4,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:glyph/context/toast.dart';
-import 'package:glyph/ferry/extension.dart';
 import 'package:glyph/graphql/__generated__/login_with_token_screen_authorize_user_email_token_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/schema.schema.gql.dart';
 import 'package:glyph/providers/auth.dart';
@@ -30,14 +29,14 @@ class _LoginWithTokenScreenState extends ConsumerState<LoginWithTokenScreen> {
   void initState() {
     super.initState();
 
-    final client = ref.read(ferryProvider);
+    final client = ref.read(ferryProvider.notifier);
     final req = GLoginWithTokenScreen_AuthorizeUserEmailToken_MutationReq(
       (b) => b..vars.input.token = widget.token,
     );
 
     unawaited(() async {
       try {
-        final resp = await client.req(req);
+        final resp = await client.request(req);
 
         if (resp.authorizeUserEmailToken.kind == GAuthTokenKind.ACCESS_TOKEN) {
           await ref.read(authProvider.notifier).setAccessToken(resp.authorizeUserEmailToken.token);

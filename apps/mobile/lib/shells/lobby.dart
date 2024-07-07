@@ -3,7 +3,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:glyph/components/pressable.dart';
-import 'package:glyph/ferry/extension.dart';
 import 'package:glyph/graphql/__generated__/lobby_shell_create_post_mutation.req.gql.dart';
 import 'package:glyph/icons/glyph.dart';
 import 'package:glyph/icons/tabler_bold.dart';
@@ -93,9 +92,9 @@ class LobbyShell extends ConsumerWidget {
                 ),
               ),
               onTap: () async {
-                final client = ref.read(ferryProvider);
+                final client = ref.read(ferryProvider.notifier);
                 final req = GLobbyShell_CreatePost_MutationReq();
-                final resp = await client.req(req);
+                final resp = await client.request(req);
 
                 if (context.mounted) {
                   await context.router.push(

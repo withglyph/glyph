@@ -58,7 +58,7 @@ class Auth extends _$Auth {
     };
 
     if (accessToken != null) {
-      final ferry = createFerryClient(accessToken);
+      final ferry = await createFerryClient(accessToken);
 
       final req = GAuthProvider_LogoutUser_MutationReq();
       await ferry.request(req).first;
@@ -70,7 +70,7 @@ class Auth extends _$Auth {
   }
 
   Future<AuthState> _validateTokenAndCreateState(String accessToken) async {
-    final ferry = createFerryClient(accessToken);
+    final ferry = await createFerryClient(accessToken);
     final req = GAuthProvider_QueryReq();
     final resp = await ferry.request(req).firstWhere((resp) => resp.data != null);
 

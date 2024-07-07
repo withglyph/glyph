@@ -6,7 +6,6 @@ import 'package:gap/gap.dart';
 import 'package:glyph/components/btn.dart';
 import 'package:glyph/components/pressable.dart';
 import 'package:glyph/context/toast.dart';
-import 'package:glyph/ferry/extension.dart';
 import 'package:glyph/graphql/__generated__/signup_dialog_create_user_mutation.req.gql.dart';
 import 'package:glyph/icons/tabler.dart';
 import 'package:glyph/providers/auth.dart';
@@ -180,7 +179,7 @@ class _SignupDialogState extends ConsumerState<SignupDialog> {
                         return;
                       }
 
-                      final client = ref.read(ferryProvider);
+                      final client = ref.read(ferryProvider.notifier);
                       final req = GSignupDialog_CreateUser_MutationReq(
                         (b) => b
                           ..vars.input.token = widget.token
@@ -188,7 +187,7 @@ class _SignupDialogState extends ConsumerState<SignupDialog> {
                           ..vars.input.isGte14 = _isGte14
                           ..vars.input.marketingConsent = _marketingConsent,
                       );
-                      final resp = await client.req(req);
+                      final resp = await client.request(req);
 
                       await ref.read(authProvider.notifier).setAccessToken(resp.createUser.token);
                     },

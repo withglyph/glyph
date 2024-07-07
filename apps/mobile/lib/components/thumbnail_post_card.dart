@@ -12,7 +12,6 @@ import 'package:glyph/context/bottom_menu.dart';
 import 'package:glyph/context/dialog.dart';
 import 'package:glyph/context/toast.dart';
 import 'package:glyph/extensions/iterable.dart';
-import 'package:glyph/ferry/extension.dart';
 import 'package:glyph/graphql/__generated__/schema.schema.gql.dart';
 import 'package:glyph/graphql/__generated__/thumbnail_post_card_bookmark_post_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/thumbnail_post_card_delete_post_mutation.req.gql.dart';
@@ -118,11 +117,11 @@ class ThumbnailPostCard extends ConsumerWidget {
                                       content: '삭제된 글은 복구할 수 없어요',
                                       confirmText: '삭제',
                                       onConfirmed: () async {
-                                        final client = ref.read(ferryProvider);
+                                        final client = ref.read(ferryProvider.notifier);
                                         final req = GThumbnailPostCard_DeletePost_MutationReq(
                                           (b) => b..vars.input.postId = post.id,
                                         );
-                                        await client.req(req);
+                                        await client.request(req);
 
                                         if (context.mounted) {
                                           context.toast.show('포스트가 삭제되었어요', type: ToastType.error);
@@ -139,12 +138,12 @@ class ThumbnailPostCard extends ConsumerWidget {
                                   title: post.space!.followed ? '스페이스 구독 해제' : '스페이스 구독',
                                   color: BrandColors.gray_600,
                                   onTap: () async {
-                                    final client = ref.read(ferryProvider);
+                                    final client = ref.read(ferryProvider.notifier);
                                     if (post.space!.followed) {
                                       final req = GThumbnailPostCard_UnfollowSpace_MutationReq(
                                         (b) => b..vars.input.spaceId = post.space!.id,
                                       );
-                                      await client.req(req);
+                                      await client.request(req);
 
                                       if (context.mounted) {
                                         context.toast.show('${post.space!.name} 스페이스 구독을 해제했어요', type: ToastType.error);
@@ -153,7 +152,7 @@ class ThumbnailPostCard extends ConsumerWidget {
                                       final req = GThumbnailPostCard_FollowSpace_MutationReq(
                                         (b) => b..vars.input.spaceId = post.space!.id,
                                       );
-                                      await client.req(req);
+                                      await client.request(req);
 
                                       if (context.mounted) {
                                         context.toast.show('${post.space!.name} 스페이스를 구독했어요');
@@ -166,12 +165,12 @@ class ThumbnailPostCard extends ConsumerWidget {
                                   title: post.space!.muted ? '스페이스 뮤트 해제' : '스페이스 뮤트',
                                   color: BrandColors.red_600,
                                   onTap: () async {
-                                    final client = ref.read(ferryProvider);
+                                    final client = ref.read(ferryProvider.notifier);
                                     if (post.space!.muted) {
                                       final req = GThumbnailPostCard_UnmuteSpace_MutationReq(
                                         (b) => b..vars.input.spaceId = post.space!.id,
                                       );
-                                      await client.req(req);
+                                      await client.request(req);
 
                                       if (context.mounted) {
                                         context.toast.show('${post.space!.name} 스페이스 뮤트를 해제했어요');
@@ -180,7 +179,7 @@ class ThumbnailPostCard extends ConsumerWidget {
                                       final req = GThumbnailPostCard_MuteSpace_MutationReq(
                                         (b) => b..vars.input.spaceId = post.space!.id,
                                       );
-                                      await client.req(req);
+                                      await client.request(req);
 
                                       if (context.mounted) {
                                         context.toast.show('${post.space!.name} 스페이스를 뮤트했어요', type: ToastType.error);
@@ -318,19 +317,19 @@ class ThumbnailPostCard extends ConsumerWidget {
                         color: post.bookmarkGroups.isEmpty ? BrandColors.gray_500 : BrandColors.gray_900,
                       ),
                       onPressed: () async {
-                        final client = ref.read(ferryProvider);
+                        final client = ref.read(ferryProvider.notifier);
                         if (post.bookmarkGroups.isEmpty) {
                           final req = GThumbnailPostCard_BookmarkPost_MutationReq(
                             (b) => b..vars.input.postId = post.id,
                           );
-                          await client.req(req);
+                          await client.request(req);
                         } else {
                           final req = GThumbnailPostCard_UnbookmarkPost_MutationReq(
                             (b) => b
                               ..vars.input.postId = post.id
                               ..vars.input.bookmarkGroupId = post.bookmarkGroups.first.id,
                           );
-                          await client.req(req);
+                          await client.request(req);
                         }
                       },
                     ),

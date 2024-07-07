@@ -13,7 +13,6 @@ import 'package:glyph/components/img.dart';
 import 'package:glyph/components/post_card.dart';
 import 'package:glyph/components/pressable.dart';
 import 'package:glyph/context/bottom_menu.dart';
-import 'package:glyph/ferry/extension.dart';
 import 'package:glyph/ferry/widget.dart';
 import 'package:glyph/graphql/__generated__/schema.schema.gql.dart';
 import 'package:glyph/graphql/__generated__/space_collection_screen_follow_space_mutation.req.gql.dart';
@@ -365,12 +364,12 @@ class _SpaceCollectionScreenState extends State<SpaceCollectionScreen> with Sing
                                         final req = GSpaceCollectionScreen_UnfollowSpace_MutationReq(
                                           (b) => b..vars.input.spaceId = data.spaceCollection.space.id,
                                         );
-                                        await client.req(req);
+                                        await client.request(req);
                                       } else {
                                         final req = GSpaceCollectionScreen_FollowSpace_MutationReq(
                                           (b) => b..vars.input.spaceId = data.spaceCollection.space.id,
                                         );
-                                        await client.req(req);
+                                        await client.request(req);
                                       }
                                     },
                                   ),

@@ -21,7 +21,6 @@ import 'package:glyph/context/modal.dart';
 import 'package:glyph/context/toast.dart';
 import 'package:glyph/extensions/build_context.dart';
 import 'package:glyph/extensions/int.dart';
-import 'package:glyph/ferry/extension.dart';
 import 'package:glyph/ferry/widget.dart';
 import 'package:glyph/graphql/__generated__/me_screen_create_space_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/me_screen_finalize_image_upload_mutation.req.gql.dart';
@@ -807,7 +806,7 @@ class _CreateSpaceState extends ConsumerState<_CreateSpace> {
 
                       if (_iconBytes != null) {
                         final req1 = GMeScreen_PrepareImageUpload_MutationReq();
-                        final resp1 = await client.req(req1);
+                        final resp1 = await client.request(req1);
 
                         await http.put(
                           Uri.parse(resp1.prepareImageUpload.presignedUrl),
@@ -825,14 +824,14 @@ class _CreateSpaceState extends ConsumerState<_CreateSpace> {
                               'height': _iconBounds!.height,
                             }),
                         );
-                        final resp2 = await client.req(req2);
+                        final resp2 = await client.request(req2);
 
                         iconId = resp2.finalizeImageUpload.id;
                       }
 
                       if (_avatarBytes != null) {
                         final req1 = GMeScreen_PrepareImageUpload_MutationReq();
-                        final resp1 = await client.req(req1);
+                        final resp1 = await client.request(req1);
 
                         await http.put(
                           Uri.parse(resp1.prepareImageUpload.presignedUrl),
@@ -850,7 +849,7 @@ class _CreateSpaceState extends ConsumerState<_CreateSpace> {
                               'height': _avatarBounds!.height,
                             }),
                         );
-                        final resp2 = await client.req(req2);
+                        final resp2 = await client.request(req2);
 
                         avatarId = resp2.finalizeImageUpload.id;
                       }
@@ -865,8 +864,8 @@ class _CreateSpaceState extends ConsumerState<_CreateSpace> {
                           ..vars.input.slug = values['slug'],
                       );
 
-                      final resp = await client.req(req);
-                      client.requestController.add(GMeScreen_QueryReq());
+                      final resp = await client.request(req);
+                      await client.refetch(GMeScreen_QueryReq());
 
                       if (context.mounted) {
                         context.toast.show('스페이스가 생성되었어요');

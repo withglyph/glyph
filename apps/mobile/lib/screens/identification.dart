@@ -6,7 +6,6 @@ import 'package:gap/gap.dart';
 import 'package:glyph/components/btn.dart';
 import 'package:glyph/context/alert.dart';
 import 'package:glyph/ferry/error.dart';
-import 'package:glyph/ferry/extension.dart';
 import 'package:glyph/ferry/widget.dart';
 import 'package:glyph/graphql/__generated__/identification_screen_query.req.gql.dart';
 import 'package:glyph/graphql/__generated__/identification_screen_verify_personal_identity_mutation.req.gql.dart';
@@ -104,7 +103,7 @@ class IdentificationScreen extends StatelessWidget {
                         final req = GIdentificationScreen_VerifyPersonalIdentity_MutationReq(
                           (b) => b..vars.input.uid = result['imp_uid'],
                         );
-                        await client.req(req);
+                        await client.request(req);
                       } on IntentionalError catch (e) {
                         if (context.mounted) {
                           await context.showAlert(title: '본인인증 오류', content: e.message);
@@ -113,7 +112,7 @@ class IdentificationScreen extends StatelessWidget {
                         return;
                       }
 
-                      client.requestController.add(GIdentificationScreen_QueryReq());
+                      await client.refetch(GIdentificationScreen_QueryReq());
                     },
                   ),
                 ],

@@ -11,7 +11,6 @@ import 'package:glyph/components/pull_to_refresh.dart';
 import 'package:glyph/context/toast.dart';
 import 'package:glyph/emojis/data.dart';
 import 'package:glyph/emojis/emoji.dart';
-import 'package:glyph/ferry/extension.dart';
 import 'package:glyph/ferry/widget.dart';
 import 'package:glyph/graphql/__generated__/feed_screen_query.req.gql.dart';
 import 'package:glyph/graphql/__generated__/notification_screen_mark_all_notification_as_read_mutation.req.gql.dart';
@@ -112,8 +111,8 @@ class NotificationsScreen extends ConsumerWidget {
                         }
 
                         final req = GNotificationScreen_MarkAllNotificationsAsRead_MutationReq();
-                        await client.req(req);
-                        client.requestController.add(GFeedScreen_QueryReq());
+                        await client.request(req);
+                        await client.refetch(GFeedScreen_QueryReq());
 
                         if (context.mounted) {
                           context.toast.show('모든 알림을 읽었어요');
@@ -264,8 +263,8 @@ class NotificationsScreen extends ConsumerWidget {
                         final req = GNotificationScreen_MarkNotificationAsRead_MutationReq(
                           (b) => b..vars.input.notificationId = notification.id,
                         );
-                        await client.req(req);
-                        client.requestController.add(GFeedScreen_QueryReq());
+                        await client.request(req);
+                        await client.refetch(GFeedScreen_QueryReq());
 
                         final dynamic route = notification.when(
                           commentNotification: (notification) => PostRoute(permalink: notification.post.permalink),
@@ -289,7 +288,7 @@ class NotificationsScreen extends ConsumerWidget {
                     );
                   },
                   onRefresh: () async {
-                    await client.req(GNotificationScreen_QueryReq());
+                    await client.request(GNotificationScreen_QueryReq());
                   },
                   emptyText: const EmptyState(
                     icon: TablerBold.bell_x,

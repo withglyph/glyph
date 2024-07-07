@@ -11,7 +11,6 @@ import 'package:glyph/components/horizontal_divider.dart';
 import 'package:glyph/components/pressable.dart';
 import 'package:glyph/context/bottom_menu.dart';
 import 'package:glyph/context/toast.dart';
-import 'package:glyph/ferry/extension.dart';
 import 'package:glyph/ferry/widget.dart';
 import 'package:glyph/graphql/__generated__/me_screen_query.req.gql.dart';
 import 'package:glyph/graphql/__generated__/space_screen_create_post_mutation.req.gql.dart';
@@ -104,7 +103,7 @@ class _SpaceScreenState extends State<SpaceScreen> with SingleTickerProviderStat
                                     final req = GSpaceScreen_UnmuteSpace_MutationReq(
                                       (b) => b..vars.input.spaceId = data.space.id,
                                     );
-                                    await client.req(req);
+                                    await client.request(req);
 
                                     if (context.mounted) {
                                       context.toast.show('${data.space.name} 스페이스 뮤트를 해제했어요');
@@ -113,7 +112,7 @@ class _SpaceScreenState extends State<SpaceScreen> with SingleTickerProviderStat
                                     final req = GSpaceScreen_MuteSpace_MutationReq(
                                       (b) => b..vars.input.spaceId = data.space.id,
                                     );
-                                    await client.req(req);
+                                    await client.request(req);
 
                                     if (context.mounted) {
                                       context.toast.show('${data.space.name} 스페이스를 뮤트했어요', type: ToastType.error);
@@ -131,13 +130,12 @@ class _SpaceScreenState extends State<SpaceScreen> with SingleTickerProviderStat
                                     SpaceDashboardRoute(slug: data.space.slug),
                                   );
 
-                                  client.requestController
-                                    ..add(
-                                      GSpaceScreen_QueryReq(
-                                        (b) => b..vars.slug = widget.slug,
-                                      ),
-                                    )
-                                    ..add(GMeScreen_QueryReq());
+                                  await client.refetch(
+                                    GSpaceScreen_QueryReq(
+                                      (b) => b..vars.slug = widget.slug,
+                                    ),
+                                  );
+                                  await client.refetch(GMeScreen_QueryReq());
 
                                   if (res == 'space:delete' && context.mounted) {
                                     await context.router.maybePop();
@@ -305,16 +303,16 @@ class _SpaceScreenState extends State<SpaceScreen> with SingleTickerProviderStat
                                                   final req = GSpaceScreen_UnfollowSpace_MutationReq(
                                                     (b) => b..vars.input.spaceId = data.space.id,
                                                   );
-                                                  await client.req(req);
+                                                  await client.request(req);
                                                 } else {
                                                   final req = GSpaceScreen_FollowSpace_MutationReq(
                                                     (b) => b..vars.input.spaceId = data.space.id,
                                                   );
-                                                  await client.req(req);
+                                                  await client.request(req);
                                                 }
                                               } else {
                                                 final req = GSpaceScreen_CreatePost_MutationReq();
-                                                final resp = await client.req(req);
+                                                final resp = await client.request(req);
 
                                                 if (context.mounted) {
                                                   await context.router.push(

@@ -11,7 +11,6 @@ import 'package:glyph/components/tag.dart';
 import 'package:glyph/context/bottom_menu.dart';
 import 'package:glyph/context/toast.dart';
 import 'package:glyph/extensions/iterable.dart';
-import 'package:glyph/ferry/extension.dart';
 import 'package:glyph/graphql/__generated__/post_card_follow_space_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_card_mute_space_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_card_unfollow_space_mutation.req.gql.dart';
@@ -184,12 +183,12 @@ class PostCard extends ConsumerWidget {
                               title: post.space!.followed ? '스페이스 구독 해제' : '스페이스 구독',
                               color: BrandColors.gray_600,
                               onTap: () async {
-                                final client = ref.read(ferryProvider);
+                                final client = ref.read(ferryProvider.notifier);
                                 if (post.space!.followed) {
                                   final req = GPostCard_UnfollowSpace_MutationReq(
                                     (b) => b..vars.input.spaceId = post.space!.id,
                                   );
-                                  await client.req(req);
+                                  await client.request(req);
 
                                   if (context.mounted) {
                                     context.toast.show('${post.space!.name} 스페이스 구독을 해제했어요', type: ToastType.error);
@@ -198,7 +197,7 @@ class PostCard extends ConsumerWidget {
                                   final req = GPostCard_FollowSpace_MutationReq(
                                     (b) => b..vars.input.spaceId = post.space!.id,
                                   );
-                                  await client.req(req);
+                                  await client.request(req);
 
                                   if (context.mounted) {
                                     context.toast.show('${post.space!.name} 스페이스를 구독했어요');
@@ -211,12 +210,12 @@ class PostCard extends ConsumerWidget {
                               title: post.space!.muted ? '스페이스 뮤트 해제' : '스페이스 뮤트',
                               color: BrandColors.red_600,
                               onTap: () async {
-                                final client = ref.read(ferryProvider);
+                                final client = ref.read(ferryProvider.notifier);
                                 if (post.space!.muted) {
                                   final req = GPostCard_UnmuteSpace_MutationReq(
                                     (b) => b..vars.input.spaceId = post.space!.id,
                                   );
-                                  await client.req(req);
+                                  await client.request(req);
 
                                   if (context.mounted) {
                                     context.toast.show('${post.space!.name} 스페이스 뮤트를 해지했어요');
@@ -225,7 +224,7 @@ class PostCard extends ConsumerWidget {
                                   final req = GPostCard_MuteSpace_MutationReq(
                                     (b) => b..vars.input.spaceId = post.space!.id,
                                   );
-                                  await client.req(req);
+                                  await client.request(req);
 
                                   if (context.mounted) {
                                     context.toast.show('${post.space!.name} 스페이스를 뮤트했어요', type: ToastType.error);

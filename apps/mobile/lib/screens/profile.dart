@@ -12,7 +12,6 @@ import 'package:glyph/components/btn.dart';
 import 'package:glyph/components/forms/form_text_field.dart';
 import 'package:glyph/components/pressable.dart';
 import 'package:glyph/context/toast.dart';
-import 'package:glyph/ferry/extension.dart';
 import 'package:glyph/ferry/widget.dart';
 import 'package:glyph/graphql/__generated__/profile_screen_finalize_image_upload_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/profile_screen_prepare_image_upload_mutation.req.gql.dart';
@@ -165,7 +164,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                       if (_avatarBytes != null) {
                         final req1 = GProfileScreen_PrepareImageUpload_MutationReq();
-                        final resp1 = await client.req(req1);
+                        final resp1 = await client.request(req1);
 
                         await http.put(Uri.parse(resp1.prepareImageUpload.presignedUrl), body: _avatarBytes);
 
@@ -180,7 +179,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               'height': _avatarBounds!.height,
                             }),
                         );
-                        final resp2 = await client.req(req2);
+                        final resp2 = await client.request(req2);
 
                         avatarId = resp2.finalizeImageUpload.id;
                       }
@@ -191,7 +190,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ..vars.input.name = values['name'],
                       );
 
-                      await client.req(req);
+                      await client.request(req);
                       if (context.mounted) {
                         context.toast.show('프로필이 변경되었어요');
                         await context.router.maybePop();

@@ -7,7 +7,6 @@ import 'package:glyph/components/empty_state.dart';
 import 'package:glyph/components/horizontal_divider.dart';
 import 'package:glyph/components/pressable.dart';
 import 'package:glyph/context/dialog.dart';
-import 'package:glyph/ferry/extension.dart';
 import 'package:glyph/ferry/widget.dart';
 import 'package:glyph/graphql/__generated__/drafts_screen_delete_post_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/drafts_screen_query.req.gql.dart';
@@ -234,14 +233,14 @@ class _DraftsScreenState extends State<DraftsScreen> {
                                     final req = GDraftsScreen_DeletePost_MutationReq(
                                       (b) => b..vars.input.postId = postId,
                                     );
-                                    await client.req(req);
+                                    await client.request(req);
                                   },
                                 ),
                               );
 
                               selectedPosts.clear();
 
-                              await client.req(GDraftsScreen_QueryReq());
+                              await client.request(GDraftsScreen_QueryReq());
 
                               setState(() {});
                             },

@@ -8,7 +8,6 @@ import 'package:glyph/components/pressable.dart';
 import 'package:glyph/components/toggle_switch.dart';
 import 'package:glyph/context/alert.dart';
 import 'package:glyph/context/loader.dart';
-import 'package:glyph/ferry/extension.dart';
 import 'package:glyph/ferry/widget.dart';
 import 'package:glyph/graphql/__generated__/settings_screen_query.req.gql.dart';
 import 'package:glyph/graphql/__generated__/settings_screen_update_user_marketing_consent_mutation.req.gql.dart';
@@ -104,7 +103,7 @@ class SettingsScreen extends ConsumerWidget {
                                 final req = GSettingsScreen_UpdateUserMarketingConsent_MutationReq(
                                   (b) => b..vars.input.consent = value,
                                 );
-                                final resp = await client.req(req);
+                                final resp = await client.request(req);
 
                                 if (context.mounted && value) {
                                   await context.showAlert(

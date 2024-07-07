@@ -8,7 +8,6 @@ import 'package:glyph/components/empty_state.dart';
 import 'package:glyph/components/horizontal_divider.dart';
 import 'package:glyph/components/img.dart';
 import 'package:glyph/components/pressable.dart';
-import 'package:glyph/ferry/extension.dart';
 import 'package:glyph/ferry/widget.dart';
 import 'package:glyph/graphql/__generated__/archive_comments_screen_query.req.gql.dart';
 import 'package:glyph/icons/tabler_bold.dart';
@@ -55,7 +54,7 @@ class _ArchiveCommentState extends State<ArchiveCommentsScreen> {
                 );
 
                 unawaited(
-                  client.req(newReq).then((value) {
+                  client.request(newReq).then((value) {
                     _fetching = false;
                     if (comments.length == value.me!.comments.length) {
                       _eol = true;

@@ -12,7 +12,6 @@ import 'package:glyph/components/img.dart';
 import 'package:glyph/components/pressable.dart';
 import 'package:glyph/const.dart';
 import 'package:glyph/extensions/color.dart';
-import 'package:glyph/ferry/extension.dart';
 import 'package:glyph/ferry/widget.dart';
 import 'package:glyph/graphql/__generated__/feed_recommend_screen_query.req.gql.dart';
 import 'package:glyph/graphql/__generated__/onboarding_curation_screen_complete_onboarding_mutation.req.gql.dart';
@@ -93,7 +92,7 @@ class _OnboardingCurationScreenState extends ConsumerState<OnboardingCurationScr
                   );
 
                   unawaited(
-                    client.req(newReq).then((value) {
+                    client.request(newReq).then((value) {
                       _fetching = false;
                       if (data.recommendedTags.length == value.recommendedTags.length) {
                         _eol = true;
@@ -199,12 +198,12 @@ class _OnboardingCurationScreenState extends ConsumerState<OnboardingCurationScr
                                 final req = GOnboardingCurationScreen_UnfollowTag_MutationReq(
                                   (b) => b..vars.input.tagId = tag.id,
                                 );
-                                await client.req(req);
+                                await client.request(req);
                               } else {
                                 final req = GOnboardingCurationScreen_FollowTag_MutationReq(
                                   (b) => b..vars.input.tagId = tag.id,
                                 );
-                                await client.req(req);
+                                await client.request(req);
                               }
                             },
                           );
@@ -280,9 +279,9 @@ class _OnboardingCurationScreenState extends ConsumerState<OnboardingCurationScr
   }
 
   Future<void> _completeOnboarding() async {
-    final client = ref.read(ferryProvider);
+    final client = ref.read(ferryProvider.notifier);
     final req = GOnboardingCurationScreen_CompleteOnboarding_MutationReq();
-    await client.req(req);
+    await client.request(req);
 
     final req2 = GFeedRecommendScreen_QueryReq(
       (b) => b
@@ -291,7 +290,7 @@ class _OnboardingCurationScreenState extends ConsumerState<OnboardingCurationScr
         ..vars.take = kPaginationSize
         ..vars.seed = Random().nextInt(1000),
     );
-    await client.req(req2);
+    await client.request(req2);
 
     if (mounted) {
       await context.router.maybePop();

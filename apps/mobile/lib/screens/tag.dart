@@ -15,7 +15,6 @@ import 'package:glyph/components/post_card.dart';
 import 'package:glyph/components/pressable.dart';
 import 'package:glyph/const.dart';
 import 'package:glyph/context/bottom_menu.dart';
-import 'package:glyph/ferry/extension.dart';
 import 'package:glyph/ferry/widget.dart';
 import 'package:glyph/graphql/__generated__/tag_screen_follow_tag_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/tag_screen_mute_tag_mutation.req.gql.dart';
@@ -140,12 +139,12 @@ class _TagScreenState extends State<TagScreen> with SingleTickerProviderStateMix
                                   final req = GTagScreen_UnmuteTag_MutationReq(
                                     (b) => b..vars.input.tagId = data.tag.id,
                                   );
-                                  await client.req(req);
+                                  await client.request(req);
                                 } else {
                                   final req = GTagScreen_MuteTag_MutationReq(
                                     (b) => b..vars.input.tagId = data.tag.id,
                                   );
-                                  await client.req(req);
+                                  await client.request(req);
 
                                   if (context.mounted) {
                                     await context.router.maybePop();
@@ -174,7 +173,7 @@ class _TagScreenState extends State<TagScreen> with SingleTickerProviderStateMix
                     );
 
                     unawaited(
-                      client.req(newReq).then((value) {
+                      client.request(newReq).then((value) {
                         _fetching = false;
                         if (data.tag.posts.length == value.tag.posts.length) {
                           _eol = true;
@@ -308,12 +307,12 @@ class _TagScreenState extends State<TagScreen> with SingleTickerProviderStateMix
                                       final req = GTagScreen_UnfollowTag_MutationReq(
                                         (b) => b..vars.input.tagId = data.tag.id,
                                       );
-                                      await client.req(req);
+                                      await client.request(req);
                                     } else {
                                       final req = GTagScreen_FollowTag_MutationReq(
                                         (b) => b..vars.input.tagId = data.tag.id,
                                       );
-                                      await client.req(req);
+                                      await client.request(req);
                                     }
                                   },
                                 ),

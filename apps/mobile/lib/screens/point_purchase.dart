@@ -15,7 +15,6 @@ import 'package:glyph/context/bottom_sheet.dart';
 import 'package:glyph/context/loader.dart';
 import 'package:glyph/extensions/int.dart';
 import 'package:glyph/extensions/iterable.dart';
-import 'package:glyph/ferry/extension.dart';
 import 'package:glyph/ferry/widget.dart';
 import 'package:glyph/graphql/__generated__/point_purchase_screen_in_app_purchase_point_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/point_purchase_screen_purchase_point_mutation.req.gql.dart';
@@ -55,15 +54,15 @@ class _PointPurchaseScreenState extends ConsumerState<PointPurchaseScreen> {
           }
 
           if (purchaseDetails.status == PurchaseStatus.purchased) {
-            final client = ref.read(ferryProvider);
+            final client = ref.read(ferryProvider.notifier);
             final req = GPurchasePointScreen_InAppPurchasePoint_MutationReq(
               (b) => b
                 ..vars.input.store = Platform.isIOS ? GStoreKind.APP_STORE : GStoreKind.PLAY_STORE
                 ..vars.input.productId = purchaseDetails.productID
                 ..vars.input.data = purchaseDetails.verificationData.serverVerificationData,
             );
-            final resp = await client.req(req);
-            client.requestController.add(GPointPurchaseScreen_QueryReq());
+            final resp = await client.request(req);
+            await client.refetch(GPointPurchaseScreen_QueryReq());
 
             if (mounted) {
               context.loader.dismiss();
@@ -238,7 +237,7 @@ class _PointPurchaseScreenState extends ConsumerState<PointPurchaseScreen> {
                   onPressed: () async {
                     context.loader.show();
 
-                    final client = ref.read(ferryProvider);
+                    final client = ref.read(ferryProvider.notifier);
                     final req = GPurchasePointScreen_PurchasePoint_MutationReq(
                       (b) => b
                         ..vars.input.paymentMethod =
@@ -246,7 +245,7 @@ class _PointPurchaseScreenState extends ConsumerState<PointPurchaseScreen> {
                         ..vars.input.pointAmount = product.pointAmount
                         ..vars.input.pointAgreement = true,
                     );
-                    final resp = await client.req(req);
+                    final resp = await client.request(req);
 
                     if (kReleaseMode) {
                       await _iap.buyConsumable(
@@ -256,7 +255,7 @@ class _PointPurchaseScreenState extends ConsumerState<PointPurchaseScreen> {
                         ),
                       );
                     } else {
-                      client.requestController.add(GPointPurchaseScreen_QueryReq());
+                      await client.refetch(GPointPurchaseScreen_QueryReq());
 
                       if (context.mounted) {
                         context.loader.dismiss();

@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:ferry_flutter/ferry_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_naver_login/flutter_naver_login.dart';
@@ -17,7 +16,7 @@ import 'package:glyph/components/svg_image.dart';
 import 'package:glyph/context/bottom_sheet.dart';
 import 'package:glyph/context/loader.dart';
 import 'package:glyph/extensions/build_context.dart';
-import 'package:glyph/ferry/extension.dart';
+import 'package:glyph/ferry/widget.dart';
 import 'package:glyph/graphql/__generated__/login_screen_authorize_single_sign_on_token_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/login_screen_query.req.gql.dart';
 import 'package:glyph/graphql/__generated__/schema.schema.gql.dart';
@@ -66,94 +65,90 @@ class _LoginScreenState extends ConsumerState<LoginScreen> with SingleTickerProv
 
   @override
   Widget build(BuildContext context) {
-    final client = ref.watch(ferryProvider);
-
-    return Operation(
-      client: client,
-      operationRequest: GLoginScreen_QueryReq(),
-      builder: (context, response, error) {
-        return Scaffold(
-          backgroundColor: BrandColors.gray_900,
-          resizeToAvoidBottomInset: false,
-          extendBodyBehindAppBar: true,
-          appBar: Heading.empty(systemUiOverlayStyle: SystemUiOverlayStyle.light),
-          body: Stack(
-            children: [
-              if (response?.data != null)
-                Positioned.fill(
-                  child: AnimatedBuilder(
-                    animation: _animationController,
-                    builder: (context, child) {
-                      return UnconstrainedBox(
-                        constrainedAxis: Axis.vertical,
-                        clipBehavior: Clip.hardEdge,
-                        alignment: _alignmentAnimation.value,
-                        child: child,
+    return Scaffold(
+      backgroundColor: BrandColors.gray_900,
+      resizeToAvoidBottomInset: false,
+      extendBodyBehindAppBar: true,
+      appBar: Heading.empty(systemUiOverlayStyle: SystemUiOverlayStyle.light),
+      body: Stack(
+        children: [
+          GraphQLOperation(
+            operation: GLoginScreen_QueryReq(),
+            builder: (context, client, data) {
+              return Positioned.fill(
+                child: AnimatedBuilder(
+                  animation: _animationController,
+                  builder: (context, child) {
+                    return UnconstrainedBox(
+                      constrainedAxis: Axis.vertical,
+                      clipBehavior: Clip.hardEdge,
+                      alignment: _alignmentAnimation.value,
+                      child: child,
+                    );
+                  },
+                  child: Row(
+                    children: data.featuredImages
+                        .map(
+                          (image) => FadeInImage(
+                            placeholder: MemoryImage(kTransparentImage),
+                            image: CachedNetworkImageProvider(image.url),
+                            height: double.infinity,
+                            fit: BoxFit.cover,
+                            fadeInDuration: const Duration(milliseconds: 1000),
+                          ),
+                        )
+                        .toList(),
+                  ),
+                ),
+              );
+            },
+          ),
+          const Positioned.fill(
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment(-1 / 3, -1),
+                  end: Alignment(1 / 3, 1),
+                  colors: [
+                    Color(0xB3171717),
+                    Color(0x26D1D1D1),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          SafeArea(
+            maintainBottomViewPadding: true,
+            child: Padding(
+              padding: const Pad(horizontal: 32, top: 60, bottom: 40),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    '이야기가 모여\n즐거움이\n되다',
+                    style: TextStyle(
+                      height: 1.34,
+                      fontSize: 32,
+                      fontWeight: FontWeight.w800,
+                      color: BrandColors.gray_0,
+                    ),
+                  ),
+                  const Spacer(),
+                  Btn(
+                    '시작하기',
+                    size: BtnSize.large,
+                    onPressed: () async {
+                      await context.showBottomSheet(
+                        builder: (context) => _BottomSheet(),
                       );
                     },
-                    child: Row(
-                      children: response!.data!.featuredImages
-                          .map(
-                            (image) => FadeInImage(
-                              placeholder: MemoryImage(kTransparentImage),
-                              image: CachedNetworkImageProvider(image.url),
-                              height: double.infinity,
-                              fit: BoxFit.cover,
-                              fadeInDuration: const Duration(milliseconds: 1000),
-                            ),
-                          )
-                          .toList(),
-                    ),
                   ),
-                ),
-              const Positioned.fill(
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment(-1 / 3, -1),
-                      end: Alignment(1 / 3, 1),
-                      colors: [
-                        Color(0xB3171717),
-                        Color(0x26D1D1D1),
-                      ],
-                    ),
-                  ),
-                ),
+                ],
               ),
-              SafeArea(
-                maintainBottomViewPadding: true,
-                child: Padding(
-                  padding: const Pad(horizontal: 32, top: 60, bottom: 40),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        '이야기가 모여\n즐거움이\n되다',
-                        style: TextStyle(
-                          height: 1.34,
-                          fontSize: 32,
-                          fontWeight: FontWeight.w800,
-                          color: BrandColors.gray_0,
-                        ),
-                      ),
-                      const Spacer(),
-                      Btn(
-                        '시작하기',
-                        size: BtnSize.large,
-                        onPressed: () async {
-                          await context.showBottomSheet(
-                            builder: (context) => _BottomSheet(),
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
+            ),
           ),
-        );
-      },
+        ],
+      ),
     );
   }
 }
@@ -173,7 +168,7 @@ class _BottomSheet extends ConsumerWidget {
       }
 
       await context.loader.run(() async {
-        final client = ref.read(ferryProvider);
+        final client = ref.read(ferryProvider.notifier);
 
         final req = GLoginScreen_AuthorizeSingleSignOnToken_MutationReq(
           (b) => b
@@ -181,7 +176,7 @@ class _BottomSheet extends ConsumerWidget {
             ..vars.input.token = token,
         );
 
-        final resp = await client.req(req);
+        final resp = await client.request(req);
 
         if (resp.authorizeSingleSignOnToken.kind == GAuthTokenKind.ACCESS_TOKEN) {
           await ref.read(authProvider.notifier).setAccessToken(resp.authorizeSingleSignOnToken.token);

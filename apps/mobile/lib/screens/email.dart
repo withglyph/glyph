@@ -10,7 +10,6 @@ import 'package:gap/gap.dart';
 import 'package:glyph/components/btn.dart';
 import 'package:glyph/components/forms/form_text_field.dart';
 import 'package:glyph/context/toast.dart';
-import 'package:glyph/ferry/extension.dart';
 import 'package:glyph/ferry/widget.dart';
 import 'package:glyph/graphql/__generated__/email_screen_query.req.gql.dart';
 import 'package:glyph/graphql/__generated__/email_screen_update_user_email_mutation.req.gql.dart';
@@ -102,12 +101,12 @@ class _EmailScreenState extends ConsumerState<EmailScreen> {
     }
 
     final values = _formKey.currentState!.value;
-    final client = ref.read(ferryProvider);
+    final client = ref.read(ferryProvider.notifier);
 
     final req = GEmailScreen_UpdateUserEmail_MutationReq(
       (b) => b..vars.input.email = values['email'],
     );
-    await client.req(req);
+    await client.request(req);
 
     if (mounted) {
       unawaited(context.router.maybePop());

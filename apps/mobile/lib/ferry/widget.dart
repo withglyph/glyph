@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:animate_do/animate_do.dart';
 import 'package:ferry/ferry.dart';
 import 'package:ferry_flutter/ferry_flutter.dart';
 import 'package:flutter/material.dart';
@@ -17,8 +16,8 @@ class GraphQLOperation<TData, TVars> extends ConsumerStatefulWidget {
   });
 
   final OperationRequest<TData, TVars> operation;
-  final Widget Function(BuildContext context, Client client, TData data) builder;
-  final FutureOr<void> Function(BuildContext context, Client client, TData data)? onDataLoaded;
+  final Widget Function(BuildContext context, Ferry client, TData data) builder;
+  final FutureOr<void> Function(BuildContext context, Ferry client, TData data)? onDataLoaded;
 
   @override
   createState() => _GraphQLOperationState<TData, TVars>();
@@ -29,7 +28,13 @@ class _GraphQLOperationState<TData, TVars> extends ConsumerState<GraphQLOperatio
 
   @override
   Widget build(BuildContext context) {
-    final client = ref.watch(ferryProvider);
+    final asyncClient = ref.watch(ferryProvider);
+    final client = asyncClient.unwrapPrevious().valueOrNull;
+    final notifier = ref.watch(ferryProvider.notifier);
+
+    if (client == null) {
+      return const SizedBox.shrink();
+    }
 
     return Operation(
       client: client,
@@ -62,15 +67,18 @@ class _GraphQLOperationState<TData, TVars> extends ConsumerState<GraphQLOperatio
         if (!_loaded) {
           _loaded = true;
           WidgetsBinding.instance.addPostFrameCallback((_) async {
-            await widget.onDataLoaded?.call(context, client, data);
+            await widget.onDataLoaded?.call(context, notifier, data);
           });
         }
 
-        return FadeIn(
-          duration: const Duration(milliseconds: 200),
-          curve: Curves.easeInOut,
-          child: widget.builder(context, client, data),
-        );
+        // return AnimatedOpacity(
+        //   opacity: 1,
+        //   duration: const Duration(milliseconds: 200),
+        //   curve: Curves.easeInOut,
+        //   child: widget.builder(context, client, data),
+        // );
+
+        return widget.builder(context, notifier, data);
       },
     );
   }

@@ -9,7 +9,6 @@ import 'package:glyph/components/btn.dart';
 import 'package:glyph/components/forms/form_text_field.dart';
 import 'package:glyph/context/alert.dart';
 import 'package:glyph/ferry/error.dart';
-import 'package:glyph/ferry/extension.dart';
 import 'package:glyph/graphql/__generated__/login_with_email_screen_login_user_mutation.req.gql.dart';
 import 'package:glyph/providers/ferry.dart';
 import 'package:glyph/routers/app.gr.dart';
@@ -92,10 +91,10 @@ class _LoginWithEmailScreenState extends ConsumerState<LoginWithEmailScreen> {
     }
 
     final values = _formKey.currentState!.value;
-    final client = ref.read(ferryProvider);
+    final client = ref.read(ferryProvider.notifier);
 
     try {
-      await client.req(
+      await client.request(
         GLoginWithEmailScreen_LoginUser_MutationReq(
           (b) => b..vars.input.email = values['email'],
         ),
