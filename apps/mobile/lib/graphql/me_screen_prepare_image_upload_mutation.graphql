@@ -1,0 +1,6 @@
+mutation MeScreen_PrepareImageUpload_Mutation {
+  prepareImageUpload {
+    key
+    presignedUrl
+  }
+}

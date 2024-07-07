@@ -1,0 +1,6 @@
+mutation MeScreen_CreateSpace_Mutation($input: CreateSpaceInput!) {
+  createSpace(input: $input) {
+    id
+    slug
+  }
+}
