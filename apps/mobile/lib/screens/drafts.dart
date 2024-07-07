@@ -112,10 +112,10 @@ class _DraftsScreenState extends State<DraftsScreen> {
                                   ),
                                   const Gap(10),
                                   Expanded(
-                                    child: Row(
-                                      children: [
-                                        Expanded(
-                                          child: Pressable(
+                                    child: Pressable(
+                                      child: Row(
+                                        children: [
+                                          Expanded(
                                             child: Column(
                                               crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
@@ -185,16 +185,16 @@ class _DraftsScreenState extends State<DraftsScreen> {
                                                 ),
                                               ],
                                             ),
-                                            onPressed: () async {
-                                              await context.router.push(
-                                                EditorRoute(permalink: post.permalink),
-                                              );
-                                            },
                                           ),
-                                        ),
-                                        const Gap(16),
-                                        const Icon(Tabler.chevron_right, size: 20, color: BrandColors.gray_500),
-                                      ],
+                                          const Gap(16),
+                                          const Icon(Tabler.chevron_right, size: 20, color: BrandColors.gray_500),
+                                        ],
+                                      ),
+                                      onPressed: () async {
+                                        await context.router.push(
+                                          EditorRoute(permalink: post.permalink),
+                                        );
+                                      },
                                     ),
                                   ),
                                 ],
