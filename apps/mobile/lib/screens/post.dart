@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
@@ -23,7 +25,6 @@ import 'package:glyph/components/post_card.dart';
 import 'package:glyph/components/post_warning.dart';
 import 'package:glyph/components/pressable.dart';
 import 'package:glyph/components/rectangle_chip.dart';
-import 'package:glyph/components/webview.dart';
 import 'package:glyph/context/bottom_menu.dart';
 import 'package:glyph/context/bottom_sheet.dart';
 import 'package:glyph/context/dialog.dart';
@@ -33,6 +34,7 @@ import 'package:glyph/context/toast.dart';
 import 'package:glyph/emojis/data.dart';
 import 'package:glyph/emojis/emoji.dart';
 import 'package:glyph/emojis/subset.dart';
+import 'package:glyph/env.dart';
 import 'package:glyph/extensions/build_context.dart';
 import 'package:glyph/extensions/int.dart';
 import 'package:glyph/extensions/iterable.dart';
@@ -65,6 +67,8 @@ import 'package:glyph/graphql/__generated__/schema.schema.gql.dart';
 import 'package:glyph/graphql/fragments/__generated__/comment_postcomment.data.gql.dart';
 import 'package:glyph/icons/tabler.dart';
 import 'package:glyph/icons/tabler_bold.dart';
+import 'package:glyph/misc/device_id_holder.dart';
+import 'package:glyph/providers/auth.dart';
 import 'package:glyph/providers/ferry.dart';
 import 'package:glyph/routers/app.gr.dart';
 import 'package:glyph/themes/colors.dart';
@@ -72,6 +76,7 @@ import 'package:jiffy/jiffy.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:sliver_tools/sliver_tools.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 @RoutePage()
 class PostScreen extends ConsumerStatefulWidget {
@@ -85,15 +90,12 @@ class PostScreen extends ConsumerStatefulWidget {
 
 class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProviderStateMixin {
   final _mixpanel = GetIt.I<Mixpanel>();
-  final _browser = ChromeSafariBrowser();
 
   final _staticFooterKey = GlobalKey();
   final _thumbnailKey = GlobalKey();
 
   bool _showBars = true;
   bool _showFloatingFooter = false;
-  bool _webViewLoaded = false;
-  double _webViewHeight = 1;
 
   bool _isOverThumbnail = true;
   double _thumbnailScale = 1;
@@ -744,234 +746,186 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                           _ => throw UnimplementedError(),
                         }
                       else
-                        SizedBox(
-                          height: _webViewHeight,
-                          child: WebView(
-                            path: '/_webview/post-view/${widget.permalink}',
-                            readOnly: true,
-                            onJsMessage: (message, reply, controller) async {
-                              if (message['type'] == 'resize') {
-                                final height = (message['height'] as num).toDouble();
-                                if (height != _webViewHeight) {
-                                  setState(() {
-                                    _webViewHeight = height;
-                                  });
-                                }
-                                if (!_webViewLoaded) {
-                                  setState(() {
-                                    _webViewLoaded = true;
-                                  });
-                                }
-                              } else if (message['type'] == 'image:view') {
-                                await showDialog(
-                                  context: context,
-                                  useSafeArea: false,
-                                  builder: (context) {
-                                    return _ImageViewer(id: message['id']);
-                                  },
-                                );
-                              } else if (message['type'] == 'purchase') {
-                                await context.showBottomSheet(
-                                  title: '포스트 구매',
-                                  builder: (context) {
-                                    final purchasable = data.me!.point >= data.post.publishedRevision!.price!;
+                        _Content(
+                          permalink: widget.permalink,
+                          onJsMessage: (message, reply, controller) async {
+                            if (message['type'] == 'image:view') {
+                              await showDialog(
+                                context: context,
+                                useSafeArea: false,
+                                builder: (context) {
+                                  return _ImageViewer(id: message['id']);
+                                },
+                              );
+                            } else if (message['type'] == 'purchase') {
+                              await context.showBottomSheet(
+                                title: '포스트 구매',
+                                builder: (context) {
+                                  final purchasable = data.me!.point >= data.post.publishedRevision!.price!;
 
-                                    return Padding(
-                                      padding: const Pad(horizontal: 20),
-                                      child: Column(
-                                        children: [
-                                          Padding(
-                                            padding: const Pad(vertical: 20),
-                                            child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                                              children: [
-                                                Row(
-                                                  children: [
-                                                    const Icon(Tabler.notes, size: 16),
-                                                    const Gap(3),
-                                                    Expanded(
-                                                      child: Text(
-                                                        data.post.publishedRevision!.title ?? '(제목 없음)',
-                                                        overflow: TextOverflow.ellipsis,
-                                                        style: const TextStyle(
-                                                          color: BrandColors.gray_500,
-                                                        ),
+                                  return Padding(
+                                    padding: const Pad(horizontal: 20),
+                                    child: Column(
+                                      children: [
+                                        Padding(
+                                          padding: const Pad(vertical: 20),
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  const Icon(Tabler.notes, size: 16),
+                                                  const Gap(3),
+                                                  Expanded(
+                                                    child: Text(
+                                                      data.post.publishedRevision!.title ?? '(제목 없음)',
+                                                      overflow: TextOverflow.ellipsis,
+                                                      style: const TextStyle(
+                                                        color: BrandColors.gray_500,
                                                       ),
                                                     ),
-                                                  ],
-                                                ),
-                                                const Gap(4),
-                                                Text(
-                                                  '${data.post.publishedRevision!.price?.comma}P',
-                                                  style: const TextStyle(
-                                                    fontSize: 18,
-                                                    fontWeight: FontWeight.w800,
                                                   ),
+                                                ],
+                                              ),
+                                              const Gap(4),
+                                              Text(
+                                                '${data.post.publishedRevision!.price!.comma}P',
+                                                style: const TextStyle(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.w800,
                                                 ),
-                                              ],
-                                            ),
+                                              ),
+                                            ],
                                           ),
-                                          const HorizontalDivider(),
-                                          const Gap(8),
-                                          Padding(
-                                            padding: const Pad(vertical: 12),
-                                            child: Row(
-                                              children: [
-                                                const Text(
-                                                  '보유 포인트',
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.w600,
-                                                    color: BrandColors.gray_900,
-                                                  ),
+                                        ),
+                                        const HorizontalDivider(),
+                                        const Gap(8),
+                                        Padding(
+                                          padding: const Pad(vertical: 12),
+                                          child: Row(
+                                            children: [
+                                              const Text(
+                                                '보유 포인트',
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.w600,
+                                                  color: BrandColors.gray_900,
                                                 ),
-                                                const Spacer(),
-                                                Text(
-                                                  '${data.me!.point.comma}P',
-                                                  style: const TextStyle(
-                                                    fontWeight: FontWeight.w800,
-                                                    color: BrandColors.gray_400,
-                                                  ),
+                                              ),
+                                              const Spacer(),
+                                              Text(
+                                                '${data.me!.point.comma}P',
+                                                style: const TextStyle(
+                                                  fontWeight: FontWeight.w800,
+                                                  color: BrandColors.gray_400,
                                                 ),
-                                              ],
-                                            ),
+                                              ),
+                                            ],
                                           ),
-                                          Padding(
-                                            padding: const Pad(vertical: 12),
-                                            child: Row(
-                                              children: [
-                                                const Text(
-                                                  '사용할 포인트',
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.w600,
-                                                    color: BrandColors.gray_900,
-                                                  ),
+                                        ),
+                                        Padding(
+                                          padding: const Pad(vertical: 12),
+                                          child: Row(
+                                            children: [
+                                              const Text(
+                                                '사용할 포인트',
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.w600,
+                                                  color: BrandColors.gray_900,
                                                 ),
-                                                const Spacer(),
-                                                Text(
-                                                  '${data.post.publishedRevision!.price!.comma}P',
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.w800,
-                                                    color: (purchasable ? BrandColors.brand_400 : BrandColors.gray_400),
-                                                  ),
+                                              ),
+                                              const Spacer(),
+                                              Text(
+                                                '${data.post.publishedRevision!.price!.comma}P',
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.w800,
+                                                  color: (purchasable ? BrandColors.brand_400 : BrandColors.gray_400),
                                                 ),
-                                              ],
-                                            ),
+                                              ),
+                                            ],
                                           ),
-                                          if (purchasable) ...[
-                                            const Gap(24),
-                                            Btn(
-                                              '구매하기',
-                                              theme: BtnTheme.accent,
-                                              onPressed: () async {
-                                                await reply({
-                                                  'type': 'purchase:proceed',
-                                                });
+                                        ),
+                                        if (purchasable) ...[
+                                          const Gap(24),
+                                          Btn(
+                                            '구매하기',
+                                            theme: BtnTheme.accent,
+                                            onPressed: () async {
+                                              await reply({
+                                                'type': 'purchase:proceed',
+                                              });
 
-                                                if (context.mounted) {
-                                                  await context.router.maybePop();
-                                                }
-                                              },
+                                              if (context.mounted) {
+                                                await context.router.maybePop();
+                                              }
+                                            },
+                                          ),
+                                        ] else ...[
+                                          Padding(
+                                            padding: const Pad(vertical: 12),
+                                            child: Row(
+                                              children: [
+                                                const Text(
+                                                  '필요한 포인트',
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.w600,
+                                                    color: BrandColors.brand_400,
+                                                  ),
+                                                ),
+                                                const Spacer(),
+                                                Text(
+                                                  '${(data.post.publishedRevision!.price! - data.me!.point).comma}P',
+                                                  style: const TextStyle(
+                                                    fontWeight: FontWeight.w800,
+                                                    color: BrandColors.brand_400,
+                                                  ),
+                                                ),
+                                              ],
                                             ),
-                                          ] else ...[
-                                            Padding(
-                                              padding: const Pad(vertical: 12),
+                                          ),
+                                          const Gap(8),
+                                          const DecoratedBox(
+                                            decoration: BoxDecoration(
+                                              color: BrandColors.gray_50,
+                                              borderRadius: BorderRadius.all(
+                                                Radius.circular(4),
+                                              ),
+                                            ),
+                                            child: Padding(
+                                              padding: Pad(all: 10),
                                               child: Row(
                                                 children: [
-                                                  const Text(
-                                                    '필요한 포인트',
-                                                    style: TextStyle(
-                                                      fontWeight: FontWeight.w600,
-                                                      color: BrandColors.brand_400,
-                                                    ),
+                                                  Icon(
+                                                    Tabler.coin_filled,
+                                                    size: 16,
+                                                    color: Color(0xFFFCC04B),
                                                   ),
-                                                  const Spacer(),
+                                                  Gap(4),
                                                   Text(
-                                                    '${(data.post.publishedRevision!.price! - data.me!.point).comma}P',
-                                                    style: const TextStyle(
-                                                      fontWeight: FontWeight.w800,
-                                                      color: BrandColors.brand_400,
+                                                    '해당 포스트를 구매하려면 포인트가 필요해요',
+                                                    style: TextStyle(
+                                                      color: BrandColors.gray_800,
+                                                      fontSize: 12,
                                                     ),
                                                   ),
                                                 ],
                                               ),
                                             ),
-                                            const Gap(8),
-                                            const DecoratedBox(
-                                              decoration: BoxDecoration(
-                                                color: BrandColors.gray_50,
-                                                borderRadius: BorderRadius.all(
-                                                  Radius.circular(4),
-                                                ),
-                                              ),
-                                              child: Padding(
-                                                padding: Pad(all: 10),
-                                                child: Row(
-                                                  children: [
-                                                    Icon(
-                                                      Tabler.coin_filled,
-                                                      size: 16,
-                                                      color: Color(0xFFFCC04B),
-                                                    ),
-                                                    Gap(4),
-                                                    Text(
-                                                      '해당 포스트를 구매하려면 포인트가 필요해요',
-                                                      style: TextStyle(
-                                                        color: BrandColors.gray_800,
-                                                        fontSize: 12,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                            const Gap(24),
-                                            Btn(
-                                              '충전하기',
-                                              onPressed: () async {
-                                                await context.popWaitAndPush(const PointPurchaseRoute());
-                                              },
-                                            ),
-                                          ],
+                                          ),
+                                          const Gap(24),
+                                          Btn(
+                                            '충전하기',
+                                            onPressed: () async {
+                                              await context.popWaitAndPush(const PointPurchaseRoute());
+                                            },
+                                          ),
                                         ],
-                                      ),
-                                    );
-                                  },
-                                );
-                              }
-                            },
-                            onNavigate: (controller, navigationAction) async {
-                              if (navigationAction.navigationType == NavigationType.LINK_ACTIVATED) {
-                                await _browser.open(
-                                  url: navigationAction.request.url,
-                                  settings: ChromeSafariBrowserSettings(
-                                    barCollapsingEnabled: true,
-                                    dismissButtonStyle: DismissButtonStyle.CLOSE,
-                                    enableUrlBarHiding: true,
-                                  ),
-                                );
-
-                                return NavigationActionPolicy.CANCEL;
-                              }
-
-                              return NavigationActionPolicy.ALLOW;
-                            },
-                          ),
-                        ),
-                      if (!_webViewLoaded && !_blurContent)
-                        const Padding(
-                          padding: Pad(horizontal: 20),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              _Skeleton(widthFactor: 1.0),
-                              Gap(20),
-                              _Skeleton(widthFactor: 1.0),
-                              Gap(20),
-                              _Skeleton(widthFactor: 1.0),
-                              Gap(20),
-                              _Skeleton(widthFactor: 0.4),
-                            ],
-                          ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              );
+                            }
+                          },
                         ),
                       const Gap(20),
                       Padding(
@@ -1508,6 +1462,182 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
           });
         }
       }
+    }
+  }
+}
+
+class _Content extends ConsumerStatefulWidget {
+  const _Content({
+    required this.permalink,
+    required this.onJsMessage,
+  });
+
+  final String permalink;
+  final Future<void> Function(
+    dynamic data,
+    Future<void> Function(dynamic data) reply,
+    InAppWebViewController controller,
+  )? onJsMessage;
+
+  @override
+  createState() => _ContentState();
+}
+
+class _ContentState extends ConsumerState<_Content> {
+  HeadlessInAppWebView? _headlessInAppWebView;
+  double? _height;
+
+  final _cookieManager = CookieManager.instance();
+  final _settings = InAppWebViewSettings(
+    allowsBackForwardNavigationGestures: false,
+    disableContextMenu: true,
+    disableLongPressContextMenuOnLinks: true,
+    isTextInteractionEnabled: false,
+    disableHorizontalScroll: true,
+    disableVerticalScroll: true,
+    disallowOverScroll: true,
+    supportZoom: false,
+    transparentBackground: true,
+  );
+
+  @override
+  void initState() {
+    super.initState();
+
+    final auth = ref.read(authProvider);
+    final accessToken = switch (auth) {
+      AsyncData(value: Authenticated(:final accessToken)) => accessToken,
+      _ => null,
+    };
+
+    _headlessInAppWebView = HeadlessInAppWebView(
+      initialSettings: _settings,
+      onWebViewCreated: (controller) async {
+        final baseUri = WebUri(Env.baseUrl);
+
+        await _cookieManager.setCookie(
+          url: baseUri,
+          name: 'glyph-did',
+          value: DeviceIdHolder.deviceId,
+          isSecure: Env.baseUrl.startsWith('https'),
+          isHttpOnly: true,
+        );
+
+        await _cookieManager.setCookie(
+          url: baseUri,
+          name: 'glyph-at',
+          value: accessToken!,
+          isSecure: Env.baseUrl.startsWith('https'),
+          isHttpOnly: true,
+        );
+
+        await _cookieManager.setCookie(
+          url: baseUri,
+          name: 'glyph-wb',
+          value: 'true',
+          isSecure: Env.baseUrl.startsWith('https'),
+        );
+
+        if (!Platform.isAndroid || await WebViewFeature.isFeatureSupported(WebViewFeature.WEB_MESSAGE_LISTENER)) {
+          await controller.addWebMessageListener(
+            WebMessageListener(
+              jsObjectName: 'flutter',
+              allowedOriginRules: {'*'},
+              onPostMessage: (message, sourceOrigin, isMainFrame, replyProxy) async {
+                if (!mounted) {
+                  return;
+                }
+
+                final data = json.decode(utf8.decode(base64.decode(message!.data)));
+                if (data['type'] == 'resize') {
+                  setState(() {
+                    _height = (data['height'] as num).toDouble();
+                  });
+
+                  return;
+                }
+
+                await widget.onJsMessage?.call(
+                  data,
+                  (data) => replyProxy.postMessage(WebMessage(data: base64.encode(utf8.encode(json.encode(data))))),
+                  controller,
+                );
+              },
+            ),
+          );
+        }
+
+        unawaited(
+          controller.loadUrl(
+            urlRequest: URLRequest(
+              url: WebUri('${Env.baseUrl}/_webview/post-view/${widget.permalink}'),
+            ),
+          ),
+        );
+      },
+      shouldOverrideUrlLoading: (controller, navigationAction) async {
+        return NavigationActionPolicy.ALLOW;
+      },
+    );
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      unawaited(
+        ModalRoute.of(context)!.didPush().then((value) {
+          _headlessInAppWebView!.run();
+        }),
+      );
+    });
+  }
+
+  @override
+  void dispose() {
+    unawaited(_headlessInAppWebView?.dispose());
+
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_height == null) {
+      return const Padding(
+        padding: Pad(horizontal: 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _Skeleton(widthFactor: 1.0),
+            Gap(20),
+            _Skeleton(widthFactor: 1.0),
+            Gap(20),
+            _Skeleton(widthFactor: 1.0),
+            Gap(20),
+            _Skeleton(widthFactor: 0.4),
+          ],
+        ),
+      );
+    } else {
+      return SizedBox(
+        height: _height,
+        child: InAppWebView(
+          headlessWebView: _headlessInAppWebView,
+          onWebViewCreated: (controller) {
+            _headlessInAppWebView = null;
+          },
+          shouldOverrideUrlLoading: (controller, navigationAction) async {
+            if (navigationAction.navigationType == NavigationType.LINK_ACTIVATED) {
+              unawaited(
+                launchUrl(
+                  navigationAction.request.url!.uriValue,
+                  mode: LaunchMode.inAppBrowserView,
+                ),
+              );
+
+              return NavigationActionPolicy.CANCEL;
+            }
+
+            return NavigationActionPolicy.ALLOW;
+          },
+        ),
+      );
     }
   }
 }
