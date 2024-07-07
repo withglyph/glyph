@@ -102,7 +102,7 @@ class NotificationsScreen extends ConsumerWidget {
                           style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w700,
-                            color: unreadNotifications.isNotEmpty ? BrandColors.brand_600 : BrandColors.gray_300,
+                            color: unreadNotifications.isNotEmpty ? BrandColors.brand_400 : BrandColors.gray_300,
                           ),
                         ),
                       ),

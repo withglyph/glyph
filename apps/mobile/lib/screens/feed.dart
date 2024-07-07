@@ -138,7 +138,7 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
                             child: Container(
                               padding: const Pad(horizontal: 5, vertical: 1),
                               decoration: BoxDecoration(
-                                color: BrandColors.brand_600,
+                                color: BrandColors.brand_400,
                                 border: Border.all(color: BrandColors.gray_0),
                                 borderRadius: BorderRadius.circular(999),
                               ),

@@ -17,8 +17,7 @@ class BrandColors {
 
   static const brand_50 = Color(0xFFF9F7FF);
   static const brand_200 = Color(0xFFE4DDF9);
-  static const brand_400 = Color(0xFF8162E8);
-  static const brand_600 = Color(0xFF6B46E3);
+  static const brand_400 = Color(0xFF6B46E3);
 
   static const red_50 = Color(0xFFFFF8F8);
   static const red_200 = Color(0xFFFFE5E5);
