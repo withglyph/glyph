@@ -2,7 +2,7 @@ import type { SchemaTypes } from '@pothos/core';
 import type { ImplementableLoadableObjectRef } from '@pothos/plugin-dataloader';
 
 export type RequestData = {
-  scopeCache: Record<string, Record<string, boolean>>;
+  scopeCache: Record<string, Record<string, Record<string, boolean>>>;
 };
 
 export type LoadableResource<Types extends SchemaTypes> = ImplementableLoadableObjectRef<

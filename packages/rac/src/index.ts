@@ -51,30 +51,34 @@ export class PothosRACPlugin<Types extends SchemaTypes> extends BasePlugin<Types
   ): Promise<boolean> => {
     const { scopeCache } = this.requestData(context);
     const typeName = 'resourceType' in scope ? scope.resourceType.name : options.typeName;
-    if (scopeCache?.[typeName]?.[scope.scope] === undefined) {
+    const objectId = 'resourceType' in scope ? scope.resourceId : (options.object as { id: string }).id;
+
+    if (scopeCache?.[typeName]?.[objectId]?.[scope.scope] === undefined) {
       const roleGranter = this.roleGranters[typeName][scope.scope];
 
       if (typeof roleGranter === 'function') {
         if (scopeCache[typeName] === undefined) {
           scopeCache[typeName] = {};
         }
+        if (scopeCache[typeName][objectId] === undefined) {
+          scopeCache[typeName][objectId] = {};
+        }
+
         if (typeName === options.typeName) {
-          scopeCache[typeName][scope.scope] = await roleGranter(options.object, context);
+          scopeCache[typeName][objectId][scope.scope] = await roleGranter(options.object, context);
         } else if ('resourceType' in scope) {
           const object = await scope.resourceType.getDataloader(context).load(scope.resourceId);
-          scopeCache[typeName][scope.scope] = await roleGranter(object, context);
+          scopeCache[typeName][objectId][scope.scope] = await roleGranter(object, context);
         } else {
           // Error case
           return false;
         }
-
-        return scopeCache[typeName][scope.scope];
       } else {
         return false;
       }
     }
 
-    return scopeCache[typeName][scope.scope];
+    return scopeCache[typeName][objectId][scope.scope];
   };
 
   processScopeCondition = async (
