@@ -281,14 +281,16 @@ class _SpaceScreenState extends State<SpaceScreen> with SingleTickerProviderStat
                                     ),
                                     const Gap(34),
                                     Btn(
-                                      data.space.muted
-                                          ? '뮤트됨'
-                                          : data.space.followed
-                                              ? '스페이스 구독중'
-                                              : data.space.meAsMember != null
-                                                  ? '포스트 작성'
+                                      data.space.meAsMember != null
+                                          ? '포스트 작성'
+                                          : data.space.muted
+                                              ? '뮤트됨'
+                                              : data.space.followed
+                                                  ? '스페이스 구독중'
                                                   : '스페이스 구독',
-                                      theme: data.space.followed ? BtnTheme.secondaryOutline : BtnTheme.primary,
+                                      theme: (data.space.meAsMember == null && data.space.followed)
+                                          ? BtnTheme.secondaryOutline
+                                          : BtnTheme.primary,
                                       iconLeft: data.space.muted
                                           ? Tabler.volume_3
                                           : data.space.followed
