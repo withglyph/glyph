@@ -450,9 +450,6 @@ class _CreateSpaceState extends ConsumerState<_CreateSpace> {
   Uint8List? _avatarBytes;
   Rect? _avatarBounds;
 
-  bool _isFormValid = true;
-  String _slug = '';
-
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -463,17 +460,7 @@ class _CreateSpaceState extends ConsumerState<_CreateSpace> {
           return FormBuilder(
             key: _formKey,
             onChanged: () {
-              setState(() {
-                _isFormValid = _formKey.currentState!.validate();
-              });
-
-              if (!_formKey.currentState!.saveAndValidate()) {
-                return;
-              }
-
-              setState(() {
-                _slug = _formKey.currentState!.value['slug'];
-              });
+              setState(() {});
             },
             child: Column(
               children: [
@@ -643,7 +630,7 @@ class _CreateSpaceState extends ConsumerState<_CreateSpace> {
                                 borderRadius: BorderRadius.circular(2),
                               ),
                               child: Text(
-                                'URL: withglyph.com/$_slug',
+                                'URL: withglyph.com/${_formKey.currentState?.instantValue['slug'] ?? ''}',
                                 style: const TextStyle(
                                   fontSize: 13,
                                   fontWeight: FontWeight.w500,
@@ -793,7 +780,7 @@ class _CreateSpaceState extends ConsumerState<_CreateSpace> {
                   child: Btn(
                     '완료',
                     size: BtnSize.large,
-                    enabled: _isFormValid,
+                    enabled: _formKey.currentState?.isValid == true,
                     onPressed: () async {
                       if (!_formKey.currentState!.saveAndValidate()) {
                         return;
