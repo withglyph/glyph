@@ -718,7 +718,7 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                           ],
                         ),
                       ),
-                      if (_blurContent)
+                      if (data.post.blurredReason != null && _blurContent)
                         switch (data.post.blurredReason) {
                           GPostBlurredReason.NOT_IDENTIFIED => PostWarning(
                               title: switch (data.post.ageRating) {
