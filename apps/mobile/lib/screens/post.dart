@@ -178,6 +178,17 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
             ),
             actions: [
               Pressable(
+                child: const Icon(Tabler.share_2),
+                onPressed: () async {
+                  await Share.shareUri(
+                    Uri.parse(
+                      'https://glph.to/${data.post.shortlink}',
+                    ),
+                  );
+                },
+              ),
+              const Gap(20),
+              Pressable(
                 child: Icon(
                   Tabler.dots_vertical,
                   color: hasThumbnail && _isOverThumbnail ? BrandColors.gray_0 : BrandColors.gray_900,
@@ -362,17 +373,6 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                   },
                 ),
                 const Spacer(),
-                Pressable(
-                  child: const Icon(Tabler.share_2),
-                  onPressed: () async {
-                    await Share.shareUri(
-                      Uri.parse(
-                        'https://glph.to/${data.post.shortlink}',
-                      ),
-                    );
-                  },
-                ),
-                const Gap(20),
                 Pressable(
                   child: Icon(data.post.bookmarkGroups.isEmpty ? Tabler.bookmark : Tabler.bookmark_filled),
                   onPressed: () async {
