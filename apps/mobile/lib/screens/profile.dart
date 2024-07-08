@@ -11,6 +11,7 @@ import 'package:gap/gap.dart';
 import 'package:glyph/components/btn.dart';
 import 'package:glyph/components/forms/form_text_field.dart';
 import 'package:glyph/components/pressable.dart';
+import 'package:glyph/components/rectangle_chip.dart';
 import 'package:glyph/context/toast.dart';
 import 'package:glyph/ferry/widget.dart';
 import 'package:glyph/graphql/__generated__/profile_screen_finalize_image_upload_mutation.req.gql.dart';
@@ -146,6 +147,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     validators: [
                       FormBuilderValidators.required(errorText: '프로필 이름을 입력해주세요'),
                       FormBuilderValidators.maxLength(20, errorText: '프로필 이름은 20글자를 넘을 수 없어요'),
+                    ],
+                  ),
+                  const Gap(26),
+                  const Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: Pad(top: 2),
+                        child: RectangleChip('TIP', theme: RectangleChipTheme.purple),
+                      ),
+                      Gap(8),
+                      Flexible(
+                        child: Text(
+                          '프로필은 기본 프로필과 스페이스 프로필로 나뉘어요.\n창작자는 스페이스를 생성할 때 기본 프로필을 이용하거나 해당 스페이스에서만 이용할 별도의 스페이스 프로필을 설정할 수 있어요. 스페이스 프로필을 이용할 경우 다른 이용자들은 각 프로필이 같은 사람인지 알 수 없어요.',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: BrandColors.gray_600,
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                   const Spacer(),
