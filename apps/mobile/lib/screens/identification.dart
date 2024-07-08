@@ -21,7 +21,6 @@ class IdentificationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultShell(
-      bottomBorder: false,
       useSafeArea: true,
       title: '본인인증',
       child: GraphQLOperation(
@@ -30,7 +29,7 @@ class IdentificationScreen extends StatelessWidget {
           final identified = data.me?.personalIdentity != null;
 
           return Padding(
-            padding: const Pad(horizontal: 20, vertical: 16),
+            padding: const Pad(horizontal: 20, top: 20, bottom: 16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

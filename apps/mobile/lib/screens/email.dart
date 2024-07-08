@@ -33,7 +33,6 @@ class _EmailScreenState extends ConsumerState<EmailScreen> {
   @override
   Widget build(BuildContext context) {
     return DefaultShell(
-      bottomBorder: false,
       useSafeArea: true,
       title: '이메일 변경',
       child: FormBuilder(

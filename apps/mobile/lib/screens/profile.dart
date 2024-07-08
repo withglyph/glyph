@@ -46,7 +46,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return DefaultShell(
-      bottomBorder: false,
       useSafeArea: true,
       title: '프로필 변경',
       child: FormBuilder(
@@ -60,7 +59,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           operation: GProfileScreen_QueryReq(),
           builder: (context, client, data) {
             return Padding(
-              padding: const Pad(horizontal: 20, vertical: 16),
+              padding: const Pad(horizontal: 20, top: 32, bottom: 16),
               child: Column(
                 children: [
                   Center(
