@@ -53,6 +53,7 @@ class Btn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Pressable(
+      label: title,
       onPressed: enabled ? onPressed : null,
       child: Container(
         padding: switch (size) {

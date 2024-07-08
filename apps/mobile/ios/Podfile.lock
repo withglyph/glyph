@@ -7,6 +7,25 @@ PODS:
   - AppAuth/Core (1.7.5)
   - AppAuth/ExternalUserAgent (1.7.5):
     - AppAuth/Core
+  - datadog_flutter_plugin (0.0.1):
+    - DatadogCore (= 2.13.0)
+    - DatadogCrashReporting (= 2.13.0)
+    - DatadogInternal (= 2.13.0)
+    - DatadogLogs (= 2.13.0)
+    - DatadogRUM (= 2.13.0)
+    - DictionaryCoder (= 1.0.8)
+    - Flutter
+  - DatadogCore (2.13.0):
+    - DatadogInternal (= 2.13.0)
+  - DatadogCrashReporting (2.13.0):
+    - DatadogInternal (= 2.13.0)
+    - PLCrashReporter (~> 1.11.2)
+  - DatadogInternal (2.13.0)
+  - DatadogLogs (2.13.0):
+    - DatadogInternal (= 2.13.0)
+  - DatadogRUM (2.13.0):
+    - DatadogInternal (= 2.13.0)
+  - DictionaryCoder (1.0.8)
   - external_app_launcher (0.0.1):
     - Flutter
   - Firebase/Analytics (10.27.0):
@@ -185,6 +204,7 @@ PODS:
     - FlutterMacOS
   - permission_handler_apple (9.3.0):
     - Flutter
+  - PLCrashReporter (1.11.2)
   - PromisesObjC (2.4.0)
   - Sentry/HybridSDK (8.29.0)
   - sentry_flutter (8.3.0):
@@ -207,6 +227,7 @@ PODS:
 
 DEPENDENCIES:
   - app_links (from `.symlinks/plugins/app_links/ios`)
+  - datadog_flutter_plugin (from `.symlinks/plugins/datadog_flutter_plugin/ios`)
   - external_app_launcher (from `.symlinks/plugins/external_app_launcher/ios`)
   - firebase_analytics (from `.symlinks/plugins/firebase_analytics/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
@@ -236,6 +257,12 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - AppAuth
+    - DatadogCore
+    - DatadogCrashReporting
+    - DatadogInternal
+    - DatadogLogs
+    - DatadogRUM
+    - DictionaryCoder
     - Firebase
     - FirebaseAnalytics
     - FirebaseCore
@@ -252,6 +279,7 @@ SPEC REPOS:
     - nanopb
     - naveridlogin-sdk-ios
     - OrderedSet
+    - PLCrashReporter
     - PromisesObjC
     - Sentry
     - Toast
@@ -259,6 +287,8 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   app_links:
     :path: ".symlinks/plugins/app_links/ios"
+  datadog_flutter_plugin:
+    :path: ".symlinks/plugins/datadog_flutter_plugin/ios"
   external_app_launcher:
     :path: ".symlinks/plugins/external_app_launcher/ios"
   firebase_analytics:
@@ -313,6 +343,13 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   app_links: e70ca16b4b0f88253b3b3660200d4a10b4ea9795
   AppAuth: 501c04eda8a8d11f179dbe8637b7a91bb7e5d2fa
+  datadog_flutter_plugin: 620cefeb0a26a9271190d918059e33309416c603
+  DatadogCore: 9390fd07a89f57a23983de66fbec5bf3c2034f7a
+  DatadogCrashReporting: 79b67b790df186524fc76d45c0b8ce751c36ef41
+  DatadogInternal: 61ab12516d2faad79e35973534c29a72b0d44382
+  DatadogLogs: 912d7b3fd3d75df856de060082b785f92f7cefe6
+  DatadogRUM: b5629479d4553d80f2a57ef9db44ce37e56f8b97
+  DictionaryCoder: 5f84fff69f54cb806071538430bdafe04a89d658
   external_app_launcher: ad55ac844aa21f2d2197d7cec58ff0d0dc40bbc0
   Firebase: 26b040b20866a55f55eb3611b9fcf3ae64816b86
   firebase_analytics: cc6e3ca8f159facf99fb1ceb2d81bda9cc811556
@@ -348,6 +385,7 @@ SPEC CHECKSUMS:
   package_info_plus: 58f0028419748fad15bf008b270aaa8e54380b1c
   path_provider_foundation: 2b6b4c569c0fb62ec74538f866245ac84301af46
   permission_handler_apple: 9878588469a2b0d0fc1e048d9f43605f92e6cec2
+  PLCrashReporter: 499c53b0104f95c302d94fd723ebb03c56d9bac8
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
   Sentry: 016de45ee5ce5fca2a829996f1bfafeb5e62e8b4
   sentry_flutter: 5fb57c5b7e6427a9dc1fedde4269eb65823982d4

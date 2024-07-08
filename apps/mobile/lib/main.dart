@@ -1,5 +1,7 @@
+import 'package:datadog_flutter_plugin/datadog_flutter_plugin.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -59,10 +61,27 @@ Future<void> main() async {
   GetIt.I.registerSingleton<InAppPurchase>(InAppPurchase.instance);
   GetIt.I.registerSingleton<Mixpanel>(mixpanel);
   GetIt.I.registerSingleton<AppRouter>(AppRouter());
+  GetIt.I.registerSingleton<DatadogSdk>(DatadogSdk.instance);
 
   await initializeFirebaseMessaging();
 
   final pkg = await PackageInfo.fromPlatform();
+
+  if (kReleaseMode) {
+    await DatadogSdk.instance.initialize(
+      DatadogConfiguration(
+        clientToken: 'pubc94ed75d0e2608167199b3e9d2af8eee',
+        env: Env.current,
+        site: DatadogSite.ap1,
+        version: '${pkg.version}+${pkg.buildNumber}',
+        loggingConfiguration: DatadogLoggingConfiguration(),
+        rumConfiguration: DatadogRumConfiguration(
+          applicationId: 'c90eed45-f6cb-41b3-8e38-5c3199ac2970',
+        ),
+      ),
+      TrackingConsent.granted,
+    );
+  }
 
   await SentryFlutter.init(
     (options) => options

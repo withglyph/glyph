@@ -16,6 +16,7 @@ dependencies:
   collection: '^1.18.0'
   custom_refresh_indicator: '^3.1.0'
   dartx: '^1.2.0'
+  datadog_flutter_plugin: ^2.6.0
   envied: '^0.5.4+1'
   external_app_launcher: '^4.0.0'
   ferry: '^0.16.0+1'

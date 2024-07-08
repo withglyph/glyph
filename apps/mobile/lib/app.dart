@@ -1,7 +1,9 @@
 import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
+import 'package:datadog_flutter_plugin/datadog_flutter_plugin.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:glyph/routers/app.dart';
+import 'package:glyph/routers/observer.dart';
 import 'package:glyph/screens/splash.dart';
 import 'package:glyph/themes/colors.dart';
 import 'package:glyph/widgets/error.dart';
@@ -15,6 +17,7 @@ class App extends StatefulWidget {
 
 class _AppState extends State<App> {
   final _router = GetIt.I<AppRouter>();
+  final _dd = GetIt.I<DatadogSdk>();
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +30,7 @@ class _AppState extends State<App> {
     return MaterialApp.router(
       routerConfig: _router.config(
         placeholder: (context) => const SplashScreen(),
+        navigatorObservers: () => [DatadogAutoRouteObserver(datadogSdk: _dd)],
       ),
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
@@ -60,8 +64,11 @@ class _AppState extends State<App> {
           return const AppErrorWidget();
         };
 
-        return KeyboardDismiss(
-          child: child!,
+        return RumUserActionDetector(
+          rum: _dd.rum,
+          child: KeyboardDismiss(
+            child: child!,
+          ),
         );
       },
     );

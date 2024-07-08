@@ -377,6 +377,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.0"
+  datadog_flutter_plugin:
+    dependency: "direct main"
+    description:
+      name: datadog_flutter_plugin
+      sha256: a8c85d93e40c79027d235e66f86393c466cc55fc27121c45dd0f57e87a06c1eb
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.6.0"
   envied:
     dependency: "direct main"
     description:

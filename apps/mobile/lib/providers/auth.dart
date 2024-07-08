@@ -1,3 +1,4 @@
+import 'package:datadog_flutter_plugin/datadog_flutter_plugin.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -28,6 +29,7 @@ sealed class AuthState with _$AuthState {
 
 @riverpod
 class Auth extends _$Auth {
+  final _dd = GetIt.I<DatadogSdk>();
   final _mixpanel = GetIt.I<Mixpanel>();
   final _storage = GetIt.I<FlutterSecureStorage>();
   final _storageKey = 'access_token';
@@ -88,6 +90,12 @@ class Auth extends _$Auth {
         ..set(r'$email', resp.data!.me!.email)
         ..set(r'$name', resp.data!.me!.profile.name)
         ..set(r'$avatar', resp.data!.me!.profile.avatar.url);
+
+      _dd.setUserInfo(
+        id: resp.data!.me!.id,
+        email: resp.data!.me!.email,
+        name: resp.data!.me!.profile.name,
+      );
 
       return AuthState.authenticated(
         accessToken: accessToken,
