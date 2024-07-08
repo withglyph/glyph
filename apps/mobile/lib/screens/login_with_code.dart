@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
+import 'package:get_it/get_it.dart';
 import 'package:glyph/ferry/error.dart';
 import 'package:glyph/graphql/__generated__/login_with_code_screen_authorize_user_email_token_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/login_with_code_screen_issue_user_email_authorization_token_mutation.req.gql.dart';
@@ -15,6 +16,7 @@ import 'package:glyph/providers/ferry.dart';
 import 'package:glyph/shells/default.dart';
 import 'package:glyph/themes/colors.dart';
 import 'package:glyph/widgets/signup.dart';
+import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:pinput/pinput.dart';
 
 @RoutePage()
@@ -31,6 +33,8 @@ class LoginWithCodeScreen extends ConsumerStatefulWidget {
 }
 
 class _LoginWithCodeScreenState extends ConsumerState<LoginWithCodeScreen> {
+  final _mixpanel = GetIt.I<Mixpanel>();
+
   final _pinFocusNode = FocusNode();
   final _pinController = TextEditingController();
   final _transitionCompleter = Completer();
@@ -142,6 +146,8 @@ class _LoginWithCodeScreenState extends ConsumerState<LoginWithCodeScreen> {
                 final client = ref.read(ferryProvider.notifier);
 
                 try {
+                  _mixpanel.track('user:login:success', properties: {'method': 'email:code'});
+
                   final req1 = GLoginWithCodeScreen_IssueUserEmailAuthorizationToken_MutationReq(
                     (b) => b
                       ..vars.input.email = widget.email

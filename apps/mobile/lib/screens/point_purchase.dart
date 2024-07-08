@@ -24,6 +24,7 @@ import 'package:glyph/icons/tabler.dart';
 import 'package:glyph/providers/ferry.dart';
 import 'package:glyph/themes/colors.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 
 @RoutePage()
 class PointPurchaseScreen extends ConsumerStatefulWidget {
@@ -34,6 +35,8 @@ class PointPurchaseScreen extends ConsumerStatefulWidget {
 }
 
 class _PointPurchaseScreenState extends ConsumerState<PointPurchaseScreen> {
+  final _mixpanel = GetIt.I<Mixpanel>();
+
   final _iap = GetIt.I<InAppPurchase>();
   final _products = <_Product>[];
 
@@ -55,6 +58,9 @@ class _PointPurchaseScreenState extends ConsumerState<PointPurchaseScreen> {
 
           if (purchaseDetails.status == PurchaseStatus.purchased) {
             final client = ref.read(ferryProvider.notifier);
+
+            _mixpanel.track('point:purchase', properties: {'productId': purchaseDetails.productID});
+
             final req = GPurchasePointScreen_InAppPurchasePoint_MutationReq(
               (b) => b
                 ..vars.input.store = Platform.isIOS ? GStoreKind.APP_STORE : GStoreKind.PLAY_STORE
@@ -238,6 +244,15 @@ class _PointPurchaseScreenState extends ConsumerState<PointPurchaseScreen> {
                     context.loader.show();
 
                     final client = ref.read(ferryProvider.notifier);
+
+                    _mixpanel.track(
+                      'point:purchase',
+                      properties: {
+                        'paymentMethod': kReleaseMode ? GPaymentMethod.IN_APP_PURCHASE : GPaymentMethod.DUMMY,
+                        'pointAmount': product.pointAmount,
+                      },
+                    );
+
                     final req = GPurchasePointScreen_PurchasePoint_MutationReq(
                       (b) => b
                         ..vars.input.paymentMethod =

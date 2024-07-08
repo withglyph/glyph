@@ -60,6 +60,10 @@ class Auth extends _$Auth {
     if (accessToken != null) {
       final ferry = await createFerryClient(accessToken);
 
+      _mixpanel
+        ..track('user:logout')
+        ..reset();
+
       final req = GAuthProvider_LogoutUser_MutationReq();
       await ferry.request(req).first;
     }

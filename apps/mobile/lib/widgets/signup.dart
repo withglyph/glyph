@@ -3,6 +3,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
+import 'package:get_it/get_it.dart';
 import 'package:glyph/components/btn.dart';
 import 'package:glyph/components/pressable.dart';
 import 'package:glyph/context/toast.dart';
@@ -11,6 +12,7 @@ import 'package:glyph/icons/tabler.dart';
 import 'package:glyph/providers/auth.dart';
 import 'package:glyph/providers/ferry.dart';
 import 'package:glyph/themes/colors.dart';
+import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SignupDialog extends ConsumerStatefulWidget {
@@ -26,6 +28,8 @@ class SignupDialog extends ConsumerStatefulWidget {
 }
 
 class _SignupDialogState extends ConsumerState<SignupDialog> {
+  final _mixpanel = GetIt.I<Mixpanel>();
+
   bool get _isCheckAll => _termsConsent && _isGte14 && _marketingConsent;
   set _isCheckAll(bool value) {
     setState(() {
@@ -180,6 +184,9 @@ class _SignupDialogState extends ConsumerState<SignupDialog> {
                       }
 
                       final client = ref.read(ferryProvider.notifier);
+
+                      _mixpanel.track('user:signup:success');
+
                       final req = GSignupDialog_CreateUser_MutationReq(
                         (b) => b
                           ..vars.input.token = widget.token

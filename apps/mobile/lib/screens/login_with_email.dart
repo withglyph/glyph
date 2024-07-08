@@ -5,6 +5,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:gap/gap.dart';
+import 'package:get_it/get_it.dart';
 import 'package:glyph/components/btn.dart';
 import 'package:glyph/components/forms/form_text_field.dart';
 import 'package:glyph/context/alert.dart';
@@ -13,6 +14,7 @@ import 'package:glyph/graphql/__generated__/login_with_email_screen_login_user_m
 import 'package:glyph/providers/ferry.dart';
 import 'package:glyph/routers/app.gr.dart';
 import 'package:glyph/shells/default.dart';
+import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 
 @RoutePage()
 class LoginWithEmailScreen extends ConsumerStatefulWidget {
@@ -23,6 +25,8 @@ class LoginWithEmailScreen extends ConsumerStatefulWidget {
 }
 
 class _LoginWithEmailScreenState extends ConsumerState<LoginWithEmailScreen> {
+  final _mixpanel = GetIt.I<Mixpanel>();
+
   final _formKey = GlobalKey<FormBuilderState>();
 
   bool _isFormValid = false;
@@ -94,6 +98,8 @@ class _LoginWithEmailScreenState extends ConsumerState<LoginWithEmailScreen> {
     final client = ref.read(ferryProvider.notifier);
 
     try {
+      _mixpanel.track('user:login:start', properties: {'method': 'email'});
+
       await client.request(
         GLoginWithEmailScreen_LoginUser_MutationReq(
           (b) => b..vars.input.email = values['email'],

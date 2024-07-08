@@ -3,6 +3,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
+import 'package:get_it/get_it.dart';
 import 'package:glyph/components/empty_state.dart';
 import 'package:glyph/components/horizontal_divider.dart';
 import 'package:glyph/components/img.dart';
@@ -24,10 +25,13 @@ import 'package:glyph/routers/app.gr.dart';
 import 'package:glyph/shells/default.dart';
 import 'package:glyph/themes/colors.dart';
 import 'package:jiffy/jiffy.dart';
+import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 
 @RoutePage()
 class NotificationsScreen extends ConsumerWidget {
-  const NotificationsScreen({super.key});
+  NotificationsScreen({super.key});
+
+  final _mixpanel = GetIt.I<Mixpanel>();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -109,6 +113,8 @@ class NotificationsScreen extends ConsumerWidget {
                         if (unreadNotifications.isEmpty) {
                           return;
                         }
+
+                        _mixpanel.track('user:notification-state:read-all');
 
                         final req = GNotificationScreen_MarkAllNotificationsAsRead_MutationReq();
                         await client.request(req);
@@ -260,6 +266,8 @@ class NotificationsScreen extends ConsumerWidget {
                         ),
                       ),
                       onPressed: () async {
+                        _mixpanel.track('user:notification-state:read');
+
                         final req = GNotificationScreen_MarkNotificationAsRead_MutationReq(
                           (b) => b..vars.input.notificationId = notification.id,
                         );

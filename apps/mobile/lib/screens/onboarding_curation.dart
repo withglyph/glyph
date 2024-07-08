@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_randomcolor/flutter_randomcolor.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
+import 'package:get_it/get_it.dart';
 import 'package:glyph/components/heading.dart';
 import 'package:glyph/components/img.dart';
 import 'package:glyph/components/pressable.dart';
@@ -22,6 +23,7 @@ import 'package:glyph/icons/tabler.dart';
 import 'package:glyph/providers/ferry.dart';
 import 'package:glyph/shells/default.dart';
 import 'package:glyph/themes/colors.dart';
+import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 
 @RoutePage()
 class OnboardingCurationScreen extends ConsumerStatefulWidget {
@@ -32,6 +34,8 @@ class OnboardingCurationScreen extends ConsumerStatefulWidget {
 }
 
 class _OnboardingCurationScreenState extends ConsumerState<OnboardingCurationScreen> {
+  final _mixpanel = GetIt.I<Mixpanel>();
+
   int _page = 1;
   bool _fetching = false;
   bool _eol = false;
@@ -195,11 +199,15 @@ class _OnboardingCurationScreenState extends ConsumerState<OnboardingCurationScr
                             ),
                             onPressed: () async {
                               if (tag.followed) {
+                                _mixpanel.track('tag:unfollow', properties: {'via': 'onboarding-curation-screen'});
+
                                 final req = GOnboardingCurationScreen_UnfollowTag_MutationReq(
                                   (b) => b..vars.input.tagId = tag.id,
                                 );
                                 await client.request(req);
                               } else {
+                                _mixpanel.track('tag:follow', properties: {'via': 'onboarding-curation-screen'});
+
                                 final req = GOnboardingCurationScreen_FollowTag_MutationReq(
                                   (b) => b..vars.input.tagId = tag.id,
                                 );
@@ -280,6 +288,9 @@ class _OnboardingCurationScreenState extends ConsumerState<OnboardingCurationScr
 
   Future<void> _completeOnboarding() async {
     final client = ref.read(ferryProvider.notifier);
+
+    _mixpanel.track('onboarding:complete');
+
     final req = GOnboardingCurationScreen_CompleteOnboarding_MutationReq();
     await client.request(req);
 

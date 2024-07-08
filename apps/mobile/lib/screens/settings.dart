@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
+import 'package:get_it/get_it.dart';
 import 'package:glyph/components/pressable.dart';
 import 'package:glyph/components/toggle_switch.dart';
 import 'package:glyph/context/alert.dart';
@@ -18,12 +19,15 @@ import 'package:glyph/routers/app.gr.dart';
 import 'package:glyph/shells/default.dart';
 import 'package:glyph/themes/colors.dart';
 import 'package:jiffy/jiffy.dart';
+import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 @RoutePage()
 class SettingsScreen extends ConsumerWidget {
-  const SettingsScreen({super.key});
+  SettingsScreen({super.key});
+
+  final _mixpanel = GetIt.I<Mixpanel>();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -54,7 +58,7 @@ class SettingsScreen extends ConsumerWidget {
                       _Item(
                         title: '본인인증',
                         onPressed: () async {
-                          await context.router.push(const IdentificationRoute());
+                          await context.router.push(IdentificationRoute());
                         },
                       ),
                     ],
@@ -100,6 +104,8 @@ class SettingsScreen extends ConsumerWidget {
                             ToggleSwitch(
                               value: data.me!.marketingConsent != null,
                               onChanged: (value) async {
+                                _mixpanel.track('user:marketing_consent:update', properties: {'consent': value});
+
                                 final req = GSettingsScreen_UpdateUserMarketingConsent_MutationReq(
                                   (b) => b..vars.input.consent = value,
                                 );

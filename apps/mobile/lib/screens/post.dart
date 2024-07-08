@@ -198,7 +198,7 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                                       'space:unmute',
                                       properties: {
                                         'spaceId': data.post.space!.id,
-                                        'via': 'post',
+                                        'via': 'post-screen',
                                       },
                                     );
 
@@ -215,7 +215,7 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                                       'space:mute',
                                       properties: {
                                         'spaceId': data.post.space!.id,
-                                        'via': 'post',
+                                        'via': 'post-screen',
                                       },
                                     );
 
@@ -260,7 +260,7 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                                         'post:delete',
                                         properties: {
                                           'postId': data.post.id,
-                                          'via': 'post',
+                                          'via': 'post-screen',
                                         },
                                       );
 
@@ -381,7 +381,7 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                         'post:bookmark',
                         properties: {
                           'postId': data.post.id,
-                          'via': 'post',
+                          'via': 'post-screen',
                         },
                       );
                       final req = GPostScreen_BookmarkPost_MutationReq(
@@ -393,7 +393,7 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                         'post:unbookmark',
                         properties: {
                           'postId': data.post.id,
-                          'via': 'post',
+                          'via': 'post-screen',
                         },
                       );
                       final req = GPostScreen_UnbookmarkPost_MutationReq(
@@ -436,7 +436,7 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
           }
 
           onGoToIdentification() async {
-            await context.router.push(const IdentificationRoute());
+            await context.router.push(IdentificationRoute());
           }
 
           onUnlockPasswordedPost(String password) async {
@@ -1356,7 +1356,7 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                                       'space:unfollow',
                                       properties: {
                                         'spaceId': data.post.space!.id,
-                                        'via': 'post',
+                                        'via': 'post-screen',
                                       },
                                     );
                                     final req = GPostScreen_UnfollowSpace_MutationReq(
@@ -1368,7 +1368,7 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                                       'space:follow',
                                       properties: {
                                         'spaceId': data.post.space!.id,
-                                        'via': 'post',
+                                        'via': 'post-screen',
                                       },
                                     );
                                     final req = GPostScreen_FollowSpace_MutationReq(
@@ -2126,7 +2126,9 @@ class _CollectionPostListState extends State<_CollectionPostList> {
 }
 
 class _Reactions extends StatelessWidget {
-  const _Reactions({required this.permalink});
+  _Reactions({required this.permalink});
+
+  final _mixpanel = GetIt.I<Mixpanel>();
 
   final String permalink;
 
@@ -2180,6 +2182,14 @@ class _Reactions extends StatelessWidget {
                     ),
                     onPressed: () async {
                       if (hasReacted) {
+                        _mixpanel.track(
+                          'post:reaction:delete',
+                          properties: {
+                            'postId': data.post.id,
+                            'emoji': emoji,
+                          },
+                        );
+
                         final req = GPostScreen_Reactions_DeletePostReaction_MutationReq(
                           (b) => b
                             ..vars.input.postId = data.post.id
@@ -2187,6 +2197,14 @@ class _Reactions extends StatelessWidget {
                         );
                         await client.request(req);
                       } else {
+                        _mixpanel.track(
+                          'post:reaction:create',
+                          properties: {
+                            'postId': data.post.id,
+                            'emoji': emoji,
+                          },
+                        );
+
                         final req = GPostScreen_Reactions_CreatePostReaction_MutationReq(
                           (b) => b
                             ..vars.input.postId = data.post.id
@@ -2226,7 +2244,9 @@ class _Reactions extends StatelessWidget {
 }
 
 class _EmojiPicker extends ConsumerWidget {
-  const _EmojiPicker({required this.postId});
+  _EmojiPicker({required this.postId});
+
+  final _mixpanel = GetIt.I<Mixpanel>();
 
   final String postId;
 
@@ -2266,6 +2286,15 @@ class _EmojiPicker extends ConsumerWidget {
                           child: Center(child: Emoji(emoji, size: 28)),
                           onPressed: () async {
                             final client = ref.read(ferryProvider.notifier);
+
+                            _mixpanel.track(
+                              'post:reaction:create',
+                              properties: {
+                                'postId': postId,
+                                'emoji': emoji,
+                              },
+                            );
+
                             final req = GPostScreen_Reactions_CreatePostReaction_MutationReq(
                               (b) => b
                                 ..vars.input.postId = postId

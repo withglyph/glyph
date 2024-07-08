@@ -3,6 +3,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:gap/gap.dart';
+import 'package:get_it/get_it.dart';
 import 'package:glyph/components/btn.dart';
 import 'package:glyph/context/alert.dart';
 import 'package:glyph/ferry/error.dart';
@@ -13,10 +14,13 @@ import 'package:glyph/routers/app.gr.dart';
 import 'package:glyph/shells/default.dart';
 import 'package:glyph/themes/colors.dart';
 import 'package:jiffy/jiffy.dart';
+import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 
 @RoutePage()
 class IdentificationScreen extends StatelessWidget {
-  const IdentificationScreen({super.key});
+  IdentificationScreen({super.key});
+
+  final _mixpanel = GetIt.I<Mixpanel>();
 
   @override
   Widget build(BuildContext context) {
@@ -99,6 +103,8 @@ class IdentificationScreen extends StatelessWidget {
                       }
 
                       try {
+                        _mixpanel.track('user:personal-identity-verification:start');
+
                         final req = GIdentificationScreen_VerifyPersonalIdentity_MutationReq(
                           (b) => b..vars.input.uid = result['imp_uid'],
                         );

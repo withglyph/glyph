@@ -5,6 +5,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
+import 'package:get_it/get_it.dart';
 import 'package:glyph/components/btn.dart';
 import 'package:glyph/components/empty_state.dart';
 import 'package:glyph/components/heading.dart';
@@ -22,6 +23,7 @@ import 'package:glyph/icons/tabler.dart';
 import 'package:glyph/icons/tabler_bold.dart';
 import 'package:glyph/routers/app.gr.dart';
 import 'package:glyph/themes/colors.dart';
+import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:share_plus/share_plus.dart';
 
 @RoutePage()
@@ -40,6 +42,8 @@ class SpaceCollectionScreen extends StatefulWidget {
 }
 
 class _SpaceCollectionScreenState extends State<SpaceCollectionScreen> with SingleTickerProviderStateMixin {
+  final _mixpanel = GetIt.I<Mixpanel>();
+
   late AnimationController _appBarAnimationController;
   late Animation<Color?> _appBarBackgroundColorAnimation;
   late Animation<Color?> _appBarForegroundColorAnimation;
@@ -361,11 +365,16 @@ class _SpaceCollectionScreenState extends State<SpaceCollectionScreen> with Sing
                                     iconLeft: data.spaceCollection.space.followed ? Tabler.check : Tabler.plus,
                                     onPressed: () async {
                                       if (data.spaceCollection.space.followed) {
+                                        _mixpanel
+                                            .track('space:unfollow', properties: {'via': 'space-collection-screen'});
+
                                         final req = GSpaceCollectionScreen_UnfollowSpace_MutationReq(
                                           (b) => b..vars.input.spaceId = data.spaceCollection.space.id,
                                         );
                                         await client.request(req);
                                       } else {
+                                        _mixpanel.track('space:follow', properties: {'via': 'space-collection-screen'});
+
                                         final req = GSpaceCollectionScreen_FollowSpace_MutationReq(
                                           (b) => b..vars.input.spaceId = data.spaceCollection.space.id,
                                         );

@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:gap/gap.dart';
+import 'package:get_it/get_it.dart';
 import 'package:glyph/components/btn.dart';
 import 'package:glyph/components/forms/form_text_field.dart';
 import 'package:glyph/components/pressable.dart';
@@ -23,6 +24,7 @@ import 'package:glyph/shells/default.dart';
 import 'package:glyph/themes/colors.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
+import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:transparent_image/transparent_image.dart';
 
@@ -35,6 +37,8 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  final _mixpanel = GetIt.I<Mixpanel>();
+
   final _formKey = GlobalKey<FormBuilderState>();
   final _imagePicker = ImagePicker();
 
@@ -203,6 +207,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                         avatarId = resp2.finalizeImageUpload.id;
                       }
+
+                      _mixpanel.track('user:profile:update');
 
                       final req = GProfileScreen_UpdateUserProfile_MutationReq(
                         (b) => b

@@ -10,6 +10,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:gap/gap.dart';
+import 'package:get_it/get_it.dart';
 import 'package:glyph/components/btn.dart';
 import 'package:glyph/components/forms/form_text_field.dart';
 import 'package:glyph/components/heading.dart';
@@ -34,6 +35,7 @@ import 'package:glyph/shells/default.dart';
 import 'package:glyph/themes/colors.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
+import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -340,7 +342,7 @@ class _MeScreenState extends ConsumerState<MeScreen> {
                       icon: Tabler.settings,
                       title: '설정',
                       onPressed: () async {
-                        await context.router.push(const SettingsRoute());
+                        await context.router.push(SettingsRoute());
                       },
                     ),
                     _MenuItem(
@@ -440,6 +442,7 @@ class _CreateSpace extends ConsumerStatefulWidget {
 }
 
 class _CreateSpaceState extends ConsumerState<_CreateSpace> {
+  final _mixpanel = GetIt.I<Mixpanel>();
   final _formKey = GlobalKey<FormBuilderState>();
   final _imagePicker = ImagePicker();
 
@@ -856,6 +859,8 @@ class _CreateSpaceState extends ConsumerState<_CreateSpace> {
 
                         avatarId = resp2.finalizeImageUpload.id;
                       }
+
+                      _mixpanel.track('space:create', properties: {'via': 'me-screen'});
 
                       final req = GMeScreen_CreateSpace_MutationReq(
                         (b) => b

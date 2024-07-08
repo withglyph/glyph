@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
+import 'package:get_it/get_it.dart';
 import 'package:glyph/components/img.dart';
 import 'package:glyph/components/pressable.dart';
 import 'package:glyph/components/rectangle_chip.dart';
@@ -26,14 +27,17 @@ import 'package:glyph/providers/ferry.dart';
 import 'package:glyph/routers/app.gr.dart';
 import 'package:glyph/themes/colors.dart';
 import 'package:jiffy/jiffy.dart';
+import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:share_plus/share_plus.dart';
 
 class ThumbnailPostCard extends ConsumerWidget {
-  const ThumbnailPostCard(
+  ThumbnailPostCard(
     this.post, {
     required this.padding,
     super.key,
   });
+
+  final _mixpanel = GetIt.I<Mixpanel>();
 
   final GThumbnailPostCard_post post;
   final EdgeInsetsGeometry padding;
@@ -118,6 +122,15 @@ class ThumbnailPostCard extends ConsumerWidget {
                                       confirmText: '삭제',
                                       onConfirmed: () async {
                                         final client = ref.read(ferryProvider.notifier);
+
+                                        _mixpanel.track(
+                                          'post:delete',
+                                          properties: {
+                                            'postId': post.id,
+                                            'via': 'thumbnail-post-card',
+                                          },
+                                        );
+
                                         final req = GThumbnailPostCard_DeletePost_MutationReq(
                                           (b) => b..vars.input.postId = post.id,
                                         );
@@ -140,6 +153,14 @@ class ThumbnailPostCard extends ConsumerWidget {
                                   onTap: () async {
                                     final client = ref.read(ferryProvider.notifier);
                                     if (post.space!.followed) {
+                                      _mixpanel.track(
+                                        'space:unfollow',
+                                        properties: {
+                                          'spaceId': post.space!.id,
+                                          'via': 'thumbnail-post-card',
+                                        },
+                                      );
+
                                       final req = GThumbnailPostCard_UnfollowSpace_MutationReq(
                                         (b) => b..vars.input.spaceId = post.space!.id,
                                       );
@@ -149,6 +170,14 @@ class ThumbnailPostCard extends ConsumerWidget {
                                         context.toast.show('${post.space!.name} 스페이스 구독을 해제했어요', type: ToastType.error);
                                       }
                                     } else {
+                                      _mixpanel.track(
+                                        'space:follow',
+                                        properties: {
+                                          'spaceId': post.space!.id,
+                                          'via': 'thumbnail-post-card',
+                                        },
+                                      );
+
                                       final req = GThumbnailPostCard_FollowSpace_MutationReq(
                                         (b) => b..vars.input.spaceId = post.space!.id,
                                       );
@@ -167,6 +196,14 @@ class ThumbnailPostCard extends ConsumerWidget {
                                   onTap: () async {
                                     final client = ref.read(ferryProvider.notifier);
                                     if (post.space!.muted) {
+                                      _mixpanel.track(
+                                        'space:unmute',
+                                        properties: {
+                                          'spaceId': post.space!.id,
+                                          'via': 'thumbnail-post-card',
+                                        },
+                                      );
+
                                       final req = GThumbnailPostCard_UnmuteSpace_MutationReq(
                                         (b) => b..vars.input.spaceId = post.space!.id,
                                       );
@@ -176,6 +213,14 @@ class ThumbnailPostCard extends ConsumerWidget {
                                         context.toast.show('${post.space!.name} 스페이스 뮤트를 해제했어요');
                                       }
                                     } else {
+                                      _mixpanel.track(
+                                        'space:mute',
+                                        properties: {
+                                          'spaceId': post.space!.id,
+                                          'via': 'thumbnail-post-card',
+                                        },
+                                      );
+
                                       final req = GThumbnailPostCard_MuteSpace_MutationReq(
                                         (b) => b..vars.input.spaceId = post.space!.id,
                                       );
@@ -320,11 +365,27 @@ class ThumbnailPostCard extends ConsumerWidget {
                       onPressed: () async {
                         final client = ref.read(ferryProvider.notifier);
                         if (post.bookmarkGroups.isEmpty) {
+                          _mixpanel.track(
+                            'post:bookmark',
+                            properties: {
+                              'postId': post.id,
+                              'via': 'thumbnail-post-card',
+                            },
+                          );
+
                           final req = GThumbnailPostCard_BookmarkPost_MutationReq(
                             (b) => b..vars.input.postId = post.id,
                           );
                           await client.request(req);
                         } else {
+                          _mixpanel.track(
+                            'post:unbookmark',
+                            properties: {
+                              'postId': post.id,
+                              'via': 'thumbnail-post-card',
+                            },
+                          );
+
                           final req = GThumbnailPostCard_UnbookmarkPost_MutationReq(
                             (b) => b
                               ..vars.input.postId = post.id

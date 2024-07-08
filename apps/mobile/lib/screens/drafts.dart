@@ -2,6 +2,7 @@ import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:get_it/get_it.dart';
 import 'package:glyph/components/btn.dart';
 import 'package:glyph/components/empty_state.dart';
 import 'package:glyph/components/horizontal_divider.dart';
@@ -16,6 +17,7 @@ import 'package:glyph/routers/app.gr.dart';
 import 'package:glyph/shells/default.dart';
 import 'package:glyph/themes/colors.dart';
 import 'package:jiffy/jiffy.dart';
+import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 @RoutePage()
@@ -27,6 +29,8 @@ class DraftsScreen extends StatefulWidget {
 }
 
 class _DraftsScreenState extends State<DraftsScreen> {
+  final _mixpanel = GetIt.I<Mixpanel>();
+
   final selectedPosts = <String>{};
 
   @override
@@ -230,6 +234,14 @@ class _DraftsScreenState extends State<DraftsScreen> {
                               await Future.wait(
                                 selectedPosts.map(
                                   (postId) async {
+                                    _mixpanel.track(
+                                      'post:delete',
+                                      properties: {
+                                        'postId': postId,
+                                        'via': 'drafts-screen',
+                                      },
+                                    );
+
                                     final req = GDraftsScreen_DeletePost_MutationReq(
                                       (b) => b..vars.input.postId = postId,
                                     );

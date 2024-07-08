@@ -2,6 +2,7 @@ import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:get_it/get_it.dart';
 import 'package:glyph/components/pressable.dart';
 import 'package:glyph/graphql/__generated__/lobby_shell_create_post_mutation.req.gql.dart';
 import 'package:glyph/icons/glyph.dart';
@@ -10,10 +11,13 @@ import 'package:glyph/providers/auth.dart';
 import 'package:glyph/providers/ferry.dart';
 import 'package:glyph/routers/app.gr.dart';
 import 'package:glyph/themes/colors.dart';
+import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 
 @RoutePage()
 class LobbyShell extends ConsumerWidget {
-  const LobbyShell({super.key});
+  LobbyShell({super.key});
+
+  final _mixpanel = GetIt.I<Mixpanel>();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -93,6 +97,9 @@ class LobbyShell extends ConsumerWidget {
               ),
               onTap: () async {
                 final client = ref.read(ferryProvider.notifier);
+
+                _mixpanel.track('post:create', properties: {'via': 'lobby-shell'});
+
                 final req = GLobbyShell_CreatePost_MutationReq();
                 final resp = await client.request(req);
 

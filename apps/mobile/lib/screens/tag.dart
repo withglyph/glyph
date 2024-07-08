@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
+import 'package:get_it/get_it.dart';
 import 'package:glyph/components/btn.dart';
 import 'package:glyph/components/empty_state.dart';
 import 'package:glyph/components/heading.dart';
@@ -25,6 +26,7 @@ import 'package:glyph/icons/tabler.dart';
 import 'package:glyph/icons/tabler_bold.dart';
 import 'package:glyph/routers/app.gr.dart';
 import 'package:glyph/themes/colors.dart';
+import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 
 @RoutePage()
 class TagScreen extends StatefulWidget {
@@ -40,6 +42,8 @@ class TagScreen extends StatefulWidget {
 }
 
 class _TagScreenState extends State<TagScreen> with SingleTickerProviderStateMixin {
+  final _mixpanel = GetIt.I<Mixpanel>();
+
   late AnimationController _appBarAnimationController;
   late Animation<Color?> _appBarBackgroundColorAnimation;
   late Animation<Color?> _appBarForegroundColorAnimation;
@@ -136,11 +140,15 @@ class _TagScreenState extends State<TagScreen> with SingleTickerProviderStateMix
                               color: BrandColors.red_600,
                               onTap: () async {
                                 if (data.tag.muted) {
+                                  _mixpanel.track('tag:unmute', properties: {'via': 'tag-screen'});
+
                                   final req = GTagScreen_UnmuteTag_MutationReq(
                                     (b) => b..vars.input.tagId = data.tag.id,
                                   );
                                   await client.request(req);
                                 } else {
+                                  _mixpanel.track('tag:mute', properties: {'via': 'tag-screen'});
+
                                   final req = GTagScreen_MuteTag_MutationReq(
                                     (b) => b..vars.input.tagId = data.tag.id,
                                   );
@@ -304,11 +312,15 @@ class _TagScreenState extends State<TagScreen> with SingleTickerProviderStateMix
                                   enabled: !data.tag.muted,
                                   onPressed: () async {
                                     if (data.tag.followed) {
+                                      _mixpanel.track('tag:unfollow', properties: {'via': 'tag-screen'});
+
                                       final req = GTagScreen_UnfollowTag_MutationReq(
                                         (b) => b..vars.input.tagId = data.tag.id,
                                       );
                                       await client.request(req);
                                     } else {
+                                      _mixpanel.track('tag:follow', properties: {'via': 'tag-screen'});
+
                                       final req = GTagScreen_FollowTag_MutationReq(
                                         (b) => b..vars.input.tagId = data.tag.id,
                                       );

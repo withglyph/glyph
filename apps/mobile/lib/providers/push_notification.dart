@@ -6,6 +6,7 @@ import 'package:get_it/get_it.dart';
 import 'package:glyph/graphql/__generated__/push_notification_provider_delete_push_notification_token_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/push_notification_provider_register_push_notification_token_mutation.req.gql.dart';
 import 'package:glyph/providers/ferry.dart';
+import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -27,6 +28,7 @@ sealed class PushNotificationState with _$PushNotificationState {
 
 @riverpod
 class PushNotification extends _$PushNotification {
+  final _mixpanel = GetIt.I<Mixpanel>();
   final _messaging = GetIt.I<FirebaseMessaging>();
 
   @override
@@ -54,6 +56,13 @@ class PushNotification extends _$PushNotification {
       return;
     }
 
+    _mixpanel.track(
+      'push-notification-token:register',
+      properties: {
+        'token': token,
+      },
+    );
+
     final req = GPushNotificationProvider_RegisterPushNotificationToken_MutationReq(
       (b) => b..vars.input.token = token,
     );
@@ -74,6 +83,13 @@ class PushNotification extends _$PushNotification {
     if (token == null) {
       return;
     }
+
+    _mixpanel.track(
+      'push-notification-token:delete',
+      properties: {
+        'token': token,
+      },
+    );
 
     final req = GPushNotificationProvider_DeletePushNotificationToken_MutationReq(
       (b) => b..vars.input.token = token,

@@ -4,6 +4,7 @@ import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:get_it/get_it.dart';
 import 'package:glyph/components/Img.dart';
 import 'package:glyph/components/btn.dart';
 import 'package:glyph/components/heading.dart';
@@ -22,6 +23,7 @@ import 'package:glyph/graphql/__generated__/space_screen_unmute_space_mutation.r
 import 'package:glyph/icons/tabler.dart';
 import 'package:glyph/routers/app.gr.dart';
 import 'package:glyph/themes/colors.dart';
+import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:nested_scroll_view_plus/nested_scroll_view_plus.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:sliver_tools/sliver_tools.dart';
@@ -40,6 +42,8 @@ class SpaceScreen extends StatefulWidget {
 }
 
 class _SpaceScreenState extends State<SpaceScreen> with SingleTickerProviderStateMixin {
+  final _mixpanel = GetIt.I<Mixpanel>();
+
   final _headerKey = GlobalKey();
 
   bool _isOverHeader = true;
@@ -100,6 +104,10 @@ class _SpaceScreenState extends State<SpaceScreen> with SingleTickerProviderStat
                                 color: BrandColors.red_600,
                                 onTap: () async {
                                   if (data.space.muted) {
+                                    _mixpanel.track(
+                                      'space:unmute',
+                                      properties: {'spaceId': data.space.id, 'via': 'space-screen'},
+                                    );
                                     final req = GSpaceScreen_UnmuteSpace_MutationReq(
                                       (b) => b..vars.input.spaceId = data.space.id,
                                     );
@@ -109,6 +117,11 @@ class _SpaceScreenState extends State<SpaceScreen> with SingleTickerProviderStat
                                       context.toast.show('${data.space.name} 스페이스 뮤트를 해제했어요');
                                     }
                                   } else {
+                                    _mixpanel.track(
+                                      'space:mute',
+                                      properties: {'spaceId': data.space.id, 'via': 'space-screen'},
+                                    );
+
                                     final req = GSpaceScreen_MuteSpace_MutationReq(
                                       (b) => b..vars.input.spaceId = data.space.id,
                                     );
@@ -302,17 +315,30 @@ class _SpaceScreenState extends State<SpaceScreen> with SingleTickerProviderStat
                                           : () async {
                                               if (data.space.meAsMember == null) {
                                                 if (data.space.followed) {
+                                                  _mixpanel.track(
+                                                    'space:unfollow',
+                                                    properties: {'spaceId': data.space.id, 'via': 'space-screen'},
+                                                  );
                                                   final req = GSpaceScreen_UnfollowSpace_MutationReq(
                                                     (b) => b..vars.input.spaceId = data.space.id,
                                                   );
                                                   await client.request(req);
                                                 } else {
+                                                  _mixpanel.track(
+                                                    'space:follow',
+                                                    properties: {'spaceId': data.space.id, 'via': 'space-screen'},
+                                                  );
                                                   final req = GSpaceScreen_FollowSpace_MutationReq(
                                                     (b) => b..vars.input.spaceId = data.space.id,
                                                   );
                                                   await client.request(req);
                                                 }
                                               } else {
+                                                _mixpanel.track(
+                                                  'post:create',
+                                                  properties: {'via': 'space-screen'},
+                                                );
+
                                                 final req = GSpaceScreen_CreatePost_MutationReq();
                                                 final resp = await client.request(req);
 

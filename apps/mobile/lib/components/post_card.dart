@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
+import 'package:get_it/get_it.dart';
 import 'package:glyph/components/img.dart';
 import 'package:glyph/components/pressable.dart';
 import 'package:glyph/components/rectangle_chip.dart';
@@ -22,15 +23,18 @@ import 'package:glyph/providers/ferry.dart';
 import 'package:glyph/routers/app.gr.dart';
 import 'package:glyph/themes/colors.dart';
 import 'package:jiffy/jiffy.dart';
+import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 
 class PostCard extends ConsumerWidget {
-  const PostCard(
+  PostCard(
     this.post, {
     required this.padding,
     this.onPressed,
     super.key,
     this.dots = true,
   });
+
+  final _mixpanel = GetIt.I<Mixpanel>();
 
   final GPostCard_post post;
   final EdgeInsetsGeometry padding;
@@ -185,6 +189,14 @@ class PostCard extends ConsumerWidget {
                               onTap: () async {
                                 final client = ref.read(ferryProvider.notifier);
                                 if (post.space!.followed) {
+                                  _mixpanel.track(
+                                    'space:unfollow',
+                                    properties: {
+                                      'spaceId': post.space!.id,
+                                      'via': 'post-card',
+                                    },
+                                  );
+
                                   final req = GPostCard_UnfollowSpace_MutationReq(
                                     (b) => b..vars.input.spaceId = post.space!.id,
                                   );
@@ -194,6 +206,14 @@ class PostCard extends ConsumerWidget {
                                     context.toast.show('${post.space!.name} 스페이스 구독을 해제했어요', type: ToastType.error);
                                   }
                                 } else {
+                                  _mixpanel.track(
+                                    'space:follow',
+                                    properties: {
+                                      'spaceId': post.space!.id,
+                                      'via': 'post-card',
+                                    },
+                                  );
+
                                   final req = GPostCard_FollowSpace_MutationReq(
                                     (b) => b..vars.input.spaceId = post.space!.id,
                                   );
@@ -212,6 +232,14 @@ class PostCard extends ConsumerWidget {
                               onTap: () async {
                                 final client = ref.read(ferryProvider.notifier);
                                 if (post.space!.muted) {
+                                  _mixpanel.track(
+                                    'space:unmute',
+                                    properties: {
+                                      'spaceId': post.space!.id,
+                                      'via': 'post-card',
+                                    },
+                                  );
+
                                   final req = GPostCard_UnmuteSpace_MutationReq(
                                     (b) => b..vars.input.spaceId = post.space!.id,
                                   );
@@ -221,6 +249,14 @@ class PostCard extends ConsumerWidget {
                                     context.toast.show('${post.space!.name} 스페이스 뮤트를 해지했어요');
                                   }
                                 } else {
+                                  _mixpanel.track(
+                                    'space:mute',
+                                    properties: {
+                                      'spaceId': post.space!.id,
+                                      'via': 'post-card',
+                                    },
+                                  );
+
                                   final req = GPostCard_MuteSpace_MutationReq(
                                     (b) => b..vars.input.spaceId = post.space!.id,
                                   );

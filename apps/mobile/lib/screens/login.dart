@@ -9,6 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_naver_login/flutter_naver_login.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
+import 'package:get_it/get_it.dart';
 import 'package:glyph/components/btn.dart';
 import 'package:glyph/components/heading.dart';
 import 'package:glyph/components/pressable.dart';
@@ -26,6 +27,7 @@ import 'package:glyph/routers/app.gr.dart';
 import 'package:glyph/themes/colors.dart';
 import 'package:glyph/widgets/signup.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:transparent_image/transparent_image.dart';
 
@@ -160,6 +162,8 @@ GoogleSignIn _googleSignIn = GoogleSignIn(
 );
 
 class _BottomSheet extends ConsumerWidget {
+  final _mixpanel = GetIt.I<Mixpanel>();
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // ignore: prefer_function_declarations_over_variables
@@ -170,6 +174,8 @@ class _BottomSheet extends ConsumerWidget {
 
       await context.loader.run(() async {
         final client = ref.read(ferryProvider.notifier);
+
+        _mixpanel.track('user:login:start', properties: {'method': provider});
 
         final req = GLoginScreen_AuthorizeSingleSignOnToken_MutationReq(
           (b) => b
