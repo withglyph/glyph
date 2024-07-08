@@ -5,19 +5,22 @@ import 'package:ferry_flutter/ferry_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:glyph/ferry/error.dart';
+import 'package:glyph/providers/auth.dart';
 import 'package:glyph/providers/ferry.dart';
 
 class GraphQLOperation<TData, TVars> extends ConsumerStatefulWidget {
   const GraphQLOperation({
     required this.operation,
     required this.builder,
-    super.key,
     this.onDataLoaded,
+    this.requireAuth = true,
+    super.key,
   });
 
   final OperationRequest<TData, TVars> operation;
   final Widget Function(BuildContext context, Ferry client, TData data) builder;
   final FutureOr<void> Function(BuildContext context, Ferry client, TData data)? onDataLoaded;
+  final bool requireAuth;
 
   @override
   createState() => _GraphQLOperationState<TData, TVars>();
@@ -45,11 +48,17 @@ class _GraphQLOperationState<TData, TVars> extends ConsumerState<GraphQLOperatio
 
   @override
   Widget build(BuildContext context) {
+    final asyncAuth = ref.watch(authProvider);
     final asyncClient = ref.watch(ferryProvider);
-    final client = asyncClient.unwrapPrevious().valueOrNull;
     final notifier = ref.watch(ferryProvider.notifier);
 
+    final client = asyncClient.unwrapPrevious().valueOrNull;
     if (client == null) {
+      return const SizedBox.shrink();
+    }
+
+    final auth = asyncAuth.unwrapPrevious().valueOrNull;
+    if (widget.requireAuth && auth is! Authenticated) {
       return const SizedBox.shrink();
     }
 

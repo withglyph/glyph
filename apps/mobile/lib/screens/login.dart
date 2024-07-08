@@ -75,6 +75,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> with SingleTickerProv
           Positioned.fill(
             child: GraphQLOperation(
               operation: GLoginScreen_QueryReq(),
+              requireAuth: false,
               builder: (context, client, data) {
                 return AnimatedBuilder(
                   animation: _animationController,
