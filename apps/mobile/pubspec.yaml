@@ -47,6 +47,7 @@ dependencies:
   in_app_purchase: '^3.2.0'
   intl: ^0.19.0
   jiffy: '^6.3.1'
+  json_annotation: ^4.9.0
   mixpanel_flutter: '^2.2.0'
   nested_scroll_view_plus: ^2.0.0
   package_info_plus: '^8.0.0'
@@ -72,6 +73,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   freezed: '^2.5.2'
+  json_serializable: ^6.8.0
   riverpod_generator: '^2.4.0'
   riverpod_lint: '^2.3.10'
 
@@ -124,6 +126,34 @@ flutter:
           weight: 800
         - asset: assets/fonts/Pretendard-Black.woff2
           weight: 900
+    - family: KoPubWorldBatang
+      fonts:
+        - asset: assets/fonts/KoPubWorldBatangMedium.woff2
+          weight: 400
+        - asset: assets/fonts/KoPubWorldBatangBold.woff2
+          weight: 700
+    - family: KoPubWorldDotum
+      fonts:
+        - asset: assets/fonts/KoPubWorldDotumMedium.woff2
+          weight: 400
+        - asset: assets/fonts/KoPubWorldDotumBold.woff2
+          weight: 700
+    - family: NanumBarunGothic
+      fonts:
+        - asset: assets/fonts/NanumBarunGothic.woff2
+          weight: 400
+        - asset: assets/fonts/NanumBarunGothicBold.woff2
+          weight: 700
+    - family: NanumMyeongjo
+      fonts:
+        - asset: assets/fonts/NanumMyeongjo.woff2
+          weight: 400
+        - asset: assets/fonts/NanumMyeongjoBold.woff2
+          weight: 700
+    - family: RIDIBatang
+      fonts:
+        - asset: assets/fonts/RIDIBatang.woff2
+          weight: 400
     - family: TablerIcons
       fonts:
         - asset: assets/fonts/TablerIcons.ttf

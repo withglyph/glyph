@@ -5,8 +5,10 @@ import 'dart:math';
 
 import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:built_value/json_object.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -68,6 +70,8 @@ import 'package:glyph/graphql/fragments/__generated__/comment_postcomment.data.g
 import 'package:glyph/icons/tabler.dart';
 import 'package:glyph/icons/tabler_bold.dart';
 import 'package:glyph/misc/device_id_holder.dart';
+import 'package:glyph/prosemirror/builder.dart';
+import 'package:glyph/prosemirror/schema.dart';
 import 'package:glyph/providers/auth.dart';
 import 'package:glyph/providers/ferry.dart';
 import 'package:glyph/routers/app.gr.dart';
@@ -103,6 +107,8 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
   Timer? _floatingFooterVisibilityTimer;
 
   bool _blurContent = false;
+
+  bool _useNativeContent = !kReleaseMode;
 
   @override
   void initState() {
@@ -272,6 +278,15 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                                 },
                               ),
                             ]),
+                      BottomMenuItem(
+                        icon: Tabler.stack_3,
+                        title: _useNativeContent ? '웹뷰 렌더러로 전환' : '네이티브 렌더러로 전환',
+                        onTap: () {
+                          setState(() {
+                            _useNativeContent = !_useNativeContent;
+                          });
+                        },
+                      ),
                     ],
                   );
                 },
@@ -745,6 +760,8 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                             ),
                           _ => throw UnimplementedError(),
                         }
+                      else if (_useNativeContent)
+                        _NativeContent(content: data.post.publishedRevision!.content)
                       else
                         _Content(
                           permalink: widget.permalink,
@@ -1462,6 +1479,48 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
           });
         }
       }
+    }
+  }
+}
+
+class _NativeContent extends StatefulWidget {
+  const _NativeContent({
+    required this.content,
+  });
+
+  final JsonObject content;
+  Map<String, Object?> get contentAsMap => content.asMap as Map<String, Object?>;
+
+  @override
+  createState() => _NativeContentState();
+}
+
+class _NativeContentState extends State<_NativeContent> {
+  ProseMirrorNode? _node;
+  Widget? _widget;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _node = ProseMirrorNode.fromJson(widget.contentAsMap);
+    _widget = ProseMirrorWidgetBuilder.build(_node!);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _widget!;
+  }
+
+  @override
+  void didUpdateWidget(covariant _NativeContent oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (widget.content != oldWidget.content) {
+      setState(() {
+        _node = ProseMirrorNode.fromJson(widget.contentAsMap);
+        _widget = ProseMirrorWidgetBuilder.build(_node!);
+      });
     }
   }
 }
