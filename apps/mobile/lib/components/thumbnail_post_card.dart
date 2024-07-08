@@ -259,6 +259,7 @@ class ThumbnailPostCard extends ConsumerWidget {
                         post.thumbnail,
                         width: constraints.maxWidth,
                         aspectRatio: 16 / 10,
+                        borderWidth: 1,
                         borderRadius: 4,
                       );
                     },
