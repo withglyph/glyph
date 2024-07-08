@@ -15,6 +15,8 @@ import 'package:glyph/routers/app.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
@@ -60,5 +62,13 @@ Future<void> main() async {
 
   await initializeFirebaseMessaging();
 
-  runApp(const ProviderScope(child: App()));
+  final pkg = await PackageInfo.fromPlatform();
+
+  await SentryFlutter.init(
+    (options) => options
+      ..dsn = Env.sentryDsn
+      ..environment = Env.current
+      ..release = '${pkg.packageName}@${pkg.version}+${pkg.buildNumber}',
+    appRunner: () => runApp(const ProviderScope(child: App())),
+  );
 }
