@@ -17,6 +17,7 @@ import 'package:glyph/components/horizontal_divider.dart';
 import 'package:glyph/components/img.dart';
 import 'package:glyph/components/pressable.dart';
 import 'package:glyph/components/rectangle_chip.dart';
+import 'package:glyph/components/svg_image.dart';
 import 'package:glyph/context/modal.dart';
 import 'package:glyph/context/toast.dart';
 import 'package:glyph/extensions/build_context.dart';
@@ -477,21 +478,36 @@ class _CreateSpaceState extends ConsumerState<_CreateSpace> {
                           children: [
                             Pressable(
                               child: Padding(
-                                // TODO: placeholder는 기본 로고 이미지로
                                 padding: const Pad(all: 1),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(4),
-                                  child: FadeInImage(
-                                    width: 118,
-                                    height: 118,
-                                    placeholder: MemoryImage(kTransparentImage),
-                                    image: _iconBytes == null
-                                        ? CachedNetworkImageProvider(data.me!.profile.avatar.url)
-                                        : MemoryImage(_iconBytes!),
-                                    fit: BoxFit.cover,
-                                    fadeInDuration: const Duration(milliseconds: 150),
-                                  ),
-                                ),
+                                child: _iconBytes == null
+                                    ? Container(
+                                        width: 118,
+                                        height: 118,
+                                        decoration: BoxDecoration(
+                                          color: BrandColors.gray_50,
+                                          borderRadius: BorderRadius.circular(4),
+                                        ),
+                                        child: const Center(
+                                          child: FractionallySizedBox(
+                                            widthFactor: 1 / 4,
+                                            child: SvgImage(
+                                              'logos/compact',
+                                              color: BrandColors.gray_400,
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                    : ClipRRect(
+                                        borderRadius: BorderRadius.circular(4),
+                                        child: FadeInImage(
+                                          width: 118,
+                                          height: 118,
+                                          placeholder: MemoryImage(kTransparentImage),
+                                          image: MemoryImage(_iconBytes!),
+                                          fit: BoxFit.cover,
+                                          fadeInDuration: const Duration(milliseconds: 150),
+                                        ),
+                                      ),
                               ),
                               onPressed: () async {
                                 if (!await Permission.photos.request().isGranted) {
@@ -545,7 +561,7 @@ class _CreateSpaceState extends ConsumerState<_CreateSpace> {
                           ],
                         ),
                       ),
-                      const Gap(40),
+                      const Gap(20),
                       const Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
