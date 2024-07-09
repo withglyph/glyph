@@ -18,6 +18,7 @@ import 'package:glyph/graphql/__generated__/thumbnail_post_card_bookmark_post_mu
 import 'package:glyph/graphql/__generated__/thumbnail_post_card_delete_post_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/thumbnail_post_card_follow_space_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/thumbnail_post_card_mute_space_mutation.req.gql.dart';
+import 'package:glyph/graphql/__generated__/thumbnail_post_card_report_post_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/thumbnail_post_card_unbookmark_post_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/thumbnail_post_card_unfollow_space_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/thumbnail_post_card_unmute_space_mutation.req.gql.dart';
@@ -192,7 +193,7 @@ class ThumbnailPostCard extends ConsumerWidget {
                                 BottomMenuItem(
                                   icon: Tabler.volume_3,
                                   title: post.space!.muted ? '스페이스 뮤트 해제' : '스페이스 뮤트',
-                                  color: BrandColors.red_600,
+                                  color: BrandColors.gray_600,
                                   onTap: () async {
                                     final client = ref.read(ferryProvider.notifier);
                                     if (post.space!.muted) {
@@ -230,6 +231,36 @@ class ThumbnailPostCard extends ConsumerWidget {
                                         context.toast.show('${post.space!.name} 스페이스를 뮤트했어요', type: ToastType.error);
                                       }
                                     }
+                                  },
+                                ),
+                                BottomMenuItem(
+                                  icon: Tabler.flag_3,
+                                  title: '포스트 신고',
+                                  color: BrandColors.red_600,
+                                  onTap: () {
+                                    context.showDialog(
+                                      title: '신고하시겠어요?',
+                                      confirmText: '신고하기',
+                                      onConfirmed: () async {
+                                        final client = ref.read(ferryProvider.notifier);
+
+                                        _mixpanel.track(
+                                          'post:report',
+                                          properties: {
+                                            'postId': post.id,
+                                            'via': 'thumbnail-post-card',
+                                          },
+                                        );
+
+                                        final req =
+                                            GThumbnailPostCard_ReportPost_MutationReq((b) => b..vars.postId = post.id);
+                                        await client.request(req);
+
+                                        if (context.mounted) {
+                                          context.toast.show('신고가 성공적으로 접수되었어요');
+                                        }
+                                      },
+                                    );
                                   },
                                 ),
                               ]),

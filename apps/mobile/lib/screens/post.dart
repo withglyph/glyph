@@ -50,6 +50,7 @@ import 'package:glyph/graphql/__generated__/post_screen_comments_delete_comment_
 import 'package:glyph/graphql/__generated__/post_screen_comments_like_comment_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_screen_comments_query.data.gql.dart';
 import 'package:glyph/graphql/__generated__/post_screen_comments_query.req.gql.dart';
+import 'package:glyph/graphql/__generated__/post_screen_comments_report_comment_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_screen_comments_unlike_comment_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_screen_delete_post_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_screen_follow_space_mutation.req.gql.dart';
@@ -59,6 +60,7 @@ import 'package:glyph/graphql/__generated__/post_screen_query.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_screen_reactions_create_post_reaction_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_screen_reactions_delete_post_reaction_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_screen_reactions_query.req.gql.dart';
+import 'package:glyph/graphql/__generated__/post_screen_report_post_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_screen_space_post_list_query.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_screen_unbookmark_post_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_screen_unfollow_space_mutation.req.gql.dart';
@@ -205,7 +207,7 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                               BottomMenuItem(
                                 icon: Tabler.volume_3,
                                 title: data.post.space!.muted ? '스페이스 뮤트 해제' : '스페이스 뮤트',
-                                color: BrandColors.red_600,
+                                color: BrandColors.gray_600,
                                 onTap: () async {
                                   if (data.post.space!.muted) {
                                     _mixpanel.track(
@@ -242,6 +244,34 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                                       context.toast.show('${data.post.space!.name} 스페이스를 뮤트했어요', type: ToastType.error);
                                     }
                                   }
+                                },
+                              ),
+                              BottomMenuItem(
+                                icon: Tabler.flag_3,
+                                title: '포스트 신고',
+                                color: BrandColors.red_600,
+                                onTap: () {
+                                  context.showDialog(
+                                    title: '신고하시겠어요?',
+                                    confirmText: '신고하기',
+                                    onConfirmed: () async {
+                                      _mixpanel.track(
+                                        'post:report',
+                                        properties: {
+                                          'postId': data.post.id,
+                                          'via': 'post-screen',
+                                        },
+                                      );
+
+                                      final req =
+                                          GPostScreen_ReportPost_MutationReq((b) => b..vars.postId = data.post.id);
+                                      await client.request(req);
+
+                                      if (context.mounted) {
+                                        context.toast.show('신고가 성공적으로 접수되었어요');
+                                      }
+                                    },
+                                  );
                                 },
                               ),
                             ]
@@ -2506,6 +2536,30 @@ class _CommentsState extends ConsumerState<_Comments> with SingleTickerProviderS
                         );
                       }
 
+                      onReport() async {
+                        await context.showDialog(
+                          title: '신고하시겠어요?',
+                          confirmText: '신고하기',
+                          onConfirmed: () async {
+                            _mixpanel.track(
+                              'comment:report',
+                              properties: {
+                                'commentId': comment.id,
+                              },
+                            );
+
+                            final req =
+                                GPostScreen_Comments_ReportComment_MutationReq((b) => b..vars.commentId = comment.id);
+
+                            await client.request(req);
+
+                            if (context.mounted) {
+                              context.toast.show('신고가 성공적으로 접수되었어요');
+                            }
+                          },
+                        );
+                      }
+
                       return _Comment(
                         comment: comment,
                         children: comment.children.toList(),
@@ -2550,21 +2604,39 @@ class _CommentsState extends ConsumerState<_Comments> with SingleTickerProviderS
                                       onTap: onDelete,
                                     ),
                                   ]
-                                : [
-                                    BottomMenuItem(
-                                      icon: Tabler.x,
-                                      iconColor: BrandColors.gray_600,
-                                      title: '삭제',
-                                      onTap: onDelete,
-                                    ),
-                                    BottomMenuItem(
-                                      icon: Tabler.user_x,
-                                      iconColor: BrandColors.red_600,
-                                      title: '차단',
-                                      color: BrandColors.red_600,
-                                      onTap: onBlock,
-                                    ),
-                                  ],
+                                : data.post.space?.meAsMember != null
+                                    ? [
+                                        BottomMenuItem(
+                                          icon: Tabler.x,
+                                          iconColor: BrandColors.gray_600,
+                                          title: '삭제',
+                                          color: BrandColors.gray_600,
+                                          onTap: onDelete,
+                                        ),
+                                        BottomMenuItem(
+                                          icon: Tabler.user_x,
+                                          iconColor: BrandColors.gray_600,
+                                          title: '차단',
+                                          color: BrandColors.gray_600,
+                                          onTap: onBlock,
+                                        ),
+                                        BottomMenuItem(
+                                          icon: Tabler.flag_3,
+                                          iconColor: BrandColors.red_600,
+                                          title: '신고',
+                                          color: BrandColors.red_600,
+                                          onTap: onReport,
+                                        ),
+                                      ]
+                                    : [
+                                        BottomMenuItem(
+                                          icon: Tabler.flag_3,
+                                          iconColor: BrandColors.red_600,
+                                          title: '신고',
+                                          color: BrandColors.red_600,
+                                          onTap: onReport,
+                                        ),
+                                      ],
                           );
                         },
                         onReply: () async {
@@ -2788,7 +2860,7 @@ class _Comment extends ConsumerWidget {
                       ],
                     ),
                   ),
-                  if (!isDeleted && (isMyComment || isMyPost))
+                  if (!isDeleted && (!isMyComment && comment.invisibleReason != GCommentInvisibleReason.PRIVATE))
                     Pressable(
                       onPressed: onMore,
                       child: const Icon(
@@ -3074,6 +3146,29 @@ class _RepliesState extends ConsumerState<_Replies> with SingleTickerProviderSta
           );
         }
 
+        onReport({required GComment_postComment comment}) async {
+          await context.showDialog(
+            title: '신고하시겠어요?',
+            confirmText: '신고하기',
+            onConfirmed: () async {
+              _mixpanel.track(
+                'comment:report',
+                properties: {
+                  'commentId': comment.id,
+                },
+              );
+
+              final req = GPostScreen_Comments_ReportComment_MutationReq((b) => b..vars.commentId = comment.id);
+
+              await client.request(req);
+
+              if (context.mounted) {
+                context.toast.show('신고가 성공적으로 접수되었어요');
+              }
+            },
+          );
+        }
+
         onMore({required GComment_postComment comment}) async {
           await context.showBottomMenu(
             title: '댓글',
@@ -3087,21 +3182,39 @@ class _RepliesState extends ConsumerState<_Replies> with SingleTickerProviderSta
                       onTap: () => onDelete(id: comment.id),
                     ),
                   ]
-                : [
-                    BottomMenuItem(
-                      icon: Tabler.x,
-                      iconColor: BrandColors.gray_600,
-                      title: '삭제',
-                      onTap: () => onDelete(id: comment.id),
-                    ),
-                    BottomMenuItem(
-                      icon: Tabler.user_x,
-                      iconColor: BrandColors.red_600,
-                      title: '차단',
-                      color: BrandColors.red_600,
-                      onTap: () => onBlock(comment: comment),
-                    ),
-                  ],
+                : data.post.space?.meAsMember != null
+                    ? [
+                        BottomMenuItem(
+                          icon: Tabler.x,
+                          iconColor: BrandColors.gray_600,
+                          title: '삭제',
+                          color: BrandColors.gray_600,
+                          onTap: () => onDelete(id: comment.id),
+                        ),
+                        BottomMenuItem(
+                          icon: Tabler.user_x,
+                          iconColor: BrandColors.gray_600,
+                          title: '차단',
+                          color: BrandColors.gray_600,
+                          onTap: () => onBlock(comment: comment),
+                        ),
+                        BottomMenuItem(
+                          icon: Tabler.flag_3,
+                          iconColor: BrandColors.red_600,
+                          title: '신고',
+                          color: BrandColors.red_600,
+                          onTap: () => onReport(comment: comment),
+                        ),
+                      ]
+                    : [
+                        BottomMenuItem(
+                          icon: Tabler.flag_3,
+                          iconColor: BrandColors.red_600,
+                          title: '신고',
+                          color: BrandColors.red_600,
+                          onTap: () => onReport(comment: comment),
+                        ),
+                      ],
           );
         }
 

@@ -1,0 +1,3 @@
+mutation PostCard_ReportPost_Mutation($postId: ID!, $reason: String) {
+  reportPost(postId: $postId, reason: $reason)
+}

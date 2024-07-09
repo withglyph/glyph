@@ -1,0 +1,3 @@
+mutation PostScreen_Comments_ReportComment_Mutation($commentId: ID!, $reason: String) {
+  reportComment(commentId: $commentId, reason: $reason)
+}
