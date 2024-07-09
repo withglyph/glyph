@@ -30,7 +30,7 @@ class RootRouter extends ConsumerWidget implements AutoRouteWrapper {
           AsyncData(value: false) => const AuthRouter(),
           _ => const SplashRoute(),
         },
-        // ...?handler.initialPendingRoutes,
+        ...?handler.initialPendingRoutes,
       ],
     );
   }
