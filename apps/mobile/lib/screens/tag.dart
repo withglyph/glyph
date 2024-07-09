@@ -153,10 +153,6 @@ class _TagScreenState extends State<TagScreen> with SingleTickerProviderStateMix
                                     (b) => b..vars.input.tagId = data.tag.id,
                                   );
                                   await client.request(req);
-
-                                  if (context.mounted) {
-                                    await context.router.maybePop();
-                                  }
                                 }
                               },
                             ),
