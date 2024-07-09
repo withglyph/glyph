@@ -46,7 +46,7 @@ platform :ios do
 
     slack(
       slack_url: ENV["SLACK_WEBHOOK_URL"],
-      channel: '#activities',
+      channel: "#activities",
       pretext: "새 테스트 빌드가 있습니다 :rocket:",
       default_payloads: [],
       use_webhook_configured_username_and_icon: true,
@@ -70,7 +70,7 @@ platform :ios do
 
     slack(
       slack_url: ENV["SLACK_WEBHOOK_URL"],
-      channel: '#app-private-beta',
+      channel: "#app-private-beta",
       pretext: "새 베타 빌드가 있습니다 :rocket:",
       default_payloads: [],
       use_webhook_configured_username_and_icon: true,
@@ -117,6 +117,20 @@ platform :ios do
       automatic_release: true,
       submission_information: { add_id_info_uses_idfa: false },
       run_precheck_before_submit: false,
+    )
+
+    slack(
+      slack_url: ENV["SLACK_WEBHOOK_URL"],
+      channel: "#product",
+      pretext: "새 빌드가 심사에 제출되었습니다 :pencil:",
+      default_payloads: [],
+      use_webhook_configured_username_and_icon: true,
+      attachment_properties: {
+        fields: [
+          { title: "스토어", value: "AppStore (iOS)", short: true },
+          { title: "빌드 넘버", value: "#{target_build_number}", short: true },
+        ],
+      },
     )
   end
 end
