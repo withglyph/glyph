@@ -166,8 +166,7 @@ class _BottomSheet extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // ignore: prefer_function_declarations_over_variables
-    final login = (provider, token) async {
+    login(GUserSingleSignOnProvider provider, String token) async {
       if (!context.mounted) {
         return;
       }
@@ -175,7 +174,7 @@ class _BottomSheet extends ConsumerWidget {
       await context.loader.run(() async {
         final client = ref.read(ferryProvider.notifier);
 
-        _mixpanel.track('user:login:start', properties: {'method': provider});
+        _mixpanel.track('user:login:start', properties: {'method': provider.name});
 
         final req = GLoginScreen_AuthorizeSingleSignOnToken_MutationReq(
           (b) => b
@@ -202,7 +201,7 @@ class _BottomSheet extends ConsumerWidget {
           }
         }
       });
-    };
+    }
 
     return Padding(
       padding: const Pad(horizontal: 32, top: 16, bottom: 32),
