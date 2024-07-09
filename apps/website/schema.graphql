@@ -497,7 +497,7 @@ enum PointTransactionCause {
 type Post {
   ageRating: PostAgeRating!
   blurred: Boolean! @deprecated(reason: "Use `blurredReason` instead")
-  blurredReason: PostBlurredReason
+  blurredReasons: [PostBlurredReason!]!
   bookmarkGroups: [BookmarkGroup!]!
   category: PostCategory!
   collection: SpaceCollection
@@ -511,6 +511,7 @@ type Post {
   externalSearchable: Boolean!
   hasPassword: Boolean!
   id: ID!
+  invisibleReason: PostInvisibleReason
   likeCount: Int! @deprecated(reason: "Use `reactionCount` instead")
   liked: Boolean!
   member: SpaceMember
@@ -549,9 +550,6 @@ enum PostAgeRating {
 
 enum PostBlurredReason {
   ADULT_HIDDEN
-  AGE_RATING
-  NOT_IDENTIFIED
-  PASSWORD
   TRIGGER
 }
 
@@ -614,6 +612,12 @@ type PostContentState {
   title: String
   update: String!
   updatedAt: DateTime!
+}
+
+enum PostInvisibleReason {
+  AGE_RATING
+  NOT_IDENTIFIED
+  PASSWORD
 }
 
 enum PostPair {
