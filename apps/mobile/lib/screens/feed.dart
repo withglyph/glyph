@@ -155,7 +155,7 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
                       ],
                     ),
                     onPressed: () async {
-                      await context.router.push(const NotificationsRoute());
+                      await context.router.push(NotificationsRoute());
                     },
                   ),
                 ],
