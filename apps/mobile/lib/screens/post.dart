@@ -1017,7 +1017,7 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                             ),
                             const Gap(12),
                             SizedBox(
-                              height: 56,
+                              height: 60,
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.stretch,
                                 children: [
