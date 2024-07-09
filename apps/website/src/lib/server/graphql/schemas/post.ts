@@ -312,6 +312,13 @@ Post.implement({
       type: PostBlurredReason,
       nullable: true,
       resolve: async (post, _, context) => {
+        if (post.password && post.userId !== context.session?.userId) {
+          const unlock = await redis.hget(`Post:${post.id}:passwordUnlock`, context.deviceId);
+          if (!unlock || dayjs(unlock).isBefore(dayjs())) {
+            return 'PASSWORD';
+          }
+        }
+
         if (post.ageRating !== 'ALL') {
           const identity = await getPersonalIdentity(context.session?.userId, context);
 
@@ -345,13 +352,6 @@ Post.implement({
           const adultFilter = await adultFiltersLoader.load(context.session!.userId);
           if (adultFilter?.action !== 'EXPOSE') {
             return 'ADULT_HIDDEN';
-          }
-        }
-
-        if (post.password && post.userId !== context.session?.userId) {
-          const unlock = await redis.hget(`Post:${post.id}:passwordUnlock`, context.deviceId);
-          if (!unlock || dayjs(unlock).isBefore(dayjs())) {
-            return 'PASSWORD';
           }
         }
 
