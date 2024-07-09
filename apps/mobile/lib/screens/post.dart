@@ -178,7 +178,10 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
             ),
             actions: [
               Pressable(
-                child: const Icon(Tabler.share_2),
+                child: Icon(
+                  Tabler.share_2,
+                  color: hasThumbnail && _isOverThumbnail ? BrandColors.gray_0 : BrandColors.gray_900,
+                ),
                 onPressed: () async {
                   await Share.shareUri(
                     Uri.parse(
