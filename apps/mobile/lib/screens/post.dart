@@ -2294,7 +2294,7 @@ class _EmojiPicker extends ConsumerWidget {
                               'post:reaction:create',
                               properties: {
                                 'postId': postId,
-                                'emoji': emoji,
+                                'emoji': emoji.name,
                               },
                             );
 
