@@ -1,0 +1,5 @@
+mutation PostCard_DeletePost_Mutation($input: DeletePostInput!) {
+  deletePost(input: $input) {
+    id
+  }
+}

@@ -261,6 +261,7 @@ class _SearchResultScreenState extends ConsumerState<SearchResultScreen> with Si
                             return PostCard(
                               posts[index],
                               padding: const Pad(horizontal: 20, vertical: 18),
+                              dots: posts[index].space!.meAsMember == null,
                             );
                           },
                           separatorBuilder: (context, index) {

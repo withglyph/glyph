@@ -10,8 +10,10 @@ import 'package:glyph/components/pressable.dart';
 import 'package:glyph/components/rectangle_chip.dart';
 import 'package:glyph/components/tag.dart';
 import 'package:glyph/context/bottom_menu.dart';
+import 'package:glyph/context/dialog.dart';
 import 'package:glyph/context/toast.dart';
 import 'package:glyph/extensions/iterable.dart';
+import 'package:glyph/graphql/__generated__/post_card_delete_post_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_card_follow_space_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_card_mute_space_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_card_unfollow_space_mutation.req.gql.dart';
@@ -169,7 +171,7 @@ class PostCard extends ConsumerWidget {
                     aspectRatio: 16 / 10,
                     borderWidth: 1,
                   ),
-                  if (dots && post.space!.meAsMember == null) ...[
+                  if (dots) ...[
                     const Spacer(),
                     Pressable(
                       child: const Icon(
@@ -181,93 +183,144 @@ class PostCard extends ConsumerWidget {
                         await context.showBottomMenu(
                           title: '포스트',
                           items: [
-                            BottomMenuItem(
-                              icon: post.space!.followed ? Tabler.minus : Tabler.plus,
-                              iconColor: BrandColors.gray_600,
-                              title: post.space!.followed ? '스페이스 구독 해제' : '스페이스 구독',
-                              color: BrandColors.gray_600,
-                              onTap: () async {
-                                final client = ref.read(ferryProvider.notifier);
-                                if (post.space!.followed) {
-                                  _mixpanel.track(
-                                    'space:unfollow',
-                                    properties: {
-                                      'spaceId': post.space!.id,
-                                      'via': 'post-card',
-                                    },
-                                  );
+                            ...(post.space!.meAsMember == null
+                                ? [
+                                    BottomMenuItem(
+                                      icon: post.space!.followed ? Tabler.minus : Tabler.plus,
+                                      iconColor: BrandColors.gray_600,
+                                      title: post.space!.followed ? '스페이스 구독 해제' : '스페이스 구독',
+                                      color: BrandColors.gray_600,
+                                      onTap: () async {
+                                        final client = ref.read(ferryProvider.notifier);
+                                        if (post.space!.followed) {
+                                          _mixpanel.track(
+                                            'space:unfollow',
+                                            properties: {
+                                              'spaceId': post.space!.id,
+                                              'via': 'post-card',
+                                            },
+                                          );
 
-                                  final req = GPostCard_UnfollowSpace_MutationReq(
-                                    (b) => b..vars.input.spaceId = post.space!.id,
-                                  );
-                                  await client.request(req);
+                                          final req = GPostCard_UnfollowSpace_MutationReq(
+                                            (b) => b..vars.input.spaceId = post.space!.id,
+                                          );
+                                          await client.request(req);
 
-                                  if (context.mounted) {
-                                    context.toast.show('${post.space!.name} 스페이스 구독을 해제했어요', type: ToastType.error);
-                                  }
-                                } else {
-                                  _mixpanel.track(
-                                    'space:follow',
-                                    properties: {
-                                      'spaceId': post.space!.id,
-                                      'via': 'post-card',
-                                    },
-                                  );
+                                          if (context.mounted) {
+                                            context.toast
+                                                .show('${post.space!.name} 스페이스 구독을 해제했어요', type: ToastType.error);
+                                          }
+                                        } else {
+                                          _mixpanel.track(
+                                            'space:follow',
+                                            properties: {
+                                              'spaceId': post.space!.id,
+                                              'via': 'post-card',
+                                            },
+                                          );
 
-                                  final req = GPostCard_FollowSpace_MutationReq(
-                                    (b) => b..vars.input.spaceId = post.space!.id,
-                                  );
-                                  await client.request(req);
+                                          final req = GPostCard_FollowSpace_MutationReq(
+                                            (b) => b..vars.input.spaceId = post.space!.id,
+                                          );
+                                          await client.request(req);
 
-                                  if (context.mounted) {
-                                    context.toast.show('${post.space!.name} 스페이스를 구독했어요');
-                                  }
-                                }
-                              },
-                            ),
-                            BottomMenuItem(
-                              icon: Tabler.volume_3,
-                              title: post.space!.muted ? '스페이스 뮤트 해제' : '스페이스 뮤트',
-                              color: BrandColors.red_600,
-                              onTap: () async {
-                                final client = ref.read(ferryProvider.notifier);
-                                if (post.space!.muted) {
-                                  _mixpanel.track(
-                                    'space:unmute',
-                                    properties: {
-                                      'spaceId': post.space!.id,
-                                      'via': 'post-card',
-                                    },
-                                  );
+                                          if (context.mounted) {
+                                            context.toast.show('${post.space!.name} 스페이스를 구독했어요');
+                                          }
+                                        }
+                                      },
+                                    ),
+                                    BottomMenuItem(
+                                      icon: Tabler.volume_3,
+                                      title: post.space!.muted ? '스페이스 뮤트 해제' : '스페이스 뮤트',
+                                      color: BrandColors.red_600,
+                                      onTap: () async {
+                                        final client = ref.read(ferryProvider.notifier);
+                                        if (post.space!.muted) {
+                                          _mixpanel.track(
+                                            'space:unmute',
+                                            properties: {
+                                              'spaceId': post.space!.id,
+                                              'via': 'post-card',
+                                            },
+                                          );
 
-                                  final req = GPostCard_UnmuteSpace_MutationReq(
-                                    (b) => b..vars.input.spaceId = post.space!.id,
-                                  );
-                                  await client.request(req);
+                                          final req = GPostCard_UnmuteSpace_MutationReq(
+                                            (b) => b..vars.input.spaceId = post.space!.id,
+                                          );
+                                          await client.request(req);
 
-                                  if (context.mounted) {
-                                    context.toast.show('${post.space!.name} 스페이스 뮤트를 해지했어요');
-                                  }
-                                } else {
-                                  _mixpanel.track(
-                                    'space:mute',
-                                    properties: {
-                                      'spaceId': post.space!.id,
-                                      'via': 'post-card',
-                                    },
-                                  );
+                                          if (context.mounted) {
+                                            context.toast.show('${post.space!.name} 스페이스 뮤트를 해지했어요');
+                                          }
+                                        } else {
+                                          _mixpanel.track(
+                                            'space:mute',
+                                            properties: {
+                                              'spaceId': post.space!.id,
+                                              'via': 'post-card',
+                                            },
+                                          );
 
-                                  final req = GPostCard_MuteSpace_MutationReq(
-                                    (b) => b..vars.input.spaceId = post.space!.id,
-                                  );
-                                  await client.request(req);
+                                          final req = GPostCard_MuteSpace_MutationReq(
+                                            (b) => b..vars.input.spaceId = post.space!.id,
+                                          );
+                                          await client.request(req);
 
-                                  if (context.mounted) {
-                                    context.toast.show('${post.space!.name} 스페이스를 뮤트했어요', type: ToastType.error);
-                                  }
-                                }
-                              },
-                            ),
+                                          if (context.mounted) {
+                                            context.toast
+                                                .show('${post.space!.name} 스페이스를 뮤트했어요', type: ToastType.error);
+                                          }
+                                        }
+                                      },
+                                    ),
+                                  ]
+                                : [
+                                    BottomMenuItem(
+                                      icon: Tabler.pencil,
+                                      title: '수정',
+                                      color: BrandColors.gray_600,
+                                      onTap: () async {
+                                        if (context.mounted) {
+                                          await context.router.push(
+                                            EditorRoute(permalink: post.permalink),
+                                          );
+                                        }
+                                      },
+                                    ),
+                                    BottomMenuItem(
+                                      icon: Tabler.x,
+                                      title: '삭제',
+                                      color: BrandColors.red_600,
+                                      onTap: () {
+                                        context.showDialog(
+                                          title: '포스트를 삭제하시겠어요?',
+                                          content: '삭제된 글은 복구할 수 없어요',
+                                          confirmText: '삭제',
+                                          onConfirmed: () async {
+                                            final client = ref.read(ferryProvider.notifier);
+
+                                            _mixpanel.track(
+                                              'post:delete',
+                                              properties: {
+                                                'postId': post.id,
+                                                'via': 'post-card',
+                                              },
+                                            );
+
+                                            final req = GPostCard_DeletePost_MutationReq(
+                                              (b) => b..vars.input.postId = post.id,
+                                            );
+                                            await client.request(req);
+
+                                            if (context.mounted) {
+                                              context.toast.show('포스트가 삭제되었어요', type: ToastType.error);
+                                            }
+                                          },
+                                        );
+                                      },
+                                    ),
+                                  ]),
                           ],
                         );
                       },
