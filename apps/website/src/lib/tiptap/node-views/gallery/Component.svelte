@@ -48,10 +48,7 @@
       (node.attrs.size === 'full' || node.attrs.layout === 'slide-1' || node.attrs.layout === 'slide-2') && {
         width: 'full',
       },
-      node.attrs.size === 'compact' &&
-        node.attrs.layout !== 'scroll' && {
-          maxWidth: '500px',
-        },
+      node.attrs.size === 'compact' && { maxWidth: '500px' },
       selected && { ringWidth: '2px', ringColor: 'brand.400' },
     )}
   >
