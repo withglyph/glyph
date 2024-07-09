@@ -4,7 +4,6 @@ import {
   ReceiptUtility,
   SignedDataVerifier,
 } from '@apple/app-store-server-library';
-import { production } from '@withglyph/lib/environment';
 import appleSignIn from 'apple-signin-auth';
 import { env } from '$env/dynamic/private';
 import type { RequestEvent } from '@sveltejs/kit';
@@ -26,7 +25,6 @@ const rootCAs = [
 
 const appleId = 6_502_156_007;
 const bundleId = 'com.withglyph.app';
-const environment = production ? Environment.PRODUCTION : Environment.SANDBOX;
 const receiptUtility = new ReceiptUtility();
 
 const client = new AppStoreServerAPIClient(
@@ -34,13 +32,29 @@ const client = new AppStoreServerAPIClient(
   env.PRIVATE_APPLE_IAP_KEY_ID,
   env.PRIVATE_APPLE_IAP_ISSUER_ID,
   bundleId,
-  environment,
+  Environment.PRODUCTION,
+);
+
+const sandboxClient = new AppStoreServerAPIClient(
+  env.PRIVATE_APPLE_IAP_PRIVATE_KEY,
+  env.PRIVATE_APPLE_IAP_KEY_ID,
+  env.PRIVATE_APPLE_IAP_ISSUER_ID,
+  bundleId,
+  Environment.SANDBOX,
 );
 
 export const verifier = new SignedDataVerifier(
   rootCAs.map((v) => Buffer.from(v, 'base64')),
   true,
-  environment,
+  Environment.PRODUCTION,
+  bundleId,
+  appleId,
+);
+
+export const sandboxVerifier = new SignedDataVerifier(
+  rootCAs.map((v) => Buffer.from(v, 'base64')),
+  true,
+  Environment.SANDBOX,
   bundleId,
   appleId,
 );
@@ -88,12 +102,21 @@ export const getInAppPurchase = async ({ receiptData }: GetInAppPurchaseParams) 
     throw new Error('no transactionId');
   }
 
-  const resp = await client.getTransactionInfo(transactionId);
-  if (!resp.signedTransactionInfo) {
-    throw new Error('no signedTransactionInfo');
+  try {
+    const resp = await client.getTransactionInfo(transactionId);
+    if (!resp.signedTransactionInfo) {
+      throw new Error('no signedTransactionInfo');
+    }
+
+    const payload = await verifier.verifyAndDecodeTransaction(resp.signedTransactionInfo);
+    return payload;
+  } catch {
+    const resp = await sandboxClient.getTransactionInfo(transactionId);
+    if (!resp.signedTransactionInfo) {
+      throw new Error('no signedTransactionInfo in sandbox');
+    }
+
+    const payload = await sandboxVerifier.verifyAndDecodeTransaction(resp.signedTransactionInfo);
+    return payload;
   }
-
-  const payload = await verifier.verifyAndDecodeTransaction(resp.signedTransactionInfo);
-
-  return payload;
 };
