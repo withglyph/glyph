@@ -390,6 +390,8 @@ type Mutation {
   registerPushNotificationToken(input: RegisterPushNotificationTokenInput!): Void
   registerRedeemCode(input: RegisterRedeemCodeInput!): RedeemCodeRedemption!
   replacePostThumbnail(input: ReplacePostThumbnailInput!): Post!
+  reportComment(commentId: ID!, reason: String): Void
+  reportPost(postId: ID!, reason: String): Void
   revokeRedeemCode(input: RevokeRedeemCodeInput!): Redeem!
   revokeRedeemCodeGroup(input: RevokeRedeemCodeGroupInput!): RedeemCodeGroup!
   sendPushNotification(input: SendPushNotificationInput!): Boolean!

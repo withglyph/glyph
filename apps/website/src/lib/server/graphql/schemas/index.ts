@@ -12,6 +12,7 @@ import './playground';
 import './point';
 import './post';
 import './redeem';
+import './report';
 import './revenue';
 import './search';
 import './space';
