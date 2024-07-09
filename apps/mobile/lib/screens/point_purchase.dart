@@ -248,7 +248,7 @@ class _PointPurchaseScreenState extends ConsumerState<PointPurchaseScreen> {
                     _mixpanel.track(
                       'point:purchase',
                       properties: {
-                        'paymentMethod': kReleaseMode ? GPaymentMethod.IN_APP_PURCHASE : GPaymentMethod.DUMMY,
+                        'paymentMethod': kReleaseMode ? GPaymentMethod.IN_APP_PURCHASE.name : GPaymentMethod.DUMMY.name,
                         'pointAmount': product.pointAmount,
                       },
                     );
