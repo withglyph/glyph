@@ -322,15 +322,16 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                                 },
                               ),
                             ]),
-                      BottomMenuItem(
-                        icon: Tabler.stack_3,
-                        title: _useNativeContent ? '웹뷰 렌더러로 전환' : '네이티브 렌더러로 전환',
-                        onTap: () {
-                          setState(() {
-                            _useNativeContent = !_useNativeContent;
-                          });
-                        },
-                      ),
+                      if (kDebugMode)
+                        BottomMenuItem(
+                          icon: Tabler.stack_3,
+                          title: _useNativeContent ? '웹뷰 렌더러로 전환' : '네이티브 렌더러로 전환',
+                          onTap: () {
+                            setState(() {
+                              _useNativeContent = !_useNativeContent;
+                            });
+                          },
+                        ),
                     ],
                   );
                 },
