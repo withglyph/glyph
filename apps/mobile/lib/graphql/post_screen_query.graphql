@@ -23,7 +23,8 @@ query PostScreen_Query($permalink: String!) {
     publishedAt
     ageRating
     unlocked
-    blurredReason
+    invisibleReason
+    blurredReasons
     hasPassword
 
     space {

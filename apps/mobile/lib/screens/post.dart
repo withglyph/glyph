@@ -106,7 +106,7 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
 
   Timer? _floatingFooterVisibilityTimer;
 
-  bool _blurContent = false;
+  Set<GPostBlurredReason> unblurredReasons = {};
 
   bool _useNativeContent = !kReleaseMode;
 
@@ -131,14 +131,14 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
 
   @override
   Widget build(BuildContext context) {
+    final req = GPostScreen_QueryReq(
+      (b) => b..vars.permalink = widget.permalink,
+    );
+
     return Scaffold(
       body: GraphQLOperation(
-        operation: GPostScreen_QueryReq(
-          (b) => b..vars.permalink = widget.permalink,
-        ),
+        operation: req,
         onDataLoaded: (context, client, data) async {
-          _blurContent = data.post.blurredReason != null;
-
           _mixpanel.track(
             'post:view',
             properties: {
@@ -433,8 +433,8 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
             ),
           );
 
-          onUnblurPost() {
-            _blurContent = false;
+          onUnblurPost(GPostBlurredReason blurredReason) {
+            unblurredReasons.add(blurredReason);
             setState(() {});
           }
 
@@ -450,14 +450,17 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
               },
             );
 
-            final req = GPostScreen_UnlockPasswordedPost_MutationReq(
+            final unlockReq = GPostScreen_UnlockPasswordedPost_MutationReq(
               (b) => b
                 ..vars.input.postId = data.post.id
                 ..vars.input.password = password,
             );
 
-            await client.request(req).then((_) async {
-              _blurContent = false;
+            await client
+                .request(unlockReq)
+                .catchError((err) => throw err) // PasswordedPostGuard가 핸들링함
+                .then((_) async {
+              await client.request(req);
               setState(() {});
             });
           }
@@ -721,9 +724,12 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                           ],
                         ),
                       ),
-                      if (data.post.blurredReason != null && _blurContent)
-                        switch (data.post.blurredReason) {
-                          GPostBlurredReason.NOT_IDENTIFIED => PostWarning(
+                      if (data.post.invisibleReason != null)
+                        switch (data.post.invisibleReason) {
+                          GPostInvisibleReason.PASSWORD => _PasswordedPostGuard(
+                              onSubmit: onUnlockPasswordedPost,
+                            ),
+                          GPostInvisibleReason.NOT_IDENTIFIED => PostWarning(
                               title: switch (data.post.ageRating) {
                                 GPostAgeRating.R15 => '15세 콘텐츠',
                                 GPostAgeRating.R19 => '성인용 콘텐츠',
@@ -733,12 +739,7 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                               buttonTitle: '본인인증하기',
                               onPressed: onGoToIdentification,
                             ),
-                          GPostBlurredReason.ADULT_HIDDEN => PostWarning(
-                              title: '성인용 콘텐츠',
-                              description: '해당 내용은 성인용 콘텐츠를 담고 있어요',
-                              onPressed: onUnblurPost,
-                            ),
-                          GPostBlurredReason.AGE_RATING => PostWarning(
+                          GPostInvisibleReason.AGE_RATING => PostWarning(
                               title: switch (data.post.ageRating) {
                                 GPostAgeRating.R15 => '15세 콘텐츠',
                                 GPostAgeRating.R19 => '성인용 콘텐츠',
@@ -750,8 +751,14 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                                 await context.router.maybePop();
                               },
                             ),
-                          GPostBlurredReason.PASSWORD => _PasswordedPostGuard(
-                              onSubmit: onUnlockPasswordedPost,
+                          _ => throw UnimplementedError(),
+                        }
+                      else if (data.post.blurredReasons.toSet().difference(unblurredReasons).isNotEmpty)
+                        switch (data.post.blurredReasons.toSet().difference(unblurredReasons).first) {
+                          GPostBlurredReason.ADULT_HIDDEN => PostWarning(
+                              title: '성인용 콘텐츠',
+                              description: '해당 내용은 성인용 콘텐츠를 담고 있어요',
+                              onPressed: () => onUnblurPost(GPostBlurredReason.ADULT_HIDDEN),
                             ),
                           GPostBlurredReason.TRIGGER => PostWarning(
                               title: '보기전 주의사항',
@@ -759,7 +766,7 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                                   .where((tag) => tag.kind == GPostTagKind.TRIGGER)
                                   .map((tag) => '#${tag.tag.name}')
                                   .join(' '),
-                              onPressed: onUnblurPost,
+                              onPressed: () => onUnblurPost(GPostBlurredReason.TRIGGER),
                             ),
                           _ => throw UnimplementedError(),
                         }
