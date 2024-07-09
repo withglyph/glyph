@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui';
 
@@ -5,6 +6,7 @@ import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:built_value/json_object.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -312,15 +314,16 @@ class _MeScreenState extends ConsumerState<MeScreen> {
                         await context.router.push(const RevenueRoute());
                       },
                     ),
-                    _MenuItem(
-                      icon: Tabler.scan,
-                      title: '리딤코드',
-                      onPressed: () async {
-                        await context.router.push(
-                          const RedeemRoute(),
-                        );
-                      },
-                    ),
+                    if (Platform.isAndroid)
+                      _MenuItem(
+                        icon: Tabler.scan,
+                        title: '리딤코드',
+                        onPressed: () async {
+                          await context.router.push(
+                            const RedeemRoute(),
+                          );
+                        },
+                      ),
                   ],
                 ),
                 const HorizontalDivider(height: 6, color: BrandColors.gray_50),
@@ -355,15 +358,22 @@ class _MeScreenState extends ConsumerState<MeScreen> {
                         );
                       },
                     ),
-                    _MenuItem(
-                      icon: Tabler.sparkles,
-                      title: '큐레이션',
-                      onPressed: () async {
-                        await context.router.push(const OnboardingCurationRoute());
-                      },
-                    ),
                   ],
                 ),
+                if (!kReleaseMode) ...[
+                  const HorizontalDivider(height: 6, color: BrandColors.gray_50),
+                  _Section(
+                    children: [
+                      _MenuItem(
+                        icon: Tabler.sparkles,
+                        title: '큐레이션',
+                        onPressed: () async {
+                          await context.router.push(const OnboardingCurationRoute());
+                        },
+                      ),
+                    ],
+                  ),
+                ],
                 const Gap(80),
               ],
             ),
