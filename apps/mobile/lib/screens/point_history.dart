@@ -134,7 +134,8 @@ class _PointHistoryState extends ConsumerState<PointHistoryScreen> {
                         _PointFilter.total => '마음에 드는 포스트를 구매해보세요.\n구매한 포스트는 영구 소장이 가능해요',
                         _PointFilter.charge => '포인트를 충전하고 마음에 드는\n포스트를 감상해보세요',
                         _PointFilter.usage => '마음에 드는 포스트를 구매해보세요.\n구매한 포스트는 영구 소장이 가능해요',
-                      })
+                      },
+                    )
                   : ListView.separated(
                       physics: const AlwaysScrollableScrollPhysics(
                         parent: BouncingScrollPhysics(),
