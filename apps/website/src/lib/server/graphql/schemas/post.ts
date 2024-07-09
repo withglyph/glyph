@@ -90,8 +90,12 @@ const CommentOrderByKind = builder.enumType('CommentOrderByKind', {
   values: ['LATEST', 'OLDEST'] as const,
 });
 
+const PostInvisibleReason = builder.enumType('PostInvisibleReason', {
+  values: ['PASSWORD', 'NOT_IDENTIFIED', 'AGE_RATING'] as const,
+});
+
 const PostBlurredReason = builder.enumType('PostBlurredReason', {
-  values: ['NOT_IDENTIFIED', 'AGE_RATING', 'ADULT_HIDDEN', 'TRIGGER', 'PASSWORD'] as const,
+  values: ['ADULT_HIDDEN', 'TRIGGER'] as const,
 });
 
 export const Post = createObjectRef('Post', Posts);
@@ -308,8 +312,8 @@ Post.implement({
       },
     }),
 
-    blurredReason: t.field({
-      type: PostBlurredReason,
+    invisibleReason: t.field({
+      type: PostInvisibleReason,
       nullable: true,
       resolve: async (post, _, context) => {
         if (post.password && post.userId !== context.session?.userId) {
@@ -329,7 +333,17 @@ Post.implement({
           if (!(await checkAgeRatingAllowed(context.session?.userId, post.ageRating, context))) {
             return 'AGE_RATING';
           }
+        }
+      },
+    }),
 
+    blurredReasons: t.field({
+      type: [PostBlurredReason],
+      nullable: true,
+      resolve: async (post, _, context) => {
+        const reasons: (typeof PostBlurredReason.$inferType)[] = [];
+
+        if (post.ageRating !== 'ALL') {
           const adultFiltersLoader = context.loader({
             name: 'Post.blurred > adultFilters',
             nullable: true,
@@ -351,7 +365,7 @@ Post.implement({
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           const adultFilter = await adultFiltersLoader.load(context.session!.userId);
           if (adultFilter?.action !== 'EXPOSE') {
-            return 'ADULT_HIDDEN';
+            reasons.push('ADULT_HIDDEN');
           }
         }
 
@@ -369,8 +383,10 @@ Post.implement({
 
         const triggerTags = await triggerTagsLoader.load(post.id);
         if (triggerTags.length > 0) {
-          return 'TRIGGER';
+          reasons.push('TRIGGER');
         }
+
+        return reasons;
       },
     }),
 
