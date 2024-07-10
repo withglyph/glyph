@@ -298,7 +298,7 @@ class NotificationsScreen extends ConsumerWidget {
                   onRefresh: () async {
                     await client.request(GNotificationScreen_QueryReq());
                   },
-                  emptyText: const EmptyState(
+                  emptyWidget: const EmptyState(
                     icon: TablerBold.bell_x,
                     title: '아직 알림이 없어요',
                     description: '스페이스를 구독하거나 댓글을 남겨보세요',

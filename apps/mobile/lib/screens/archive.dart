@@ -16,12 +16,12 @@ class ArchiveScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return AutoTabsRouter.tabBar(
-      routes: const [
+      routes: [
         ArchiveBookmarksRoute(),
         ArchivePurchasesRoute(),
         ArchiveRecentsRoute(),
         ArchiveEmojisRoute(),
-        ArchiveCommentsRoute(),
+        const ArchiveCommentsRoute(),
       ],
       builder: (context, child, tabController) {
         return DefaultShell(

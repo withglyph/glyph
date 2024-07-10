@@ -57,14 +57,14 @@ class PullToRefresh extends StatelessWidget {
     required int itemCount,
     required NullableIndexedWidgetBuilder itemBuilder,
     required IndexedWidgetBuilder separatorBuilder,
-    required Widget emptyText,
+    required Widget emptyWidget,
   }) {
     return PullToRefreshListView(
       onRefresh: onRefresh,
       itemCount: itemCount,
       itemBuilder: itemBuilder,
       separatorBuilder: separatorBuilder,
-      emptyText: emptyText,
+      emptyWidget: emptyWidget,
     );
   }
 }
@@ -75,7 +75,7 @@ class PullToRefreshListView extends StatelessWidget {
     required this.itemCount,
     required this.itemBuilder,
     required this.separatorBuilder,
-    required this.emptyText,
+    required this.emptyWidget,
     super.key,
   });
 
@@ -83,7 +83,7 @@ class PullToRefreshListView extends StatelessWidget {
   final NullableIndexedWidgetBuilder itemBuilder;
   final IndexedWidgetBuilder separatorBuilder;
   final int itemCount;
-  final Widget emptyText;
+  final Widget emptyWidget;
 
   @override
   Widget build(BuildContext context) {
@@ -98,7 +98,7 @@ class PullToRefreshListView extends StatelessWidget {
                   ),
                   child: SizedBox(
                     height: constraints.maxHeight,
-                    child: emptyText,
+                    child: emptyWidget,
                   ),
                 )
               : ListView.separated(
