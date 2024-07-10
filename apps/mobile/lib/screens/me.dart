@@ -344,7 +344,7 @@ class _MeScreenState extends ConsumerState<MeScreen> {
                       icon: Tabler.settings,
                       title: '설정',
                       onPressed: () async {
-                        await context.router.push(SettingsRoute());
+                        await context.router.push(const SettingsRoute());
                       },
                     ),
                     _MenuItem(

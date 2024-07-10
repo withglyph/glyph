@@ -8,7 +8,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:built_value/json_object.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -74,6 +73,7 @@ import 'package:glyph/icons/tabler_bold.dart';
 import 'package:glyph/misc/device_id_holder.dart';
 import 'package:glyph/prosemirror/builder.dart';
 import 'package:glyph/prosemirror/schema.dart';
+import 'package:glyph/prosemirror/widgets/access_barrier.dart';
 import 'package:glyph/providers/auth.dart';
 import 'package:glyph/providers/ferry.dart';
 import 'package:glyph/routers/app.gr.dart';
@@ -809,7 +809,11 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                           _ => throw UnimplementedError(),
                         }
                       else if (_useNativeContent)
-                        _NativeContent(content: data.post.publishedRevision!.content)
+                        _NativeContent(
+                          permalink: widget.permalink,
+                          revisionId: data.post.publishedRevision!.id,
+                          content: data.post.publishedRevision!.content,
+                        )
                       else
                         _Content(
                           permalink: widget.permalink,
@@ -1533,9 +1537,13 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
 
 class _NativeContent extends StatefulWidget {
   const _NativeContent({
+    required this.permalink,
+    required this.revisionId,
     required this.content,
   });
 
+  final String permalink;
+  final String revisionId;
   final JsonObject content;
   Map<String, Object?> get contentAsMap => content.asMap as Map<String, Object?>;
 
@@ -1557,18 +1565,20 @@ class _NativeContentState extends State<_NativeContent> {
 
   @override
   Widget build(BuildContext context) {
-    return _widget!;
+    return ProseMirrorWidgetAccessBarrierData(
+      permalink: widget.permalink,
+      revisionId: widget.revisionId,
+      child: _widget!,
+    );
   }
 
   @override
-  void didUpdateWidget(covariant _NativeContent oldWidget) {
+  void didUpdateWidget(_NativeContent oldWidget) {
     super.didUpdateWidget(oldWidget);
 
     if (widget.content != oldWidget.content) {
-      setState(() {
-        _node = ProseMirrorNode.fromJson(widget.contentAsMap);
-        _widget = ProseMirrorWidgetBuilder.build(_node!);
-      });
+      _node = ProseMirrorNode.fromJson(widget.contentAsMap);
+      _widget = ProseMirrorWidgetBuilder.build(_node!);
     }
   }
 }

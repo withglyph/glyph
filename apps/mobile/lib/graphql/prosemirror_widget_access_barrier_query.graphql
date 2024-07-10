@@ -1,0 +1,32 @@
+query ProseMirrorWidgetAccessBarrier_Query($permalink: String!, $revisionId: ID!) {
+  me {
+    id
+    point
+  }
+
+  post(permalink: $permalink) {
+    id
+    purchasedAt
+
+    revision(id: $revisionId) {
+      id
+      title
+      price
+
+      paidContent {
+        id
+        characters
+        images
+        files
+      }
+    }
+
+    space {
+      id
+
+      meAsMember {
+        id
+      }
+    }
+  }
+}

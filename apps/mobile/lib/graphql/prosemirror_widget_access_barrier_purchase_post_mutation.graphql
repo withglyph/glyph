@@ -1,0 +1,11 @@
+mutation ProseMirrorWidgetAccessBarrier_PurchasePost_Mutation($input: PurchasePostInput!) {
+  purchasePost(input: $input) {
+    id
+    purchasedAt
+
+    publishedRevision {
+      id
+      content
+    }
+  }
+}
