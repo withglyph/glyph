@@ -4,11 +4,14 @@ import 'dart:math';
 import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:glyph/components/empty_state.dart';
 import 'package:glyph/components/horizontal_divider.dart';
+import 'package:glyph/components/pull_to_refresh.dart';
 import 'package:glyph/components/thumbnail_post_card.dart';
 import 'package:glyph/const.dart';
 import 'package:glyph/ferry/widget.dart';
 import 'package:glyph/graphql/__generated__/feed_recommend_screen_query.req.gql.dart';
+import 'package:glyph/icons/tabler_bold.dart';
 import 'package:glyph/themes/colors.dart';
 
 @RoutePage()
@@ -24,7 +27,7 @@ class _FeedRecommendScreenState extends State<FeedRecommendScreen> {
   bool _fetching = false;
   bool _eol = false;
 
-  final req = GFeedRecommendScreen_QueryReq(
+  final operation = GFeedRecommendScreen_QueryReq(
     (b) => b
       ..requestId = 'FeedRecommendScreen_Query'
       ..vars.page = 1
@@ -35,7 +38,7 @@ class _FeedRecommendScreenState extends State<FeedRecommendScreen> {
   @override
   Widget build(BuildContext context) {
     return GraphQLOperation(
-      operation: req,
+      operation: operation,
       builder: (context, client, data) {
         final posts = data.recommendFeed;
 
@@ -44,7 +47,7 @@ class _FeedRecommendScreenState extends State<FeedRecommendScreen> {
             if (notification.metrics.extentAfter <= 200) {
               if (!_fetching && !_eol) {
                 _fetching = true;
-                final newReq = req.rebuild(
+                final newReq = operation.rebuild(
                   (b) => b
                     ..vars.page = ++_page
                     ..updateResult = (previous, result) =>
@@ -64,10 +67,7 @@ class _FeedRecommendScreenState extends State<FeedRecommendScreen> {
 
             return false;
           },
-          child: ListView.separated(
-            physics: const AlwaysScrollableScrollPhysics(
-              parent: BouncingScrollPhysics(),
-            ),
+          child: PullToRefresh.listView(
             itemCount: posts.length,
             itemBuilder: (context, index) {
               return ThumbnailPostCard(
@@ -81,6 +81,17 @@ class _FeedRecommendScreenState extends State<FeedRecommendScreen> {
                 child: HorizontalDivider(color: BrandColors.gray_50),
               );
             },
+            onRefresh: () async {
+              final newReq = operation.rebuild((b) => b..vars.seed = Random().nextInt(1000));
+              await client.request(newReq);
+              _page = 1;
+              _eol = false;
+            },
+            emptyWidget: const EmptyState(
+              icon: TablerBold.notes_off,
+              title: '아직 추천 피드가 없어요',
+              description: '마음에 드는 스페이스나 태그를 구독해보세요',
+            ),
           ),
         );
       },
