@@ -110,6 +110,7 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
 
   Timer? _floatingFooterVisibilityTimer;
 
+  bool revealMutedSpace = false;
   Set<GPostBlurredReason> unblurredReasons = {};
 
   late final bool _useNativeContentEnabled;
@@ -755,7 +756,16 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                           ],
                         ),
                       ),
-                      if (data.post.invisibleReason != null)
+                      if (data.post.space!.muted && !revealMutedSpace)
+                        PostWarning(
+                          title: '뮤트된 스페이스의 포스트입니다',
+                          description: '포스트를 봐도 ${data.post.space!.name} 스페이스의 뮤트가 해제되지 않아요',
+                          onPressed: () {
+                            revealMutedSpace = true;
+                            setState(() {});
+                          },
+                        )
+                      else if (data.post.invisibleReason != null)
                         switch (data.post.invisibleReason) {
                           GPostInvisibleReason.PASSWORD => _PasswordedPostGuard(
                               onSubmit: onUnlockPasswordedPost,

@@ -21,6 +21,7 @@ import 'package:glyph/graphql/__generated__/space_screen_query.req.gql.dart';
 import 'package:glyph/graphql/__generated__/space_screen_unfollow_space_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/space_screen_unmute_space_mutation.req.gql.dart';
 import 'package:glyph/icons/tabler.dart';
+import 'package:glyph/icons/tabler_bold.dart';
 import 'package:glyph/routers/app.gr.dart';
 import 'package:glyph/themes/colors.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
@@ -41,13 +42,14 @@ class SpaceScreen extends StatefulWidget {
   createState() => _SpaceScreenState();
 }
 
-class _SpaceScreenState extends State<SpaceScreen> with SingleTickerProviderStateMixin {
+class _SpaceScreenState extends State<SpaceScreen> {
   final _mixpanel = GetIt.I<Mixpanel>();
 
   final _headerKey = GlobalKey();
 
   bool _isOverHeader = true;
   double _headerScale = 1;
+  bool _revealMutedSpace = false;
 
   @override
   Widget build(BuildContext context) {
@@ -440,7 +442,45 @@ class _SpaceScreenState extends State<SpaceScreen> with SingleTickerProviderStat
                         ),
                       ];
                     },
-                    body: child,
+                    body: data.space.muted && !_revealMutedSpace
+                        ? Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Icon(TablerBold.alert_triangle, size: 40),
+                                const Gap(16),
+                                const Text(
+                                  '뮤트된 스페이스에요',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w700,
+                                    color: BrandColors.gray_800,
+                                  ),
+                                ),
+                                const Gap(4),
+                                Text(
+                                  '포스트를 봐도 ${data.space.name} 스페이스의 차단이 해제되지 않아요',
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    color: BrandColors.gray_500,
+                                  ),
+                                ),
+                                const Gap(20),
+                                Padding(
+                                  padding: const Pad(horizontal: 100),
+                                  child: Btn(
+                                    '포스트 보기',
+                                    onPressed: () {
+                                      setState(() {
+                                        _revealMutedSpace = true;
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                        : child,
                   ),
                 ),
               );
