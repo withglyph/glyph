@@ -330,7 +330,7 @@ class _MeScreenState extends ConsumerState<MeScreen> {
                   children: [
                     _MenuItem(
                       icon: Tabler.filter_cog,
-                      title: '컨텐츠 필터링',
+                      title: '뮤트/쿠션 관리',
                       onPressed: () async {
                         await context.router.push(const ContentFiltersRoute());
                       },

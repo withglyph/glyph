@@ -12,7 +12,7 @@ class ContentFiltersScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return DefaultShell(
-      title: '컨텐츠 필터링',
+      title: '뮤트/쿠션 관리',
       child: WebView(
         path: '/me/contentfilters',
         onJsMessage: (data, reply, controller) async {

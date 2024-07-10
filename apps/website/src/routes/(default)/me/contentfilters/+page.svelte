@@ -55,9 +55,9 @@
   );
 </script>
 
-<Helmet description="보고 싶은 컨텐츠와 보고 싶지 않은 컨텐츠를 설정할 수 있어요" title="필터링 설정" />
+<Helmet description="보고 싶은 컨텐츠와 보고 싶지 않은 컨텐츠를 설정할 수 있어요" title="뮤트/쿠션 설정" />
 
-<h1 class={css({ fontSize: '24px', fontWeight: 'bold', hideBelow: 'sm' })}>컨텐츠 필터링</h1>
+<h1 class={css({ fontSize: '24px', fontWeight: 'bold', hideBelow: 'sm' })}>뮤트/쿠션</h1>
 
 <div class={css({ marginTop: { base: '20px', sm: '32px' }, smDown: { paddingX: '20px' } })}>
   <button class={css({ textAlign: 'left', width: 'full' })} type="button" on:click={() => (mutedSpaceOpen = true)}>
@@ -87,10 +87,10 @@
   <div class={flex({ align: 'center', justify: 'space-between', gap: '20px' })}>
     <div>
       <p class={css({ marginBottom: '4px', fontSize: { base: '16px', sm: '18px' }, fontWeight: 'semibold' })}>
-        성인물 필터링 활성화
+        성인물 쿠션 활성화
       </p>
       <p class={css({ fontSize: '13px', color: 'gray.500' })}>
-        성인물 필터링을 활성화할 경우 읽기 전 경고 메시지가 나타나요.
+        성인물 쿠션을 활성화할 경우 읽기 전 경고 메시지가 나타나요.
       </p>
     </div>
 

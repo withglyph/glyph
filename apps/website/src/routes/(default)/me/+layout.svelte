@@ -50,7 +50,7 @@
       <NavItem icon={IconStar} pathname="/me/subscribes" title="구독" />
       <NavItem icon={IconCoin} pathname="/me/point" title="포인트" />
       <NavItem icon={IconPigMoney} pathname="/me/revenue" title="수익/출금" />
-      <NavItem icon={IconFilterCog} pathname="/me/contentfilters" title="컨텐츠필터링" />
+      <NavItem icon={IconFilterCog} pathname="/me/contentfilters" title="뮤트/쿠션" />
       <NavItem icon={IconScan} pathname="/me/redeem" title="리딤코드 등록" />
       <NavItem icon={IconSettings} pathname="/me/settings" title="계정설정" />
     </nav>
