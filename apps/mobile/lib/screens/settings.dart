@@ -37,7 +37,7 @@ class SettingsScreenState extends ConsumerState<SettingsScreen> {
   final _mixpanel = GetIt.I<Mixpanel>();
   final _prefs = GetIt.I<SharedPreferences>();
 
-  late final bool _devModeEnabled;
+  late bool _devModeEnabled;
   int _devModeTapCount = 0;
 
   @override
