@@ -81,6 +81,7 @@ import 'package:glyph/themes/colors.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -96,6 +97,7 @@ class PostScreen extends ConsumerStatefulWidget {
 
 class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProviderStateMixin {
   final _mixpanel = GetIt.I<Mixpanel>();
+  final _prefs = GetIt.I<SharedPreferences>();
 
   final _staticFooterKey = GlobalKey();
   final _thumbnailKey = GlobalKey();
@@ -110,7 +112,8 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
 
   Set<GPostBlurredReason> unblurredReasons = {};
 
-  bool _useNativeContent = !kReleaseMode;
+  late final bool _useNativeContentEnabled;
+  late bool _useNativeContent;
 
   @override
   void initState() {
@@ -122,6 +125,9 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
         _updateFloatingFooterVisibility();
       },
     );
+
+    _useNativeContentEnabled = _prefs.getBool('useNativePostRendering') ?? false;
+    _useNativeContent = _useNativeContentEnabled;
   }
 
   @override
@@ -322,10 +328,11 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                                 },
                               ),
                             ]),
-                      if (kDebugMode)
+                      if (_useNativeContentEnabled)
                         BottomMenuItem(
                           icon: Tabler.stack_3,
                           title: _useNativeContent ? '웹뷰 렌더러로 전환' : '네이티브 렌더러로 전환',
+                          color: BrandColors.gray_600,
                           onTap: () {
                             setState(() {
                               _useNativeContent = !_useNativeContent;

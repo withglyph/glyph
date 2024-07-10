@@ -9,6 +9,7 @@ import 'package:glyph/components/pressable.dart';
 import 'package:glyph/components/toggle_switch.dart';
 import 'package:glyph/context/alert.dart';
 import 'package:glyph/context/loader.dart';
+import 'package:glyph/context/toast.dart';
 import 'package:glyph/ferry/widget.dart';
 import 'package:glyph/graphql/__generated__/settings_screen_query.req.gql.dart';
 import 'package:glyph/graphql/__generated__/settings_screen_update_user_marketing_consent_mutation.req.gql.dart';
@@ -21,16 +22,33 @@ import 'package:glyph/themes/colors.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 @RoutePage()
-class SettingsScreen extends ConsumerWidget {
-  SettingsScreen({super.key});
-
-  final _mixpanel = GetIt.I<Mixpanel>();
+class SettingsScreen extends ConsumerStatefulWidget {
+  const SettingsScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  createState() => SettingsScreenState();
+}
+
+class SettingsScreenState extends ConsumerState<SettingsScreen> {
+  final _mixpanel = GetIt.I<Mixpanel>();
+  final _prefs = GetIt.I<SharedPreferences>();
+
+  late final bool _devModeEnabled;
+  int _devModeTapCount = 0;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _devModeEnabled = _prefs.getBool('devModeEnabled') ?? false;
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return DefaultShell(
       title: '설정',
       child: GraphQLOperation(
@@ -187,7 +205,22 @@ class SettingsScreen extends ConsumerWidget {
                               ),
                             ),
                             trailing: const SizedBox.shrink(),
-                            onPressed: () {},
+                            onPressed: () async {
+                              if (_devModeEnabled) {
+                                context.toast.show('이미 개발자입니다');
+                                return;
+                              }
+
+                              if (++_devModeTapCount >= 7) {
+                                await _prefs.setBool('devModeEnabled', true);
+                                _devModeEnabled = true;
+                                if (context.mounted) {
+                                  context.toast.show('개발자가 되셨습니다');
+                                }
+                              }
+
+                              setState(() {});
+                            },
                           );
                         },
                       ),
@@ -219,6 +252,13 @@ class SettingsScreen extends ConsumerWidget {
                           }
                         },
                       ),
+                      if (_devModeEnabled)
+                        _Item(
+                          title: '개발자 설정',
+                          onPressed: () async {
+                            await context.router.push(const DeveloperRoute());
+                          },
+                        ),
                     ],
                   ),
                 ),
