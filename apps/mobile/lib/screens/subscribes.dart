@@ -12,7 +12,7 @@ class SubscribesScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return DefaultShell(
-      title: '구독 설정',
+      title: '구독 관리',
       child: WebView(
         path: '/me/subscribes',
         onJsMessage: (data, reply, controller) async {

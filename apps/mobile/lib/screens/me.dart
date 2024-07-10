@@ -329,6 +329,13 @@ class _MeScreenState extends ConsumerState<MeScreen> {
                 _Section(
                   children: [
                     _MenuItem(
+                      icon: Tabler.star,
+                      title: '구독 관리',
+                      onPressed: () async {
+                        await context.router.push(const SubscribesRoute());
+                      },
+                    ),
+                    _MenuItem(
                       icon: Tabler.filter_cog,
                       title: '뮤트/쿠션 관리',
                       onPressed: () async {
