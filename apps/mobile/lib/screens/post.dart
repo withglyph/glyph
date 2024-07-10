@@ -351,42 +351,44 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
             padding: const Pad(horizontal: 20),
             child: Row(
               children: [
-                Pressable(
-                  child: Row(
-                    children: [
-                      const Icon(Tabler.mood_heart),
-                      const Gap(4),
-                      Text(
-                        data.post.reactionCount.toString(),
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: BrandColors.gray_500,
+                if (data.post.receiveFeedback) ...[
+                  Pressable(
+                    child: Row(
+                      children: [
+                        const Icon(Tabler.mood_heart),
+                        const Gap(4),
+                        Text(
+                          data.post.reactionCount.toString(),
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: BrandColors.gray_500,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
+                    onPressed: () async {
+                      if (data.post.reactionCount > 0) {
+                        await context.showBottomSheet(
+                          title: '이모지 ${data.post.reactionCount}',
+                          builder: (context) {
+                            return _Reactions(
+                              permalink: widget.permalink,
+                            );
+                          },
+                        );
+                      } else {
+                        await context.showBottomSheet(
+                          title: '이모지 달기',
+                          builder: (context) {
+                            return _EmojiPicker(postId: data.post.id);
+                          },
+                        );
+                      }
+                    },
                   ),
-                  onPressed: () async {
-                    if (data.post.reactionCount > 0) {
-                      await context.showBottomSheet(
-                        title: '이모지 ${data.post.reactionCount}',
-                        builder: (context) {
-                          return _Reactions(
-                            permalink: widget.permalink,
-                          );
-                        },
-                      );
-                    } else {
-                      await context.showBottomSheet(
-                        title: '이모지 달기',
-                        builder: (context) {
-                          return _EmojiPicker(postId: data.post.id);
-                        },
-                      );
-                    }
-                  },
-                ),
-                const Gap(20),
+                  const Gap(20),
+                ],
                 Pressable(
                   child: Row(
                     children: [

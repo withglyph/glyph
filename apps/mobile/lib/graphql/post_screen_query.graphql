@@ -26,6 +26,7 @@ query PostScreen_Query($permalink: String!) {
     invisibleReason
     blurredReasons
     hasPassword
+    receiveFeedback
 
     space {
       id
