@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gap/gap.dart';
+import 'package:glyph/components/pressable.dart';
 import 'package:glyph/icons/tabler.dart';
 import 'package:glyph/themes/colors.dart';
 
@@ -16,10 +17,14 @@ class _TextToastWidget extends ConsumerWidget {
   const _TextToastWidget({
     required this.type,
     required this.message,
+    this.actionText,
+    this.onAction,
   });
 
   final ToastType type;
   final String message;
+  final String? actionText;
+  final Function()? onAction;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -60,6 +65,20 @@ class _TextToastWidget extends ConsumerWidget {
               ),
             ),
           ),
+          if (actionText != null) ...[
+            const Gap(16),
+            Pressable(
+              onPressed: onAction,
+              child: Text(
+                actionText!,
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w700,
+                  color: BrandColors.gray_0,
+                ),
+              ),
+            ),
+          ],
         ],
       ),
     );
@@ -101,9 +120,17 @@ class ToastController {
   final BuildContext context;
   FToast get _ftoast => ToastScope.of(context)!.ftoast;
 
-  void show(String message, {ToastType type = ToastType.success}) {
+  void show(String message, {ToastType type = ToastType.success, String? actionText, Function()? onAction}) {
     _ftoast.showToast(
-      child: _TextToastWidget(type: type, message: message),
+      child: _TextToastWidget(
+        type: type,
+        message: message,
+        actionText: actionText,
+        onAction: () {
+          _ftoast.removeCustomToast();
+          onAction?.call();
+        },
+      ),
       positionedToastBuilder: (context, child) {
         final height = MediaQuery.of(context).padding.bottom;
         final inset = MediaQuery.of(context).viewInsets.bottom;
