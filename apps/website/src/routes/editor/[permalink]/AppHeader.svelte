@@ -49,7 +49,7 @@
     bottom: '0',
     width: 'full',
     backgroundColor: 'gray.0',
-    zIndex: '100',
+    zIndex: '30',
   })}
 >
   <MobileEditMenu />
