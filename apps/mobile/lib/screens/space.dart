@@ -341,7 +341,9 @@ class _SpaceScreenState extends State<SpaceScreen> {
                                                   properties: {'via': 'space-screen'},
                                                 );
 
-                                                final req = GSpaceScreen_CreatePost_MutationReq();
+                                                final req = GSpaceScreen_CreatePost_MutationReq(
+                                                  (b) => b..vars.input.spaceId = data.space.id,
+                                                );
                                                 final resp = await client.request(req);
 
                                                 if (context.mounted) {
