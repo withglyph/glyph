@@ -1,6 +1,8 @@
+import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:custom_refresh_indicator/custom_refresh_indicator.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:glyph/themes/colors.dart';
+import 'package:flutter/widgets.dart';
 
 class PullToRefresh extends StatelessWidget {
   const PullToRefresh({
@@ -21,31 +23,33 @@ class PullToRefresh extends StatelessWidget {
           Future.delayed(const Duration(seconds: 1)),
         ]);
       },
+      offsetToArmed: 60,
+      triggerMode: IndicatorTriggerMode.anywhere,
       // ignore: deprecated_member_use
       indicatorFinalizeDuration: const Duration(milliseconds: 200),
       child: child,
       builder: (context, child, controller) {
+        print(controller.value);
         return Stack(
           children: [
-            child,
             Positioned(
               top: 0,
               left: 0,
               right: 0,
-              child: AnimatedBuilder(
-                animation: controller,
-                builder: (context, child) {
-                  return Opacity(
-                    opacity: controller.value.clamp(0, 1),
-                    child: LinearProgressIndicator(
-                      value: controller.isDragging || controller.isArmed ? controller.value.clamp(0, 1) : null,
-                      backgroundColor: BrandColors.gray_150,
-                      color: BrandColors.gray_900,
-                    ),
-                  );
-                },
+              child: Container(
+                width: double.infinity,
+                height: controller.value * 60,
+                clipBehavior: Clip.hardEdge,
+                alignment: Alignment.bottomCenter,
+                padding: const Pad(bottom: 20),
+                decoration: const BoxDecoration(),
+                child: FadeTransition(
+                  opacity: controller.clamp(0, 1),
+                  child: const CupertinoActivityIndicator(),
+                ),
               ),
             ),
+            Transform.translate(offset: Offset(0, controller.value * 60), child: child),
           ],
         );
       },
@@ -94,7 +98,7 @@ class PullToRefreshListView extends StatelessWidget {
           child: itemCount == 0
               ? SingleChildScrollView(
                   physics: const AlwaysScrollableScrollPhysics(
-                    parent: BouncingScrollPhysics(),
+                    parent: ClampingScrollPhysics(),
                   ),
                   child: SizedBox(
                     height: constraints.maxHeight,
@@ -103,7 +107,7 @@ class PullToRefreshListView extends StatelessWidget {
                 )
               : ListView.separated(
                   physics: const AlwaysScrollableScrollPhysics(
-                    parent: BouncingScrollPhysics(),
+                    parent: ClampingScrollPhysics(),
                   ),
                   itemCount: itemCount,
                   itemBuilder: itemBuilder,
