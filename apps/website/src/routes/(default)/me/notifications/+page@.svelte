@@ -93,7 +93,7 @@
   </div>
 </header>
 
-<div class={flex({ direction: 'column', grow: '1', width: 'full' })}>
+<div class={flex({ direction: 'column', align: 'center', grow: '1', width: 'full' })}>
   <ul
     class={flex({
       direction: 'column',
