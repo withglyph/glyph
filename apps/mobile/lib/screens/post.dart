@@ -29,6 +29,7 @@ import 'package:glyph/components/rectangle_chip.dart';
 import 'package:glyph/context/bottom_menu.dart';
 import 'package:glyph/context/bottom_sheet.dart';
 import 'package:glyph/context/dialog.dart';
+import 'package:glyph/context/draggable_scrollable_sheet.dart';
 import 'package:glyph/context/floating_bottom_sheet.dart';
 import 'package:glyph/context/modal.dart';
 import 'package:glyph/context/toast.dart';
@@ -2298,10 +2299,10 @@ class _Reactions extends StatelessWidget {
                       child: const Icon(TablerBold.plus, size: 20, color: BrandColors.gray_400),
                     ),
                     onPressed: () async {
-                      await context.showBottomSheet(
+                      await context.showDraggableScrollableSheet(
                         title: '이모지 달기',
-                        builder: (context) {
-                          return _EmojiPicker(postId: data.post.id);
+                        builder: (context, controller, paddingTop) {
+                          return _EmojiPicker(postId: data.post.id, controller: controller, paddingTop: paddingTop);
                         },
                       );
                     },
@@ -2317,82 +2318,82 @@ class _Reactions extends StatelessWidget {
 }
 
 class _EmojiPicker extends ConsumerWidget {
-  _EmojiPicker({required this.postId});
+  _EmojiPicker({required this.postId, required this.controller, required this.paddingTop});
 
   final _mixpanel = GetIt.I<Mixpanel>();
 
   final String postId;
+  final ScrollController controller;
+  final double paddingTop;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return SizedBox(
-      height: 400,
-      child: CustomScrollView(
-        physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
-        slivers: [
-          SliverPadding(
-            padding: const Pad(horizontal: 20, vertical: 16),
-            sliver: MultiSliver(
-              children: [
-                ...EmojiSubsets.sections.map((section) {
-                  return MultiSliver(
-                    children: [
-                      SliverToBoxAdapter(
-                        child: Text(
-                          section.name,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w700,
-                            color: BrandColors.gray_800,
-                          ),
+    return CustomScrollView(
+      controller: controller,
+      physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+      slivers: [
+        SliverPadding(
+          padding: Pad(horizontal: 20, vertical: 16, top: paddingTop),
+          sliver: MultiSliver(
+            children: [
+              ...EmojiSubsets.sections.map((section) {
+                return MultiSliver(
+                  children: [
+                    SliverToBoxAdapter(
+                      child: Text(
+                        section.name,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                          color: BrandColors.gray_800,
                         ),
                       ),
-                      const SliverGap(8),
-                      SliverGrid.builder(
-                        gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                          maxCrossAxisExtent: 40,
-                          mainAxisSpacing: 10,
-                          crossAxisSpacing: 10,
-                        ),
-                        itemCount: section.emojis.length,
-                        itemBuilder: (context, index) {
-                          final emoji = section.emojis[index];
-                          return Pressable(
-                            child: Center(child: Emoji(emoji, size: 28)),
-                            onPressed: () async {
-                              final client = ref.read(ferryProvider.notifier);
-
-                              _mixpanel.track(
-                                'post:reaction:create',
-                                properties: {
-                                  'postId': postId,
-                                  'emoji': emoji.name,
-                                },
-                              );
-
-                              final req = GPostScreen_Reactions_CreatePostReaction_MutationReq(
-                                (b) => b
-                                  ..vars.input.postId = postId
-                                  ..vars.input.emoji = emoji.name,
-                              );
-                              await client.request(req);
-
-                              if (context.mounted) {
-                                await context.router.maybePop();
-                              }
-                            },
-                          );
-                        },
+                    ),
+                    const SliverGap(8),
+                    SliverGrid.builder(
+                      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                        maxCrossAxisExtent: 40,
+                        mainAxisSpacing: 10,
+                        crossAxisSpacing: 10,
                       ),
-                      const SliverGap(36),
-                    ],
-                  );
-                }),
-              ],
-            ),
+                      itemCount: section.emojis.length,
+                      itemBuilder: (context, index) {
+                        final emoji = section.emojis[index];
+                        return Pressable(
+                          child: Center(child: Emoji(emoji, size: 28)),
+                          onPressed: () async {
+                            final client = ref.read(ferryProvider.notifier);
+
+                            _mixpanel.track(
+                              'post:reaction:create',
+                              properties: {
+                                'postId': postId,
+                                'emoji': emoji.name,
+                              },
+                            );
+
+                            final req = GPostScreen_Reactions_CreatePostReaction_MutationReq(
+                              (b) => b
+                                ..vars.input.postId = postId
+                                ..vars.input.emoji = emoji.name,
+                            );
+                            await client.request(req);
+
+                            if (context.mounted) {
+                              await context.router.maybePop();
+                            }
+                          },
+                        );
+                      },
+                    ),
+                    const SliverGap(36),
+                  ],
+                );
+              }),
+            ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
