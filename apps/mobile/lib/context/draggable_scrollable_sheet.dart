@@ -35,14 +35,12 @@ extension BottomSheetX on BuildContext {
 
               return Stack(
                 children: [
-                  Expanded(
-                    child: child,
-                  ),
-                  IgnorePointer(
-                    child: Positioned(
-                      top: 0,
-                      left: 0,
-                      right: 0,
+                  child,
+                  Positioned(
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    child: IgnorePointer(
                       child: Container(
                         height: titleHeight,
                         decoration: const BoxDecoration(
