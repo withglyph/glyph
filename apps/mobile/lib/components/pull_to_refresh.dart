@@ -1,8 +1,6 @@
 import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:custom_refresh_indicator/custom_refresh_indicator.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class PullToRefresh extends StatelessWidget {
   const PullToRefresh({
@@ -29,7 +27,6 @@ class PullToRefresh extends StatelessWidget {
       indicatorFinalizeDuration: const Duration(milliseconds: 200),
       child: child,
       builder: (context, child, controller) {
-        print(controller.value);
         return Stack(
           children: [
             Positioned(
