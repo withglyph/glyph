@@ -87,6 +87,7 @@ flutter:
     - assets/emojis/
     - assets/icons/
     - assets/logos/
+    - assets/prosemirror_widgets/
 
   fonts:
     - family: SUIT

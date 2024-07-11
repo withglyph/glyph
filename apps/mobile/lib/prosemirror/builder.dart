@@ -6,6 +6,7 @@ import 'package:glyph/prosemirror/spans/text.dart';
 import 'package:glyph/prosemirror/widgets/access_barrier.dart';
 import 'package:glyph/prosemirror/widgets/doc.dart';
 import 'package:glyph/prosemirror/widgets/document.dart';
+import 'package:glyph/prosemirror/widgets/horizontal_rule.dart';
 import 'package:glyph/prosemirror/widgets/image.dart';
 import 'package:glyph/prosemirror/widgets/paragraph.dart';
 
@@ -14,6 +15,7 @@ abstract final class ProseMirrorWidgetBuilder {
     'access_barrier': ProseMirrorWidgetAccessBarrier.node,
     'doc': ProseMirrorWidgetDoc.node,
     'document': ProseMirrorWidgetDocument.node,
+    'horizontal_rule': ProseMirrorWidgetHorizontalRule.node,
     'image': ProseMirrorWidgetImage.node,
     'paragraph': ProseMirrorWidgetParagraph.node,
   };
