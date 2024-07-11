@@ -46,7 +46,10 @@ class PullToRefresh extends StatelessWidget {
                 ),
               ),
             ),
-            Transform.translate(offset: Offset(0, controller.value * 60), child: child),
+            Padding(
+              padding: Pad(top: controller.value * 60),
+              child: child,
+            ),
           ],
         );
       },
