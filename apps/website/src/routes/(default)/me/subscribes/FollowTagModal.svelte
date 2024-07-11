@@ -3,6 +3,7 @@
   import { fragment, graphql } from '$glitch';
   import { mixpanel } from '$lib/analytics';
   import { Icon, Modal } from '$lib/components';
+  import { isWebView, postFlutterMessage } from '$lib/flutter';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
   import type { MeCabinetsPage_FollowTagModal_user } from '$glitch';
@@ -46,18 +47,37 @@
       <li
         class={flex({ align: 'center', justify: 'space-between', gap: '24px', _hover: { backgroundColor: 'gray.50' } })}
       >
-        <a
-          class={css({
-            display: 'inline-block',
-            flexGrow: '1',
-            paddingLeft: '20px',
-            paddingY: '16px',
-            fontSize: '15px',
-          })}
-          href="/tag/{tag.name}"
-        >
-          #{tag.name}
-        </a>
+        {#if $isWebView}
+          <button
+            class={css({
+              display: 'inline-block',
+              flexGrow: '1',
+              paddingLeft: '20px',
+              paddingY: '16px',
+              fontSize: '15px',
+              textAlign: 'left',
+            })}
+            type="button"
+            on:click={() => {
+              postFlutterMessage({ type: 'tag:view', name: tag.name });
+            }}
+          >
+            #{tag.name}
+          </button>
+        {:else}
+          <a
+            class={css({
+              display: 'inline-block',
+              flexGrow: '1',
+              paddingLeft: '20px',
+              paddingY: '16px',
+              fontSize: '15px',
+            })}
+            href="/tag/{tag.name}"
+          >
+            #{tag.name}
+          </a>
+        {/if}
 
         <button
           class={css({ paddingRight: '20px', paddingY: '16px' })}
