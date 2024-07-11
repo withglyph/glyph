@@ -2902,7 +2902,10 @@ class _Comment extends ConsumerWidget {
                       ],
                     ),
                   ),
-                  if (!isDeleted && (!isMyComment && comment.invisibleReason != GCommentInvisibleReason.PRIVATE))
+                  if (!isDeleted &&
+                      (isMyComment ||
+                          isMyPost ||
+                          !isMyComment && comment.invisibleReason != GCommentInvisibleReason.PRIVATE))
                     Pressable(
                       onPressed: onMore,
                       child: const Icon(
