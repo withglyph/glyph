@@ -13,13 +13,13 @@
   const scrollLeft = () => {
     if (!containerEl) return;
 
-    containerEl.scrollLeft = containerEl.scrollLeft - (window.innerWidth - scrollOffset);
+    containerEl.scrollLeft = containerEl.scrollLeft - (containerEl.clientWidth - scrollOffset);
   };
 
   const scrollRight = () => {
     if (!containerEl) return;
 
-    containerEl.scrollLeft = containerEl.scrollLeft + (window.innerWidth - scrollOffset);
+    containerEl.scrollLeft = containerEl.scrollLeft + (containerEl.clientWidth - scrollOffset);
   };
 </script>
 
