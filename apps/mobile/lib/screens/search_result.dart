@@ -12,6 +12,7 @@ import 'package:glyph/components/heading.dart';
 import 'package:glyph/components/horizontal_divider.dart';
 import 'package:glyph/components/post_card.dart';
 import 'package:glyph/components/pressable.dart';
+import 'package:glyph/components/pull_to_refresh.dart';
 import 'package:glyph/components/search_input.dart';
 import 'package:glyph/context/bottom_sheet.dart';
 import 'package:glyph/extensions/iterable.dart';
@@ -252,10 +253,11 @@ class _SearchResultScreenState extends ConsumerState<SearchResultScreen> with Si
 
                           return false;
                         },
-                        child: ListView.separated(
-                          physics: const AlwaysScrollableScrollPhysics(
-                            parent: BouncingScrollPhysics(),
-                          ),
+                        child: PullToRefresh.listView(
+                          onRefresh: () async {
+                            _page = 1;
+                            await client.request(req);
+                          },
                           itemCount: posts.length,
                           itemBuilder: (context, index) {
                             return PostCard(
@@ -272,6 +274,11 @@ class _SearchResultScreenState extends ConsumerState<SearchResultScreen> with Si
                               ),
                             );
                           },
+                          emptyWidget: const EmptyState(
+                            icon: TablerBold.notes_off,
+                            title: '검색 결과가 없어요',
+                            description: '다른 키워드 및 태그로 검색해보세요',
+                          ),
                         ),
                       ),
               ),
