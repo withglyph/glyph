@@ -410,7 +410,17 @@
             <Menu style={css.raw({ position: 'absolute', bottom: '0', right: '-6px' })} placement="bottom-end">
               <Icon slot="value" style={css.raw({ color: 'gray.400' })} icon={IconDotsVertical} size={24} />
 
-              <MenuItem href="/editor/{post.permalink}" type="link">수정</MenuItem>
+              {#if $isWebView}
+                <MenuItem
+                  on:click={() => {
+                    postFlutterMessage({ type: 'post:edit', permalink: post.permalink });
+                  }}
+                >
+                  수정
+                </MenuItem>
+              {:else}
+                <MenuItem href="/editor/{post.permalink}" type="link">수정</MenuItem>
+              {/if}
               <MenuItem
                 style={css.raw({ color: 'red.600' })}
                 on:click={() => {

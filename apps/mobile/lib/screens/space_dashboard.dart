@@ -21,6 +21,10 @@ class SpaceDashboardScreen extends StatelessWidget {
             await context.router.push(
               PostRoute(permalink: data['permalink']),
             );
+          } else if (data['type'] == 'post:edit') {
+            await context.router.push(
+              EditorRoute(permalink: data['permalink']),
+            );
           } else if (data['type'] == 'space:delete') {
             await context.router.maybePop('space:delete');
           }
