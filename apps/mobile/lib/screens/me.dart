@@ -20,10 +20,12 @@ import 'package:glyph/components/img.dart';
 import 'package:glyph/components/pressable.dart';
 import 'package:glyph/components/rectangle_chip.dart';
 import 'package:glyph/components/svg_image.dart';
+import 'package:glyph/const.dart';
 import 'package:glyph/context/modal.dart';
 import 'package:glyph/context/toast.dart';
 import 'package:glyph/extensions/build_context.dart';
 import 'package:glyph/extensions/int.dart';
+import 'package:glyph/ferry/error.dart';
 import 'package:glyph/ferry/widget.dart';
 import 'package:glyph/graphql/__generated__/me_screen_create_space_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/me_screen_finalize_image_upload_mutation.req.gql.dart';
@@ -642,6 +644,11 @@ class _CreateSpaceState extends ConsumerState<_CreateSpace> {
                               if (value.contains('..')) {
                                 return '.은 연속으로 사용할 수 없어요';
                               }
+
+                              if (kUnavailableSpaceSlugs['EXACT']!.contains(value) ||
+                                  kUnavailableSpaceSlugs['CONTAIN']!.any((slug) => value.contains(slug))) {
+                                return '사용할 수 없는 URL이에요';
+                              }
                             }
                             return null;
                           }
@@ -878,22 +885,28 @@ class _CreateSpaceState extends ConsumerState<_CreateSpace> {
 
                       _mixpanel.track('space:create', properties: {'via': 'me-screen'});
 
-                      final req = GMeScreen_CreateSpace_MutationReq(
-                        (b) => b
-                          ..vars.input.iconId = iconId
-                          ..vars.input.isPublic = true
-                          ..vars.input.name = values['name']
-                          ..vars.input.profileName = values['profileName']
-                          ..vars.input.profileAvatarId = avatarId
-                          ..vars.input.slug = values['slug'],
-                      );
+                      try {
+                        final req = GMeScreen_CreateSpace_MutationReq(
+                          (b) => b
+                            ..vars.input.iconId = iconId
+                            ..vars.input.isPublic = true
+                            ..vars.input.name = values['name']
+                            ..vars.input.profileName = values['profileName']
+                            ..vars.input.profileAvatarId = avatarId
+                            ..vars.input.slug = values['slug'],
+                        );
 
-                      final resp = await client.request(req);
-                      await client.refetch(GMeScreen_QueryReq());
+                        final resp = await client.request(req);
+                        await client.refetch(GMeScreen_QueryReq());
 
-                      if (context.mounted) {
-                        context.toast.show('스페이스가 생성되었어요');
-                        await context.popWaitAndPush(SpaceRoute(slug: resp.createSpace.slug));
+                        if (context.mounted) {
+                          context.toast.show('스페이스가 생성되었어요');
+                          await context.popWaitAndPush(SpaceRoute(slug: resp.createSpace.slug));
+                        }
+                      } on FormValidationError catch (e) {
+                        if (context.mounted) {
+                          context.toast.show(e.message, type: ToastType.error);
+                        }
                       }
                     },
                   ),
