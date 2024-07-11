@@ -13,7 +13,7 @@ import {
   UserPersonalIdentities,
 } from '$lib/server/database';
 import { enqueueJob } from '$lib/server/jobs';
-import { getSpaceMember, Loader, makeMasquerade } from '$lib/server/utils';
+import { getSpaceMember, Loader, makeMasquerade, useFirstRowOrThrow } from '$lib/server/utils';
 import { builder } from '../builder';
 import { createObjectRef } from '../utils';
 import { Post } from './post';
@@ -369,10 +369,8 @@ builder.mutationFields((t) => ({
         }
       }
 
-      let notificationTargetUserId;
-
       if (input.parentId) {
-        const rows = await database
+        await database
           .select()
           .from(PostComments)
           .where(
@@ -381,15 +379,8 @@ builder.mutationFields((t) => ({
               eq(PostComments.postId, input.postId),
               eq(PostComments.state, 'ACTIVE'),
             ),
-          );
-
-        if (rows.length === 0) {
-          throw new NotFoundError();
-        }
-
-        notificationTargetUserId = rows[0].userId;
-      } else {
-        notificationTargetUserId = post.userId;
+          )
+          .then(useFirstRowOrThrow(new NotFoundError()));
       }
 
       let profileId: string;
@@ -412,32 +403,24 @@ builder.mutationFields((t) => ({
         profileId = masquerade.profileId;
       }
 
-      const commentId = await database.transaction(async (tx) => {
-        const [comment] = await tx
-          .insert(PostComments)
-          .values({
-            postId: input.postId,
-            userId: context.session.userId,
-            profileId,
-            parentId: input.parentId,
-            content: input.content,
-            visibility: input.visibility,
-            state: 'ACTIVE',
-          })
-          .returning({ id: PostComments.id });
+      const commentId = await database
+        .insert(PostComments)
+        .values({
+          postId: input.postId,
+          userId: context.session.userId,
+          profileId,
+          parentId: input.parentId,
+          content: input.content,
+          visibility: input.visibility,
+          state: 'ACTIVE',
+        })
+        .returning({ id: PostComments.id })
+        .then((rows) => rows[0].id);
 
-        return comment.id;
+      await enqueueJob('createNotification', {
+        category: 'COMMENT',
+        targetId: commentId,
       });
-
-      if (notificationTargetUserId !== context.session.userId) {
-        await enqueueJob('createNotification', {
-          userId: notificationTargetUserId,
-          category: 'COMMENT',
-          actorId: profileId,
-          data: { commentId },
-          origin: context.event.url.origin,
-        });
-      }
 
       return commentId;
     },

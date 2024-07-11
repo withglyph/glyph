@@ -799,32 +799,17 @@ builder.mutationFields((t) => ({
         }
       }
 
-      await database
+      const spaceFollowId = await database
         .insert(SpaceFollows)
         .values({ userId: context.session.userId, spaceId: input.spaceId })
-        .onConflictDoNothing();
+        .onConflictDoNothing()
+        .returning({ id: SpaceFollows.id })
+        .then((rows) => rows[0]?.id);
 
-      const masquerade = await makeMasquerade({
-        spaceId: input.spaceId,
-        userId: context.session.userId,
+      enqueueJob('createNotification', {
+        category: 'SUBSCRIBE',
+        targetId: spaceFollowId,
       });
-
-      const members = await database
-        .select({ userId: SpaceMembers.userId })
-        .from(SpaceMembers)
-        .where(and(eq(SpaceMembers.spaceId, input.spaceId), eq(SpaceMembers.state, 'ACTIVE')));
-
-      await Promise.all(
-        members.map((member) =>
-          enqueueJob('createNotification', {
-            userId: member.userId,
-            category: 'SUBSCRIBE',
-            actorId: masquerade.profileId,
-            data: { spaceId: input.spaceId },
-            origin: context.event.url.origin,
-          }),
-        ),
-      );
 
       return input.spaceId;
     },

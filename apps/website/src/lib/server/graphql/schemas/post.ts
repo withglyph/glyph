@@ -62,7 +62,6 @@ import {
   getPostContentState,
   getPostViewCount,
   getSpaceMember,
-  makeMasquerade,
   makePostContentId,
   makeQueryContainers,
   searchResultToIds,
@@ -1862,7 +1861,7 @@ builder.mutationFields((t) => ({
         throw new IntentionalError('이미 구매한 포스트예요');
       }
 
-      await database.transaction(async (tx) => {
+      const purchaseId = await database.transaction(async (tx) => {
         const [purchase] = await tx
           .insert(PostPurchases)
           .values({
@@ -1888,19 +1887,13 @@ builder.mutationFields((t) => ({
           kind: 'POST_PURCHASE',
           state: 'PENDING',
         });
-      });
 
-      const masquerade = await makeMasquerade({
-        userId: context.session.userId,
-        spaceId: post.space.id,
+        return purchase.id;
       });
 
       await enqueueJob('createNotification', {
-        userId: post.userId,
         category: 'PURCHASE',
-        actorId: masquerade.profileId,
-        data: { postId: input.postId },
-        origin: context.event.url.origin,
+        targetId: purchaseId,
       });
 
       return input.postId;
@@ -1961,29 +1954,21 @@ builder.mutationFields((t) => ({
         throw new IntentionalError('피드백을 받지 않는 포스트예요');
       }
 
-      await database
+      const reaction = await database
         .insert(PostReactions)
         .values({
           userId: context.session.userId,
           postId: input.postId,
           emoji: input.emoji,
         })
-        .onConflictDoNothing();
+        .onConflictDoNothing()
+        .returning({ id: PostReactions.id })
+        .then(useFirstRowOrThrow());
 
-      if (post.userId !== context.session.userId && post.spaceId) {
-        const masquerade = await makeMasquerade({
-          userId: context.session.userId,
-          spaceId: post.spaceId,
-        });
-
-        await enqueueJob('createNotification', {
-          userId: post.userId,
-          category: 'EMOJI_REACTION',
-          actorId: masquerade.profileId,
-          data: { postId: input.postId, emoji: input.emoji },
-          origin: context.event.url.origin,
-        });
-      }
+      await enqueueJob('createNotification', {
+        category: 'EMOJI_REACTION',
+        targetId: reaction.id,
+      });
 
       return input.postId;
     },
