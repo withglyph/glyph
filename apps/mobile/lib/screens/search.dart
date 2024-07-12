@@ -44,92 +44,94 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
               },
             ),
           ),
-          GraphQLOperation(
-            operation: GSearchScreen_QueryReq(),
-            builder: (context, client, data) {
-              final recommendedTags = data.recommendedTags;
-              final featuredTags = data.featuredTagFeed
-                  .where((tag) => tag.G__typename == 'FeaturedTag')
-                  .whereType<GSearchScreen_QueryData_featuredTagFeed__asFeaturedTag>()
-                  .map((tag) => tag.tag);
+          Expanded(
+            child: GraphQLOperation(
+              operation: GSearchScreen_QueryReq(),
+              builder: (context, client, data) {
+                final recommendedTags = data.recommendedTags;
+                final featuredTags = data.featuredTagFeed
+                    .where((tag) => tag.G__typename == 'FeaturedTag')
+                    .whereType<GSearchScreen_QueryData_featuredTagFeed__asFeaturedTag>()
+                    .map((tag) => tag.tag);
 
-              return PullToRefresh(
-                onRefresh: () async {
-                  await client.request(GSearchScreen_QueryReq());
-                },
-                child: SingleChildScrollView(
-                  physics: const AlwaysScrollableScrollPhysics(
-                    parent: BouncingScrollPhysics(),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      const Padding(
-                        padding: Pad(horizontal: 20, vertical: 8),
-                        child: _Carousel(),
-                      ),
-                      Padding(
-                        padding: const Pad(horizontal: 20, vertical: 8),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Padding(
-                              padding: Pad(vertical: 10),
-                              child: Text(
-                                '추천 태그',
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w700,
-                                  color: BrandColors.gray_400,
-                                ),
-                                textAlign: TextAlign.start,
-                              ),
-                            ),
-                            Wrap(
-                              spacing: 8,
-                              runSpacing: 10,
-                              children: recommendedTags
-                                  .map(
-                                    (tag) => _TagButton(
-                                      id: tag.id,
-                                      name: tag.name,
-                                    ),
-                                  )
-                                  .toList(),
-                            ),
-                            const Gap(32),
-                            const Padding(
-                              padding: Pad(vertical: 10),
-                              child: Text(
-                                '지금 뜨는 태그',
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w700,
-                                  color: BrandColors.gray_400,
-                                ),
-                                textAlign: TextAlign.start,
-                              ),
-                            ),
-                            Wrap(
-                              spacing: 8,
-                              runSpacing: 10,
-                              children: featuredTags
-                                  .map(
-                                    (tag) => _TagButton(
-                                      id: tag.id,
-                                      name: tag.name,
-                                    ),
-                                  )
-                                  .toList(),
-                            ),
-                          ],
+                return PullToRefresh(
+                  onRefresh: () async {
+                    await client.request(GSearchScreen_QueryReq());
+                  },
+                  child: SingleChildScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(
+                      parent: BouncingScrollPhysics(),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        const Padding(
+                          padding: Pad(horizontal: 20, vertical: 8),
+                          child: _Carousel(),
                         ),
-                      ),
-                    ],
+                        Padding(
+                          padding: const Pad(horizontal: 20, vertical: 8),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Padding(
+                                padding: Pad(vertical: 10),
+                                child: Text(
+                                  '추천 태그',
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w700,
+                                    color: BrandColors.gray_400,
+                                  ),
+                                  textAlign: TextAlign.start,
+                                ),
+                              ),
+                              Wrap(
+                                spacing: 8,
+                                runSpacing: 10,
+                                children: recommendedTags
+                                    .map(
+                                      (tag) => _TagButton(
+                                        id: tag.id,
+                                        name: tag.name,
+                                      ),
+                                    )
+                                    .toList(),
+                              ),
+                              const Gap(32),
+                              const Padding(
+                                padding: Pad(vertical: 10),
+                                child: Text(
+                                  '지금 뜨는 태그',
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w700,
+                                    color: BrandColors.gray_400,
+                                  ),
+                                  textAlign: TextAlign.start,
+                                ),
+                              ),
+                              Wrap(
+                                spacing: 8,
+                                runSpacing: 10,
+                                children: featuredTags
+                                    .map(
+                                      (tag) => _TagButton(
+                                        id: tag.id,
+                                        name: tag.name,
+                                      ),
+                                    )
+                                    .toList(),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              );
-            },
+                );
+              },
+            ),
           ),
         ],
       ),
