@@ -370,14 +370,30 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                       ],
                     ),
                     onPressed: () async {
-                      await context.showBottomSheet(
-                        title: '이모지 ${data.post.reactionCount}',
-                        builder: (context) {
-                          return _Reactions(
-                            permalink: widget.permalink,
+                      if (data.post.reactionCount == 0) {
+                        final res = await context.showDraggableScrollableSheet(
+                          title: '이모지 달기',
+                          builder: (context, controller, paddingTop) {
+                            return _EmojiPicker(postId: data.post.id, controller: controller, paddingTop: paddingTop);
+                          },
+                        );
+
+                        if (res == true && context.mounted) {
+                          await context.showBottomSheet(
+                            title: '이모지 1',
+                            builder: (context) {
+                              return _Reactions(permalink: widget.permalink);
+                            },
                           );
-                        },
-                      );
+                        }
+                      } else {
+                        await context.showBottomSheet(
+                          title: '이모지 ${data.post.reactionCount}',
+                          builder: (context) {
+                            return _Reactions(permalink: widget.permalink);
+                          },
+                        );
+                      }
                     },
                   ),
                   const Gap(20),
@@ -2221,7 +2237,6 @@ class _Reactions extends StatelessWidget {
                   Wrap(
                     spacing: 8,
                     runSpacing: 10,
-                    alignment: WrapAlignment.center,
                     children: [
                       ...reactions.map(
                         (entry) {
@@ -2385,7 +2400,7 @@ class _EmojiPicker extends ConsumerWidget {
                             await client.request(req);
 
                             if (context.mounted) {
-                              await context.router.maybePop();
+                              await context.router.maybePop(true);
                             }
                           },
                         );
