@@ -45,11 +45,12 @@ class ProseMirrorWidgetParagraph extends StatelessWidget {
             letterSpacing: letterSpacing,
           ),
           children: [
-            WidgetSpan(
-              child: SizedBox(
-                width: ProseMirrorWidgetDocumentData.of(context).documentParagraphIndent * 16,
+            if (textAlign == 'left' || textAlign == 'justify')
+              WidgetSpan(
+                child: SizedBox(
+                  width: ProseMirrorWidgetDocumentData.of(context).documentParagraphIndent * 16,
+                ),
               ),
-            ),
             ...children,
           ],
         ),
