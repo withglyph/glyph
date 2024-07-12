@@ -11,6 +11,7 @@ import 'package:glyph/prosemirror/widgets/document.dart';
 import 'package:glyph/prosemirror/widgets/horizontal_rule.dart';
 import 'package:glyph/prosemirror/widgets/image.dart';
 import 'package:glyph/prosemirror/widgets/list_item.dart';
+import 'package:glyph/prosemirror/widgets/ordered_list.dart';
 import 'package:glyph/prosemirror/widgets/paragraph.dart';
 
 abstract final class ProseMirrorWidgetBuilder {
@@ -23,6 +24,7 @@ abstract final class ProseMirrorWidgetBuilder {
     'horizontal_rule': ProseMirrorWidgetHorizontalRule.node,
     'image': ProseMirrorWidgetImage.node,
     'list_item': ProseMirrorWidgetListItem.node,
+    'ordered_list': ProseMirrorWidgetOrderedList.node,
     'paragraph': ProseMirrorWidgetParagraph.node,
   };
 
