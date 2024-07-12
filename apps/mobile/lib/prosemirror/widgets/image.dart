@@ -19,9 +19,9 @@ class ProseMirrorWidgetImage extends StatelessWidget {
 
   factory ProseMirrorWidgetImage.node(ProseMirrorNode node) {
     return ProseMirrorWidgetImage(
-      id: node.attrs!['id']! as String,
-      size: (node.attrs!['size'] as String?) ?? 'full',
-      align: (node.attrs!['align'] as String?) ?? 'center',
+      id: node.attrs?['id'] as String? ?? '',
+      size: (node.attrs?['size'] as String?) ?? 'full',
+      align: (node.attrs?['align'] as String?) ?? 'center',
     );
   }
 
@@ -31,6 +31,10 @@ class ProseMirrorWidgetImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (id == '') {
+      return const SizedBox.shrink();
+    }
+
     return GraphQLOperation(
       operation: GProseMirrorWidgetImage_QueryReq(
         (b) => b..vars.id = id,
