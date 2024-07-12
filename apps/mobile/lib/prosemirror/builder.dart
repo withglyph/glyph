@@ -1,3 +1,4 @@
+import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:glyph/prosemirror/schema.dart';
@@ -13,6 +14,7 @@ import 'package:glyph/prosemirror/widgets/image.dart';
 import 'package:glyph/prosemirror/widgets/list_item.dart';
 import 'package:glyph/prosemirror/widgets/ordered_list.dart';
 import 'package:glyph/prosemirror/widgets/paragraph.dart';
+import 'package:glyph/themes/colors.dart';
 
 abstract final class ProseMirrorWidgetBuilder {
   static final _builders = <String, Widget Function(ProseMirrorNode)>{
@@ -35,7 +37,21 @@ abstract final class ProseMirrorWidgetBuilder {
         print('No widget builder for ${node.type}');
       }
 
-      return const SizedBox.shrink();
+      return Box(
+        height: 100,
+        color: BrandColors.red_600,
+        child: Center(
+          child: Text(
+            "Missing widget\n'${node.type}'",
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w700,
+              color: BrandColors.gray_0,
+            ),
+          ),
+        ),
+      );
     }
 
     return builder(node);
@@ -55,7 +71,7 @@ abstract final class ProseMirrorSpanBuilder {
         print('No span builder for ${node.type}');
       }
 
-      return const TextSpan(text: '');
+      return TextSpan(text: "<Missing span '${node.type}'>");
     }
 
     return builder(node);
