@@ -1,7 +1,7 @@
-import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:glyph/prosemirror/builder.dart';
 import 'package:glyph/prosemirror/schema.dart';
+import 'package:glyph/prosemirror/special/padding.dart';
 import 'package:glyph/prosemirror/widgets/document.dart';
 
 class ProseMirrorWidgetParagraph extends StatelessWidget {
@@ -29,15 +29,14 @@ class ProseMirrorWidgetParagraph extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const Pad(horizontal: 20),
+    return ProseMirrorPadded(
       child: RichText(
         textAlign: switch (textAlign) {
           'left' => TextAlign.left,
           'center' => TextAlign.center,
           'right' => TextAlign.right,
           'justify' => TextAlign.justify,
-          _ => throw UnimplementedError('Unsupported textAlign: $textAlign'),
+          _ => TextAlign.left,
         },
         text: TextSpan(
           style: TextStyle(

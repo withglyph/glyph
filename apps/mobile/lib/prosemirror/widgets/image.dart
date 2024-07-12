@@ -62,7 +62,7 @@ class ProseMirrorWidgetImage extends StatelessWidget {
                   'left' => Alignment.centerLeft,
                   'center' => Alignment.center,
                   'right' => Alignment.centerRight,
-                  _ => throw UnimplementedError(),
+                  _ => Alignment.center,
                 },
                 child: ConstrainedBox(
                   constraints: const BoxConstraints(maxWidth: 500),

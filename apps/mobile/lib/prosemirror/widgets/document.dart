@@ -28,6 +28,7 @@ class ProseMirrorWidgetDocument extends StatelessWidget {
   Widget build(BuildContext context) {
     return ProseMirrorWidgetDocumentData(
       documentParagraphIndent: documentParagraphIndent,
+      documentParagraphSpacing: documentParagraphSpacing,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: children.intersperse(Gap(documentParagraphSpacing * 16)).toList(),
@@ -39,6 +40,7 @@ class ProseMirrorWidgetDocument extends StatelessWidget {
 class ProseMirrorWidgetDocumentData extends InheritedWidget {
   const ProseMirrorWidgetDocumentData({
     required this.documentParagraphIndent,
+    required this.documentParagraphSpacing,
     required super.child,
     super.key,
   });
@@ -48,9 +50,11 @@ class ProseMirrorWidgetDocumentData extends InheritedWidget {
   }
 
   final double documentParagraphIndent;
+  final double documentParagraphSpacing;
 
   @override
   bool updateShouldNotify(ProseMirrorWidgetDocumentData oldWidget) {
-    return documentParagraphIndent != oldWidget.documentParagraphIndent;
+    return documentParagraphIndent != oldWidget.documentParagraphIndent ||
+        documentParagraphSpacing != oldWidget.documentParagraphSpacing;
   }
 }
