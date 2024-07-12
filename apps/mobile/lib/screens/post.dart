@@ -371,7 +371,7 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                     ),
                     onPressed: () async {
                       await context.showBottomSheet(
-                        title: '이모지 ${data.post.reactionCount}',
+                        title: data.post.reactionCount > 0 ? '이모지 ${data.post.reactionCount}' : '이모지 달기',
                         builder: (context) {
                           return _Reactions(
                             permalink: widget.permalink,
@@ -2218,100 +2218,163 @@ class _Reactions extends StatelessWidget {
                     style: TextStyle(fontSize: 12, color: BrandColors.gray_500),
                   ),
                   const Gap(16),
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 10,
-                    alignment: WrapAlignment.center,
-                    children: [
-                      ...reactions.map(
-                        (entry) {
-                          final emoji = entry.key;
-                          final reactions = entry.value;
-                          final hasReacted = reactions.any((element) => element.mine);
-
+                  if (reactions.isEmpty)
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 10,
+                      alignment: WrapAlignment.center,
+                      children: [
+                        ...[Emojis.heart, Emojis.thumbs_up, Emojis.heart_eyes, Emojis.n100, Emojis.sob].map((emoji) {
                           return Pressable(
                             child: Container(
                               padding: const Pad(horizontal: 12, vertical: 6),
                               decoration: BoxDecoration(
-                                color: hasReacted ? BrandColors.gray_50 : null,
-                                border: Border.all(
-                                  color: hasReacted ? BrandColors.gray_900 : BrandColors.gray_50,
-                                ),
+                                border: Border.all(color: BrandColors.gray_50),
                                 borderRadius: BorderRadius.circular(30),
                               ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Emoji(Emojis.fromShortCode(emoji), size: 22),
-                                  const Gap(6),
-                                  Text(
-                                    reactions.length.toString(),
-                                    style: TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w600,
-                                      color: hasReacted ? BrandColors.gray_900 : BrandColors.gray_500,
-                                      fontFeatures: const [FontFeature.tabularFigures()],
-                                    ),
-                                  ),
-                                ],
-                              ),
+                              child: Emoji(emoji, size: 22),
                             ),
                             onPressed: () async {
-                              if (hasReacted) {
-                                _mixpanel.track(
-                                  'post:reaction:delete',
-                                  properties: {
-                                    'postId': data.post.id,
-                                    'emoji': emoji,
-                                  },
-                                );
+                              _mixpanel.track(
+                                'post:reaction:create',
+                                properties: {
+                                  'postId': data.post.id,
+                                  'emoji': emoji.name,
+                                },
+                              );
 
-                                final req = GPostScreen_Reactions_DeletePostReaction_MutationReq(
-                                  (b) => b
-                                    ..vars.input.postId = data.post.id
-                                    ..vars.input.emoji = emoji,
-                                );
-                                await client.request(req);
-                              } else {
-                                _mixpanel.track(
-                                  'post:reaction:create',
-                                  properties: {
-                                    'postId': data.post.id,
-                                    'emoji': emoji,
-                                  },
-                                );
-
-                                final req = GPostScreen_Reactions_CreatePostReaction_MutationReq(
-                                  (b) => b
-                                    ..vars.input.postId = data.post.id
-                                    ..vars.input.emoji = emoji,
-                                );
-                                await client.request(req);
-                              }
+                              final req = GPostScreen_Reactions_CreatePostReaction_MutationReq(
+                                (b) => b
+                                  ..vars.input.postId = data.post.id
+                                  ..vars.input.emoji = emoji.name,
+                              );
+                              await client.request(req);
                             },
                           );
-                        },
-                      ),
-                      Pressable(
-                        child: Container(
-                          padding: const Pad(horizontal: 13, vertical: 7),
-                          decoration: BoxDecoration(
-                            border: Border.all(color: BrandColors.gray_50),
-                            borderRadius: BorderRadius.circular(30),
+                        }),
+                        Pressable(
+                          child: Container(
+                            padding: const Pad(horizontal: 12, vertical: 8),
+                            decoration: BoxDecoration(
+                              color: BrandColors.gray_50,
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            child: const Icon(Tabler.dots, size: 20, color: BrandColors.gray_500),
                           ),
-                          child: const Icon(TablerBold.plus, size: 20, color: BrandColors.gray_400),
+                          onPressed: () async {
+                            await context.showDraggableScrollableSheet(
+                              title: '이모지 달기',
+                              builder: (context, controller, paddingTop) {
+                                return _EmojiPicker(
+                                  postId: data.post.id,
+                                  controller: controller,
+                                  paddingTop: paddingTop,
+                                );
+                              },
+                            );
+                          },
                         ),
-                        onPressed: () async {
-                          await context.showDraggableScrollableSheet(
-                            title: '이모지 달기',
-                            builder: (context, controller, paddingTop) {
-                              return _EmojiPicker(postId: data.post.id, controller: controller, paddingTop: paddingTop);
-                            },
-                          );
-                        },
-                      ),
-                    ],
-                  ),
+                      ],
+                    )
+                  else
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 10,
+                      alignment: WrapAlignment.center,
+                      children: [
+                        ...reactions.map(
+                          (entry) {
+                            final emoji = entry.key;
+                            final reactions = entry.value;
+                            final hasReacted = reactions.any((element) => element.mine);
+
+                            return Pressable(
+                              child: Container(
+                                padding: const Pad(horizontal: 12, vertical: 6),
+                                decoration: BoxDecoration(
+                                  color: hasReacted ? BrandColors.gray_50 : null,
+                                  border: Border.all(
+                                    color: hasReacted ? BrandColors.gray_900 : BrandColors.gray_50,
+                                  ),
+                                  borderRadius: BorderRadius.circular(30),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Emoji(Emojis.fromShortCode(emoji), size: 22),
+                                    const Gap(6),
+                                    Text(
+                                      reactions.length.toString(),
+                                      style: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w600,
+                                        color: hasReacted ? BrandColors.gray_900 : BrandColors.gray_500,
+                                        fontFeatures: const [FontFeature.tabularFigures()],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              onPressed: () async {
+                                if (hasReacted) {
+                                  _mixpanel.track(
+                                    'post:reaction:delete',
+                                    properties: {
+                                      'postId': data.post.id,
+                                      'emoji': emoji,
+                                    },
+                                  );
+
+                                  final req = GPostScreen_Reactions_DeletePostReaction_MutationReq(
+                                    (b) => b
+                                      ..vars.input.postId = data.post.id
+                                      ..vars.input.emoji = emoji,
+                                  );
+                                  await client.request(req);
+                                } else {
+                                  _mixpanel.track(
+                                    'post:reaction:create',
+                                    properties: {
+                                      'postId': data.post.id,
+                                      'emoji': emoji,
+                                    },
+                                  );
+
+                                  final req = GPostScreen_Reactions_CreatePostReaction_MutationReq(
+                                    (b) => b
+                                      ..vars.input.postId = data.post.id
+                                      ..vars.input.emoji = emoji,
+                                  );
+                                  await client.request(req);
+                                }
+                              },
+                            );
+                          },
+                        ),
+                        Pressable(
+                          child: Container(
+                            padding: const Pad(horizontal: 13, vertical: 7),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: BrandColors.gray_50),
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            child: const Icon(TablerBold.plus, size: 20, color: BrandColors.gray_400),
+                          ),
+                          onPressed: () async {
+                            await context.showDraggableScrollableSheet(
+                              title: '이모지 달기',
+                              builder: (context, controller, paddingTop) {
+                                return _EmojiPicker(
+                                  postId: data.post.id,
+                                  controller: controller,
+                                  paddingTop: paddingTop,
+                                );
+                              },
+                            );
+                          },
+                        ),
+                      ],
+                    ),
                 ],
               ),
             ),
