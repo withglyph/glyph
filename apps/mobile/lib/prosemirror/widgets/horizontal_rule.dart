@@ -4,7 +4,7 @@ import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:glyph/components/svg_image.dart';
 import 'package:glyph/prosemirror/schema.dart';
-import 'package:glyph/prosemirror/special/padding.dart';
+import 'package:glyph/prosemirror/special/padded.dart';
 import 'package:glyph/themes/colors.dart';
 
 class ProseMirrorWidgetHorizontalRule extends StatelessWidget {

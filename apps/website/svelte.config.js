@@ -11,6 +11,7 @@ export default {
       '$glitch': './.glitch',
       '$styled-system': './styled-system/*',
     },
+    csrf: { checkOrigin: false },
     env: {
       publicPrefix: 'PUBLIC_',
       privatePrefix: 'PRIVATE_',

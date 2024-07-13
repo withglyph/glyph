@@ -7,9 +7,12 @@ import 'package:glyph/prosemirror/spans/text.dart';
 import 'package:glyph/prosemirror/widgets/access_barrier.dart';
 import 'package:glyph/prosemirror/widgets/blockquote.dart';
 import 'package:glyph/prosemirror/widgets/bullet_list.dart';
+import 'package:glyph/prosemirror/widgets/code_block.dart';
 import 'package:glyph/prosemirror/widgets/doc.dart';
 import 'package:glyph/prosemirror/widgets/document.dart';
+import 'package:glyph/prosemirror/widgets/embed.dart';
 import 'package:glyph/prosemirror/widgets/horizontal_rule.dart';
+import 'package:glyph/prosemirror/widgets/html.dart';
 import 'package:glyph/prosemirror/widgets/image.dart';
 import 'package:glyph/prosemirror/widgets/list_item.dart';
 import 'package:glyph/prosemirror/widgets/ordered_list.dart';
@@ -21,9 +24,12 @@ abstract final class ProseMirrorWidgetBuilder {
     'access_barrier': ProseMirrorWidgetAccessBarrier.node,
     'blockquote': ProseMirrorWidgetBlockquote.node,
     'bullet_list': ProseMirrorWidgetBulletList.node,
+    'code_block': ProseMirrorWidgetCodeBlock.node,
     'doc': ProseMirrorWidgetDoc.node,
     'document': ProseMirrorWidgetDocument.node,
+    'embed': ProseMirrorWidgetEmbed.node,
     'horizontal_rule': ProseMirrorWidgetHorizontalRule.node,
+    'html': ProseMirrorWidgetHtml.node,
     'image': ProseMirrorWidgetImage.node,
     'list_item': ProseMirrorWidgetListItem.node,
     'ordered_list': ProseMirrorWidgetOrderedList.node,

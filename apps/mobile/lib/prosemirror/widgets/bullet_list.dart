@@ -4,7 +4,7 @@ import 'package:gap/gap.dart';
 import 'package:glyph/components/dot.dart';
 import 'package:glyph/prosemirror/builder.dart';
 import 'package:glyph/prosemirror/schema.dart';
-import 'package:glyph/prosemirror/special/padding.dart';
+import 'package:glyph/prosemirror/special/padded.dart';
 import 'package:glyph/prosemirror/widgets/document.dart';
 import 'package:glyph/themes/colors.dart';
 

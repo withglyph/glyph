@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:glyph/prosemirror/builder.dart';
 import 'package:glyph/prosemirror/schema.dart';
-import 'package:glyph/prosemirror/special/padding.dart';
+import 'package:glyph/prosemirror/special/padded.dart';
 import 'package:glyph/prosemirror/widgets/document.dart';
 
 class ProseMirrorWidgetParagraph extends StatelessWidget {

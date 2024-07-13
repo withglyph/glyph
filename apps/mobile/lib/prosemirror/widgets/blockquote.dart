@@ -7,7 +7,7 @@ import 'package:glyph/components/svg_image.dart';
 import 'package:glyph/extensions/iterable.dart';
 import 'package:glyph/prosemirror/builder.dart';
 import 'package:glyph/prosemirror/schema.dart';
-import 'package:glyph/prosemirror/special/padding.dart';
+import 'package:glyph/prosemirror/special/padded.dart';
 import 'package:glyph/prosemirror/widgets/document.dart';
 import 'package:glyph/themes/colors.dart';
 
