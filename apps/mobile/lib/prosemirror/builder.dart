@@ -11,6 +11,7 @@ import 'package:glyph/prosemirror/widgets/code_block.dart';
 import 'package:glyph/prosemirror/widgets/doc.dart';
 import 'package:glyph/prosemirror/widgets/document.dart';
 import 'package:glyph/prosemirror/widgets/embed.dart';
+import 'package:glyph/prosemirror/widgets/gallery.dart';
 import 'package:glyph/prosemirror/widgets/horizontal_rule.dart';
 import 'package:glyph/prosemirror/widgets/html.dart';
 import 'package:glyph/prosemirror/widgets/image.dart';
@@ -28,6 +29,7 @@ abstract final class ProseMirrorWidgetBuilder {
     'doc': ProseMirrorWidgetDoc.node,
     'document': ProseMirrorWidgetDocument.node,
     'embed': ProseMirrorWidgetEmbed.node,
+    'gallery': ProseMirrorWidgetGallery.node,
     'horizontal_rule': ProseMirrorWidgetHorizontalRule.node,
     'html': ProseMirrorWidgetHtml.node,
     'image': ProseMirrorWidgetImage.node,
