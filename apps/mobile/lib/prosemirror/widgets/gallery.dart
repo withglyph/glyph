@@ -2,7 +2,11 @@ import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:gap/gap.dart';
+import 'package:glyph/components/dot.dart';
 import 'package:glyph/components/pressable.dart';
+import 'package:glyph/extensions/iterable.dart';
 import 'package:glyph/ferry/widget.dart';
 import 'package:glyph/graphql/__generated__/prosemirror_widget_gallery_query.req.gql.dart';
 import 'package:glyph/icons/tabler.dart';
@@ -47,6 +51,8 @@ class ProseMirrorWidgetGallery extends StatelessWidget {
           'scroll' => _Scroll(ids: ids),
           'grid-2' => _Grid(ids: ids, column: 2),
           'grid-3' => _Grid(ids: ids, column: 3),
+          'slide-1' => _Slide(ids: ids, column: 1),
+          'slide-2' => _Slide(ids: ids, column: 2),
           _ => const SizedBox.shrink(),
         },
       ),
@@ -94,7 +100,16 @@ class _Scroll extends StatelessWidget {
           context: context,
           useSafeArea: false,
           builder: (context) {
-            return _Viewer(child: child);
+            return _Viewer(
+              builder: (context, constraints) {
+                return SizedBox.fromSize(
+                  size: constraints.biggest,
+                  child: FittedBox(
+                    child: child,
+                  ),
+                );
+              },
+            );
           },
         );
       },
@@ -110,18 +125,14 @@ class _Grid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final child = LayoutBuilder(
-      builder: (context, constraints) {
-        return Wrap(
-          children: [
-            for (final id in ids)
-              SizedBox(
-                width: constraints.maxWidth / column,
-                child: _Image(id: id),
-              ),
-          ],
-        );
-      },
+    final child = Wrap(
+      children: [
+        for (final id in ids)
+          FractionallySizedBox(
+            widthFactor: 1 / column,
+            child: _Image(id: id),
+          ),
+      ],
     );
 
     return Pressable(
@@ -131,7 +142,19 @@ class _Grid extends StatelessWidget {
           context: context,
           useSafeArea: false,
           builder: (context) {
-            return _Viewer(child: child);
+            return _Viewer(
+              builder: (context, constraints) {
+                return SizedBox.fromSize(
+                  size: constraints.biggest,
+                  child: FittedBox(
+                    child: ConstrainedBox(
+                      constraints: constraints,
+                      child: child,
+                    ),
+                  ),
+                );
+              },
+            );
           },
         );
       },
@@ -139,10 +162,109 @@ class _Grid extends StatelessWidget {
   }
 }
 
-class _Viewer extends StatelessWidget {
-  const _Viewer({required this.child});
+class _Slide extends StatefulWidget {
+  const _Slide({required this.ids, required this.column});
 
-  final Widget child;
+  final List<String> ids;
+  final int column;
+
+  @override
+  createState() => _SlideState();
+}
+
+class _SlideState extends State<_Slide> {
+  final _scrollController = PageController();
+
+  int _page = 0;
+  int get _total => (widget.ids.length / widget.column).ceil();
+
+  @override
+  void initState() {
+    super.initState();
+
+    _scrollController.addListener(() {
+      final page = _scrollController.page?.round() ?? 0;
+      if (page != _page && mounted) {
+        setState(() {
+          _page = page;
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        LayoutBuilder(
+          builder: (context, constraints) {
+            return SingleChildScrollView(
+              controller: _scrollController,
+              physics: const PageScrollPhysics(),
+              scrollDirection: Axis.horizontal,
+              child: Pressable(
+                child: Row(
+                  children: [
+                    for (final id in widget.ids)
+                      SizedBox(
+                        width: constraints.maxWidth / widget.column,
+                        child: _Image(id: id),
+                      ),
+                  ],
+                ),
+                onPressed: () async {
+                  await showDialog(
+                    context: context,
+                    useSafeArea: false,
+                    builder: (context) {
+                      return _Viewer(
+                        builder: (context, constraints) {
+                          return SizedBox.fromSize(
+                            size: constraints.biggest,
+                            child: FittedBox(
+                              child: Row(
+                                children: [
+                                  for (final id in widget.ids) _Image(id: id),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  );
+                },
+              ),
+            );
+          },
+        ),
+        const Gap(10),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            for (var i = 0; i < _total; i++)
+              Dot(
+                size: 8,
+                color: i == _page ? BrandColors.gray_800 : BrandColors.gray_300,
+              ),
+          ].intersperse(const Gap(6)).toList(),
+        ),
+      ],
+    );
+  }
+}
+
+class _Viewer extends StatelessWidget {
+  const _Viewer({required this.builder});
+
+  final Widget Function(BuildContext context, BoxConstraints constraints) builder;
 
   @override
   Widget build(BuildContext context) {
@@ -155,18 +277,10 @@ class _Viewer extends StatelessWidget {
           LayoutBuilder(
             builder: (context, constraints) {
               return InteractiveViewer(
-                maxScale: 8.0,
+                constrained: false,
+                maxScale: double.infinity,
                 boundaryMargin: const Pad(all: 100),
-                child: SizedBox(
-                  width: constraints.maxWidth,
-                  height: constraints.maxHeight,
-                  child: FittedBox(
-                    child: SizedBox(
-                      width: constraints.maxWidth,
-                      child: child,
-                    ),
-                  ),
-                ),
+                child: builder(context, constraints),
               );
             },
           ),
