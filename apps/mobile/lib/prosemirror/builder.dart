@@ -11,6 +11,7 @@ import 'package:glyph/prosemirror/widgets/code_block.dart';
 import 'package:glyph/prosemirror/widgets/doc.dart';
 import 'package:glyph/prosemirror/widgets/document.dart';
 import 'package:glyph/prosemirror/widgets/embed.dart';
+import 'package:glyph/prosemirror/widgets/file.dart';
 import 'package:glyph/prosemirror/widgets/gallery.dart';
 import 'package:glyph/prosemirror/widgets/horizontal_rule.dart';
 import 'package:glyph/prosemirror/widgets/html.dart';
@@ -36,6 +37,7 @@ abstract final class ProseMirrorWidgetBuilder {
     'list_item': ProseMirrorWidgetListItem.node,
     'ordered_list': ProseMirrorWidgetOrderedList.node,
     'paragraph': ProseMirrorWidgetParagraph.node,
+    'file': ProseMirrorWidgetFile.node,
   };
 
   static Widget build(ProseMirrorNode node) {
