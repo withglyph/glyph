@@ -141,7 +141,7 @@ class _MeScreenState extends ConsumerState<MeScreen> {
                         child: const Icon(
                           TablerBold.plus,
                           size: 16,
-                          color: BrandColors.gray_400,
+                          color: BrandColors.gray_800,
                         ),
                         onPressed: () async {
                           await context.showFullScreenModal(
@@ -443,7 +443,7 @@ class _MenuItem extends StatelessWidget {
             const Icon(
               TablerBold.chevron_right,
               size: 16,
-              color: BrandColors.gray_400,
+              color: BrandColors.gray_800,
             ),
           ],
         ),
