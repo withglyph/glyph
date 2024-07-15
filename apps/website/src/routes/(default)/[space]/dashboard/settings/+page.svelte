@@ -86,6 +86,10 @@
       toast.success('스페이스 정보가 수정되었어요');
       await goto(`/${$data.slug}/dashboard/settings`);
     },
+    onError: (resp) => {
+      // @ts-expect-error form validation error
+      toast.error(resp.message);
+    },
   });
 
   $: setInitialValues({
