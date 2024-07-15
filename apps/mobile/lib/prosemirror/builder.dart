@@ -30,6 +30,7 @@ abstract final class ProseMirrorWidgetBuilder {
     'doc': ProseMirrorWidgetDoc.node,
     'document': ProseMirrorWidgetDocument.node,
     'embed': ProseMirrorWidgetEmbed.node,
+    'file': ProseMirrorWidgetFile.node,
     'gallery': ProseMirrorWidgetGallery.node,
     'horizontal_rule': ProseMirrorWidgetHorizontalRule.node,
     'html': ProseMirrorWidgetHtml.node,
@@ -37,7 +38,6 @@ abstract final class ProseMirrorWidgetBuilder {
     'list_item': ProseMirrorWidgetListItem.node,
     'ordered_list': ProseMirrorWidgetOrderedList.node,
     'paragraph': ProseMirrorWidgetParagraph.node,
-    'file': ProseMirrorWidgetFile.node,
   };
 
   static Widget build(ProseMirrorNode node) {

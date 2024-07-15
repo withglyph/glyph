@@ -35,10 +35,14 @@ class ProseMirrorWidgetFile extends StatelessWidget {
         return ProseMirrorPadded(
           child: Pressable(
             onPressed: () async {
-              await launchUrl(
-                Uri.parse(data.file.url),
-                mode: LaunchMode.inAppBrowserView,
-              );
+              try {
+                await launchUrl(
+                  Uri.parse(data.file.url),
+                  mode: LaunchMode.inAppBrowserView,
+                );
+              } on Exception {
+                // ignore
+              }
             },
             child: Container(
               constraints: const BoxConstraints(maxWidth: 500),
