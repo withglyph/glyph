@@ -1,0 +1,10 @@
+mutation ProseMirrorWidgetEmbed_UnfurlEmbed_Mutation($input: UnfurlEmbedInput!) {
+  unfurlEmbed(input: $input) {
+    id
+    url
+    title
+    description
+    thumbnailUrl
+    html
+  }
+}
