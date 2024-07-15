@@ -73,6 +73,21 @@
             id
             ...Image_image
           }
+
+          meAsMember {
+            id
+            role
+
+            profile {
+              id
+              name
+
+              avatar {
+                id
+                ...Image_image
+              }
+            }
+          }
         }
       }
     `),
