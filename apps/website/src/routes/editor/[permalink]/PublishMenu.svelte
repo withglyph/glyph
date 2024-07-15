@@ -24,6 +24,7 @@
   import { Select, SelectItem } from '$lib/components/select';
   import { isWebView, postFlutterMessage } from '$lib/flutter';
   import { createMutationForm } from '$lib/form';
+  import { toast } from '$lib/notification';
   import { PublishPostInputSchema } from '$lib/validations/post';
   import { css, cx } from '$styled-system/css';
   import { center, flex } from '$styled-system/patterns';
@@ -161,6 +162,10 @@
       } else {
         await goto(`/${resp.space.slug}/${resp.permalink}`);
       }
+    },
+    onError: (resp) => {
+      // @ts-expect-error form validation error
+      toast.error(resp.message);
     },
   });
 
