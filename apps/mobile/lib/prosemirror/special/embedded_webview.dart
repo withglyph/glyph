@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:glyph/env.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 const _htmlTemplate = '''
 <!DOCTYPE html>
@@ -81,6 +84,26 @@ class _ProseMirrorWebview2State extends State<ProseMirrorEmbeddedWebView> {
               });
             },
           );
+        },
+        shouldOverrideUrlLoading: (controller, navigationAction) async {
+          if (navigationAction.navigationType == NavigationType.LINK_ACTIVATED) {
+            unawaited(
+              () async {
+                try {
+                  await launchUrl(
+                    navigationAction.request.url!.uriValue,
+                    mode: LaunchMode.inAppBrowserView,
+                  );
+                } on Exception {
+                  // ignore
+                }
+              }(),
+            );
+
+            return NavigationActionPolicy.CANCEL;
+          }
+
+          return NavigationActionPolicy.ALLOW;
         },
       ),
     );

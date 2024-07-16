@@ -7,6 +7,7 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:glyph/env.dart';
 import 'package:glyph/prosemirror/schema.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ProseMirrorWebView extends ConsumerStatefulWidget {
   const ProseMirrorWebView({
@@ -90,6 +91,26 @@ class _ProseMirrorWebviewState extends ConsumerState<ProseMirrorWebView> {
               ),
             ),
           );
+        },
+        shouldOverrideUrlLoading: (controller, navigationAction) async {
+          if (navigationAction.navigationType == NavigationType.LINK_ACTIVATED) {
+            unawaited(
+              () async {
+                try {
+                  await launchUrl(
+                    navigationAction.request.url!.uriValue,
+                    mode: LaunchMode.inAppBrowserView,
+                  );
+                } on Exception {
+                  // ignore
+                }
+              }(),
+            );
+
+            return NavigationActionPolicy.CANCEL;
+          }
+
+          return NavigationActionPolicy.ALLOW;
         },
       ),
     );
