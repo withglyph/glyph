@@ -192,12 +192,6 @@
               </time>
             </dd>
           </div>
-          <div class={flex({ align: 'center', gap: '12px', fontSize: '13px' })}>
-            <dt class={css({ fontWeight: 'semibold', width: '46px' })}>그룹코드</dt>
-            <dd class={css({ color: 'gray.600' })}>
-              {$query.redeemCodeGroup.id}
-            </dd>
-          </div>
         </dl>
 
         <p class={css({ marginTop: '8px', fontSize: '13px', color: 'gray.600' })}>
@@ -213,16 +207,6 @@
             gap: '8px',
           })}
         >
-          <Button
-            style={css.raw({ backgroundColor: 'gray.0', width: '160px' })}
-            href={`https://docs.google.com/forms/d/e/1FAIpQLSc3kPM7EgAx9kbeDY_6W4jLqXo_IEEehjS8G2nDsS8qOkvO5w/viewform?usp=pp_url&entry.233113415=${$query.redeemCodeGroup.id}`}
-            rel="noopener noreferrer"
-            target="_blank"
-            type="link"
-            variant="gray-outline"
-          >
-            실물 쿠폰 신청
-          </Button>
           <Button
             style={css.raw({ backgroundColor: 'gray.0', width: '160px' })}
             variant="red-outline"
