@@ -446,40 +446,44 @@ class _SpaceScreenState extends State<SpaceScreen> {
                     },
                     body: data.space.muted && !_revealMutedSpace
                         ? Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const Icon(TablerBold.alert_triangle, size: 40),
-                                const Gap(16),
-                                const Text(
-                                  '뮤트된 스페이스에요',
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w700,
-                                    color: BrandColors.gray_800,
+                            child: Padding(
+                              padding: const Pad(horizontal: 20),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Icon(TablerBold.alert_triangle, size: 40),
+                                  const Gap(16),
+                                  const Text(
+                                    '뮤트된 스페이스에요',
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w700,
+                                      color: BrandColors.gray_800,
+                                    ),
                                   ),
-                                ),
-                                const Gap(4),
-                                Text(
-                                  '포스트를 봐도 ${data.space.name} 스페이스의 차단이 해제되지 않아요',
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                    color: BrandColors.gray_500,
+                                  const Gap(4),
+                                  Text(
+                                    '포스트를 봐도 ${data.space.name} 스페이스의 차단이 해제되지 않아요',
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      color: BrandColors.gray_500,
+                                    ),
                                   ),
-                                ),
-                                const Gap(20),
-                                Padding(
-                                  padding: const Pad(horizontal: 100),
-                                  child: Btn(
-                                    '포스트 보기',
-                                    onPressed: () {
-                                      setState(() {
-                                        _revealMutedSpace = true;
-                                      });
-                                    },
+                                  const Gap(20),
+                                  Padding(
+                                    padding: const Pad(horizontal: 100),
+                                    child: Btn(
+                                      '포스트 보기',
+                                      onPressed: () {
+                                        setState(() {
+                                          _revealMutedSpace = true;
+                                        });
+                                      },
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           )
                         : child,
