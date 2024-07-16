@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:glyph/extensions/iterable.dart';
 import 'package:glyph/prosemirror/builder.dart';
 import 'package:glyph/prosemirror/schema.dart';
 
@@ -29,9 +28,14 @@ class ProseMirrorWidgetDocument extends StatelessWidget {
     return ProseMirrorWidgetDocumentData(
       documentParagraphIndent: documentParagraphIndent,
       documentParagraphSpacing: documentParagraphSpacing,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: children.intersperse(Gap(documentParagraphSpacing * 16)).toList(),
+      child: SliverList.separated(
+        itemCount: children.length,
+        itemBuilder: (context, index) {
+          return children[index];
+        },
+        separatorBuilder: (context, index) {
+          return Gap(documentParagraphSpacing * 16);
+        },
       ),
     );
   }

@@ -12,7 +12,7 @@ import 'package:glyph/icons/tabler.dart';
 import 'package:glyph/prosemirror/schema.dart';
 import 'package:glyph/themes/colors.dart';
 
-class ProseMirrorWidgetGallery extends StatelessWidget {
+class ProseMirrorWidgetGallery extends StatefulWidget {
   const ProseMirrorWidgetGallery({
     required this.ids,
     required this.size,
@@ -36,27 +36,37 @@ class ProseMirrorWidgetGallery extends StatelessWidget {
   final String layout;
 
   @override
+  createState() => _ProseMirrorWidgetGalleryState();
+}
+
+class _ProseMirrorWidgetGalleryState extends State<ProseMirrorWidgetGallery> with AutomaticKeepAliveClientMixin {
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     return Align(
-      alignment: switch (align) {
+      alignment: switch (widget.align) {
         'left' => Alignment.centerLeft,
         'center' => Alignment.center,
         'right' => Alignment.centerRight,
         _ => Alignment.center,
       },
       child: ConstrainedBox(
-        constraints: BoxConstraints(maxWidth: size == 'compact' ? 500 : double.infinity),
-        child: switch (layout) {
-          'scroll' => _Scroll(ids: ids),
-          'grid-2' => _Grid(ids: ids, column: 2),
-          'grid-3' => _Grid(ids: ids, column: 3),
-          'slide-1' => _Slide(ids: ids, column: 1),
-          'slide-2' => _Slide(ids: ids, column: 2),
+        constraints: BoxConstraints(maxWidth: widget.size == 'compact' ? 500 : double.infinity),
+        child: switch (widget.layout) {
+          'scroll' => _Scroll(ids: widget.ids),
+          'grid-2' => _Grid(ids: widget.ids, column: 2),
+          'grid-3' => _Grid(ids: widget.ids, column: 3),
+          'slide-1' => _Slide(ids: widget.ids, column: 1),
+          'slide-2' => _Slide(ids: widget.ids, column: 2),
           _ => const SizedBox.shrink(),
         },
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
 class _Image extends StatelessWidget {

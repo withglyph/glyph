@@ -16,7 +16,7 @@ import 'package:glyph/routers/app.gr.dart';
 import 'package:glyph/themes/colors.dart';
 import 'package:jiffy/jiffy.dart';
 
-class ProseMirrorWidgetAccessBarrier extends StatelessWidget {
+class ProseMirrorWidgetAccessBarrier extends StatefulWidget {
   const ProseMirrorWidgetAccessBarrier({
     super.key,
   });
@@ -26,7 +26,15 @@ class ProseMirrorWidgetAccessBarrier extends StatelessWidget {
   }
 
   @override
+  createState() => _ProseMirrorWidgetAccessBarrierState();
+}
+
+class _ProseMirrorWidgetAccessBarrierState extends State<ProseMirrorWidgetAccessBarrier>
+    with AutomaticKeepAliveClientMixin {
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     final parentData = ProseMirrorWidgetAccessBarrierData.of(context);
 
     return GraphQLOperation(
@@ -318,6 +326,9 @@ class ProseMirrorWidgetAccessBarrier extends StatelessWidget {
       },
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
 class ProseMirrorWidgetAccessBarrierData extends InheritedWidget {

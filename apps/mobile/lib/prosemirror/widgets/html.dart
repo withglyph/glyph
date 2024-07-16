@@ -5,7 +5,7 @@ import 'package:glyph/prosemirror/special/embedded_webview.dart';
 import 'package:glyph/prosemirror/special/padded.dart';
 import 'package:glyph/themes/colors.dart';
 
-class ProseMirrorWidgetHtml extends StatelessWidget {
+class ProseMirrorWidgetHtml extends StatefulWidget {
   const ProseMirrorWidgetHtml({
     required this.node,
     super.key,
@@ -20,7 +20,14 @@ class ProseMirrorWidgetHtml extends StatelessWidget {
   final ProseMirrorNode node;
 
   @override
+  createState() => _ProseMirrorWidgetHtmlState();
+}
+
+class _ProseMirrorWidgetHtmlState extends State<ProseMirrorWidgetHtml> with AutomaticKeepAliveClientMixin {
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     return ProseMirrorPadded(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -44,11 +51,14 @@ class ProseMirrorWidgetHtml extends StatelessWidget {
               border: Border.all(color: BrandColors.gray_150),
             ),
             child: ProseMirrorEmbeddedWebView(
-              html: node.content?.first.text ?? '',
+              html: widget.node.content?.first.text ?? '',
             ),
           ),
         ],
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

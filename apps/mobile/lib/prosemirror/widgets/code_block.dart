@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:glyph/prosemirror/schema.dart';
 import 'package:glyph/prosemirror/special/webview.dart';
 
-class ProseMirrorWidgetCodeBlock extends StatelessWidget {
+class ProseMirrorWidgetCodeBlock extends StatefulWidget {
   const ProseMirrorWidgetCodeBlock({
     required this.node,
     super.key,
@@ -17,7 +17,17 @@ class ProseMirrorWidgetCodeBlock extends StatelessWidget {
   final ProseMirrorNode node;
 
   @override
+  createState() => _ProseMirrorWidgetCodeBlockState();
+}
+
+class _ProseMirrorWidgetCodeBlockState extends State<ProseMirrorWidgetCodeBlock> with AutomaticKeepAliveClientMixin {
+  @override
   Widget build(BuildContext context) {
-    return ProseMirrorWebView(node: node);
+    super.build(context);
+
+    return ProseMirrorWebView(node: widget.node);
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

@@ -9,7 +9,7 @@ import 'package:glyph/icons/tabler.dart';
 import 'package:glyph/prosemirror/schema.dart';
 import 'package:glyph/themes/colors.dart';
 
-class ProseMirrorWidgetImage extends StatelessWidget {
+class ProseMirrorWidgetImage extends StatefulWidget {
   const ProseMirrorWidgetImage({
     required this.id,
     required this.size,
@@ -30,19 +30,26 @@ class ProseMirrorWidgetImage extends StatelessWidget {
   final String align;
 
   @override
+  createState() => _ProseMirrorWidgetImageState();
+}
+
+class _ProseMirrorWidgetImageState extends State<ProseMirrorWidgetImage> with AutomaticKeepAliveClientMixin {
+  @override
   Widget build(BuildContext context) {
-    if (id == '') {
+    super.build(context);
+
+    if (widget.id == '') {
       return const SizedBox.shrink();
     }
 
     return GraphQLOperation(
       operation: GProseMirrorWidgetImage_QueryReq(
-        (b) => b..vars.id = id,
+        (b) => b..vars.id = widget.id,
       ),
       builder: (context, client, data) {
         return LayoutBuilder(
           builder: (context, constraints) {
-            if (size == 'full') {
+            if (widget.size == 'full') {
               return Pressable(
                 child: CachedNetworkImage(
                   imageUrl: data.image.url,
@@ -62,7 +69,7 @@ class ProseMirrorWidgetImage extends StatelessWidget {
               );
             } else {
               return Align(
-                alignment: switch (align) {
+                alignment: switch (widget.align) {
                   'left' => Alignment.centerLeft,
                   'center' => Alignment.center,
                   'right' => Alignment.centerRight,
@@ -94,6 +101,9 @@ class ProseMirrorWidgetImage extends StatelessWidget {
       },
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
 class _Viewer extends StatelessWidget {

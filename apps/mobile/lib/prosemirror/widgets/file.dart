@@ -11,7 +11,7 @@ import 'package:glyph/prosemirror/special/padded.dart';
 import 'package:glyph/themes/colors.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class ProseMirrorWidgetFile extends StatelessWidget {
+class ProseMirrorWidgetFile extends StatefulWidget {
   const ProseMirrorWidgetFile({
     required this.id,
     super.key,
@@ -26,10 +26,17 @@ class ProseMirrorWidgetFile extends StatelessWidget {
   final String id;
 
   @override
+  createState() => _ProseMirrorWidgetFileState();
+}
+
+class _ProseMirrorWidgetFileState extends State<ProseMirrorWidgetFile> with AutomaticKeepAliveClientMixin {
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     return GraphQLOperation(
       operation: GProseMirrorWidgetFile_QueryReq(
-        (b) => b..vars.id = id,
+        (b) => b..vars.id = widget.id,
       ),
       builder: (context, client, data) {
         return ProseMirrorPadded(
@@ -92,4 +99,7 @@ class ProseMirrorWidgetFile extends StatelessWidget {
       },
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

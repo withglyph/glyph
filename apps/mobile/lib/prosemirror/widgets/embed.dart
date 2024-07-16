@@ -12,7 +12,7 @@ import 'package:glyph/prosemirror/special/padded.dart';
 import 'package:glyph/themes/colors.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class ProseMirrorWidgetEmbed extends StatelessWidget {
+class ProseMirrorWidgetEmbed extends StatefulWidget {
   const ProseMirrorWidgetEmbed({
     required this.url,
     required this.mode,
@@ -30,13 +30,20 @@ class ProseMirrorWidgetEmbed extends StatelessWidget {
   final String mode;
 
   @override
+  createState() => _ProseMirrorWidgetEmbedState();
+}
+
+class _ProseMirrorWidgetEmbedState extends State<ProseMirrorWidgetEmbed> with AutomaticKeepAliveClientMixin {
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     return GraphQLOperation(
       operation: GProseMirrorWidgetEmbed_UnfurlEmbed_MutationReq(
-        (b) => b..vars.input.url = url,
+        (b) => b..vars.input.url = widget.url,
       ),
       builder: (context, client, data) {
-        return switch (mode) {
+        return switch (widget.mode) {
           'embed-full' => ProseMirrorEmbeddedWebView(html: data.unfurlEmbed.html!),
           'embed-compact' => ProseMirrorPadded(
               child: Center(
@@ -116,4 +123,7 @@ class ProseMirrorWidgetEmbed extends StatelessWidget {
       },
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
