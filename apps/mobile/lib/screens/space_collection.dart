@@ -148,6 +148,14 @@ class _SpaceCollectionScreenState extends State<SpaceCollectionScreen> with Sing
                                       path: '/${data.spaceCollection.space.slug}/dashboard/collections/${widget.id}',
                                     ),
                                   );
+
+                                  await client.refetch(
+                                    GSpaceCollectionScreen_QueryReq(
+                                      (b) => b
+                                        ..vars.slug = widget.id
+                                        ..vars.order = order,
+                                    ),
+                                  );
                                 },
                               ),
                             ],
