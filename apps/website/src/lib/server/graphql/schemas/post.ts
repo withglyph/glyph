@@ -1954,7 +1954,7 @@ builder.mutationFields((t) => ({
         throw new IntentionalError('피드백을 받지 않는 포스트예요');
       }
 
-      const reaction = await database
+      const reactions = await database
         .insert(PostReactions)
         .values({
           userId: context.session.userId,
@@ -1962,13 +1962,14 @@ builder.mutationFields((t) => ({
           emoji: input.emoji,
         })
         .onConflictDoNothing()
-        .returning({ id: PostReactions.id })
-        .then(useFirstRowOrThrow());
+        .returning({ id: PostReactions.id });
 
-      await enqueueJob('createNotification', {
-        category: 'EMOJI_REACTION',
-        targetId: reaction.id,
-      });
+      if (reactions.length > 0) {
+        await enqueueJob('createNotification', {
+          category: 'EMOJI_REACTION',
+          targetId: reactions[0].id,
+        });
+      }
 
       return input.postId;
     },
