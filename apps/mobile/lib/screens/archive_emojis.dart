@@ -44,10 +44,28 @@ class ArchiveEmojisScreen extends ConsumerWidget {
                       clipBehavior: Clip.hardEdge,
                       alignment: Alignment.centerLeft,
                       child: Row(
-                        children: post.reactions
-                            .expand((b) => [if (b.mine) Emoji(Emojis.fromShortCode(b.emoji))])
-                            .intersperse(const Gap(2))
-                            .toList(),
+                        children: [
+                          ...(post.reactions.length > 10 ? post.reactions.sublist(0, 10) : post.reactions)
+                              .expand((b) => [if (b.mine) Emoji(Emojis.fromShortCode(b.emoji))])
+                              .intersperse(const Gap(2)),
+                          if (post.reactions.length > 10)
+                            Text(
+                              '...+${post.reactions.length - 10}',
+                              style: const TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w500,
+                                color: BrandColors.gray_500,
+                              ),
+                            ),
+                          const Text(
+                            ' 남김',
+                            style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w500,
+                              color: BrandColors.gray_500,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
