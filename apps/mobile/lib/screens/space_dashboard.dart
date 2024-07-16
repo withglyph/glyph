@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:glyph/components/webview.dart';
 import 'package:glyph/routers/app.gr.dart';
 import 'package:glyph/shells/default.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 @RoutePage()
 class SpaceDashboardScreen extends StatelessWidget {
@@ -28,6 +29,11 @@ class SpaceDashboardScreen extends StatelessWidget {
             );
           } else if (data['type'] == 'space:delete') {
             await context.router.maybePop('space:delete');
+          } else if (data['type'] == 'redeem:download') {
+            await launchUrl(
+              Uri.parse(data['href']),
+              mode: LaunchMode.inAppBrowserView,
+            );
           }
         },
       ),

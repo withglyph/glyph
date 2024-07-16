@@ -5,6 +5,7 @@
   import { fragment, graphql } from '$glitch';
   import { Button, Icon } from '$lib/components';
   import { RedeemCodeStateString } from '$lib/const/redeem';
+  import { isWebView, postFlutterMessage } from '$lib/flutter';
   import { toast } from '$lib/notification';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
@@ -90,16 +91,29 @@
     </dl>
 
     {#if $redeem.state === 'AVAILABLE'}
-      <Button
-        style={flex.raw({ align: 'center', justify: 'center', gap: '4px', width: { base: 'full', sm: 'fit' } })}
-        download="qr-{$redeem.formattedCode}"
-        href={$redeem.qrCodeUrl}
-        type="link"
-        variant="gray-outline"
-      >
-        <Icon icon={IconArrowBarToDown} />
-        PNG
-      </Button>
+      {#if $isWebView}
+        <Button
+          style={flex.raw({ align: 'center', justify: 'center', gap: '4px', width: { base: 'full', sm: 'fit' } })}
+          variant="gray-outline"
+          on:click={() => {
+            postFlutterMessage({ type: 'redeem:download', href: $redeem.qrCodeUrl });
+          }}
+        >
+          <Icon icon={IconArrowBarToDown} />
+          PNG
+        </Button>
+      {:else}
+        <Button
+          style={flex.raw({ align: 'center', justify: 'center', gap: '4px', width: { base: 'full', sm: 'fit' } })}
+          download="qr-{$redeem.formattedCode}"
+          href={$redeem.qrCodeUrl}
+          type="link"
+          variant="gray-outline"
+        >
+          <Icon icon={IconArrowBarToDown} />
+          PNG
+        </Button>
+      {/if}
     {/if}
   </div>
 </li>
