@@ -156,7 +156,11 @@ class _PointHistoryState extends ConsumerState<PointHistoryScreen> {
                                     children: [
                                       Text(
                                         Jiffy.parse(point.createdAt.value, isUtc: true).format(
-                                          pattern: 'yyyy.MM.dd HH:mm 사용',
+                                          pattern: 'yyyy.MM.dd HH:mm ${point.maybeWhen(
+                                            unlockContentPointTransaction: (transaction) => '사용',
+                                            purchasePointTransaction: (transaction) => '충전',
+                                            orElse: () => '',
+                                          )}',
                                         ),
                                         style: const TextStyle(
                                           fontSize: 11,
