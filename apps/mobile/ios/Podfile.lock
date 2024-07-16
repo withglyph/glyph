@@ -28,29 +28,29 @@ PODS:
   - DictionaryCoder (1.0.8)
   - external_app_launcher (0.0.1):
     - Flutter
-  - Firebase/Analytics (10.27.0):
+  - Firebase/Analytics (10.28.0):
     - Firebase/Core
-  - Firebase/Core (10.27.0):
+  - Firebase/Core (10.28.0):
     - Firebase/CoreOnly
-    - FirebaseAnalytics (~> 10.27.0)
-  - Firebase/CoreOnly (10.27.0):
-    - FirebaseCore (= 10.27.0)
-  - Firebase/Messaging (10.27.0):
+    - FirebaseAnalytics (~> 10.28.0)
+  - Firebase/CoreOnly (10.28.0):
+    - FirebaseCore (= 10.28.0)
+  - Firebase/Messaging (10.28.0):
     - Firebase/CoreOnly
-    - FirebaseMessaging (~> 10.27.0)
-  - firebase_analytics (11.1.0):
-    - Firebase/Analytics (= 10.27.0)
+    - FirebaseMessaging (~> 10.28.0)
+  - firebase_analytics (11.2.0):
+    - Firebase/Analytics (= 10.28.0)
     - firebase_core
     - Flutter
-  - firebase_core (3.1.1):
-    - Firebase/CoreOnly (= 10.27.0)
+  - firebase_core (3.2.0):
+    - Firebase/CoreOnly (= 10.28.0)
     - Flutter
-  - firebase_messaging (15.0.2):
-    - Firebase/Messaging (= 10.27.0)
+  - firebase_messaging (15.0.3):
+    - Firebase/Messaging (= 10.28.0)
     - firebase_core
     - Flutter
-  - FirebaseAnalytics (10.27.0):
-    - FirebaseAnalytics/AdIdSupport (= 10.27.0)
+  - FirebaseAnalytics (10.28.0):
+    - FirebaseAnalytics/AdIdSupport (= 10.28.0)
     - FirebaseCore (~> 10.0)
     - FirebaseInstallations (~> 10.0)
     - GoogleUtilities/AppDelegateSwizzler (~> 7.11)
@@ -58,27 +58,27 @@ PODS:
     - GoogleUtilities/Network (~> 7.11)
     - "GoogleUtilities/NSData+zlib (~> 7.11)"
     - nanopb (< 2.30911.0, >= 2.30908.0)
-  - FirebaseAnalytics/AdIdSupport (10.27.0):
+  - FirebaseAnalytics/AdIdSupport (10.28.0):
     - FirebaseCore (~> 10.0)
     - FirebaseInstallations (~> 10.0)
-    - GoogleAppMeasurement (= 10.27.0)
+    - GoogleAppMeasurement (= 10.28.0)
     - GoogleUtilities/AppDelegateSwizzler (~> 7.11)
     - GoogleUtilities/MethodSwizzler (~> 7.11)
     - GoogleUtilities/Network (~> 7.11)
     - "GoogleUtilities/NSData+zlib (~> 7.11)"
     - nanopb (< 2.30911.0, >= 2.30908.0)
-  - FirebaseCore (10.27.0):
+  - FirebaseCore (10.28.0):
     - FirebaseCoreInternal (~> 10.0)
     - GoogleUtilities/Environment (~> 7.12)
     - GoogleUtilities/Logger (~> 7.12)
-  - FirebaseCoreInternal (10.27.0):
+  - FirebaseCoreInternal (10.29.0):
     - "GoogleUtilities/NSData+zlib (~> 7.8)"
-  - FirebaseInstallations (10.27.0):
+  - FirebaseInstallations (10.29.0):
     - FirebaseCore (~> 10.0)
     - GoogleUtilities/Environment (~> 7.8)
     - GoogleUtilities/UserDefaults (~> 7.8)
     - PromisesObjC (~> 2.1)
-  - FirebaseMessaging (10.27.0):
+  - FirebaseMessaging (10.28.0):
     - FirebaseCore (~> 10.0)
     - FirebaseInstallations (~> 10.0)
     - GoogleDataTransport (~> 9.3)
@@ -111,21 +111,21 @@ PODS:
     - FlutterMacOS
     - GoogleSignIn (~> 7.1)
     - GTMSessionFetcher (>= 3.4.0)
-  - GoogleAppMeasurement (10.27.0):
-    - GoogleAppMeasurement/AdIdSupport (= 10.27.0)
+  - GoogleAppMeasurement (10.28.0):
+    - GoogleAppMeasurement/AdIdSupport (= 10.28.0)
     - GoogleUtilities/AppDelegateSwizzler (~> 7.11)
     - GoogleUtilities/MethodSwizzler (~> 7.11)
     - GoogleUtilities/Network (~> 7.11)
     - "GoogleUtilities/NSData+zlib (~> 7.11)"
     - nanopb (< 2.30911.0, >= 2.30908.0)
-  - GoogleAppMeasurement/AdIdSupport (10.27.0):
-    - GoogleAppMeasurement/WithoutAdIdSupport (= 10.27.0)
+  - GoogleAppMeasurement/AdIdSupport (10.28.0):
+    - GoogleAppMeasurement/WithoutAdIdSupport (= 10.28.0)
     - GoogleUtilities/AppDelegateSwizzler (~> 7.11)
     - GoogleUtilities/MethodSwizzler (~> 7.11)
     - GoogleUtilities/Network (~> 7.11)
     - "GoogleUtilities/NSData+zlib (~> 7.11)"
     - nanopb (< 2.30911.0, >= 2.30908.0)
-  - GoogleAppMeasurement/WithoutAdIdSupport (10.27.0):
+  - GoogleAppMeasurement/WithoutAdIdSupport (10.28.0):
     - GoogleUtilities/AppDelegateSwizzler (~> 7.11)
     - GoogleUtilities/MethodSwizzler (~> 7.11)
     - GoogleUtilities/Network (~> 7.11)
@@ -170,10 +170,10 @@ PODS:
   - GTMAppAuth (4.1.1):
     - AppAuth/Core (~> 1.7)
     - GTMSessionFetcher/Core (< 4.0, >= 3.3)
-  - GTMSessionFetcher (3.4.1):
-    - GTMSessionFetcher/Full (= 3.4.1)
-  - GTMSessionFetcher/Core (3.4.1)
-  - GTMSessionFetcher/Full (3.4.1):
+  - GTMSessionFetcher (3.5.0):
+    - GTMSessionFetcher/Full (= 3.5.0)
+  - GTMSessionFetcher/Core (3.5.0)
+  - GTMSessionFetcher/Full (3.5.0):
     - GTMSessionFetcher/Core
   - iamport_flutter (0.0.1):
     - Flutter
@@ -206,11 +206,11 @@ PODS:
     - Flutter
   - PLCrashReporter (1.11.2)
   - PromisesObjC (2.4.0)
-  - Sentry/HybridSDK (8.29.0)
-  - sentry_flutter (8.3.0):
+  - Sentry/HybridSDK (8.30.1)
+  - sentry_flutter (8.4.0):
     - Flutter
     - FlutterMacOS
-    - Sentry/HybridSDK (= 8.29.0)
+    - Sentry/HybridSDK (= 8.30.1)
   - share_plus (0.0.1):
     - Flutter
   - shared_preferences_foundation (0.0.1):
@@ -351,15 +351,15 @@ SPEC CHECKSUMS:
   DatadogRUM: b5629479d4553d80f2a57ef9db44ce37e56f8b97
   DictionaryCoder: 5f84fff69f54cb806071538430bdafe04a89d658
   external_app_launcher: ad55ac844aa21f2d2197d7cec58ff0d0dc40bbc0
-  Firebase: 26b040b20866a55f55eb3611b9fcf3ae64816b86
-  firebase_analytics: cc6e3ca8f159facf99fb1ceb2d81bda9cc811556
-  firebase_core: f8d0424c45e0f1e596811085fc12c638d628457c
-  firebase_messaging: 8b29edaf5adfd3b52b5bfa5af8128c44164670c6
-  FirebaseAnalytics: f9211b719db260cc91aebee8bb539cb367d0dfd1
-  FirebaseCore: a2b95ae4ce7c83ceecfbbbe3b6f1cddc7415a808
-  FirebaseCoreInternal: 4b297a2d56063dbea2c1d0d04222d44a8d058862
-  FirebaseInstallations: 766dabca09fd94aef922538aaf144cc4a6fb6869
-  FirebaseMessaging: 585984d0a1df120617eb10b44cad8968b859815e
+  Firebase: 5121c624121af81cbc81df3bda414b3c28c4f3c3
+  firebase_analytics: e51d02e2da883fd058f2a4f151f6a80acdfe67aa
+  firebase_core: a9d0180d5285527884d07a41eb4a9ec9ed12cdb6
+  firebase_messaging: ccc82a143a74de75f440a4e413dbbb37ec3fddbc
+  FirebaseAnalytics: 1e06fe7d246af7230b08d1d9cdca54a4624dd461
+  FirebaseCore: 857dc1c6dd1255675047404d8466f7dfaac5d779
+  FirebaseCoreInternal: df84dd300b561c27d5571684f389bf60b0a5c934
+  FirebaseInstallations: 913cf60d0400ebd5d6b63a28b290372ab44590dd
+  FirebaseMessaging: 087a7c7cadef7b9239f005bc4db823894844f323
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
   flutter_inappwebview_ios: 97215cf7d4677db55df76782dbd2930c5e1c1ea0
   flutter_native_splash: edf599c81f74d093a4daf8e17bd7a018854bc778
@@ -367,12 +367,12 @@ SPEC CHECKSUMS:
   flutter_secure_storage: d33dac7ae2ea08509be337e775f6b59f1ff45f12
   fluttertoast: e9a18c7be5413da53898f660530c56f35edfba9c
   google_sign_in_ios: 07375bfbf2620bc93a602c0e27160d6afc6ead38
-  GoogleAppMeasurement: f65fc137531af9ad647f1c0a42f3b6a4d3a98049
+  GoogleAppMeasurement: 55a4a3c8000c1280d68bf4c084adbfef20c49db1
   GoogleDataTransport: 6c09b596d841063d76d4288cc2d2f42cc36e1e2a
   GoogleSignIn: d4281ab6cf21542b1cfaff85c191f230b399d2db
   GoogleUtilities: ea963c370a38a8069cc5f7ba4ca849a60b6d7d15
   GTMAppAuth: f69bd07d68cd3b766125f7e072c45d7340dea0de
-  GTMSessionFetcher: 8000756fc1c19d2e5697b90311f7832d2e33f6cd
+  GTMSessionFetcher: 5aea5ba6bd522a239e236100971f10cb71b96ab6
   iamport_flutter: f698983444b7c0f83e356407631cfeec77a776bf
   iamport_webview_flutter: 70dbc31045e4cf7a0c829b76c6f8319dc94b299e
   image_picker_ios: c560581cceedb403a6ff17f2f816d7fea1421fc1
@@ -387,8 +387,8 @@ SPEC CHECKSUMS:
   permission_handler_apple: 9878588469a2b0d0fc1e048d9f43605f92e6cec2
   PLCrashReporter: 499c53b0104f95c302d94fd723ebb03c56d9bac8
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
-  Sentry: 016de45ee5ce5fca2a829996f1bfafeb5e62e8b4
-  sentry_flutter: 5fb57c5b7e6427a9dc1fedde4269eb65823982d4
+  Sentry: 514a3ea653886e9a48c6287d8b7bf05ec24bf3be
+  sentry_flutter: edc037f7af0dc1512d6c33a5c2c7c838bd0d6806
   share_plus: 8875f4f2500512ea181eef553c3e27dba5135aad
   shared_preferences_foundation: fcdcbc04712aee1108ac7fda236f363274528f78
   sign_in_with_apple: f3bf75217ea4c2c8b91823f225d70230119b8440
