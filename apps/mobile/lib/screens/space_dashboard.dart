@@ -3,13 +3,28 @@ import 'package:flutter/material.dart';
 import 'package:glyph/components/webview.dart';
 import 'package:glyph/routers/app.gr.dart';
 import 'package:glyph/shells/default.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 @RoutePage()
-class SpaceDashboardScreen extends StatelessWidget {
+class SpaceDashboardScreen extends StatefulWidget {
   const SpaceDashboardScreen({@PathParam() required this.slug, super.key});
 
   final String slug;
+
+  @override
+  createState() => _SpaceDashboardScreenState();
+}
+
+class _SpaceDashboardScreenState extends State<SpaceDashboardScreen> {
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await Permission.photos.request();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +32,7 @@ class SpaceDashboardScreen extends StatelessWidget {
       title: '스페이스 관리',
       useSafeArea: true,
       child: WebView(
-        path: '/$slug/dashboard/settings',
+        path: '/${widget.slug}/dashboard/settings',
         onJsMessage: (data, reply, controller) async {
           if (data['type'] == 'post:view') {
             await context.router.push(

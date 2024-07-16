@@ -4,6 +4,7 @@ import 'package:glyph/components/pressable.dart';
 import 'package:glyph/components/webview.dart';
 import 'package:glyph/routers/app.gr.dart';
 import 'package:glyph/shells/default.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 @RoutePage()
 class EditorScreen extends StatefulWidget {
@@ -20,6 +21,15 @@ class EditorScreen extends StatefulWidget {
 
 class _EditorScreenState extends State<EditorScreen> {
   Future<void> Function(dynamic data)? reply;
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await Permission.photos.request();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
