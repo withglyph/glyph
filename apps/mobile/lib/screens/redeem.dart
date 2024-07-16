@@ -12,6 +12,7 @@ class RedeemScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return DefaultShell(
       title: '리딤코드',
+      useSafeArea: true,
       child: WebView(
         path: '/me/redeem',
         onJsMessage: (data, reply, controller) async {

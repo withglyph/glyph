@@ -12,6 +12,7 @@ class RevenueScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return DefaultShell(
       title: '수익/출금',
+      useSafeArea: true,
       child: WebView(
         path: '/me/revenue',
         onJsMessage: (data, reply, controller) async {

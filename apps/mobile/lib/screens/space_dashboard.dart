@@ -14,6 +14,7 @@ class SpaceDashboardScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return DefaultShell(
       title: '스페이스 관리',
+      useSafeArea: true,
       child: WebView(
         path: '/$slug/dashboard/settings',
         onJsMessage: (data, reply, controller) async {

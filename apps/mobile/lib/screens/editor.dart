@@ -25,6 +25,7 @@ class _EditorScreenState extends State<EditorScreen> {
   Widget build(BuildContext context) {
     return DefaultShell(
       title: '포스트 작성',
+      useSafeArea: true,
       actions: [
         Pressable(
           child: const Text(

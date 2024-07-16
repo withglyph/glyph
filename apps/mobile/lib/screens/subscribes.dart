@@ -13,6 +13,7 @@ class SubscribesScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return DefaultShell(
       title: '구독 관리',
+      useSafeArea: true,
       child: WebView(
         path: '/me/subscribes',
         onJsMessage: (data, reply, controller) async {

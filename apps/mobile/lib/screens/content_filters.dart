@@ -13,6 +13,7 @@ class ContentFiltersScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return DefaultShell(
       title: '뮤트/쿠션 관리',
+      useSafeArea: true,
       child: WebView(
         path: '/me/contentfilters',
         onJsMessage: (data, reply, controller) async {
