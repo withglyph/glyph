@@ -6,6 +6,7 @@ extension BottomSheetX on BuildContext {
   Future<T> showDraggableScrollableSheet<T>({
     required Widget Function(BuildContext, ScrollController, double paddingTop) builder,
     String? title,
+    double initialSize = 0.4,
   }) async {
     return await showModalBottomSheet(
       context: this,
@@ -24,11 +25,11 @@ extension BottomSheetX on BuildContext {
         return SafeArea(
           child: DraggableScrollableSheet(
             expand: false,
-            minChildSize: 0.43,
-            initialChildSize: 0.43,
+            minChildSize: initialSize,
+            initialChildSize: initialSize,
             snap: true,
             snapAnimationDuration: const Duration(milliseconds: 100),
-            snapSizes: const [0.43, 1],
+            snapSizes: [initialSize, 1],
             builder: (context, controller) {
               final titleHeight = title == null ? 20.0 : 56.0;
               final child = builder(context, controller, titleHeight);

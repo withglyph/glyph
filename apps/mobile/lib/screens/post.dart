@@ -373,6 +373,7 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                       if (data.post.reactionCount == 0) {
                         final res = await context.showDraggableScrollableSheet(
                           title: '이모지 달기',
+                          initialSize: 0.47,
                           builder: (context, controller, paddingTop) {
                             return _EmojiPicker(postId: data.post.id, controller: controller, paddingTop: paddingTop);
                           },
@@ -2349,6 +2350,7 @@ class _Reactions extends StatelessWidget {
                         onPressed: () async {
                           await context.showDraggableScrollableSheet(
                             title: '이모지 달기',
+                            initialSize: 0.47,
                             builder: (context, controller, paddingTop) {
                               return _EmojiPicker(postId: data.post.id, controller: controller, paddingTop: paddingTop);
                             },
