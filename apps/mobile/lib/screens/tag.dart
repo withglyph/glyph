@@ -17,6 +17,7 @@ import 'package:glyph/components/post_card.dart';
 import 'package:glyph/components/pressable.dart';
 import 'package:glyph/const.dart';
 import 'package:glyph/context/bottom_menu.dart';
+import 'package:glyph/context/toast.dart';
 import 'package:glyph/ferry/widget.dart';
 import 'package:glyph/graphql/__generated__/tag_screen_follow_tag_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/tag_screen_mute_tag_mutation.req.gql.dart';
@@ -149,6 +150,10 @@ class _TagScreenState extends State<TagScreen> with SingleTickerProviderStateMix
                                     (b) => b..vars.input.tagId = data.tag.id,
                                   );
                                   await client.request(req);
+
+                                  if (context.mounted) {
+                                    context.toast.show('${data.tag.name} 태그 뮤트를 해제했어요');
+                                  }
                                 } else {
                                   _mixpanel.track('tag:mute', properties: {'via': 'tag-screen'});
 
@@ -156,6 +161,26 @@ class _TagScreenState extends State<TagScreen> with SingleTickerProviderStateMix
                                     (b) => b..vars.input.tagId = data.tag.id,
                                   );
                                   await client.request(req);
+
+                                  if (context.mounted) {
+                                    context.toast.show(
+                                      '${data.tag.name} 태그를 뮤트했어요',
+                                      type: ToastType.error,
+                                      actionText: '뮤트해제',
+                                      onAction: () async {
+                                        _mixpanel.track('tag:unmute', properties: {'via': 'tag-screen'});
+
+                                        final req = GTagScreen_UnmuteTag_MutationReq(
+                                          (b) => b..vars.input.tagId = data.tag.id,
+                                        );
+                                        await client.request(req);
+
+                                        if (context.mounted) {
+                                          context.toast.show('${data.tag.name} 태그 뮤트를 해제했어요');
+                                        }
+                                      },
+                                    );
+                                  }
                                 }
                               },
                             ),

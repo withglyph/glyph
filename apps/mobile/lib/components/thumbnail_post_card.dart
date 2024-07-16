@@ -228,7 +228,29 @@ class ThumbnailPostCard extends ConsumerWidget {
                                       await client.request(req);
 
                                       if (context.mounted) {
-                                        context.toast.show('${post.space!.name} 스페이스를 뮤트했어요', type: ToastType.error);
+                                        context.toast.show(
+                                          '${post.space!.name} 스페이스를 뮤트했어요',
+                                          type: ToastType.error,
+                                          actionText: '뮤트해제',
+                                          onAction: () async {
+                                            _mixpanel.track(
+                                              'space:unmute',
+                                              properties: {
+                                                'spaceId': post.space!.id,
+                                                'via': 'thumbnail-post-card',
+                                              },
+                                            );
+
+                                            final req = GThumbnailPostCard_UnmuteSpace_MutationReq(
+                                              (b) => b..vars.input.spaceId = post.space!.id,
+                                            );
+                                            await client.request(req);
+
+                                            if (context.mounted) {
+                                              context.toast.show('${post.space!.name} 스페이스 뮤트를 해제했어요');
+                                            }
+                                          },
+                                        );
                                       }
                                     }
                                   },

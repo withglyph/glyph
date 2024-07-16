@@ -130,7 +130,25 @@ class _SpaceScreenState extends State<SpaceScreen> {
                                     await client.request(req);
 
                                     if (context.mounted) {
-                                      context.toast.show('${data.space.name} 스페이스를 뮤트했어요', type: ToastType.error);
+                                      context.toast.show(
+                                        '${data.space.name} 스페이스를 뮤트했어요',
+                                        type: ToastType.error,
+                                        actionText: '뮤트해제',
+                                        onAction: () async {
+                                          _mixpanel.track(
+                                            'space:unmute',
+                                            properties: {'spaceId': data.space.id, 'via': 'space-screen'},
+                                          );
+                                          final req = GSpaceScreen_UnmuteSpace_MutationReq(
+                                            (b) => b..vars.input.spaceId = data.space.id,
+                                          );
+                                          await client.request(req);
+
+                                          if (context.mounted) {
+                                            context.toast.show('${data.space.name} 스페이스 뮤트를 해제했어요');
+                                          }
+                                        },
+                                      );
                                     }
                                   }
                                 },
