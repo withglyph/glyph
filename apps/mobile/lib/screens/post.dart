@@ -6,7 +6,6 @@ import 'dart:math';
 import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:built_value/json_object.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -38,7 +37,6 @@ import 'package:glyph/emojis/emoji.dart';
 import 'package:glyph/emojis/subset.dart';
 import 'package:glyph/env.dart';
 import 'package:glyph/extensions/build_context.dart';
-import 'package:glyph/extensions/int.dart';
 import 'package:glyph/extensions/iterable.dart';
 import 'package:glyph/ferry/error.dart';
 import 'package:glyph/ferry/widget.dart';
@@ -54,7 +52,6 @@ import 'package:glyph/graphql/__generated__/post_screen_comments_report_comment_
 import 'package:glyph/graphql/__generated__/post_screen_comments_unlike_comment_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_screen_delete_post_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_screen_follow_space_mutation.req.gql.dart';
-import 'package:glyph/graphql/__generated__/post_screen_image_viewer_query.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_screen_mute_space_mutation.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_screen_query.req.gql.dart';
 import 'package:glyph/graphql/__generated__/post_screen_reactions_create_post_reaction_mutation.req.gql.dart';
@@ -82,7 +79,6 @@ import 'package:glyph/themes/colors.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -98,7 +94,6 @@ class PostScreen extends ConsumerStatefulWidget {
 
 class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProviderStateMixin {
   final _mixpanel = GetIt.I<Mixpanel>();
-  final _prefs = GetIt.I<SharedPreferences>();
 
   final _staticFooterKey = GlobalKey();
   final _thumbnailKey = GlobalKey();
@@ -114,9 +109,6 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
   bool revealMutedSpace = false;
   Set<GPostBlurredReason> unblurredReasons = {};
 
-  late final bool _useNativeContentEnabled;
-  late bool _useNativeContent;
-
   @override
   void initState() {
     super.initState();
@@ -127,9 +119,6 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
         _updateFloatingFooterVisibility();
       },
     );
-
-    _useNativeContentEnabled = _prefs.getBool('useNativePostRendering') ?? false;
-    _useNativeContent = _useNativeContentEnabled;
   }
 
   @override
@@ -330,17 +319,6 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                                 },
                               ),
                             ]),
-                      if (_useNativeContentEnabled)
-                        BottomMenuItem(
-                          icon: Tabler.stack_3,
-                          title: _useNativeContent ? '웹뷰 렌더러로 전환' : '네이티브 렌더러로 전환',
-                          color: BrandColors.gray_600,
-                          onTap: () {
-                            setState(() {
-                              _useNativeContent = !_useNativeContent;
-                            });
-                          },
-                        ),
                     ],
                   );
                 },
@@ -847,195 +825,11 @@ class _PostScreenState extends ConsumerState<PostScreen> with SingleTickerProvid
                           ),
                         _ => throw UnimplementedError(),
                       }
-                    else if (_useNativeContent)
+                    else
                       _NativeContent(
                         permalink: widget.permalink,
                         revisionId: data.post.publishedRevision!.id,
                         content: data.post.publishedRevision!.content,
-                      )
-                    else
-                      SliverToBoxAdapter(
-                        child: _Content(
-                          permalink: widget.permalink,
-                          onJsMessage: (message, reply, controller) async {
-                            if (message['type'] == 'image:view') {
-                              await showDialog(
-                                context: context,
-                                useSafeArea: false,
-                                builder: (context) {
-                                  return _ImageViewer(id: message['id']);
-                                },
-                              );
-                            } else if (message['type'] == 'purchase') {
-                              await context.showBottomSheet(
-                                title: '포스트 구매',
-                                builder: (context) {
-                                  final purchasable = data.me!.point >= data.post.publishedRevision!.price!;
-
-                                  return Padding(
-                                    padding: const Pad(horizontal: 20),
-                                    child: Column(
-                                      children: [
-                                        Padding(
-                                          padding: const Pad(vertical: 20),
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                                            children: [
-                                              Row(
-                                                children: [
-                                                  const Icon(Tabler.notes, size: 16),
-                                                  const Gap(3),
-                                                  Expanded(
-                                                    child: Text(
-                                                      data.post.publishedRevision!.title ?? '(제목 없음)',
-                                                      overflow: TextOverflow.ellipsis,
-                                                      style: const TextStyle(
-                                                        color: BrandColors.gray_500,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                              const Gap(4),
-                                              Text(
-                                                '${data.post.publishedRevision!.price!.comma}P',
-                                                style: const TextStyle(
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.w800,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        const HorizontalDivider(),
-                                        const Gap(8),
-                                        Padding(
-                                          padding: const Pad(vertical: 12),
-                                          child: Row(
-                                            children: [
-                                              const Text(
-                                                '보유 포인트',
-                                                style: TextStyle(
-                                                  fontWeight: FontWeight.w600,
-                                                  color: BrandColors.gray_900,
-                                                ),
-                                              ),
-                                              const Spacer(),
-                                              Text(
-                                                '${data.me!.point.comma}P',
-                                                style: const TextStyle(
-                                                  fontWeight: FontWeight.w800,
-                                                  color: BrandColors.gray_400,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: const Pad(vertical: 12),
-                                          child: Row(
-                                            children: [
-                                              const Text(
-                                                '사용할 포인트',
-                                                style: TextStyle(
-                                                  fontWeight: FontWeight.w600,
-                                                  color: BrandColors.gray_900,
-                                                ),
-                                              ),
-                                              const Spacer(),
-                                              Text(
-                                                '${data.post.publishedRevision!.price!.comma}P',
-                                                style: TextStyle(
-                                                  fontWeight: FontWeight.w800,
-                                                  color: (purchasable ? BrandColors.brand_400 : BrandColors.gray_400),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        if (purchasable) ...[
-                                          const Gap(24),
-                                          Btn(
-                                            '구매하기',
-                                            theme: BtnTheme.accent,
-                                            onPressed: () async {
-                                              await reply({
-                                                'type': 'purchase:proceed',
-                                              });
-
-                                              if (context.mounted) {
-                                                await context.router.maybePop();
-                                              }
-                                            },
-                                          ),
-                                        ] else ...[
-                                          Padding(
-                                            padding: const Pad(vertical: 12),
-                                            child: Row(
-                                              children: [
-                                                const Text(
-                                                  '필요한 포인트',
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.w600,
-                                                    color: BrandColors.brand_400,
-                                                  ),
-                                                ),
-                                                const Spacer(),
-                                                Text(
-                                                  '${(data.post.publishedRevision!.price! - data.me!.point).comma}P',
-                                                  style: const TextStyle(
-                                                    fontWeight: FontWeight.w800,
-                                                    color: BrandColors.brand_400,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          const Gap(8),
-                                          const DecoratedBox(
-                                            decoration: BoxDecoration(
-                                              color: BrandColors.gray_50,
-                                              borderRadius: BorderRadius.all(
-                                                Radius.circular(4),
-                                              ),
-                                            ),
-                                            child: Padding(
-                                              padding: Pad(all: 10),
-                                              child: Row(
-                                                children: [
-                                                  Icon(
-                                                    Tabler.coin_filled,
-                                                    size: 16,
-                                                    color: Color(0xFFFCC04B),
-                                                  ),
-                                                  Gap(4),
-                                                  Text(
-                                                    '해당 포스트를 구매하려면 포인트가 필요해요',
-                                                    style: TextStyle(
-                                                      color: BrandColors.gray_800,
-                                                      fontSize: 12,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                          const Gap(24),
-                                          Btn(
-                                            '충전하기',
-                                            onPressed: () async {
-                                              await context.popWaitAndPush(const PointPurchaseRoute());
-                                            },
-                                          ),
-                                        ],
-                                      ],
-                                    ),
-                                  );
-                                },
-                              );
-                            }
-                          },
-                        ),
                       ),
                     SliverToBoxAdapter(
                       child: Column(
@@ -1885,56 +1679,6 @@ class _Tag extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _ImageViewer extends StatelessWidget {
-  const _ImageViewer({required this.id});
-
-  final String id;
-
-  @override
-  Widget build(BuildContext context) {
-    return Box(
-      color: BrandColors.gray_900,
-      child: GraphQLOperation(
-        operation: GPostScreen_ImageViewer_QueryReq(
-          (b) => b..vars.id = id,
-        ),
-        builder: (context, client, data) {
-          final safeAreaTopHeight = MediaQuery.of(context).padding.top;
-
-          return Stack(
-            children: [
-              InteractiveViewer(
-                maxScale: 8.0,
-                boundaryMargin: const Pad(all: 100),
-                child: Center(
-                  child: CachedNetworkImage(
-                    imageUrl: data.image.url,
-                    fadeInDuration: const Duration(milliseconds: 150),
-                    fadeOutDuration: Duration.zero,
-                    placeholder: (context, url) {
-                      return const Center(child: CircularProgressIndicator(color: BrandColors.gray_200));
-                    },
-                  ),
-                ),
-              ),
-              Positioned(
-                top: safeAreaTopHeight + 16,
-                right: 20,
-                child: Pressable(
-                  child: const Icon(Tabler.x, color: BrandColors.gray_200),
-                  onPressed: () async {
-                    await context.router.maybePop();
-                  },
-                ),
-              ),
-            ],
-          );
-        },
       ),
     );
   }

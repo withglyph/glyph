@@ -56,7 +56,11 @@ Future<void> main() async {
   final mixpanel = await Mixpanel.init(Env.mixpanelToken, trackAutomaticEvents: false);
 
   GetIt.I.registerSingleton<SharedPreferences>(prefs);
-  GetIt.I.registerSingleton<FlutterSecureStorage>(const FlutterSecureStorage());
+  GetIt.I.registerSingleton<FlutterSecureStorage>(
+    const FlutterSecureStorage(
+      aOptions: AndroidOptions(encryptedSharedPreferences: true, resetOnError: true),
+    ),
+  );
   GetIt.I.registerSingleton<FirebaseMessaging>(FirebaseMessaging.instance);
   GetIt.I.registerSingleton<InAppPurchase>(InAppPurchase.instance);
   GetIt.I.registerSingleton<Mixpanel>(mixpanel);

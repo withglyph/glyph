@@ -1,6 +1,0 @@
-query PostScreen_ImageViewer_Query($id: ID!) {
-  image(id: $id) {
-    id
-    url
-  }
-}
