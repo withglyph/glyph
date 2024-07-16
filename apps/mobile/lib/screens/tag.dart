@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:auto_route/auto_route.dart';
@@ -51,6 +52,8 @@ class _TagScreenState extends State<TagScreen> with SingleTickerProviderStateMix
   final _thumbnailKey = GlobalKey();
 
   bool _isOverThumbnail = false;
+  double _thumbnailScale = 1;
+
   int _page = 1;
   bool _fetching = false;
   bool _eol = false;
@@ -199,6 +202,14 @@ class _TagScreenState extends State<TagScreen> with SingleTickerProviderStateMix
                   setState(() {
                     _isOverThumbnail = hasThumbnail && value >= 1;
                   });
+
+                  final overscrollHeight = -notification.metrics.pixels;
+                  final scale = 1.0 + max(0.0, overscrollHeight / thumbnailBox.size.height);
+                  if (scale != _thumbnailScale) {
+                    setState(() {
+                      _thumbnailScale = scale;
+                    });
+                  }
                 }
 
                 return false;
@@ -212,32 +223,32 @@ class _TagScreenState extends State<TagScreen> with SingleTickerProviderStateMix
                     child: Column(
                       children: [
                         if (hasThumbnail)
-                          LayoutBuilder(
-                            builder: (context, constraints) {
-                              return Stack(
-                                children: [
-                                  Img(
-                                    data.tag.thumbnail,
-                                    height: 190 + safeAreaHeight,
-                                    width: constraints.maxWidth,
-                                  ),
-                                  Positioned.fill(
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        gradient: LinearGradient(
-                                          colors: [
-                                            BrandColors.gray_900.withOpacity(0.6),
-                                            BrandColors.gray_900.withOpacity(0),
-                                          ],
-                                          begin: Alignment.topCenter,
-                                          end: Alignment.bottomCenter,
-                                        ),
+                          Transform.scale(
+                            scale: _thumbnailScale,
+                            alignment: Alignment.bottomCenter,
+                            child: Stack(
+                              children: [
+                                Img(
+                                  data.tag.thumbnail,
+                                  height: 190 + safeAreaHeight,
+                                  width: MediaQuery.of(context).size.width,
+                                ),
+                                Positioned.fill(
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        colors: [
+                                          BrandColors.gray_900.withOpacity(0.6),
+                                          BrandColors.gray_900.withOpacity(0),
+                                        ],
+                                        begin: Alignment.topCenter,
+                                        end: Alignment.bottomCenter,
                                       ),
                                     ),
                                   ),
-                                ],
-                              );
-                            },
+                                ),
+                              ],
+                            ),
                           ),
                         Container(
                           key: _thumbnailKey,
