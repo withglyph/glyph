@@ -90,7 +90,10 @@ class _ProseMirrorWidgetEmbedState extends State<ProseMirrorWidgetEmbed> with Au
                               Uri.parse(data.unfurlEmbed.url).host,
                               overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
-                                  fontSize: 10, color: BrandColors.brand_400, fontWeight: FontWeight.w400),
+                                fontSize: 10,
+                                color: BrandColors.brand_400,
+                                fontWeight: FontWeight.w400,
+                              ),
                             ),
                             const Gap(12),
                           ],

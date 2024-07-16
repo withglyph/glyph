@@ -632,7 +632,7 @@ class _CreateSpaceState extends ConsumerState<_CreateSpace> {
                           FormBuilderValidators.required(errorText: 'URL을 입력해주세요'),
                           FormBuilderValidators.maxLength(20, errorText: 'URL은 20글자를 넘을 수 없어요'),
                           FormBuilderValidators.match(
-                            r'^[\d._a-z]+$',
+                            RegExp(r'^[\d._a-z]+$'),
                             errorText: '영문 소문자, 숫자, ., _만 사용할 수 있어요',
                           ),
                           (value) {
