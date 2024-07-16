@@ -47,6 +47,13 @@ class _GraphQLOperationState<TData, TVars> extends ConsumerState<GraphQLOperatio
   }
 
   @override
+  void dispose() {
+    _animationController.dispose();
+
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final asyncAuth = ref.watch(authProvider);
     final asyncClient = ref.watch(ferryProvider);
@@ -94,6 +101,10 @@ class _GraphQLOperationState<TData, TVars> extends ConsumerState<GraphQLOperatio
           _loaded = true;
 
           WidgetsBinding.instance.addPostFrameCallback((_) async {
+            if (!mounted) {
+              return;
+            }
+
             unawaited(_animationController.forward());
             widget.onDataLoaded?.call(context, notifier, data);
           });
