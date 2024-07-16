@@ -57,6 +57,7 @@ class ArchiveEmojisScreen extends ConsumerWidget {
                                 color: BrandColors.gray_500,
                               ),
                             ),
+                          const Gap(2),
                           const Text(
                             ' 남김',
                             style: TextStyle(
