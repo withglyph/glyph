@@ -64,7 +64,7 @@ class _ProseMirrorWidgetEmbedState extends State<ProseMirrorWidgetEmbed> with Au
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Gap(16),
+                      const Gap(14),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -75,18 +75,22 @@ class _ProseMirrorWidgetEmbedState extends State<ProseMirrorWidgetEmbed> with Au
                               overflow: TextOverflow.ellipsis,
                               style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
                             ),
-                            const Gap(2),
                             if (data.unfurlEmbed.description != null)
                               Text(
                                 data.unfurlEmbed.description!,
                                 overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(fontSize: 12, color: BrandColors.gray_400),
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  color: BrandColors.gray_400,
+                                  fontWeight: FontWeight.w400,
+                                ),
                               ),
-                            const Gap(6),
+                            const Gap(7),
                             Text(
                               Uri.parse(data.unfurlEmbed.url).host,
                               overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(fontSize: 11, color: BrandColors.brand_400),
+                              style: const TextStyle(
+                                  fontSize: 10, color: BrandColors.brand_400, fontWeight: FontWeight.w400),
                             ),
                             const Gap(12),
                           ],
@@ -97,8 +101,8 @@ class _ProseMirrorWidgetEmbedState extends State<ProseMirrorWidgetEmbed> with Au
                         const Box(width: 1, color: BrandColors.gray_200),
                         CachedNetworkImage(
                           imageUrl: data.unfurlEmbed.thumbnailUrl!,
-                          width: 100,
-                          height: 100,
+                          width: 83,
+                          height: 83,
                           fit: BoxFit.cover,
                           fadeInDuration: const Duration(milliseconds: 150),
                         ),
