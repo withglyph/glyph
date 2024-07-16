@@ -37,6 +37,7 @@ class _DraftsScreenState extends State<DraftsScreen> {
   Widget build(BuildContext context) {
     return DefaultShell(
       bottomBorder: false,
+      useSafeArea: true,
       title: '임시저장함',
       child: GraphQLOperation(
         operation: GDraftsScreen_QueryReq(),

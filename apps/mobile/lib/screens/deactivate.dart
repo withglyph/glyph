@@ -13,6 +13,7 @@ class DeactivateScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return DefaultShell(
+      useSafeArea: true,
       title: '회원 탈퇴',
       child: WebView(
         path: '/me/settings/deactivate',

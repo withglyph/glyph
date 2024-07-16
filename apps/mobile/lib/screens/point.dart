@@ -22,6 +22,7 @@ class PointScreen extends ConsumerWidget {
       builder: (context, child, tabController) {
         return DefaultShell(
           bottomBorder: false,
+          useSafeArea: true,
           title: '포인트',
           child: Column(
             children: [
