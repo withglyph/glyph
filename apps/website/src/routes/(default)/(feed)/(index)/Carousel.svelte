@@ -6,67 +6,96 @@
   import { tweened } from 'svelte/motion';
   import IconArrowLeft from '~icons/tabler/arrow-left';
   import IconArrowRight from '~icons/tabler/arrow-right';
+  import { fragment, graphql } from '$glitch';
   import { Icon } from '$lib/components';
   import { css, cx } from '$styled-system/css';
   import { center, flex } from '$styled-system/patterns';
+  import type { Carousel_slides } from '$glitch';
 
-  type Slide = {
-    title: string;
-    subtitle: string;
-    bottomline?: string;
-    color: string;
-    backgroundImageUrl: string;
-    href: string;
+  let _query: Carousel_slides;
+  export { _query as $query };
+
+  $: slides = fragment(
+    _query,
+    graphql(`
+      fragment Carousel_slides on Query {
+        banners {
+          id
+          title
+          subtitle
+          bottomline
+          color
+          backgroundImageUrl
+          href
+        }
+      }
+    `),
+  );
+
+  const nl2br = (html: string) => {
+    return html
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll(String.raw`\n`, '<br>');
   };
 
-  const slides: Slide[] = [
-    // {
-    //   title: '주간창작 챌린지!',
-    //   subtitle: '주간창작 챌린지와 함께 꾸준히 창작해요!',
-    //   color: '#1717175A',
-    //   backgroundImageUrl: 'https://glyph.pub/images/_/banner_challenge_3.png',
-    //   href: '/glyph/1181236146',
-    // },
-    {
-      title: '6월 18일 업데이트 노트',
-      subtitle: '유료 콘텐츠를 원하는\n방식으로 배포하는 새로운 방법: 리딤코드',
-      color: '#1717175A',
-      backgroundImageUrl: 'https://glyph.pub/images/_/banner_updates_2.png',
-      href: '/glyph/1680725636',
-    },
-    {
-      title: '<정산 기능 업데이트>',
-      subtitle: '창작자를 위한 정산 수수료 0%',
-      color: '#1717175A',
-      backgroundImageUrl: 'https://glyph.pub/images/_/banner_settlement.png',
-      href: '/glyph/1858282558',
-    },
-    {
-      title: '펜슬이 글리프로 바뀌었어요',
-      subtitle: '리브랜딩 이야기',
-      color: '#504C575A',
-      backgroundImageUrl: 'https://glyph.pub/images/_/banner_rebranding_2.png',
-      href: '/glyph/1433497915',
-    },
-    {
-      title: '시즌 2 컴백!\n<나의 밤을 그대에게>',
-      subtitle: '신을 섬기는 기사와, 그를 사랑하게 된 악마',
-      bottomline: 'ⓒ유씨',
-      color: '#9FAAA8',
-      backgroundImageUrl: 'https://glyph.pub/images/_/banner_uc2.png',
-      // spell-checker:disable-next-line
-      href: '/uc/collections/xlcu0otv80zl6z47',
-    },
-    {
-      title: '트위터 프로필 연동하고\n포인트 받아가세요',
-      subtitle: '2000P 적립 이벤트',
-      color: '#124B8E5A',
-      backgroundImageUrl: 'https://glyph.pub/images/_/banner_twitter_events_2.png',
-      href: '/glyph/677483040',
-    },
-  ];
+  // type Slide = {
+  //   title: string;
+  //   subtitle: string;
+  //   bottomline?: string;
+  //   color: string;
+  //   backgroundImageUrl: string;
+  //   href: string;
+  // };
 
-  $: repeatableSlides = [...slides, slides[0], slides[1]];
+  // const slides: Slide[] = [
+  // {
+  //   title: '주간창작 챌린지!',
+  //   subtitle: '주간창작 챌린지와 함께 꾸준히 창작해요!',
+  //   color: '#1717175A',
+  //   backgroundImageUrl: 'https://glyph.pub/images/_/banner_challenge_3.png',
+  //   href: '/glyph/1181236146',
+  // },
+  //   {
+  //     title: '6월 18일 업데이트 노트',
+  //     subtitle: '유료 콘텐츠를 원하는\n방식으로 배포하는 새로운 방법: 리딤코드',
+  //     color: '#1717175A',
+  //     backgroundImageUrl: 'https://glyph.pub/images/_/banner_updates_2.png',
+  //     href: '/glyph/1680725636',
+  //   },
+  //   {
+  //     title: '<정산 기능 업데이트>',
+  //     subtitle: '창작자를 위한 정산 수수료 0%',
+  //     color: '#1717175A',
+  //     backgroundImageUrl: 'https://glyph.pub/images/_/banner_settlement.png',
+  //     href: '/glyph/1858282558',
+  //   },
+  //   {
+  //     title: '펜슬이 글리프로 바뀌었어요',
+  //     subtitle: '리브랜딩 이야기',
+  //     color: '#504C575A',
+  //     backgroundImageUrl: 'https://glyph.pub/images/_/banner_rebranding_2.png',
+  //     href: '/glyph/1433497915',
+  //   },
+  //   {
+  //     title: '시즌 2 컴백!\n<나의 밤을 그대에게>',
+  //     subtitle: '신을 섬기는 기사와, 그를 사랑하게 된 악마',
+  //     bottomline: 'ⓒ유씨',
+  //     color: '#9FAAA8',
+  //     backgroundImageUrl: 'https://glyph.pub/images/_/banner_uc2.png',
+  //     // spell-checker:disable-next-line
+  //     href: '/uc/collections/xlcu0otv80zl6z47',
+  //   },
+  //   {
+  //     title: '트위터 프로필 연동하고\n포인트 받아가세요',
+  //     subtitle: '2000P 적립 이벤트',
+  //     color: '#124B8E5A',
+  //     backgroundImageUrl: 'https://glyph.pub/images/_/banner_twitter_events_2.png',
+  //     href: '/glyph/677483040',
+  //   },
+  // ];
+
+  $: repeatableSlides = [...$slides.banners, $slides.banners[0], $slides.banners[1 % $slides.banners.length]];
 
   const value = tweened(0, { duration: 1000, easing: expoInOut });
   $: currentIdx = Math.floor($value);
@@ -261,11 +290,11 @@
                       lineHeight: '[1.2]',
                     })}
                   >
-                    {slide.title}
+                    {@html nl2br(slide.title)}
                   </div>
 
                   <div class={css({ fontSize: { base: '14px', sm: '16px' } })}>
-                    {slide.subtitle}
+                    {@html nl2br(slide.subtitle)}
                   </div>
                 </div>
 
@@ -291,10 +320,10 @@
               })}
             >
               <div class={css({ fontWeight: 'semibold' })}>
-                {idx === slides.length ? 1 : idx + 1}
+                {idx === $slides.banners.length ? 1 : idx + 1}
               </div>
               <div class={css({ opacity: '50' })}>/</div>
-              <div class={css({ opacity: '70' })}>{slides.length}</div>
+              <div class={css({ opacity: '70' })}>{$slides.banners.length}</div>
             </div>
           </a>
         </div>

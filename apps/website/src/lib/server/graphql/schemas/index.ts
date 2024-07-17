@@ -1,3 +1,4 @@
+import './banner';
 import './bookmark';
 import './collection';
 import './comment';

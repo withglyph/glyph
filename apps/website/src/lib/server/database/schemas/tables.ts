@@ -1024,6 +1024,21 @@ export const ProvisionedUsers = pgTable('provisioned_users', {
     .default(sql`now()`),
 });
 
+export const Banners = pgTable('banners', {
+  id: text('id')
+    .primaryKey()
+    .$defaultFn(() => createId()),
+  title: text('title').notNull(),
+  subtitle: text('subtitle').notNull(),
+  bottomline: text('bottomline'),
+  color: text('color').notNull(),
+  backgroundImageUrl: text('background_image_url').notNull(),
+  href: text('href').notNull(),
+  createdAt: datetime('created_at')
+    .notNull()
+    .default(sql`now()`),
+});
+
 export const CurationPosts = pgTable('curation_posts', {
   id: text('id')
     .primaryKey()
