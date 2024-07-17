@@ -1,4 +1,4 @@
-import * as R from 'radash';
+import { desc } from 'drizzle-orm';
 import { useCache } from '$lib/server/cache';
 import { Banners, database } from '$lib/server/database';
 import { builder } from '../builder';
@@ -24,10 +24,7 @@ builder.queryFields((t) => ({
       return await useCache(
         `Banners`,
         () => {
-          return database
-            .select()
-            .from(Banners)
-            .then((banners) => R.shuffle(banners));
+          return database.select().from(Banners).orderBy(desc(Banners.createdAt));
         },
         60,
       );
