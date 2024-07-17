@@ -33,6 +33,6 @@ export const purchaseNotificationMaker: NotificationMaker = async (purchaseId) =
     },
     pushTitle: purchase.postTitle ?? '(제목 없음)',
     pushBody: `${profile.name}님이 포스트를 구매했어요.`,
-    pushPath: '/me/revenue',
+    pushPath: 'me/revenue',
   });
 };

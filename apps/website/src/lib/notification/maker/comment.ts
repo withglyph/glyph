@@ -61,6 +61,6 @@ export const commentNotificationMaker: NotificationMaker = async (commentId) => 
     },
     pushTitle: comment.postTitle ?? '(제목 없음)',
     pushBody: `${comment.profileName}님이 "${comment.content}" 댓글을 남겼어요.`,
-    pushPath: `/${comment.spaceSlug}/${comment.postPermalink}`,
+    pushPath: `${comment.spaceSlug}/${comment.postPermalink}`,
   });
 };

@@ -38,6 +38,6 @@ export const emojiReactionNotificationMaker: NotificationMaker = async (reaction
     },
     pushTitle: reaction.title ?? '(제목 없음)',
     pushBody: `${profile.name}님이 이모지를 남겼어요.`,
-    pushPath: `/${reaction.spaceSlug}/${reaction.postPermalink}`,
+    pushPath: `${reaction.spaceSlug}/${reaction.postPermalink}`,
   });
 };

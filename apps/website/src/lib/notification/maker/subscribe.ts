@@ -41,7 +41,7 @@ export const subscribeNotificationMaker: NotificationMaker = async (spaceFollowI
         },
         pushTitle: spaceFollow.spaceName,
         pushBody: `${profile.name}님이 스페이스를 구독했어요.`,
-        pushPath: `/${spaceFollow.spaceSlug}`,
+        pushPath: `${spaceFollow.spaceSlug}`,
       });
     }),
   );
