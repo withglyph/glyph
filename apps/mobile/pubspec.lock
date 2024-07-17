@@ -73,6 +73,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.3"
+  app_tracking_transparency:
+    dependency: "direct main"
+    description:
+      name: app_tracking_transparency
+      sha256: "7b011da3165ebb5a2f93d19da22e43a94b45bb6471c825b7d163b30eff937d30"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.5"
+  appsflyer_sdk:
+    dependency: "direct main"
+    description:
+      name: appsflyer_sdk
+      sha256: "81bd40cc6fe985c5b6a1d6b8d38c282673c1c77aea4d6696e9bf46fff7098b07"
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.14.3"
   archive:
     dependency: transitive
     description:

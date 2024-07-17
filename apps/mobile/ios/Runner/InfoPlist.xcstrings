@@ -48,6 +48,18 @@
           }
         }
       }
+    },
+    "NSUserTrackingUsageDescription" : {
+      "comment" : "Privacy - Tracking Usage Description",
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "관심사에 맞는 광고 제공을 위해 본 기기의 광고식별자를 수집합니다"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

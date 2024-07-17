@@ -85,6 +85,8 @@
 	<string>66kb3ApsAQ</string>
 	<key>naverServiceAppName</key>
 	<string>Glyph</string>
+	<key>NSUserTrackingUsageDescription</key>
+	<string>TRACKING_USAGE</string>
 	<key>naverServiceAppUrlScheme</key>
 	<string>com.withglyph.app</string>
 </dict>

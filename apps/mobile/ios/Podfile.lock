@@ -1,12 +1,20 @@
 PODS:
   - app_links (0.0.1):
     - Flutter
+  - app_tracking_transparency (0.0.1):
+    - Flutter
   - AppAuth (1.7.5):
     - AppAuth/Core (= 1.7.5)
     - AppAuth/ExternalUserAgent (= 1.7.5)
   - AppAuth/Core (1.7.5)
   - AppAuth/ExternalUserAgent (1.7.5):
     - AppAuth/Core
+  - appsflyer_sdk (6.14.3):
+    - AppsFlyerFramework (= 6.14.3)
+    - Flutter
+  - AppsFlyerFramework (6.14.3):
+    - AppsFlyerFramework/Main (= 6.14.3)
+  - AppsFlyerFramework/Main (6.14.3)
   - datadog_flutter_plugin (0.0.1):
     - DatadogCore (= 2.13.0)
     - DatadogCrashReporting (= 2.13.0)
@@ -227,6 +235,8 @@ PODS:
 
 DEPENDENCIES:
   - app_links (from `.symlinks/plugins/app_links/ios`)
+  - app_tracking_transparency (from `.symlinks/plugins/app_tracking_transparency/ios`)
+  - appsflyer_sdk (from `.symlinks/plugins/appsflyer_sdk/ios`)
   - datadog_flutter_plugin (from `.symlinks/plugins/datadog_flutter_plugin/ios`)
   - external_app_launcher (from `.symlinks/plugins/external_app_launcher/ios`)
   - firebase_analytics (from `.symlinks/plugins/firebase_analytics/ios`)
@@ -257,6 +267,7 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - AppAuth
+    - AppsFlyerFramework
     - DatadogCore
     - DatadogCrashReporting
     - DatadogInternal
@@ -287,6 +298,10 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   app_links:
     :path: ".symlinks/plugins/app_links/ios"
+  app_tracking_transparency:
+    :path: ".symlinks/plugins/app_tracking_transparency/ios"
+  appsflyer_sdk:
+    :path: ".symlinks/plugins/appsflyer_sdk/ios"
   datadog_flutter_plugin:
     :path: ".symlinks/plugins/datadog_flutter_plugin/ios"
   external_app_launcher:
@@ -342,7 +357,10 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   app_links: e70ca16b4b0f88253b3b3660200d4a10b4ea9795
+  app_tracking_transparency: e169b653478da7bb15a6c61209015378ca73e375
   AppAuth: 501c04eda8a8d11f179dbe8637b7a91bb7e5d2fa
+  appsflyer_sdk: e59c6b99ce2f28b93fe6b3045a97e8e1a20bce97
+  AppsFlyerFramework: 0a68f5b72bbbadfa71d4ae3eaf040e82d62e8518
   datadog_flutter_plugin: 620cefeb0a26a9271190d918059e33309416c603
   DatadogCore: 9390fd07a89f57a23983de66fbec5bf3c2034f7a
   DatadogCrashReporting: 79b67b790df186524fc76d45c0b8ce751c36ef41

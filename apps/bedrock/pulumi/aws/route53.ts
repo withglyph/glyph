@@ -56,6 +56,14 @@ new aws.route53.Record('mail.withglyph.com|txt', {
   ttl: 300,
 });
 
+new aws.route53.Record('app.glph.to|cname', {
+  zoneId: zones.glph_to.zoneId,
+  type: 'CNAME',
+  name: 'app.glph.to',
+  records: ['withglyph.customlinks.appsflyer.com'],
+  ttl: 300,
+});
+
 new aws.route53.Record('penxle.com|txt', {
   zoneId: zones.penxle_com.zoneId,
   type: 'TXT',

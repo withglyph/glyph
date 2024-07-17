@@ -1,3 +1,5 @@
+import 'package:app_tracking_transparency/app_tracking_transparency.dart';
+import 'package:appsflyer_sdk/appsflyer_sdk.dart';
 import 'package:datadog_flutter_plugin/datadog_flutter_plugin.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -68,6 +70,22 @@ Future<void> main() async {
   GetIt.I.registerSingleton<DatadogSdk>(DatadogSdk.instance);
 
   await initializeFirebaseMessaging();
+
+  await AppTrackingTransparency.requestTrackingAuthorization();
+
+  final appsflyer = AppsflyerSdk(
+    AppsFlyerOptions(
+      afDevKey: 'rHRYiSyqraBZ7RYGgw9JRQ',
+      appId: '6502156007',
+      timeToWaitForATTUserAuthorization: 30,
+    ),
+  );
+
+  await appsflyer.initSdk(
+    registerConversionDataCallback: true,
+    registerOnAppOpenAttributionCallback: true,
+    registerOnDeepLinkingCallback: true,
+  );
 
   final pkg = await PackageInfo.fromPlatform();
 
