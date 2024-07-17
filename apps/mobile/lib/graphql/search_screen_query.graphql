@@ -1,4 +1,13 @@
 query SearchScreen_Query {
+  banners {
+    id
+    title
+    subtitle
+    bottomline
+    color
+    backgroundImageUrl
+    href
+  }
   recommendedTags {
     id
     name

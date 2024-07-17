@@ -2,6 +2,7 @@ import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:card_swiper/card_swiper.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
@@ -65,9 +66,19 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        const Padding(
-                          padding: Pad(horizontal: 20, vertical: 8),
-                          child: _Carousel(),
+                        Padding(
+                          padding: const Pad(horizontal: 20, vertical: 8),
+                          child: _Carousel(
+                            data.banners.mapIndexed((index, banner) {
+                              return _CarouselData(
+                                title: banner.title,
+                                subtitle: banner.subtitle,
+                                color: banner.color,
+                                backgroundImageUrl: banner.backgroundImageUrl,
+                                href: banner.href,
+                              );
+                            }).toList(),
+                          ),
                         ),
                         Padding(
                           padding: const Pad(horizontal: 20, vertical: 8),
@@ -139,39 +150,12 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   }
 }
 
-final _carousels = <_CarouselData>[
-  _CarouselData(
-    title: '5월 30일 업데이트 노트',
-    subtitle: '스페이스 관리 리뉴얼\n포스트 발행옵션 일괄 수정, 컬렉션 설명 추가',
-    color: '#171717',
-    backgroundImageUrl: 'https://glyph.pub/images/_/banner_updates_2.png',
-    route: PostRoute(permalink: '2070481519'),
-  ),
-  _CarouselData(
-    title: '<정산 기능 업데이트>',
-    subtitle: '창작자를 위한 정산 수수료 0%',
-    color: '#171717',
-    backgroundImageUrl: 'https://glyph.pub/images/_/banner_settlement.png',
-    route: PostRoute(permalink: '1858282558'),
-  ),
-  _CarouselData(
-    title: '펜슬이 글리프로 바뀌었어요',
-    subtitle: '리브랜딩 이야기',
-    color: '#504C575A',
-    backgroundImageUrl: 'https://glyph.pub/images/_/banner_rebranding_2.png',
-    route: PostRoute(permalink: '1433497915'),
-  ),
-  _CarouselData(
-    title: '트위터 프로필 연동하고\n포인트 받아가세요',
-    subtitle: '2000P 적립 이벤트',
-    color: '#124B8E',
-    backgroundImageUrl: 'https://glyph.pub/images/_/banner_twitter_events_2.png',
-    route: PostRoute(permalink: '677483040'),
-  ),
-];
-
 class _Carousel extends StatelessWidget {
-  const _Carousel();
+  _Carousel(
+    this.items,
+  );
+
+  List<_CarouselData> items;
 
   @override
   Widget build(BuildContext context) {
@@ -186,9 +170,9 @@ class _Carousel extends StatelessWidget {
         autoplayDelay: 5000,
         duration: 500,
         curve: Curves.linearToEaseOut,
-        itemCount: _carousels.length,
+        itemCount: items.length,
         itemBuilder: (context, index) {
-          final carousel = _carousels[index];
+          final carousel = items[index];
 
           return Stack(
             children: [
@@ -221,7 +205,7 @@ class _Carousel extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        carousel.title,
+                        carousel.title.replaceAll(r'\n', ' '),
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
@@ -230,7 +214,7 @@ class _Carousel extends StatelessWidget {
                       ),
                       if (carousel.subtitle != null)
                         Text(
-                          carousel.subtitle!,
+                          carousel.subtitle!.replaceAll(r'\n', ' '),
                           style: const TextStyle(
                             fontSize: 13,
                             color: BrandColors.gray_0,
@@ -273,7 +257,7 @@ class _Carousel extends StatelessWidget {
                       ),
                       const Gap(2),
                       Text(
-                        _carousels.length.toString(),
+                        items.length.toString(),
                         style: TextStyle(
                           fontSize: 11,
                           color: BrandColors.gray_0.withOpacity(0.5),
@@ -287,8 +271,8 @@ class _Carousel extends StatelessWidget {
           );
         },
         onTap: (index) async {
-          final carousel = _carousels[index];
-          await context.router.push(carousel.route);
+          final carousel = items[index];
+          await context.router.pushNamed(carousel.href);
         },
       ),
     );
@@ -300,14 +284,14 @@ class _CarouselData {
     required this.title,
     required this.color,
     required this.backgroundImageUrl,
-    required this.route,
+    required this.href,
     this.subtitle,
   });
   final String title;
   final String? subtitle;
   final String color;
   final String backgroundImageUrl;
-  final PageRouteInfo route;
+  final String href;
 }
 
 class _TagButton extends StatelessWidget {
