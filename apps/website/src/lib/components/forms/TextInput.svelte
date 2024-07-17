@@ -74,7 +74,7 @@
   });
 </script>
 
-<label class={cx(recipe({ size }), css(style))} {hidden}>
+<label class={cx(recipe({ size }), css(style))} for={name} {hidden}>
   {#if 'left-icon' in $$slots}
     <div class={flex({ align: 'center', marginRight: '4px' })}>
       <slot name="left-icon" />
