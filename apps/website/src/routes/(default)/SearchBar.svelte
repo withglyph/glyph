@@ -66,7 +66,9 @@
     <form
       class={css({ flexGrow: '1' })}
       on:submit|preventDefault={async () => {
-        await goto(qs.stringifyUrl({ url: '/search', query: { q: value } }));
+        if (value) {
+          await goto(qs.stringifyUrl({ url: '/search', query: { q: value } }));
+        }
       }}
     >
       <TextInput
