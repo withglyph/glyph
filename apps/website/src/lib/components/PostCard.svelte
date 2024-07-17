@@ -78,9 +78,8 @@
         truncate: true,
       },
       subtitle: {
-        display: 'flex',
-        alignItems: 'center',
         flex: 'none',
+        maxWidth: 'full',
         fontWeight: 'medium',
         truncate: true,
       },
@@ -156,7 +155,7 @@
               !!$post.publishedRevision.previewText && {
                 _after: {
                   content: '""',
-                  display: 'block',
+                  display: 'inline-block',
                   marginX: '4px',
                   width: '1px',
                   height: '10px',
