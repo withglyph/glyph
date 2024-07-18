@@ -95,6 +95,7 @@
     extra: () => ({
       iconId: icon.id,
       profileAvatarId: avatar.id,
+      isPublic: $query.space.visibility === 'PUBLIC',
     }),
     onSuccess: async () => {
       mixpanel.track('space:update', { spaceId: $query.space.id });
