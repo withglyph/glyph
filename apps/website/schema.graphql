@@ -1290,6 +1290,7 @@ type User {
   revenue(withdrawable: Boolean): Int!
   revenueWithdrawals: [RevenueWithdrawal!]!
   revenues(page: Int! = 1, take: Int! = 10): [Revenue!]!
+  revenuesCount: Int!
   settlementIdentity: UserSettlementIdentity
   singleSignOns: [UserSingleSignOn!]!
   spaces: [Space!]!

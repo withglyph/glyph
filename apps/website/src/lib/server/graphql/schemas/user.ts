@@ -463,6 +463,16 @@ User.implement({
       },
     }),
 
+    revenuesCount: t.int({
+      resolve: async (user) => {
+        return await database
+          .select({ count: count() })
+          .from(Revenues)
+          .where(eq(Revenues.userId, user.id))
+          .then((rows) => rows[0]?.count ?? 0);
+      },
+    }),
+
     revenueWithdrawals: t.field({
       type: [RevenueWithdrawal],
       resolve: async (user) => {
