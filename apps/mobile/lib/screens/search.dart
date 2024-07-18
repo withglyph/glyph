@@ -151,11 +151,11 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 }
 
 class _Carousel extends StatelessWidget {
-  _Carousel(
+  const _Carousel(
     this.items,
   );
 
-  List<_CarouselData> items;
+  final List<_CarouselData> items;
 
   @override
   Widget build(BuildContext context) {

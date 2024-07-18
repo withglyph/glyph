@@ -57,7 +57,9 @@ class _DeveloperScreenState extends ConsumerState<DeveloperScreen> {
                         ],
                       ),
                     ),
-                    onPressed: () async => {await context.router.push(const OnboardingCurationRoute())},
+                    onPressed: () async {
+                      await context.router.push(const OnboardingCurationRoute());
+                    },
                   ),
                   const _Section('렌더링'),
                   Padding(
