@@ -99,7 +99,7 @@
       {$emojiReactionNotification.post.publishedRevision?.title &&
       $emojiReactionNotification.post.publishedRevision?.title.length > 10
         ? `${$emojiReactionNotification.post.publishedRevision?.title.slice(0, 10)}...`
-        : $emojiReactionNotification.post.publishedRevision?.title ?? '(제목 없음)'}에
+        : ($emojiReactionNotification.post.publishedRevision?.title ?? '(제목 없음)')}에
 
       {#if via === 'menu'}
         이모지를

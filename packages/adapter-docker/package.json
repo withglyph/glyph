@@ -22,14 +22,14 @@
     "lint:typecheck": "tsc"
   },
   "dependencies": {
-    "h3": "^1.11.1",
+    "h3": "^1.12.0",
     "mrmime": "^2.0.0"
   },
   "devDependencies": {
-    "@sveltejs/kit": "^2.5.17",
-    "@types/node": "^20.14.5",
+    "@sveltejs/kit": "^2.5.18",
+    "@types/node": "^20.14.11",
     "@withglyph/tsconfig": "workspace:^",
-    "tsup": "^8.1.0",
-    "typescript": "^5.4.5"
+    "tsup": "^8.1.2",
+    "typescript": "^5.5.3"
   }
 }

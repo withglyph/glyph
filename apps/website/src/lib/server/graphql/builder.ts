@@ -2,7 +2,7 @@ import SchemaBuilder from '@pothos/core';
 import DataLoaderPlugin from '@pothos/plugin-dataloader';
 import ScopeAuthPlugin from '@pothos/plugin-scope-auth';
 import SimpleObjectsPlugin from '@pothos/plugin-simple-objects';
-import ValidationPlugin from '@pothos/plugin-validation';
+import ZodPlugin from '@pothos/plugin-zod';
 import RACPlugin from '@withglyph/rac';
 import dayjs from 'dayjs';
 import { GraphQLJSON, GraphQLVoid } from 'graphql-scalars';
@@ -26,6 +26,7 @@ export const builder = new SchemaBuilder<{
   };
   Context: Context;
   DefaultInputFieldRequiredness: true;
+  DefaultFieldNullability: false;
   Scalars: {
     DateTime: { Input: dayjs.Dayjs; Output: dayjs.Dayjs };
     ID: { Input: string; Output: string };
@@ -35,17 +36,18 @@ export const builder = new SchemaBuilder<{
     Void: { Input: never; Output: void };
   };
 }>({
-  authScopes: (context) => ({
-    admin: context.session?.role === 'ADMIN',
-    user: !!context.session,
-  }),
   defaultInputFieldRequiredness: true,
-  plugins: [ScopeAuthPlugin, RACPlugin, DataLoaderPlugin, SimpleObjectsPlugin, ValidationPlugin],
-  scopeAuthOptions: {
+  defaultFieldNullability: false,
+  plugins: [ScopeAuthPlugin, RACPlugin, DataLoaderPlugin, SimpleObjectsPlugin, ZodPlugin],
+  scopeAuth: {
+    authScopes: (context) => ({
+      admin: context.session?.role === 'ADMIN',
+      user: !!context.session,
+    }),
     treatErrorsAsUnauthorized: true,
     unauthorizedError: (_, __, ___, result) => new PermissionDeniedError(result),
   },
-  validationOptions: {
+  zod: {
     validationError: (error) => new IntentionalError(error.issues[0].message),
   },
   racPluginOptions: {

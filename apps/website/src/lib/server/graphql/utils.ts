@@ -13,7 +13,7 @@ type SchemaTypes = typeof builder extends PothosSchemaTypes.SchemaBuilder<infer 
 
 export const makeLoadableFields = <T extends TableConfig>(
   table: TableWithIdColumn<T>,
-): DataLoaderOptions<SchemaTypes, typeof table.$inferSelect, string, string> => ({
+): DataLoaderOptions<SchemaTypes, typeof table.$inferSelect, string, string, typeof table.$inferSelect> => ({
   load: (ids) => database.select().from(table).where(inArray(table.id, ids)).orderBy(asc(table.id)),
   toKey: (parent) => parent.id,
   sort: true,

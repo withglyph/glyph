@@ -86,7 +86,7 @@
       {$commentNotification.post.publishedRevision?.title &&
       $commentNotification.post.publishedRevision?.title.length > 10
         ? `${$commentNotification.post.publishedRevision?.title.slice(0, 10)}...`
-        : $commentNotification.post.publishedRevision?.title ?? '(제목 없음)'}에 댓글을 달았어요
+        : ($commentNotification.post.publishedRevision?.title ?? '(제목 없음)')}에 댓글을 달았어요
     </div>
     <time
       class={css({

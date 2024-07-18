@@ -84,7 +84,7 @@
           !$postComment.post && { color: 'gray.400' },
         )}
       >
-        {$postComment.post ? $postComment.post?.publishedRevision?.title ?? '(제목 없음)' : '삭제된 포스트'}
+        {$postComment.post ? ($postComment.post?.publishedRevision?.title ?? '(제목 없음)') : '삭제된 포스트'}
       </p>
       <div class={flex({ align: 'center', gap: '4px', height: '24px', truncate: true })}>
         <Image

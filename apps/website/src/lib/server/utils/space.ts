@@ -92,7 +92,7 @@ type GetSpaceProfileParams =
 
 export const getSpaceProfile = async (params: GetSpaceProfileParams) => {
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const userId = 'context' in params ? params.userId ?? params.context.session!.userId : params.userId;
+  const userId = 'context' in params ? (params.userId ?? params.context.session!.userId) : params.userId;
 
   const { profileId } = (await getSpaceMemberV2(params)) ?? (await makeMasquerade({ spaceId: params.spaceId, userId }));
 
