@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:get_it/get_it.dart';
+import 'package:glyph/components/pressable.dart';
 import 'package:glyph/components/toggle_switch.dart';
+import 'package:glyph/routers/app.gr.dart';
 import 'package:glyph/shells/default.dart';
 import 'package:glyph/themes/colors.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
@@ -38,6 +40,25 @@ class _DeveloperScreenState extends ConsumerState<DeveloperScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  const _Section('화면'),
+                  Pressable(
+                    child: const Padding(
+                      padding: Pad(top: 16, bottom: 18),
+                      child: Row(
+                        children: [
+                          Text(
+                            '큐레이션',
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          Spacer(),
+                        ],
+                      ),
+                    ),
+                    onPressed: () async => {await context.router.push(const OnboardingCurationRoute())},
+                  ),
                   const _Section('렌더링'),
                   Padding(
                     padding: const Pad(top: 16, bottom: 18),

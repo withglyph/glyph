@@ -368,20 +368,6 @@ class _MeScreenState extends ConsumerState<MeScreen> {
                     ),
                   ],
                 ),
-                if (!kReleaseMode) ...[
-                  const HorizontalDivider(height: 6, color: BrandColors.gray_50),
-                  _Section(
-                    children: [
-                      _MenuItem(
-                        icon: Tabler.sparkles,
-                        title: '큐레이션',
-                        onPressed: () async {
-                          await context.router.push(const OnboardingCurationRoute());
-                        },
-                      ),
-                    ],
-                  ),
-                ],
                 const Gap(80),
               ],
             ),
