@@ -15,6 +15,7 @@
 
       me @_required {
         id
+        revenuesCount
 
         revenues(page: $page, take: $take) {
           id
@@ -190,7 +191,7 @@
     style={css.raw({ marginTop: '32px', paddingBottom: '0' })}
     {initialPage}
     onChange={updatePage}
-    totalItems={$query.me.revenues.length}
+    totalItems={$query.me.revenuesCount}
   />
 {:else}
   <div class={css({ paddingY: '60px', fontSize: '14px', textAlign: 'center', color: 'gray.500' })}>
