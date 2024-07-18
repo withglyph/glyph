@@ -1,5 +1,6 @@
 import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -369,7 +370,11 @@ class ThumbnailPostCard extends ConsumerWidget {
                     clipBehavior: Clip.hardEdge,
                     alignment: Alignment.centerLeft,
                     child: Row(
-                      children: post.tags.map((tag) => Tag(tag.tag)).intersperse(const Gap(4)).toList(),
+                      children: post.tags
+                          .sorted((tag1, tag2) => (tag2.tag.followed ? 1 : 0) - (tag1.tag.followed ? 1 : 0))
+                          .map((tag) => Tag(tag.tag, highlightFollowed: true))
+                          .intersperse(const Gap(4))
+                          .toList(),
                     ),
                   ),
                 ],
