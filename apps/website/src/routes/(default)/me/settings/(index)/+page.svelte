@@ -281,6 +281,7 @@
           {:else}
             <Chip style={css.raw({ width: 'fit' })} color="gray" variant="fill">미인증</Chip>
           {/if}
+          &nbsp;
         </TableData>
         <TableData>
           {$query.me.personalIdentity ? dayjs($query.me.personalIdentity.expiresAt).formatAsDate() : ''}
