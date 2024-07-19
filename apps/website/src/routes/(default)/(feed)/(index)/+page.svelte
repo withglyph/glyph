@@ -117,7 +117,7 @@
 </script>
 
 <Helmet
-  description="당신의 창작을 응원합니다. 만화, 소설, 일러스트, 영상 등 다양한 콘텐츠를 글리프에서 만나보세요."
+  description="당신의 창작을 응원합니다. 만화, 소설, 일러스트 등 다양한 콘텐츠를 글리프에서 만나보세요."
   image={{ src: 'https://glyph.pub/assets/opengraph/default-cover-light.png', size: 'large' }}
   struct={{
     '@context': 'https://schema.org',
