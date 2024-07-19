@@ -33,7 +33,7 @@
         id
         email
         state
-        isAdulthood
+        allowedAgeRating
 
         marketingConsent {
           id
@@ -271,8 +271,10 @@
             {#if expired}
               <Chip style={css.raw({ width: 'fit' })} color="gray" variant="fill">인증만료</Chip>
             {:else}
-              <Chip style={css.raw({ width: 'fit' })} color="blue" variant="fill">15세</Chip>
-              {#if $query.me.isAdulthood}
+              {#if $query.me.allowedAgeRating.includes('R15')}
+                <Chip style={css.raw({ width: 'fit' })} color="blue" variant="fill">15세</Chip>
+              {/if}
+              {#if $query.me.allowedAgeRating.includes('R19')}
                 <Chip style={css.raw({ width: 'fit' })} color="red" variant="fill">성인</Chip>
               {/if}
             {/if}
