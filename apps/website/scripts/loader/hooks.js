@@ -13,7 +13,7 @@ export const resolve = async (specifier, context, nextResolve) => {
 
 export const load = (url, context, nextLoad) => {
   if (url.startsWith('special://')) {
-    const mod = url.replace(/^special:\/\//, '');
+    const mod = url.replace(/^special:\/\//, '').replace(/\.js$/, '');
     let source;
 
     if (mod.startsWith('~icons/') || mod.startsWith('$assets/')) {
