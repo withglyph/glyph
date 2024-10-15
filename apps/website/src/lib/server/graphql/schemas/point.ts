@@ -195,17 +195,17 @@ builder.mutationFields((t) => ({
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let paymentData: any = await match(input.paymentMethod)
-        .with('CREDIT_CARD', () => ({ pg: 'tosspayments', pay_method: 'card' }))
-        .with('BANK_ACCOUNT', () => ({ pg: 'tosspayments', pay_method: 'trans' }))
+        .with('CREDIT_CARD', () => ({ pg: 'nice_v2.IM0018814m', pay_method: 'card' }))
+        .with('BANK_ACCOUNT', () => ({ pg: 'nice_v2.IM0018814m', pay_method: 'trans' }))
         .with('VIRTUAL_BANK_ACCOUNT', () => ({
-          pg: 'tosspayments',
+          pg: 'nice_v2.IM0018814m',
           pay_method: 'vbank',
           vbank_due: expiresAt.kst().format('YYYY-MM-DD HH:mm:ss'),
         }))
-        .with('PHONE_BILL', () => ({ pg: 'tosspayments', pay_method: 'phone' }))
-        .with('GIFTCARD_CULTURELAND', () => ({ pg: 'tosspayments', pay_method: 'cultureland' }))
-        .with('GIFTCARD_SMARTCULTURE', () => ({ pg: 'tosspayments', pay_method: 'smartculture' }))
-        .with('GIFTCARD_BOOKNLIFE', () => ({ pg: 'tosspayments', pay_method: 'booknlife' }))
+        .with('PHONE_BILL', () => ({ pg: 'nice_v2.IM0018814m', pay_method: 'phone' }))
+        .with('GIFTCARD_CULTURELAND', () => ({ pg: 'nice_v2.IM0018814m', pay_method: 'cultureland' }))
+        .with('GIFTCARD_SMARTCULTURE', () => ({ pg: 'nice_v2.IM0018814m', pay_method: 'smartculture' }))
+        .with('GIFTCARD_BOOKNLIFE', () => ({ pg: 'nice_v2.IM0018814m', pay_method: 'booknlife' }))
         .with('PAYPAL', async () => ({
           pg: 'paypal_v2',
           pay_method: 'paypal',
