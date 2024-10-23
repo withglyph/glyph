@@ -152,7 +152,7 @@ export const settleRevenue = async ({ userId, settlementType }: SettleRevenuePar
           type: 'section',
           text: {
             type: 'mrkdwn',
-            text: `UserID: ${userId}\nSettlementID: ${withdrawal.id}\nError: ${(err as Error).message}`,
+            text: `UserID: ${userId}\nSettlementID: ${withdrawal.id}\nAmount: ${withdrawal.paidAmount}\nError: ${(err as Error).message}`,
           },
         },
       ],
