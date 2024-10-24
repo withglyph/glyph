@@ -17,6 +17,7 @@ const getUSDExchangeRateForDate = async (date: string) => {
       data: 'AP01',
       searchdate: date,
     },
+    https: { rejectUnauthorized: false },
     agent: { https: httpsAgent },
   }).json<{ cur_unit: string; ttb: string }[]>();
 

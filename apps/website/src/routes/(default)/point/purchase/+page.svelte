@@ -73,12 +73,12 @@
   const pointAmounts = [1000, 3000, 5000, 10_000, 30_000, 50_000, 100_000];
   const paymentMethods: [Exclude<PaymentMethod, 'IN_APP_PURCHASE'>, string][] = [
     ['CREDIT_CARD', '신용카드'],
-    ['BANK_ACCOUNT', '계좌이체'],
+    // ['BANK_ACCOUNT', '계좌이체'],
     ['VIRTUAL_BANK_ACCOUNT', '가상계좌'],
-    ['PHONE_BILL', '휴대폰결제'],
-    ['GIFTCARD_CULTURELAND', '문화상품권'],
-    ['GIFTCARD_SMARTCULTURE', '스마트문화상품권'],
-    ['GIFTCARD_BOOKNLIFE', '도서문화상품권'],
+    // ['PHONE_BILL', '휴대폰결제'],
+    // ['GIFTCARD_CULTURELAND', '문화상품권'],
+    // ['GIFTCARD_SMARTCULTURE', '스마트문화상품권'],
+    // ['GIFTCARD_BOOKNLIFE', '도서문화상품권'],
     ['PAYPAL', '페이팔'],
   ];
 </script>
