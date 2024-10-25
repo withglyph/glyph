@@ -48,6 +48,7 @@ const cluster = new aws.rds.Cluster('penxle', {
   masterUsername: 'root',
   masterPassword: password.result,
 
+  allowMajorVersionUpgrade: true,
   applyImmediately: true,
 });
 
@@ -56,7 +57,7 @@ const instance = new aws.rds.ClusterInstance('penxle-1', {
   identifier: 'penxle-1',
 
   engine: 'aurora-postgresql',
-  instanceClass: 'db.r6g.large',
+  instanceClass: 'db.t4g.medium',
 
   availabilityZone: subnets.private.az1.availabilityZone,
   caCertIdentifier: 'rds-ca-rsa2048-g1',
@@ -77,7 +78,7 @@ const devCluster = new aws.rds.Cluster('penxle-dev', {
 
   engine: 'aurora-postgresql',
   engineMode: 'provisioned',
-  engineVersion: '15.4',
+  engineVersion: '16.4',
 
   dbSubnetGroupName: subnetGroup.name,
   vpcSecurityGroupIds: [securityGroups.internal.id],
@@ -94,6 +95,7 @@ const devCluster = new aws.rds.Cluster('penxle-dev', {
   masterUsername: 'root',
   masterPassword: devPassword.result,
 
+  allowMajorVersionUpgrade: true,
   applyImmediately: true,
 });
 

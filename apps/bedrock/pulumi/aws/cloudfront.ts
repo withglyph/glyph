@@ -24,12 +24,7 @@ export const certificates = {
   withglyph_dev: createCertificate('withglyph.dev'),
   glyph_pub: createCertificate('glyph.pub'),
   glph_to: createCertificate('glph.to'),
-  pencil_so: createCertificate('pencil.so'),
-  penxle_com: createCertificate('penxle.com'),
   penxle_io: createCertificate('penxle.io'),
-  pnxl_co: createCertificate('pnxl.co'),
-  pnxl_me: createCertificate('pnxl.me'),
-  pnxl_net: createCertificate('pnxl.net'),
 };
 
 const originAccessControl = new aws.cloudfront.OriginAccessControl('s3', {
@@ -213,12 +208,7 @@ export const outputs = {
   AWS_ACM_CLOUDFRONT_GLYPH_PUB_CERTIFICATE_ARN: certificates.glyph_pub.arn,
   AWS_ACM_CLOUDFRONT_GLPH_TO_CERTIFICATE_ARN: certificates.glph_to.arn,
 
-  AWS_ACM_CLOUDFRONT_PENCIL_SO_CERTIFICATE_ARN: certificates.pencil_so.arn,
-  AWS_ACM_CLOUDFRONT_PENXLE_COM_CERTIFICATE_ARN: certificates.penxle_com.arn,
   AWS_ACM_CLOUDFRONT_PENXLE_IO_CERTIFICATE_ARN: certificates.penxle_io.arn,
-  AWS_ACM_CLOUDFRONT_PNXL_CO_CERTIFICATE_ARN: certificates.pnxl_co.arn,
-  AWS_ACM_CLOUDFRONT_PNXL_ME_CERTIFICATE_ARN: certificates.pnxl_me.arn,
-  AWS_ACM_CLOUDFRONT_PNXL_NET_CERTIFICATE_ARN: certificates.pnxl_net.arn,
 
   AWS_CLOUDFRONT_DYNAMIC_CACHE_POLICY_ID: dynamicCachePolicy.id,
   AWS_CLOUDFRONT_DYNAMIC_ORIGIN_REQUEST_POLICY_ID: dynamicOriginRequestPolicy.id,

@@ -50,10 +50,6 @@ const createRepository = (name: string) => {
 
 createRepository('literoom');
 
-createRepository('penxle.com');
-createRepository('penxle.io');
-createRepository('help.penxle.com');
-
 createRepository('website');
 createRepository('company');
 createRepository('help');

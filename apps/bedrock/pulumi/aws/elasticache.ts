@@ -3,6 +3,12 @@ import * as pulumi from '@pulumi/pulumi';
 import { zones } from '$aws/route53';
 import { securityGroups, subnets } from '$aws/vpc';
 
+const subnetGroup = new aws.elasticache.SubnetGroup('private', {
+  name: 'private',
+  description: 'Private subnets',
+  subnetIds: [subnets.private.az1.id, subnets.private.az2.id],
+});
+
 const cluster = new aws.elasticache.ReplicationGroup('penxle', {
   replicationGroupId: 'penxle',
   description: 'Redis cluster',
@@ -10,13 +16,13 @@ const cluster = new aws.elasticache.ReplicationGroup('penxle', {
   engine: 'redis',
   engineVersion: '7.1',
 
-  nodeType: 'cache.r6g.large',
-  numCacheClusters: 1,
+  nodeType: 'cache.t4g.micro',
 
-  subnetGroupName: new aws.elasticache.SubnetGroup('private', {
-    name: 'private',
-    subnetIds: [subnets.private.az1.id, subnets.private.az2.id],
-  }).name,
+  // clusterMode: 'enabled',
+  numNodeGroups: 1,
+  replicasPerNodeGroup: 0,
+
+  subnetGroupName: subnetGroup.name,
   securityGroupIds: [securityGroups.internal.id],
 
   multiAzEnabled: false,

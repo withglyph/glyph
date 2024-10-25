@@ -11,7 +11,7 @@ const broker = new aws.mq.Broker('withglyph', {
   brokerName: 'withglyph',
 
   engineType: 'RabbitMQ',
-  engineVersion: '3.12.13',
+  engineVersion: '3.13.6',
   hostInstanceType: 'mq.t3.micro',
 
   subnetIds: [subnets.private.az1.id],

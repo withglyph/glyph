@@ -44,7 +44,6 @@ export const certificates = {
   penxle_io: createCertificate('penxle.io'),
   pnxl_co: createCertificate('pnxl.co'),
   pnxl_me: createCertificate('pnxl.me'),
-  pnxl_net: createCertificate('pnxl.net'),
 };
 
 export const outputs = {
@@ -59,5 +58,4 @@ export const outputs = {
   AWS_ACM_PENXLE_IO_CERTIFICATE_ARN: certificates.penxle_io.arn,
   AWS_ACM_PNXL_CO_CERTIFICATE_ARN: certificates.pnxl_co.arn,
   AWS_ACM_PNXL_ME_CERTIFICATE_ARN: certificates.pnxl_me.arn,
-  AWS_ACM_PNXL_NET_CERTIFICATE_ARN: certificates.pnxl_net.arn,
 };

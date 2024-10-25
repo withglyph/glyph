@@ -21,7 +21,7 @@ const lambda = new aws.lambda.Function('literoom', {
   role: role.arn,
 
   packageType: 'Image',
-  architectures: ['x86_64'],
+  architectures: ['arm64'],
 
   memorySize: 10_240,
   timeout: 900,

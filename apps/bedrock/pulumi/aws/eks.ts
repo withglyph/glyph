@@ -27,6 +27,7 @@ new aws.iam.Role('admin@eks', {
 
 export const cluster = new aws.eks.Cluster('penxle', {
   name: 'penxle',
+  version: '1.31',
 
   roleArn: clusterRole.arn,
 

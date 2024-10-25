@@ -167,7 +167,7 @@ new k8s.helm.v3.Chart('karpenter', {
   chart: 'oci://public.ecr.aws/karpenter/karpenter',
   namespace: 'kube-system',
   fetchOpts: {
-    version: '0.37.0',
+    version: '1.0.2',
   },
 
   values: {
@@ -193,7 +193,7 @@ new k8s.helm.v3.Chart('karpenter', {
 });
 
 const nodeClass = new k8s.apiextensions.CustomResource('default', {
-  apiVersion: 'karpenter.k8s.aws/v1beta1',
+  apiVersion: 'karpenter.k8s.aws/v1',
   kind: 'EC2NodeClass',
 
   metadata: {
@@ -201,9 +201,9 @@ const nodeClass = new k8s.apiextensions.CustomResource('default', {
   },
 
   spec: {
-    amiFamily: 'AL2',
     role: nodeRole.name,
 
+    amiSelectorTerms: [{ alias: 'al2023@latest' }],
     subnetSelectorTerms: [{ id: subnets.private.az1.id }, { id: subnets.private.az2.id }],
     securityGroupSelectorTerms: [{ id: securityGroups.internal.id }],
 
@@ -211,29 +211,22 @@ const nodeClass = new k8s.apiextensions.CustomResource('default', {
       {
         deviceName: '/dev/xvda',
         ebs: {
-          volumeSize: '200Gi',
+          volumeSize: '20Gi',
           volumeType: 'gp3',
-          iops: 5000,
-          throughput: 300,
+          iops: 3000,
+          throughput: 125,
         },
       },
     ],
 
-    metadataOptions: {
-      httpEndpoint: 'enabled',
-      httpProtocolIPv6: 'disabled',
-      httpPutResponseHopLimit: 2,
-      httpTokens: 'required',
-    },
-
     tags: {
-      Name: 'eks-node',
+      Name: 'node@eks',
     },
   },
 });
 
 new k8s.apiextensions.CustomResource('default', {
-  apiVersion: 'karpenter.sh/v1beta1',
+  apiVersion: 'karpenter.sh/v1',
   kind: 'NodePool',
 
   metadata: {
@@ -243,13 +236,17 @@ new k8s.apiextensions.CustomResource('default', {
   spec: {
     template: {
       spec: {
-        nodeClassRef: { name: nodeClass.metadata.name },
+        nodeClassRef: {
+          group: 'karpenter.k8s.aws',
+          kind: nodeClass.kind,
+          name: nodeClass.metadata.name,
+        },
         requirements: [
-          { key: 'kubernetes.io/arch', operator: 'In', values: ['amd64'] },
+          { key: 'kubernetes.io/arch', operator: 'In', values: ['arm64'] },
           { key: 'kubernetes.io/os', operator: 'In', values: ['linux'] },
           { key: 'karpenter.sh/capacity-type', operator: 'In', values: ['spot'] },
           { key: 'karpenter.k8s.aws/instance-category', operator: 'In', values: ['c', 'm', 'r'] },
-          { key: 'karpenter.k8s.aws/instance-generation', operator: 'Gt', values: ['4'] },
+          { key: 'karpenter.k8s.aws/instance-generation', operator: 'Gt', values: ['5'] },
         ],
       },
     },
@@ -260,8 +257,8 @@ new k8s.apiextensions.CustomResource('default', {
     },
 
     disruption: {
-      consolidationPolicy: 'WhenUnderutilized',
-      expireAfter: '720h', // 30 * 24h
+      consolidationPolicy: 'WhenEmptyOrUnderutilized',
+      consolidateAfter: '0s',
     },
   },
 });
