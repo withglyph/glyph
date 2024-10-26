@@ -10,8 +10,8 @@
   import { toast, ToastProvider } from '$lib/notification';
   import { flex } from '$styled-system/patterns';
   import AutoUpdater from './AutoUpdater.svelte';
-  import Datadog from './Datadog.svelte';
-  import StackIndicator from './StackIndicator.svelte';
+  // import Datadog from './Datadog.svelte';
+  // import StackIndicator from './StackIndicator.svelte';
 
   $: query = graphql(`
     query RootLayout_Query {
@@ -72,6 +72,6 @@
 {/if}
 
 <AutoUpdater />
-<Datadog />
-<StackIndicator />
+<!-- <Datadog />
+<StackIndicator /> -->
 <ToastProvider />
