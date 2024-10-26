@@ -33,7 +33,7 @@
   <div
     class={css({
       position: 'sticky',
-      top: $isWebView ? '0' : '62px',
+      top: isWebView() ? '0' : '62px',
       paddingTop: { sm: '35px' },
       backgroundColor: 'gray.0',
       zIndex: '1',

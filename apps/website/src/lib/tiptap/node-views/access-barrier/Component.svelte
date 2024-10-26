@@ -425,7 +425,7 @@
               style={css.raw({ width: 'full', maxWidth: '96px' })}
               size="md"
               on:click={() => {
-                if ($isWebView) {
+                if (isWebView()) {
                   postFlutterMessage({ type: 'purchase' });
                   return;
                 }

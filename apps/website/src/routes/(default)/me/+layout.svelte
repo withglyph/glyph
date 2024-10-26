@@ -20,7 +20,7 @@
     maxWidth: '1280px',
   })}
 >
-  {#if !$isWebView}
+  {#if !isWebView()}
     <nav
       class={flex({
         direction: { base: 'row', sm: 'column' },

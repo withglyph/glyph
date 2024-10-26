@@ -75,14 +75,14 @@
         })}
       >
         <svelte:element
-          this={$isWebView ? 'button' : 'a'}
+          this={isWebView() ? 'button' : 'a'}
           class={flex({ align: 'center', justify: 'space-between', width: 'full', truncate: true })}
-          href={$isWebView
+          href={isWebView()
             ? undefined
             : `/${redemption.postPurchase.post.space.slug}/${redemption.postPurchase.post.permalink}`}
-          role={$isWebView ? 'button' : 'a'}
+          role={isWebView() ? 'button' : 'a'}
           on:click={() => {
-            if ($isWebView) {
+            if (isWebView()) {
               postFlutterMessage({ type: 'post:view', permalink: redemption.postPurchase.post.permalink });
               return;
             }

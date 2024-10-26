@@ -91,7 +91,7 @@
         })}
       >
         <svelte:element
-          this={$isWebView ? 'button' : revenue.post?.state === 'DELETED' ? 'div' : 'a'}
+          this={isWebView() ? 'button' : revenue.post?.state === 'DELETED' ? 'div' : 'a'}
           class={css(
             {
               display: 'flex',
@@ -103,12 +103,12 @@
             },
             revenue.post?.state === 'DELETED' && { color: 'gray.400' },
           )}
-          href={revenue.post?.state === 'DELETED' || $isWebView
+          href={revenue.post?.state === 'DELETED' || isWebView()
             ? undefined
             : `/${revenue.post?.space?.slug}/${revenue.post?.permalink}`}
-          role={$isWebView ? 'button' : revenue.post?.state === 'DELETED' ? 'div' : 'a'}
+          role={isWebView() ? 'button' : revenue.post?.state === 'DELETED' ? 'div' : 'a'}
           on:click={() => {
-            if ($isWebView) {
+            if (isWebView()) {
               postFlutterMessage({ type: 'post:view', permalink: revenue.post?.permalink });
             }
           }}

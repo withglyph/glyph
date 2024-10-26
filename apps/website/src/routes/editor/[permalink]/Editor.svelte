@@ -243,7 +243,7 @@
   });
 </script>
 
-{#if $isWebView}
+{#if isWebView()}
   <AppEditor {$post} {$query} />
 {:else}
   <WebEditor {$post} {$query} />

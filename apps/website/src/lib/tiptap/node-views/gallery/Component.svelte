@@ -71,7 +71,7 @@
         role="button"
         tabindex="-1"
         on:click={() => {
-          if (!editor?.isEditable && !$isWebView) {
+          if (!editor?.isEditable && !isWebView()) {
             viewerOpen = true;
           }
         }}
@@ -82,7 +82,7 @@
             role="button"
             tabindex="-1"
             on:click={() => {
-              if (!editor?.isEditable && $isWebView) {
+              if (!editor?.isEditable && isWebView()) {
                 postFlutterMessage({ type: 'image:view', id });
               }
             }}

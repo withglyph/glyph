@@ -88,7 +88,7 @@
 
 <div
   class={flex({
-    direction: $isWebView ? 'column-reverse' : 'column',
+    direction: isWebView() ? 'column-reverse' : 'column',
     color: 'gray.800',
     backgroundColor: 'gray.0',
     touchAction: 'none',
@@ -100,8 +100,8 @@
     class={flex({
       align: 'center',
       gap: '20px',
-      borderTopWidth: $isWebView ? '1px' : '0',
-      borderBottomWidth: $isWebView ? '0' : '1px',
+      borderTopWidth: isWebView() ? '1px' : '0',
+      borderBottomWidth: isWebView() ? '0' : '1px',
       borderColor: 'gray.200',
       paddingX: '20px',
       paddingY: '14px',
@@ -290,8 +290,8 @@
     <div
       class={flex({
         align: 'center',
-        borderTopWidth: $isWebView ? '1px' : '0',
-        borderBottomWidth: $isWebView ? '0' : '1px',
+        borderTopWidth: isWebView() ? '1px' : '0',
+        borderBottomWidth: isWebView() ? '0' : '1px',
         borderColor: 'gray.200',
         paddingX: '20px',
         paddingY: '14px',
@@ -447,8 +447,8 @@
     <div
       class={grid({
         columns: 2,
-        borderTopWidth: $isWebView ? '1px' : '0',
-        borderBottomWidth: $isWebView ? '0' : '1px',
+        borderTopWidth: isWebView() ? '1px' : '0',
+        borderBottomWidth: isWebView() ? '0' : '1px',
         borderColor: 'gray.200',
         touchAction: 'none',
       })}

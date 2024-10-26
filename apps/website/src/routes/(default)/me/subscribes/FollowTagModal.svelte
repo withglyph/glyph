@@ -47,7 +47,7 @@
       <li
         class={flex({ align: 'center', justify: 'space-between', gap: '24px', _hover: { backgroundColor: 'gray.50' } })}
       >
-        {#if $isWebView}
+        {#if isWebView()}
           <button
             class={css({
               display: 'inline-block',

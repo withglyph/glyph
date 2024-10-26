@@ -94,7 +94,7 @@
     gap: '12px',
     wrap: 'wrap',
     position: 'sticky',
-    top: { base: $isWebView ? '54px' : '116px', sm: '62px' },
+    top: { base: isWebView() ? '54px' : '116px', sm: '62px' },
     paddingTop: '20px',
     paddingBottom: { base: '24px', sm: '20px' },
     backgroundColor: 'gray.0',

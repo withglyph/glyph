@@ -141,7 +141,7 @@
 
 <Table>
   <TableHeader
-    style={css.raw({ position: 'sticky', top: { base: $isWebView ? '132px' : '194px', sm: '136px' }, zIndex: '1' })}
+    style={css.raw({ position: 'sticky', top: { base: isWebView() ? '132px' : '194px', sm: '136px' }, zIndex: '1' })}
   >
     <TableRow style={css.raw({ textAlign: 'left' })}>
       <TableHead style={css.raw({ width: '50px' })}>
@@ -249,12 +249,12 @@
         >
           <div class={css({ position: 'relative' })}>
             <svelte:element
-              this={$isWebView ? 'button' : 'a'}
+              this={isWebView() ? 'button' : 'a'}
               class={css({ textAlign: 'left', width: 'full' })}
-              href={$isWebView ? undefined : `/${post.space.slug}/${post.permalink}`}
-              role={$isWebView ? 'button' : 'a'}
+              href={isWebView() ? undefined : `/${post.space.slug}/${post.permalink}`}
+              role={isWebView() ? 'button' : 'a'}
               on:click={() => {
-                if ($isWebView) {
+                if (isWebView()) {
                   postFlutterMessage({ type: 'post:view', permalink: post.permalink });
                   return;
                 }
@@ -410,7 +410,7 @@
             <Menu style={css.raw({ position: 'absolute', bottom: '0', right: '-6px' })} placement="bottom-end">
               <Icon slot="value" style={css.raw({ color: 'gray.400' })} icon={IconDotsVertical} size={24} />
 
-              {#if $isWebView}
+              {#if isWebView()}
                 <MenuItem
                   on:click={() => {
                     postFlutterMessage({ type: 'post:edit', permalink: post.permalink });

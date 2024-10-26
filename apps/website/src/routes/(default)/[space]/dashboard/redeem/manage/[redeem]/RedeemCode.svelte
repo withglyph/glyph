@@ -91,7 +91,7 @@
     </dl>
 
     {#if $redeem.state === 'AVAILABLE'}
-      {#if $isWebView}
+      {#if isWebView()}
         <Button
           style={flex.raw({ align: 'center', justify: 'center', gap: '4px', width: { base: 'full', sm: 'fit' } })}
           variant="gray-outline"

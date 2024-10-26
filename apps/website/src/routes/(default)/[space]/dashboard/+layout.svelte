@@ -55,7 +55,7 @@
       smDown: {
         gap: '28px',
         position: 'sticky',
-        top: $isWebView ? '0' : '62px',
+        top: isWebView() ? '0' : '62px',
         borderBottomWidth: '1px',
         paddingX: '20px',
         paddingY: '14px',

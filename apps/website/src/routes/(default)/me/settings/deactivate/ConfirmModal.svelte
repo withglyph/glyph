@@ -19,7 +19,7 @@
     `),
     schema: DeleteUserSchema,
     onSuccess: async () => {
-      if ($isWebView) {
+      if (isWebView()) {
         postFlutterMessage({ type: 'deactivate:done' });
       } else {
         toast.success('탈퇴가 완료되었어요');

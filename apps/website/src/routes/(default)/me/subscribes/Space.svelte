@@ -56,12 +56,12 @@
   })}
 >
   <svelte:element
-    this={$isWebView ? 'button' : 'a'}
+    this={isWebView() ? 'button' : 'a'}
     class={flex({ gap: '12px', paddingX: { sm: '16px' }, paddingTop: { base: '20px', sm: '16px' }, textAlign: 'left' })}
-    href={$isWebView ? undefined : `/${$space.slug}`}
-    role={$isWebView ? 'button' : undefined}
+    href={isWebView() ? undefined : `/${$space.slug}`}
+    role={isWebView() ? 'button' : undefined}
     on:click={() => {
-      if ($isWebView) {
+      if (isWebView()) {
         postFlutterMessage({ type: 'space:view', slug: $space.slug });
       }
     }}

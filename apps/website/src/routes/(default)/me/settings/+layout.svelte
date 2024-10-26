@@ -7,7 +7,7 @@
 
 <h1 class={css({ marginBottom: '20px', fontSize: '24px', fontWeight: 'bold', hideBelow: 'sm' })}>계정설정</h1>
 
-{#if !$isWebView}
+{#if !isWebView()}
   <TabHead
     style={css.raw({
       gap: '28px',

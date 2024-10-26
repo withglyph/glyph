@@ -155,7 +155,7 @@
         tabindex="-1"
         on:click={() => {
           if (!editor?.isEditable) {
-            if ($isWebView) {
+            if (isWebView()) {
               postFlutterMessage({ type: 'image:view', id });
             } else {
               viewerOpen = true;

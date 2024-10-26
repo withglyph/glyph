@@ -1,6 +1,6 @@
 import { fromBase64, toBase64 } from 'js-base64';
 import { onMount } from 'svelte';
-import { derived } from 'svelte/store';
+import { get } from 'svelte/store';
 import { page } from '$app/stores';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -30,4 +30,7 @@ export const postFlutterMessage = (message: unknown) => {
   window.flutter.postMessage(toBase64(JSON.stringify(message)));
 };
 
-export const isWebView = derived(page, ($page) => !!$page.data.__isWebView || $page.url.searchParams.has('__wb'));
+export const isWebView = () => {
+  const p = get(page);
+  return !!p.data.__isWebView || p.url.searchParams.has('__wb');
+};
