@@ -19,9 +19,9 @@ jobs:
       matrix:
         app:
           - website
-          - company
-          - help
-          - literoom
+          # - company
+          # - help
+          # - literoom
 
     concurrency:
       group: production/${{ matrix.app }}

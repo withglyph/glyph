@@ -10,6 +10,8 @@ export const createQueryStore = async (
   document: TypedDocumentNode<unknown, AnyVariables>,
   variablesLoader?: (event: LoadEvent) => AnyVariables,
 ) => {
+  await event.parent();
+
   const { client, transformError } = getClient();
 
   const variables = variablesLoader ? variablesLoader(event) : undefined;

@@ -19,8 +19,8 @@ jobs:
       matrix:
         app:
           - website
-          - company
-          - help
+          # - company
+          # - help
 
     concurrency:
       group: dev/${{ matrix.app }}

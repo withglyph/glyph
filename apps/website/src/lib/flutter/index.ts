@@ -30,4 +30,4 @@ export const postFlutterMessage = (message: unknown) => {
   window.flutter.postMessage(toBase64(JSON.stringify(message)));
 };
 
-export const isWebView = derived(page, ($page) => $page.data.__isWebView === true);
+export const isWebView = derived(page, ($page) => !!$page.data.__isWebView);
