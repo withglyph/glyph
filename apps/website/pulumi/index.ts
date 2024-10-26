@@ -24,7 +24,7 @@ const site = new withglyph.Site('website', {
   },
 
   autoscale: {
-    minCount: 4,
+    minCount: 2,
     maxCount: 50,
     averageCpuUtilization: 50,
   },
