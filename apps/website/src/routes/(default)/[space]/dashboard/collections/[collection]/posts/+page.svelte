@@ -94,7 +94,7 @@
       scroll: true,
       handle: '.post',
       animation: 150,
-      delay: isMobile() || $isWebView ? 50 : 0,
+      delay: isMobile() || isWebView() ? 50 : 0,
       forceAutoScrollFallback: true,
       scrollSensitivity: 60,
       scrollSpeed: 10,
@@ -134,7 +134,7 @@
     align: { sm: 'center' },
     justify: 'space-between',
     position: 'sticky',
-    top: { base: $isWebView ? '99px' : '163px', sm: '186px' },
+    top: { base: isWebView() ? '99px' : '163px', sm: '186px' },
     zIndex: '1',
     smDown: { flexDirection: 'column', gap: '12px', padding: '20px', backgroundColor: 'gray.50' },
     sm: {

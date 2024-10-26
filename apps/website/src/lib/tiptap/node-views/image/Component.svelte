@@ -79,7 +79,7 @@
     role={editor?.isEditable ? 'presentation' : 'button'}
     on:click={() => {
       if (!editor?.isEditable) {
-        if ($isWebView) {
+        if (isWebView()) {
           postFlutterMessage({ type: 'image:view', id: node.attrs.id });
         } else {
           viewerOpen = true;

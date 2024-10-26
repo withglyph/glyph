@@ -63,10 +63,10 @@
       {#each $query.me.followedTags as tag (tag.id)}
         <li class={css({ truncate: true })}>
           <Tag
-            as={$isWebView ? 'button' : 'a'}
-            href={$isWebView ? undefined : `/tag/${tag.name}`}
+            as={isWebView() ? 'button' : 'a'}
+            href={isWebView() ? undefined : `/tag/${tag.name}`}
             on:click={() => {
-              if ($isWebView) {
+              if (isWebView()) {
                 postFlutterMessage({ type: 'tag:view', name: tag.name });
               }
             }}

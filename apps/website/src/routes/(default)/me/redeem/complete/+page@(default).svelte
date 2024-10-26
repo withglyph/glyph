@@ -58,7 +58,7 @@
       width: 'full',
       smDown: { paddingX: '20px' },
     },
-    $isWebView && { minHeight: 'dvh' },
+    isWebView() && { minHeight: 'dvh' },
   )}
 >
   <div
@@ -148,7 +148,7 @@
       </dl>
     </div>
 
-    {#if $isWebView}
+    {#if isWebView()}
       <Button
         style={css.raw({ width: 'full' })}
         variant="gradation-fill"

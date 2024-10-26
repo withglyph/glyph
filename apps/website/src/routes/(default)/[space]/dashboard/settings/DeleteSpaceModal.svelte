@@ -40,7 +40,7 @@
       await _deleteSpace({ spaceId: $space.id });
       mixpanel.track('space:delete', { spaceId: $space.id });
 
-      if ($isWebView) {
+      if (isWebView()) {
         postFlutterMessage({ type: 'space:delete' });
       } else {
         location.href = '/';

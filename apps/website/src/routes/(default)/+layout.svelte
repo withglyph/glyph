@@ -12,7 +12,7 @@
   `);
 </script>
 
-{#if !$isWebView}
+{#if !isWebView()}
   <Header {$query} />
 {/if}
 
@@ -30,6 +30,6 @@
   <slot />
 </main>
 
-{#if !$isWebView}
+{#if !isWebView()}
   <Footer />
 {/if}

@@ -58,7 +58,7 @@
           },
         })}
       >
-        {#if $isWebView}
+        {#if isWebView()}
           <button
             class={flex({ align: 'center', gap: '4px', grow: '1', paddingY: '16px', fontSize: '14px', truncate: true })}
             type="button"

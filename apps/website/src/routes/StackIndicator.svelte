@@ -6,7 +6,7 @@
   import { center } from '$styled-system/patterns';
 </script>
 
-{#if !production && !$isWebView}
+{#if !production && !isWebView()}
   <div
     class={center({
       position: 'fixed',

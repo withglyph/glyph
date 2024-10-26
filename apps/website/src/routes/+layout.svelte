@@ -57,13 +57,13 @@
       toast.error($query.flash.message);
     }
 
-    if ($isWebView) {
+    if (isWebView()) {
       postFlutterMessage({ type: 'ready' });
     }
   });
 </script>
 
-<div class={$isWebView ? '' : flex({ direction: 'column', position: 'relative', minHeight: 'dvh' })}>
+<div class={isWebView() ? '' : flex({ direction: 'column', position: 'relative', minHeight: 'dvh' })}>
   <slot />
 </div>
 

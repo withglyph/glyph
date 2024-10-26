@@ -114,7 +114,7 @@
       >
         글리프 탈퇴하기
       </Button>
-      {#if $isWebView}
+      {#if isWebView()}
         <Button
           style={css.raw({ display: 'block', marginTop: '12px', width: 'full', backgroundColor: 'gray.0' })}
           size="lg"

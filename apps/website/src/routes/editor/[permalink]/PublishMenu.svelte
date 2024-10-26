@@ -157,7 +157,7 @@
     onSuccess: async (resp) => {
       mixpanel.track('post:publish', { postId: resp.id });
 
-      if ($isWebView) {
+      if (isWebView()) {
         postFlutterMessage({ type: 'publish:done', permalink: resp.permalink });
       } else {
         await goto(`/${resp.space.slug}/${resp.permalink}`);

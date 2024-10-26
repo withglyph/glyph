@@ -74,7 +74,7 @@
           },
         })}
       >
-        {#if $isWebView}
+        {#if isWebView()}
           <button
             class={flex({
               align: 'center',
