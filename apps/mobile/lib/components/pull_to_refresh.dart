@@ -23,8 +23,6 @@ class PullToRefresh extends StatelessWidget {
       },
       offsetToArmed: 60,
       triggerMode: IndicatorTriggerMode.anywhere,
-      // ignore: deprecated_member_use
-      indicatorFinalizeDuration: const Duration(milliseconds: 200),
       child: child,
       builder: (context, child, controller) {
         return Stack(

@@ -1,7 +1,7 @@
 name: glyph
 description: Glyph mobile app
 publish_to: none
-version: '1.0.3'
+version: '1.0.4'
 
 environment:
   sdk: '>=3.4.0 <4.0.0'
@@ -10,12 +10,12 @@ dependencies:
   app_tracking_transparency: ^2.0.5
   appsflyer_sdk: ^6.14.3
   assorted_layout_widgets: ^9.0.2
-  auto_route: '^8.1.3'
+  auto_route: ^9.2.2
   built_value: ^8.9.2
   cached_network_image: ^3.3.1
   card_swiper: '^3.0.1'
   collection: '^1.18.0'
-  custom_refresh_indicator: '^3.1.0'
+  custom_refresh_indicator: ^4.0.1
   datadog_flutter_plugin: ^2.6.0
   external_app_launcher: '^4.0.0'
   ferry: '^0.16.0+1'
@@ -28,7 +28,7 @@ dependencies:
   flutter_form_builder: '^9.3.0'
   flutter_inappwebview: '^6.0.0'
   flutter_native_splash: '^2.4.0'
-  flutter_naver_login: '^1.8.0'
+  flutter_naver_login: ^2.0.0
   flutter_randomcolor: ^1.0.15
   flutter_riverpod: '^2.5.1'
   flutter_secure_storage: '^9.2.1'
@@ -37,7 +37,7 @@ dependencies:
   form_builder_validators: ^11.0.0
   freezed_annotation: '^2.4.1'
   gap: '^3.0.1'
-  get_it: '^7.7.0'
+  get_it: ^8.0.1
   google_sign_in: '^6.2.1'
   gql_exec: '^1.0.0+1'
   gql_http_link: '^1.0.1+1'
@@ -56,7 +56,7 @@ dependencies:
   pinput: '^5.0.0'
   riverpod_annotation: '^2.3.5'
   sentry_flutter: ^8.3.0
-  share_plus: '^9.0.0'
+  share_plus: ^10.1.1
   shared_preferences: ^2.2.3
   sign_in_with_apple: '^6.1.0'
   sliver_tools: '^0.2.12'
@@ -65,11 +65,11 @@ dependencies:
   uuid: ^4.4.0
 
 dev_dependencies:
-  auto_route_generator: '^8.0.0'
+  auto_route_generator: ^9.0.0
   build_runner: '^2.4.10'
   custom_lint: '^0.6.4'
-  ferry_generator: '^0.10.0'
-  flutter_lints: '^4.0.0'
+  ferry_generator: ^0.12.0
+  flutter_lints: ^5.0.0
   flutter_test:
     sdk: flutter
   freezed: '^2.5.2'

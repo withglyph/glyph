@@ -4,9 +4,6 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "beta": "pnpm run '/^beta:.+$/'",
-    "beta:android": "cd android && doppler run -- bundle exec fastlane beta",
-    "beta:ios": "cd ios && doppler run -- bundle exec fastlane beta",
     "build": "pnpm run '/^build:.+$/'",
     "build:android": "cd android && doppler run -- bundle exec fastlane build",
     "build:ios": "cd ios && doppler run -- bundle exec fastlane build",

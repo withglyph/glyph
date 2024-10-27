@@ -2,7 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:glyph/routers/app.gr.dart';
 
 @AutoRouterConfig()
-class AppRouter extends $AppRouter {
+class AppRouter extends RootStackRouter {
   @override
   RouteType get defaultRouteType => const RouteType.cupertino();
 
