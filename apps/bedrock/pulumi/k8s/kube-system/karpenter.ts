@@ -247,6 +247,7 @@ new k8s.apiextensions.CustomResource('default', {
           { key: 'karpenter.sh/capacity-type', operator: 'In', values: ['spot'] },
           { key: 'karpenter.k8s.aws/instance-category', operator: 'In', values: ['c', 'm', 'r'] },
           { key: 'karpenter.k8s.aws/instance-generation', operator: 'Gt', values: ['5'] },
+          { key: 'topology.kubernetes.io/zone', operator: 'In', values: ['ap-northeast-2a'] },
         ],
       },
     },

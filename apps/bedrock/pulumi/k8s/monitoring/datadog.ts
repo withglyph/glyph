@@ -47,26 +47,8 @@ new k8s.apiextensions.CustomResource('datadog', {
     },
 
     features: {
-      apm: {
-        enabled: true,
-      },
-
       clusterChecks: {
         useClusterChecksRunners: true,
-      },
-
-      prometheusScrape: {
-        enabled: true,
-      },
-
-      otlp: {
-        receiver: {
-          protocols: {
-            grpc: {
-              enabled: true,
-            },
-          },
-        },
       },
     },
   },

@@ -57,7 +57,7 @@ const instance = new aws.rds.ClusterInstance('penxle-1', {
   identifier: 'penxle-1',
 
   engine: 'aurora-postgresql',
-  instanceClass: 'db.t4g.medium',
+  instanceClass: 'db.r7g.large',
 
   availabilityZone: subnets.private.az1.availabilityZone,
   caCertIdentifier: 'rds-ca-rsa2048-g1',

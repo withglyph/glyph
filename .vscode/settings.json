@@ -14,5 +14,6 @@
   "svelte.enable-ts-plugin": true,
   "svelte.plugin.svelte.defaultScriptLanguage": "ts",
   "typescript.tsdk": "node_modules/typescript/lib",
-  "typescript.enablePromptUseWorkspaceTsdk": true
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "workbench.activityBar.orientation": "vertical"
 }
