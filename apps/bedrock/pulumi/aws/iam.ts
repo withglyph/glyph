@@ -1,67 +1,6 @@
 import * as aws from '@pulumi/aws';
-import * as pulumi from '@pulumi/pulumi';
-import { buckets } from './s3';
 
-const admin = new aws.iam.Group('admin', {
-  name: 'admin',
-});
-
-new aws.iam.GroupPolicy('admin', {
-  group: admin.name,
-  policy: {
-    Version: '2012-10-17',
-    Statement: [
-      {
-        Effect: 'Allow',
-        Action: ['*'],
-        Resource: ['*'],
-      },
-    ],
-  },
-});
-
-const team = new aws.iam.Group('team', {
-  name: 'team',
-});
-
-new aws.iam.GroupPolicy('team', {
-  group: team.name,
-  policy: {
-    Version: '2012-10-17',
-    Statement: [
-      {
-        Effect: 'Allow',
-        Action: [
-          'iam:GetUser',
-          'iam:ChangePassword',
-          'iam:GetAccessKeyLastUsed',
-          'iam:ListAccessKeys',
-          'iam:CreateAccessKey',
-          'iam:UpdateAccessKey',
-          'iam:DeleteAccessKey',
-        ],
-        Resource: 'arn:aws:iam::*:user/${aws:username}',
-      },
-      {
-        Effect: 'Allow',
-        Action: ['s3:GetObject', 's3:PutObject'],
-        Resource: [pulumi.concat(buckets.data.arn, '/*'), pulumi.concat(buckets.uploads.arn, '/*')],
-      },
-      {
-        Effect: 'Allow',
-        Action: ['s3:DeleteObject'],
-        Resource: [pulumi.concat(buckets.uploads.arn, '/*')],
-      },
-      {
-        Effect: 'Allow',
-        Action: ['ses:SendEmail'],
-        Resource: ['*'],
-      },
-    ],
-  },
-});
-
-const adminRole = new aws.iam.Role('admin@team', {
+const admin = new aws.iam.Role('admin@team', {
   name: 'admin@team',
   assumeRolePolicy: aws.iam.assumeRolePolicyForPrincipal({
     AWS: '886436942314',
@@ -69,7 +8,7 @@ const adminRole = new aws.iam.Role('admin@team', {
 });
 
 new aws.iam.RolePolicy('admin@team', {
-  role: adminRole.name,
+  role: admin.name,
   policy: {
     Version: '2012-10-17',
     Statement: [
