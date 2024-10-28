@@ -3,6 +3,27 @@ import * as k8s from '@pulumi/kubernetes';
 import { cluster, oidcProvider } from '$aws/eks';
 import { securityGroups, subnets } from '$aws/vpc';
 
+const nodeRole = new aws.iam.Role('node@eks', {
+  name: 'node@eks',
+  assumeRolePolicy: aws.iam.assumeRolePolicyForPrincipal({
+    Service: 'ec2.amazonaws.com',
+  }),
+  managedPolicyArns: [
+    aws.iam.ManagedPolicy.AmazonEKSWorkerNodePolicy,
+    aws.iam.ManagedPolicy.AmazonEC2ContainerRegistryReadOnly,
+    aws.iam.ManagedPolicy.AmazonEKS_CNI_Policy,
+    aws.iam.ManagedPolicy.AmazonSSMManagedInstanceCore,
+    // spell-checker:disable-next-line
+    aws.iam.ManagedPolicy.AmazonEBSCSIDriverPolicy,
+  ],
+});
+
+new aws.eks.AccessEntry('node@eks', {
+  clusterName: cluster.name,
+  principalArn: nodeRole.arn,
+  type: 'EC2_LINUX',
+});
+
 const karpenterRole = new aws.iam.Role('karpenter@eks', {
   name: 'karpenter@eks',
   assumeRolePolicy: {
@@ -21,21 +42,6 @@ const karpenterRole = new aws.iam.Role('karpenter@eks', {
       },
     ],
   },
-});
-
-const nodeRole = new aws.iam.Role('node@eks', {
-  name: 'node@eks',
-  assumeRolePolicy: aws.iam.assumeRolePolicyForPrincipal({
-    Service: 'ec2.amazonaws.com',
-  }),
-  managedPolicyArns: [
-    aws.iam.ManagedPolicy.AmazonEKSWorkerNodePolicy,
-    aws.iam.ManagedPolicy.AmazonEC2ContainerRegistryReadOnly,
-    aws.iam.ManagedPolicy.AmazonEKS_CNI_Policy,
-    aws.iam.ManagedPolicy.AmazonSSMManagedInstanceCore,
-    // spell-checker:disable-next-line
-    aws.iam.ManagedPolicy.AmazonEBSCSIDriverPolicy,
-  ],
 });
 
 new aws.iam.RolePolicy('karpenter@eks', {

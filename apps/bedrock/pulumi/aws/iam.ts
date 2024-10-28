@@ -216,3 +216,8 @@ new aws.iam.RolePolicy('actions@github', {
     ],
   },
 });
+
+export const roles = {
+  admin,
+  actions: githubActionsRole,
+};
