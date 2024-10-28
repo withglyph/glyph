@@ -33,6 +33,9 @@ const cluster = new aws.rds.Cluster('penxle', {
   engineMode: 'provisioned',
   engineVersion: '15.4',
 
+  // spell-checker:disable-next-line
+  storageType: 'aurora-iopt1',
+
   dbSubnetGroupName: subnetGroup.name,
   vpcSecurityGroupIds: [securityGroups.internal.id],
 
