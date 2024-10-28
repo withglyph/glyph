@@ -18,13 +18,6 @@ const fargateRole = new aws.iam.Role('fargate@eks', {
   managedPolicyArns: [aws.iam.ManagedPolicy.AmazonEKSFargatePodExecutionRolePolicy],
 });
 
-new aws.iam.Role('admin@eks', {
-  name: 'admin@eks',
-  assumeRolePolicy: aws.iam.assumeRolePolicyForPrincipal({
-    AWS: 'arn:aws:iam::721144421085:root',
-  }),
-});
-
 export const cluster = new aws.eks.Cluster('penxle', {
   name: 'penxle',
   version: '1.31',
