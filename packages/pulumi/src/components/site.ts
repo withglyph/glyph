@@ -309,10 +309,7 @@ export class Site extends pulumi.ComponentResource {
                 originReadTimeout: 60,
                 originKeepaliveTimeout: 60,
               },
-              originShield: {
-                enabled: true,
-                originShieldRegion: 'ap-northeast-2',
-              },
+              originShield: { enabled: false, originShieldRegion: 'ap-northeast-2' },
             },
           ],
 
