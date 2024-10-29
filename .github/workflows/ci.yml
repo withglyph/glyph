@@ -35,12 +35,12 @@ jobs:
       - name: Run code generation
         run: pnpm exec turbo run codegen
         env:
-          TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+          TURBO_TEAM: penxle
           TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
 
       - name: Run lint
         run: pnpm run lint:${{ matrix.linter }}
         env:
           NODE_OPTIONS: --max-old-space-size=8192
-          TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+          TURBO_TEAM: penxle
           TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}

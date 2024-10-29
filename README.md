@@ -1,8 +1,8 @@
 # Glyph
 
-![](https://img.shields.io/github/actions/workflow/status/withglyph/glyph/ci.yml)
-![](https://img.shields.io/github/license/withglyph/glyph)
-![](https://img.shields.io/github/languages/code-size/withglyph/glyph)
+![](https://img.shields.io/github/actions/workflow/status/penxle/withglyph/ci.yml)
+![](https://img.shields.io/github/license/penxle/withglyph)
+![](https://img.shields.io/github/languages/code-size/penxle/withglyph)
 
 나만의 공간, 함께 새겨질 우주 - Glyph
 
@@ -29,7 +29,7 @@ $ doppler login
 ## 환경 초기화
 
 ```bash
-$ git clone git@github.com:withglyph/glyph.git
+$ git clone git@github.com:penxle/withglyph.git
 $ cd glyph
 $ pnpm bootstrap
 ```

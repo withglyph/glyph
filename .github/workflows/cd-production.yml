@@ -57,7 +57,7 @@ jobs:
           context: .
           build-args: |
             APP=${{ matrix.app }}
-            TURBO_TEAM=${{ vars.TURBO_TEAM }}
+            TURBO_TEAM=penxle
             TURBO_TOKEN=${{ secrets.TURBO_TOKEN }}
             SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }}
           tags: ${{ steps.meta.outputs.tags }}
@@ -84,13 +84,13 @@ jobs:
         working-directory: apps/${{ matrix.app }}
         run: pnpm exec turbo run codegen
         env:
-          TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+          TURBO_TEAM: penxle
           TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
 
       - name: Connect tailnet
         uses: tailscale/github-action@v2
         with:
-          oauth-client-id: ${{ secrets.TAILSCALE_OAUTH_CLIENT_ID }}
+          oauth-client-id: ${{ vars.TAILSCALE_OAUTH_CLIENT_ID }}
           oauth-secret: ${{ secrets.TAILSCALE_OAUTH_CLIENT_SECRET }}
           tags: tag:github-actions
 
