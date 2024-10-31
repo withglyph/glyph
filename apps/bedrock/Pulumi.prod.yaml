@@ -1,7 +1,5 @@
 config:
-  aws:profile: withglyph
   aws:defaultTags:
     tags:
       pulumi.withglyph.io/project: bedrock
       pulumi.withglyph.io/stack: prod
-  kubernetes:context: arn:aws:eks:ap-northeast-2:721144421085:cluster/penxle
