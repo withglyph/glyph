@@ -88,6 +88,7 @@ class AppRouter extends RootStackRouter {
             AutoRoute(page: WebViewRoute.page),
 
             // 딥링크 페이지들
+            AutoRoute(page: PostShortlinkRoute.page, path: 'api/shortlink/:shortlink'),
             AutoRoute(page: NotificationsRoute.page, path: 'me/notifications'),
             AutoRoute(page: RevenueRoute.page, path: 'me/revenue'),
             AutoRoute(page: TagRoute.page, path: 'tag/:name'),

@@ -1343,6 +1343,22 @@ builder.queryFields((t) => ({
       return post.id;
     },
   }),
+
+  postShortlink: t.field({
+    type: Post,
+    args: { shortlink: t.arg.string() },
+    resolve: async (_, args) => {
+      const permalink = base36To10(args.shortlink);
+
+      const posts = await database.select({ id: Posts.id }).from(Posts).where(eq(Posts.permalink, permalink));
+
+      if (posts.length === 0) {
+        throw new NotFoundError();
+      }
+
+      return posts[0].id;
+    },
+  }),
 }));
 
 /**

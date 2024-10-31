@@ -828,6 +828,7 @@ type Query {
   me: User
   pointPurchase(paymentKey: String!): PointPurchase!
   post(permalink: String!): Post!
+  postShortlink(shortlink: String!): Post!
   provisionedUser(token: String!): ProvisionedUser!
   recommendFeed(page: Int! = 1, seed: Int, take: Int! = 6): [Post!]!
   recommendedTags(page: Int! = 1, seed: Int, take: Int! = 20): [Tag!]!

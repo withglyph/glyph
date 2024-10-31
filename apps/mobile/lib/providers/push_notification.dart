@@ -33,16 +33,20 @@ class PushNotification extends _$PushNotification {
 
   @override
   Future<PushNotificationState> build() async {
-    final status = await Permission.notification.request();
-    if (!status.isGranted) {
+    try {
+      final status = await Permission.notification.request();
+      if (!status.isGranted) {
+        return const PushNotificationState.unavailable();
+      }
+
+      final token = await _messaging.getToken();
+      return switch (token) {
+        null => const PushNotificationState.unavailable(),
+        _ => PushNotificationState.granted(token: token),
+      };
+    } on Exception catch (_) {
       return const PushNotificationState.unavailable();
     }
-
-    final token = await _messaging.getToken();
-    return switch (token) {
-      null => const PushNotificationState.unavailable(),
-      _ => PushNotificationState.granted(token: token),
-    };
   }
 
   Future<void> registerToken() async {

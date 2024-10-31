@@ -1,0 +1,11 @@
+query PostShortlinkScreen_Query($shortlink: String!) {
+  postShortlink(shortlink: $shortlink) {
+    id
+    permalink
+
+    space {
+      id
+      slug
+    }
+  }
+}
