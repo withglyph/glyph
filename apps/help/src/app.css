@@ -1,4 +1,0 @@
-@layer reset, fonts, base, prose, tokens, recipes, utilities;
-
-@import url(styles/fonts.css) layer(fonts);
-@import url(styles/prose.css) layer(prose);

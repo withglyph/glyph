@@ -56,6 +56,15 @@ new aws.route53.Record('mail.withglyph.com|txt', {
   ttl: 300,
 });
 
+new aws.route53.Record('help.withglyph.com', {
+  zoneId: zones.withglyph_com.zoneId,
+  type: 'CNAME',
+  name: 'help.withglyph.com',
+  // spell-checker:disable-next-line
+  records: ['cname.rdbl.io'],
+  ttl: 300,
+});
+
 new aws.route53.Record('app.glph.to|cname', {
   zoneId: zones.glph_to.zoneId,
   type: 'CNAME',

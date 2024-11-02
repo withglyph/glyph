@@ -134,17 +134,15 @@ const glyphPub = new aws.cloudfront.Distribution('glyph.pub', {
 
   origins: [
     {
-      originId: 'penxle-data',
-      domainName: 'penxle-data.s3.amazonaws.com',
-      originAccessControlId: originAccessControl.id,
-      originShield: { enabled: false, originShieldRegion: 'ap-northeast-2' },
-    },
-    {
       originId: 'penxle-images',
       // spell-checker:disable-next-line
       domainName: 'penxle-images-zjf3dm5q7dybsggznshhnpyqapn2a--ol-s3.s3.ap-northeast-2.amazonaws.com',
       originAccessControlId: originAccessControl.id,
-      originShield: { enabled: false, originShieldRegion: 'ap-northeast-2' },
+    },
+    {
+      originId: 'penxle-data',
+      domainName: 'penxle-data.s3.amazonaws.com',
+      originAccessControlId: originAccessControl.id,
     },
   ],
 

@@ -1,6 +1,0 @@
-name: company
-main: pulumi/index.ts
-runtime:
-  name: nodejs
-  options:
-    nodeargs: --import=tsx
