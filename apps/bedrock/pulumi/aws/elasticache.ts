@@ -11,10 +11,10 @@ const subnetGroup = new aws.elasticache.SubnetGroup('private', {
 
 const cluster = new aws.elasticache.ReplicationGroup('penxle', {
   replicationGroupId: 'penxle',
-  description: 'Redis cluster',
+  description: 'Valkey cluster',
 
-  engine: 'redis',
-  engineVersion: '7.1',
+  engine: 'valkey',
+  engineVersion: '7.2',
 
   nodeType: 'cache.t4g.micro',
 
