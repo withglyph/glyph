@@ -81,16 +81,17 @@ while (true) {
   const name = await rl.question('이름 입력("${성} ${이름}" 형식, 미입력시 인증 거부): ');
 
   if (name.length === 0) {
-    const reason = await rl.question('인증 거부 사유 입력: ');
-    const answer = await rl.question(`${email} 회원에게 ${reason} 사유로 거부 이메일을 보낼까요? (Y/n)`);
-    if (answer === 'y' || answer === 'Y' || answer === 'ㅛ' || answer.length === 0) {
-      await sendTextEmail({
-        subject: '[Glyph] Foreign Passport Verification Rejected',
-        recipient: email,
-        body: `Your foreign identity verification is rejected. Reason: ${reason}`,
-      });
-    }
+    // const reason = await rl.question('인증 거부 사유 입력: ');
+    // const answer = await rl.question(`${email} 회원에게 ${reason} 사유로 거부 이메일을 보낼까요? (Y/n)`);
+    // if (answer === 'y' || answer === 'Y' || answer === 'ㅛ' || answer.length === 0) {
+    //   await sendTextEmail({
+    //     subject: '[Glyph] Foreign Passport Verification Rejected',
+    //     recipient: email,
+    //     body: `Your foreign identity verification is rejected. Reason: ${reason}`,
+    //   });
+    // }
 
+    console.log(`${email} 인증 거부`);
     continue;
   }
 
@@ -148,11 +149,11 @@ while (true) {
         },
       });
 
-    await sendTextEmail({
-      subject: '[Glyph] Foreign Passport Verification Completed',
-      recipient: email,
-      body: `Your foreign identity verification is completed.`,
-    });
+    // await sendTextEmail({
+    //   subject: '[Glyph] Foreign Passport Verification Completed',
+    //   recipient: email,
+    //   body: `Your foreign identity verification is completed.`,
+    // });
 
     console.log(`${email} 완료`);
   }
