@@ -4,7 +4,7 @@
   import IconLink from '~icons/glyph/link';
   import IconUsers from '~icons/glyph/users';
   import { fragment, graphql } from '$glitch';
-  import { mixpanel } from '$lib/analytics';
+  import { analytics } from '$lib/analytics';
   import { Button, Icon, Modal, SegmentButtonGroup, ToggleButton, Tooltip } from '$lib/components';
   import { toast } from '$lib/notification';
   import { css } from '$styled-system/css';
@@ -155,7 +155,7 @@
       Promise.all(
         selectedPostIds.map((id) => updatePostOptions({ postId: id, visibility, ageRating, externalSearchable })),
       );
-      mixpanel.track('post:update:option', { postIds: selectedPostIds, visibility, ageRating, externalSearchable });
+      analytics.track('post:update:option', { postIds: selectedPostIds, visibility, ageRating, externalSearchable });
 
       visibility = null;
       ageRating = null;

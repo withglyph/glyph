@@ -4,7 +4,7 @@
   import IconMoodPlus from '~icons/tabler/mood-plus';
   import { afterNavigate } from '$app/navigation';
   import { fragment, graphql } from '$glitch';
-  import { mixpanel } from '$lib/analytics';
+  import { analytics } from '$lib/analytics';
   import { Icon, LoginRequireAlert } from '$lib/components';
   import { createFloatingActions } from '$lib/svelte/actions';
   import { css } from '$styled-system/css';
@@ -93,7 +93,7 @@
           emoji: emoji.id,
         });
 
-        mixpanel.track('post:reaction:create', { postId: $query.post.id, emoji: emoji.id, via: variant });
+        analytics.track('post:reaction:create', { postId: $query.post.id, emoji: emoji.id, via: variant });
       },
       exceptEmojis,
       perLine: 8,

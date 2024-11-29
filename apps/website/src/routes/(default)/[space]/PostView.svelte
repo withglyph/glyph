@@ -15,7 +15,7 @@
   import IconShare2 from '~icons/tabler/share-2';
   import { afterNavigate, goto } from '$app/navigation';
   import { fragment, graphql } from '$glitch';
-  import { mixpanel } from '$lib/analytics';
+  import { analytics } from '$lib/analytics';
   import {
     AdSense,
     Alert,
@@ -527,7 +527,7 @@
 
               if ($query.post.space.muted) {
                 await unmuteSpace({ spaceId: $query.post.space.id });
-                mixpanel.track('space:unmute', { spaceId: $query.post.space.id, via: 'post' });
+                analytics.track('space:unmute', { spaceId: $query.post.space.id, via: 'post' });
               } else {
                 if (!$query.me) {
                   loginRequireOpen = true;
@@ -535,7 +535,7 @@
                 }
 
                 await muteSpace({ spaceId: $query.post.space.id });
-                mixpanel.track('space:mute', { spaceId: $query.post.space.id, via: 'post' });
+                analytics.track('space:mute', { spaceId: $query.post.space.id, via: 'post' });
               }
             }}
           >
@@ -665,7 +665,7 @@
           on:click={async () => {
             if ($query.post.bookmarkGroups.length > 0) {
               await unbookmarkPost({ bookmarkGroupId: $query.post.bookmarkGroups[0].id, postId: $query.post.id });
-              mixpanel.track('post:unbookmark', { postId: $query.post.id, via: 'post' });
+              analytics.track('post:unbookmark', { postId: $query.post.id, via: 'post' });
             } else {
               if (!$query.me) {
                 loginRequireOpen = true;
@@ -673,7 +673,7 @@
               }
 
               await bookmarkPost({ postId: $query.post.id });
-              mixpanel.track('post:bookmark', { postId: $query.post.id, via: 'post' });
+              analytics.track('post:bookmark', { postId: $query.post.id, via: 'post' });
             }
           }}
         >
@@ -697,7 +697,7 @@
 
                 if ($query.post.space.muted) {
                   await unmuteSpace({ spaceId: $query.post.space.id });
-                  mixpanel.track('space:unmute', { spaceId: $query.post.space.id, via: 'post' });
+                  analytics.track('space:unmute', { spaceId: $query.post.space.id, via: 'post' });
                 } else {
                   if (!$query.me) {
                     loginRequireOpen = true;
@@ -705,7 +705,7 @@
                   }
 
                   await muteSpace({ spaceId: $query.post.space.id });
-                  mixpanel.track('space:mute', { spaceId: $query.post.space.id, via: 'post' });
+                  analytics.track('space:mute', { spaceId: $query.post.space.id, via: 'post' });
                 }
               }}
             >
@@ -1102,7 +1102,7 @@
                 postId: $query.post.id,
                 password,
               });
-              mixpanel.track('post:unlock', { postId: $query.post.id });
+              analytics.track('post:unlock', { postId: $query.post.id });
             } catch (err) {
               if (err instanceof FormValidationError) toast.error(err.message);
             }
@@ -1214,7 +1214,7 @@
           on:click={async () => {
             if ($query.post.bookmarkGroups.length > 0) {
               await unbookmarkPost({ bookmarkGroupId: $query.post.bookmarkGroups[0].id, postId: $query.post.id });
-              mixpanel.track('post:unbookmark', { postId: $query.post.id, via: 'post' });
+              analytics.track('post:unbookmark', { postId: $query.post.id, via: 'post' });
             } else {
               if (!$query.me) {
                 loginRequireOpen = true;
@@ -1222,7 +1222,7 @@
               }
 
               await bookmarkPost({ postId: $query.post.id });
-              mixpanel.track('post:bookmark', { postId: $query.post.id, via: 'post' });
+              analytics.track('post:bookmark', { postId: $query.post.id, via: 'post' });
             }
           }}
         >
@@ -1475,7 +1475,7 @@
               if (!$query.post.space) return;
 
               await unfollowSpace({ spaceId: $query.post.space.id });
-              mixpanel.track('space:unfollow', { spaceId: $query.post.space.id, via: 'post' });
+              analytics.track('space:unfollow', { spaceId: $query.post.space.id, via: 'post' });
             }}
           >
             <Icon icon={IconCheck} />
@@ -1495,7 +1495,7 @@
               }
 
               await followSpace({ spaceId: $query.post.space.id });
-              mixpanel.track('space:follow', { spaceId: $query.post.space.id, via: 'post' });
+              analytics.track('space:follow', { spaceId: $query.post.space.id, via: 'post' });
             }}
           >
             <Icon icon={IconPlus} />
@@ -1637,7 +1637,7 @@
       on:click={async () => {
         await goto(`/${$query.post.space?.slug}`);
         await deletePost({ postId: $query.post.id });
-        mixpanel.track('post:delete', { postId: $query.post.id, via: 'post' });
+        analytics.track('post:delete', { postId: $query.post.id, via: 'post' });
       }}
     >
       삭제

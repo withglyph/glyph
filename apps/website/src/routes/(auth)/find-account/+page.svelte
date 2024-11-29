@@ -3,7 +3,7 @@
   import qs from 'query-string';
   import IconDeviceMobile from '~icons/tabler/device-mobile';
   import { page } from '$app/stores';
-  import { mixpanel } from '$lib/analytics';
+  import { analytics } from '$lib/analytics';
   import { Alert, Button, Helmet, Icon, Link } from '$lib/components';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
@@ -11,7 +11,7 @@
   let accountNotFoundOpen = false;
 
   const handleUserIdentityVerification = () => {
-    mixpanel.track('user:personal-identity-verification:start');
+    analytics.track('user:personal-identity-verification:start');
 
     // @ts-expect-error portone 관련 코드
     IMP.init('imp72534540');

@@ -4,7 +4,7 @@
   import IconCheck from '~icons/tabler/check';
   import { page } from '$app/stores';
   import { graphql } from '$glitch';
-  import { mixpanel } from '$lib/analytics';
+  import { analytics } from '$lib/analytics';
   import { Button, Helmet, Icon } from '$lib/components';
   import { DigitsInput } from '$lib/components/forms';
   import { createMutationForm } from '$lib/form';
@@ -24,7 +24,7 @@
     `),
     schema: IssueUserEmailAuthorizationTokenSchema,
     onSuccess: (resp) => {
-      mixpanel.track('user:login:success', { method: 'email:code' });
+      analytics.track('user:login:success', { method: 'email:code' });
       location.href = qs.stringifyUrl({
         url: '/api/email',
         query: { token: resp.token },
@@ -105,7 +105,7 @@
         if (!email) return;
 
         await loginUser({ email });
-        mixpanel.track('user:login:start', { method: 'email:code' });
+        analytics.track('user:login:start', { method: 'email:code' });
         emailResendTime = dayjs.kst().formatAsDateTime();
       }}
     >

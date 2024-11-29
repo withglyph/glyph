@@ -1,6 +1,6 @@
 <script lang="ts">
   import { fragment, graphql } from '$glitch';
-  import { mixpanel } from '$lib/analytics';
+  import { analytics } from '$lib/analytics';
   import { Button, Modal, SegmentButtonGroup, ToggleButton, Tooltip } from '$lib/components';
   import { Switch } from '$lib/components/forms';
   import { toast } from '$lib/notification';
@@ -100,7 +100,7 @@
     variant="gradation-fill"
     on:click={() => {
       Promise.all(selectedPostIds.map((id) => updatePostOptions({ postId: id, commentQualification })));
-      mixpanel.track('post:update:option', { postIds: selectedPostIds, commentQualification });
+      analytics.track('post:update:option', { postIds: selectedPostIds, commentQualification });
 
       commentQualification = 'ANY';
       toast.success('댓글옵션 변경이 완료되었어요');

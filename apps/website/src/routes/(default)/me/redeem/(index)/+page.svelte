@@ -4,7 +4,7 @@
   import IconScan from '~icons/tabler/scan';
   import { page } from '$app/stores';
   import { graphql } from '$glitch';
-  import { mixpanel } from '$lib/analytics';
+  import { analytics } from '$lib/analytics';
   import { Button, Helmet, Icon } from '$lib/components';
   import { TextInput } from '$lib/components/forms';
   import { toast } from '$lib/notification';
@@ -58,7 +58,7 @@
     on:submit|preventDefault={async () => {
       try {
         const { id } = await registerRedeemCode({ code });
-        mixpanel.track('redeem-code:register');
+        analytics.track('redeem-code:register');
         location.href = qs.stringifyUrl({ url: '/me/redeem/complete/', query: { id } });
       } catch (err) {
         if (err instanceof Error) {

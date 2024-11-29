@@ -2,7 +2,7 @@
   import * as R from 'radash';
   import IconChevronRight from '~icons/tabler/chevron-right';
   import { graphql } from '$glitch';
-  import { mixpanel } from '$lib/analytics';
+  import { analytics } from '$lib/analytics';
   import { Helmet, Icon } from '$lib/components';
   import { Switch } from '$lib/components/forms';
   import { css } from '$styled-system/css';
@@ -101,7 +101,7 @@
         const action = e.currentTarget.checked ? 'WARN' : 'EXPOSE';
 
         await updateUserContentFilterPreference({ category, action });
-        mixpanel.track('user:content-filter-preference:update', { category, action });
+        analytics.track('user:content-filter-preference:update', { category, action });
       }}
     />
   </div>

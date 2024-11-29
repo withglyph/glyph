@@ -6,7 +6,7 @@
   import IconCheck from '~icons/tabler/check';
   import { page } from '$app/stores';
   import { graphql } from '$glitch';
-  import { mixpanel } from '$lib/analytics';
+  import { analytics } from '$lib/analytics';
   import { Button, Helmet, Icon } from '$lib/components';
   import { css } from '$styled-system/css';
   import { center, flex } from '$styled-system/patterns';
@@ -120,7 +120,7 @@
         if (!email) return;
 
         await loginUser({ email });
-        mixpanel.track('user:login:start', { method: 'email' });
+        analytics.track('user:login:start', { method: 'email' });
         emailResendTime = dayjs.kst().formatAsDateTime();
       }}
     >

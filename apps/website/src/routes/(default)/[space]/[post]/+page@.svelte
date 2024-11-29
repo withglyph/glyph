@@ -3,7 +3,7 @@
   import { browser } from '$app/environment';
   import { page } from '$app/stores';
   import { graphql } from '$glitch';
-  import { mixpanel } from '$lib/analytics';
+  import { analytics } from '$lib/analytics';
   import { Helmet } from '$lib/components';
   import { css } from '$styled-system/css';
   import Footer from '../../Footer.svelte';
@@ -76,7 +76,7 @@
 
   $: if (browser && postId !== $query.post.id) {
     postId = $query.post.id;
-    mixpanel.track('post:view', { postId });
+    analytics.track('post:view', { postId });
     updatePostView({ postId });
   }
 

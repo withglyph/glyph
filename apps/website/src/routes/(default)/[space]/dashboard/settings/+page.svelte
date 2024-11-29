@@ -3,7 +3,7 @@
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
   import { graphql } from '$glitch';
-  import { mixpanel } from '$lib/analytics';
+  import { analytics } from '$lib/analytics';
   import { Alert, Button, Helmet, Icon, Image } from '$lib/components';
   import { FormField, TextArea, TextInput } from '$lib/components/forms';
   import { ThumbnailPicker } from '$lib/components/media';
@@ -98,7 +98,7 @@
       isPublic: $query.space.visibility === 'PUBLIC',
     }),
     onSuccess: async () => {
-      mixpanel.track('space:update', { spaceId: $query.space.id });
+      analytics.track('space:update', { spaceId: $query.space.id });
       toast.success('스페이스 정보가 수정되었어요');
       await goto(`/${$data.slug}/dashboard/settings`);
     },
@@ -378,7 +378,7 @@
       variant="brand-fill"
       on:click={async () => {
         await updateSpace({ spaceId: $query.space.id, isPublic: true });
-        mixpanel.track('space:update:visibility', { spaceId: $query.space.id, isPublic: true });
+        analytics.track('space:update:visibility', { spaceId: $query.space.id, isPublic: true });
         changeSpaceVisibilityOpen = false;
       }}
     >

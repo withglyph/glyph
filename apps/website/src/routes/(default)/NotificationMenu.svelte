@@ -3,7 +3,7 @@
   import IconX from '~icons/tabler/x';
   import { beforeNavigate } from '$app/navigation';
   import { fragment, graphql } from '$glitch';
-  import { mixpanel } from '$lib/analytics';
+  import { analytics } from '$lib/analytics';
   import { Button, Icon } from '$lib/components';
   import { createFloatingActions, portal, scrollLock } from '$lib/svelte/actions';
   import { css } from '$styled-system/css';
@@ -71,7 +71,7 @@
   );
 
   const readAllNotifications = () => {
-    mixpanel.track('user:notification-state:read', { via: 'notification-popup' });
+    analytics.track('user:notification-state:read', { via: 'notification-popup' });
     return markAllNotificationsAsRead();
   };
 

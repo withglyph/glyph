@@ -4,7 +4,7 @@
   import IconVolume from '~icons/tabler/volume-3';
   import { page } from '$app/stores';
   import { graphql } from '$glitch';
-  import { mixpanel } from '$lib/analytics';
+  import { analytics } from '$lib/analytics';
   import { Alert, Button, Helmet, Icon, LoginRequireAlert, Pagination, Post } from '$lib/components';
   import { Menu, MenuItem } from '$lib/components/menu';
   import { css } from '$styled-system/css';
@@ -134,7 +134,7 @@
               }
 
               await muteTag({ tagId: $query.tag.id });
-              mixpanel.track('tag:mute', { tagId: $query.tag.id, via: 'tag' });
+              analytics.track('tag:mute', { tagId: $query.tag.id, via: 'tag' });
             }}
           >
             태그 뮤트
@@ -169,7 +169,7 @@
           variant="gray-sub-fill"
           on:click={async () => {
             await unfollowTag({ tagId: $query.tag.id });
-            mixpanel.track('tag:unfollow', { tagId: $query.tag.id, via: 'tag' });
+            analytics.track('tag:unfollow', { tagId: $query.tag.id, via: 'tag' });
           }}
         >
           구독중
@@ -187,7 +187,7 @@
             }
 
             await followTag({ tagId: $query.tag.id });
-            mixpanel.track('tag:follow', { tagId: $query.tag.id, via: 'tag' });
+            analytics.track('tag:follow', { tagId: $query.tag.id, via: 'tag' });
           }}
         >
           구독
@@ -255,7 +255,7 @@
       variant="red-fill"
       on:click={async () => {
         await unmuteTag({ tagId: $query.tag.id });
-        mixpanel.track('tag:unmute', { tagId: $query.tag.id, via: 'tag' });
+        analytics.track('tag:unmute', { tagId: $query.tag.id, via: 'tag' });
         unmuteTagOpen = false;
       }}
     >

@@ -13,7 +13,7 @@
   import IconScan from '~icons/tabler/scan';
   import { afterNavigate, goto } from '$app/navigation';
   import { fragment, graphql } from '$glitch';
-  import { mixpanel } from '$lib/analytics';
+  import { analytics } from '$lib/analytics';
   import { Avatar, Button, Icon, Image, Link } from '$lib/components';
   import { portal, scrollLock } from '$lib/svelte/actions';
   import { css } from '$styled-system/css';
@@ -261,7 +261,7 @@
                       type="button"
                       on:click={async () => {
                         const { permalink } = await createPost({ spaceId: space.id });
-                        mixpanel.track('post:create', { via: 'user-menu' });
+                        analytics.track('post:create', { via: 'user-menu' });
                         await goto(`/editor/${permalink}`);
                       }}
                     >
@@ -383,8 +383,8 @@
               type="button"
               on:click={async () => {
                 await logoutUser();
-                mixpanel.track('user:logout');
-                mixpanel.reset();
+                analytics.track('user:logout');
+                analytics.reset();
                 location.href = '/';
               }}
             >

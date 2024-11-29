@@ -16,7 +16,7 @@
   import IconX from '~icons/tabler/x';
   import { goto } from '$app/navigation';
   import { fragment, graphql } from '$glitch';
-  import { mixpanel } from '$lib/analytics';
+  import { analytics } from '$lib/analytics';
   import { Button, Icon, Image, SegmentButtonGroup, ToggleButton, Tooltip } from '$lib/components';
   import { Checkbox, FormValidationMessage, Switch, TextInput } from '$lib/components/forms';
   import ThumbnailPicker from '$lib/components/media/ThumbnailPicker.svelte';
@@ -155,7 +155,7 @@
       };
     },
     onSuccess: async (resp) => {
-      mixpanel.track('post:publish', { postId: resp.id });
+      analytics.track('post:publish', { postId: resp.id });
 
       if (isWebView()) {
         postFlutterMessage({ type: 'publish:done', permalink: resp.permalink });

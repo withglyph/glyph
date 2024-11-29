@@ -3,7 +3,7 @@
   import IconHelpLine from '~icons/glyph/help-line';
   import IconSearch from '~icons/tabler/search';
   import { graphql } from '$glitch';
-  import { mixpanel } from '$lib/analytics';
+  import { analytics } from '$lib/analytics';
   import { Button, Icon, Modal, Tooltip } from '$lib/components';
   import { TextInput } from '$lib/components/forms';
   import { css } from '$styled-system/css';
@@ -128,7 +128,7 @@
 
       if (selectedPostIds.length > 0) {
         await appendSpaceCollectionPosts({ postIds: selectedPostIds, spaceCollectionId: collectionId });
-        mixpanel.track('space:collection:post:append', {
+        analytics.track('space:collection:post:append', {
           spaceId: $spacePostsQuery.space.id,
           spaceCollectionId: collectionId,
           postIds: selectedPostIds,

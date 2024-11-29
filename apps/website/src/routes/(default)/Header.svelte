@@ -3,7 +3,7 @@
   import { goto } from '$app/navigation';
   import FullLogo from '$assets/logos/full.svg?component';
   import { fragment, graphql } from '$glitch';
-  import { mixpanel } from '$lib/analytics';
+  import { analytics } from '$lib/analytics';
   import { Button, Icon } from '$lib/components';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
@@ -119,7 +119,7 @@
           type="button"
           on:click={async () => {
             const { permalink } = await createPost({ spaceId: undefined });
-            mixpanel.track('post:create', { via: 'feed' });
+            analytics.track('post:create', { via: 'feed' });
             await goto(`/editor/${permalink}`);
           }}
         >

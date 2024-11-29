@@ -1,8 +1,8 @@
 <script lang="ts">
-  import mixpanel from 'mixpanel-browser';
   import { createEventDispatcher } from 'svelte';
   import IconCamera from '~icons/tabler/camera';
   import { graphql } from '$glitch';
+  import { analytics } from '$lib/analytics';
   import { Button, Icon, Image, Modal } from '$lib/components';
   import { FormField, TextArea, TextInput } from '$lib/components/forms';
   import { ThumbnailPicker } from '$lib/components/media';
@@ -45,7 +45,7 @@
     extra: () => ({ thumbnailId: thumbnail?.id }),
     onSuccess: ({ id, name }) => {
       open = false;
-      mixpanel.track('space:collection:create', { spaceId, collectionId: id });
+      analytics.track('space:collection:create', { spaceId, collectionId: id });
       dispatch('success', { id, name, thumbnail });
     },
   });

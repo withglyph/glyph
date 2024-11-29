@@ -5,7 +5,7 @@
   import Naver from '$assets/icons/naver.svg?component';
   import FullLogo from '$assets/logos/full.svg?component';
   import { graphql } from '$glitch';
-  import { mixpanel } from '$lib/analytics';
+  import { analytics } from '$lib/analytics';
   import { Helmet, Icon, Image } from '$lib/components';
   import { css } from '$styled-system/css';
   import { center, flex } from '$styled-system/patterns';
@@ -112,7 +112,7 @@
             provider: 'GOOGLE',
           });
 
-          mixpanel.track('user:login:start', { method: 'google' });
+          analytics.track('user:login:start', { method: 'google' });
           location.href = url;
         }}
       >
@@ -140,7 +140,7 @@
             provider: 'NAVER',
           });
 
-          mixpanel.track('user:login:start', { method: 'naver' });
+          analytics.track('user:login:start', { method: 'naver' });
           location.href = url;
         }}
       >

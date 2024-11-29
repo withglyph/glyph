@@ -7,7 +7,7 @@
   import IconVolume3 from '~icons/tabler/volume-3';
   import { page } from '$app/stores';
   import { graphql } from '$glitch';
-  import { mixpanel } from '$lib/analytics';
+  import { analytics } from '$lib/analytics';
   import { Alert, Button, Icon, Image, LoginRequireAlert, ShareLinkPopover } from '$lib/components';
   import { Menu, MenuItem } from '$lib/components/menu';
   import { TabHead, TabHeadItem } from '$lib/components/tab';
@@ -210,7 +210,7 @@
                 variant="gray-outline"
                 on:click={async () => {
                   await unfollowSpace({ spaceId: $query.space.id });
-                  mixpanel.track('space:unfollow', { spaceId: $query.space.id, via: 'space' });
+                  analytics.track('space:unfollow', { spaceId: $query.space.id, via: 'space' });
                 }}
               >
                 구독중
@@ -228,7 +228,7 @@
                   }
 
                   await followSpace({ spaceId: $query.space.id });
-                  mixpanel.track('space:follow', { spaceId: $query.space.id, via: 'space' });
+                  analytics.track('space:follow', { spaceId: $query.space.id, via: 'space' });
                 }}
               >
                 <Icon icon={IconPlus} />
@@ -295,7 +295,7 @@
                   <MenuItem
                     on:click={async () => {
                       await muteSpace({ spaceId: $query.space.id });
-                      mixpanel.track('space:mute', { spaceId: $query.space.id, via: 'space' });
+                      analytics.track('space:mute', { spaceId: $query.space.id, via: 'space' });
                     }}
                   >
                     스페이스 뮤트
@@ -388,7 +388,7 @@
       variant="red-fill"
       on:click={async () => {
         await unmuteSpace({ spaceId: $query.space.id });
-        mixpanel.track('space:unmute', { spaceId: $query.space.id, via: 'space' });
+        analytics.track('space:unmute', { spaceId: $query.space.id, via: 'space' });
         unmuteSpaceOpen = false;
       }}
     >

@@ -26,7 +26,7 @@
   import IconMinus from '~icons/tabler/minus';
   import { page } from '$app/stores';
   import { fragment, graphql } from '$glitch';
-  import { mixpanel } from '$lib/analytics';
+  import { analytics } from '$lib/analytics';
   import { Button, Icon, Modal, ProgressBar } from '$lib/components';
   import { FormField, TextInput } from '$lib/components/forms';
   import { banks } from '$lib/const/revenue';
@@ -68,7 +68,7 @@
     `),
     schema: VerifySettlementIdentitySchema,
     onSuccess: () => {
-      mixpanel.track('user:verify-settlement-identity');
+      analytics.track('user:verify-settlement-identity');
       open = false;
     },
   });
@@ -115,7 +115,7 @@
   };
 
   const handleUserIdentityVerification = () => {
-    mixpanel.track('user:personal-identity-verification:start');
+    analytics.track('user:personal-identity-verification:start');
 
     // @ts-expect-error portone 관련 코드
     IMP.init('imp72534540');

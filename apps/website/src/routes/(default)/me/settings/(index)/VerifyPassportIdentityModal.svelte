@@ -1,6 +1,6 @@
 <script lang="ts">
   import { graphql } from '$glitch';
-  import { mixpanel } from '$lib/analytics';
+  import { analytics } from '$lib/analytics';
   import { Button, Modal } from '$lib/components';
   import { FormField, TextInput } from '$lib/components/forms';
   import { createMutationForm } from '$lib/form';
@@ -27,7 +27,7 @@
     `),
     schema: VerifyPassportIdentitySchema,
     onSuccess: () => {
-      mixpanel.track('user:verify-passport-identity');
+      analytics.track('user:verify-passport-identity');
       open = false;
     },
     onError: (resp) => {

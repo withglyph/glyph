@@ -1,7 +1,7 @@
 <script lang="ts">
   import IconPlus from '~icons/tabler/plus';
   import { fragment, graphql } from '$glitch';
-  import { mixpanel } from '$lib/analytics';
+  import { analytics } from '$lib/analytics';
   import { Button, Icon, Image, Modal } from '$lib/components';
   import { CreateCollectionModal } from '$lib/components/pages/collections';
   import { Select, SelectItem } from '$lib/components/select';
@@ -111,7 +111,7 @@
     on:click={async () => {
       if (selectedCollection) {
         await appendSpaceCollectionPosts({ postIds: selectedPostIds, spaceCollectionId: selectedCollection.id });
-        mixpanel.track('space:collection:post:append', {
+        analytics.track('space:collection:post:append', {
           spaceCollectionId: selectedCollection.id,
           postIds: selectedPostIds,
         });

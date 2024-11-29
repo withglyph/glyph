@@ -146,6 +146,9 @@ importers:
 
   apps/website:
     dependencies:
+      '@airtake/browser':
+        specifier: ^0.1.0-alpha.5
+        version: 0.1.0-alpha.5
       '@apple/app-store-server-library':
         specifier: ^1.4.0
         version: 1.4.0(encoding@0.1.13)
@@ -747,6 +750,9 @@ packages:
     peerDependenciesMeta:
       graphql:
         optional: true
+
+  '@airtake/browser@0.1.0-alpha.5':
+    resolution: {integrity: sha512-oCnyHcnqAsupf3LpHXfJUIMD7kLfMeMTU06dacaBHxDvDre9+Ynjs38RIUBpLZ/wDpXkqqlvPk/rJtyzhKH0aQ==}
 
   '@ampproject/remapping@2.3.0':
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
@@ -9386,6 +9392,8 @@ snapshots:
   '@0no-co/graphql.web@1.0.7(graphql@16.9.0)':
     optionalDependencies:
       graphql: 16.9.0
+
+  '@airtake/browser@0.1.0-alpha.5': {}
 
   '@ampproject/remapping@2.3.0':
     dependencies:

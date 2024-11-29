@@ -2,7 +2,7 @@
   import IconCamera from '~icons/tabler/camera';
   import { goto } from '$app/navigation';
   import { graphql } from '$glitch';
-  import { mixpanel } from '$lib/analytics';
+  import { analytics } from '$lib/analytics';
   import { Alert, Button, Helmet, Icon, Image } from '$lib/components';
   import { FormField, TextArea, TextInput } from '$lib/components/forms';
   import { ThumbnailPicker } from '$lib/components/media';
@@ -56,7 +56,7 @@
     schema: UpdateSpaceCollectionSchema,
     extra: () => ({ thumbnailId: thumbnail?.id }),
     onSuccess: ({ id }) => {
-      mixpanel.track('space:collection:update', { spaceId: $query.spaceCollection.space.id, collectionId: id });
+      analytics.track('space:collection:update', { spaceId: $query.spaceCollection.space.id, collectionId: id });
       toast.success('컬렉션 정보가 수정되었어요');
     },
   });
@@ -221,7 +221,7 @@
       variant="red-fill"
       on:click={async () => {
         await deleteSpaceCollection({ spaceCollectionId: $query.spaceCollection.id });
-        mixpanel.track('space:collection:delete', {
+        analytics.track('space:collection:delete', {
           spaceId: $query.spaceCollection.space.id,
           collectionId: $query.spaceCollection.id,
         });

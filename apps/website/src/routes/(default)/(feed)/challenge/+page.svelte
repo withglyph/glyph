@@ -3,7 +3,7 @@
   import { goto } from '$app/navigation';
   import ChallengeTitle from '$assets/icons/challenge.svg?component';
   import { graphql } from '$glitch';
-  import { mixpanel } from '$lib/analytics';
+  import { analytics } from '$lib/analytics';
   import { Button, Helmet, Icon, Post } from '$lib/components';
   import { css } from '$styled-system/css';
   import { center, flex } from '$styled-system/patterns';
@@ -133,7 +133,7 @@
           }
 
           const { permalink } = await createPost({ spaceId: undefined });
-          mixpanel.track('post:create', { via: 'challenge-feed' });
+          analytics.track('post:create', { via: 'challenge-feed' });
           await goto(`/editor/${permalink}`);
         }}
       >

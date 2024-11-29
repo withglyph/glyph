@@ -2,7 +2,7 @@
   import IconChevronLeft from '~icons/tabler/chevron-left';
   import IconSettings from '~icons/tabler/settings';
   import { graphql } from '$glitch';
-  import { mixpanel } from '$lib/analytics';
+  import { analytics } from '$lib/analytics';
   import { Button, Helmet, Icon } from '$lib/components';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
@@ -42,7 +42,7 @@
   $: unreadNotifications = $query.me.notifications.filter((notification) => notification.state === 'UNREAD');
 
   const readAllNotifications = () => {
-    mixpanel.track('user:notification-state:read', { via: 'notifications' });
+    analytics.track('user:notification-state:read', { via: 'notifications' });
     return markAllNotificationsAsRead();
   };
 </script>

@@ -1,7 +1,7 @@
 <script lang="ts">
   import IconHelpLine from '~icons/glyph/help-line';
   import { graphql } from '$glitch';
-  import { mixpanel } from '$lib/analytics';
+  import { analytics } from '$lib/analytics';
   import { Button, Icon, Modal, SegmentButtonGroup, ToggleButton, Tooltip } from '$lib/components';
   import { toast } from '$lib/notification';
   import { css } from '$styled-system/css';
@@ -171,7 +171,7 @@
     variant="gradation-fill"
     on:click={() => {
       Promise.all(selectedPostIds.map((id) => updatePostTags({ postId: id, category: selectedCategory, pairs, tags })));
-      mixpanel.track('post:tags:update', { postIds: selectedPostIds, category: selectedCategory, pairs, tags });
+      analytics.track('post:tags:update', { postIds: selectedPostIds, category: selectedCategory, pairs, tags });
       toast.success('태그 변경이 완료되었어요');
       open = false;
     }}

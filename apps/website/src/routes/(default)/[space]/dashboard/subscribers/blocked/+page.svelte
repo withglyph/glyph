@@ -2,7 +2,7 @@
   import dayjs from 'dayjs';
   import * as R from 'radash';
   import { graphql } from '$glitch';
-  import { mixpanel } from '$lib/analytics';
+  import { analytics } from '$lib/analytics';
   import { Button, Helmet } from '$lib/components';
   import { Checkbox } from '$lib/components/forms';
   import { Table, TableBody, TableData, TableHead, TableHeader, TableRow } from '$lib/components/table';
@@ -84,7 +84,7 @@
                   unblockMasquerade({ spaceId: $query.space.id, masqueradeId }),
                 ),
               );
-              mixpanel.track('space:masquerade:unblock', {
+              analytics.track('space:masquerade:unblock', {
                 masqueradeIds: selectedMasquerades,
                 spaceId: $query.space.id,
               });
@@ -126,7 +126,7 @@
             variant="red-outline"
             on:click={async () => {
               await unblockMasquerade({ spaceId: $query.space.id, masqueradeId: masquerade.id });
-              mixpanel.track('space:masquerade:unblock', { masqueradeId: masquerade.id, spaceId: $query.space.id });
+              analytics.track('space:masquerade:unblock', { masqueradeId: masquerade.id, spaceId: $query.space.id });
             }}
           >
             차단해제

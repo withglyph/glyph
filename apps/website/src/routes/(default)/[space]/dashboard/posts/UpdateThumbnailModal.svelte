@@ -1,6 +1,6 @@
 <script lang="ts">
   import { graphql } from '$glitch';
-  import { mixpanel } from '$lib/analytics';
+  import { analytics } from '$lib/analytics';
   import { Button, Image, Modal } from '$lib/components';
   import { ThumbnailPicker } from '$lib/components/media';
   import { toast } from '$lib/notification';
@@ -114,7 +114,7 @@
     on:click={() => {
       if (thumbnail) {
         Promise.all(selectedPostIds.map((id) => replacePostThumbnail({ postId: id, thumbnailId: thumbnail?.id })));
-        mixpanel.track('post:replace:thumbnail', { postIds: selectedPostIds });
+        analytics.track('post:replace:thumbnail', { postIds: selectedPostIds });
         toast.success('썸네일 변경이 완료되었어요');
       }
 

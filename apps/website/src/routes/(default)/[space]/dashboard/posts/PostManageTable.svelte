@@ -8,7 +8,7 @@
   import IconMoodSmile from '~icons/tabler/mood-smile';
   import IconUser from '~icons/tabler/user';
   import { fragment, graphql } from '$glitch';
-  import { mixpanel } from '$lib/analytics';
+  import { analytics } from '$lib/analytics';
   import { Alert, Button, Chip, Icon, Image, Tag, Tooltip } from '$lib/components';
   import { Checkbox } from '$lib/components/forms';
   import { Menu, MenuItem } from '$lib/components/menu';
@@ -486,10 +486,10 @@
       on:click={async () => {
         if (deletePostId) {
           await deletePost({ postId: deletePostId });
-          mixpanel.track('post:delete', { postId: deletePostId, via: 'space-dashboard' });
+          analytics.track('post:delete', { postId: deletePostId, via: 'space-dashboard' });
         } else {
           await Promise.all(selectedPosts.map((postId) => deletePost({ postId })));
-          mixpanel.track('post:delete', { postIds: selectedPosts, via: 'space-dashboard' });
+          analytics.track('post:delete', { postIds: selectedPosts, via: 'space-dashboard' });
           selectedPosts = [];
         }
         deletePostId = null;

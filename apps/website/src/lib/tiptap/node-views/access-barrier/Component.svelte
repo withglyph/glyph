@@ -12,7 +12,7 @@
   import { browser } from '$app/environment';
   import { afterNavigate } from '$app/navigation';
   import { graphql } from '$glitch';
-  import { mixpanel } from '$lib/analytics';
+  import { analytics } from '$lib/analytics';
   import { Button, Icon, LoginRequireAlert, Modal, Tooltip } from '$lib/components';
   import { isWebView, onFlutterMessage, postFlutterMessage } from '$lib/flutter';
   import { createFloatingActions, portal } from '$lib/svelte/actions';
@@ -158,7 +158,7 @@
         revisionId,
       });
 
-      mixpanel.track('post:purchase', {
+      analytics.track('post:purchase', {
         postId: $query?.post.id,
         price: node.attrs.price,
       });
@@ -521,7 +521,7 @@
                   revisionId,
                 });
 
-                mixpanel.track('post:purchase', {
+                analytics.track('post:purchase', {
                   postId: $query?.post.id,
                   price: node.attrs.price,
                 });

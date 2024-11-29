@@ -2,7 +2,7 @@
   import { uid } from 'radash';
   import IconHelpLine from '~icons/glyph/help-line';
   import { fragment, graphql } from '$glitch';
-  import { mixpanel } from '$lib/analytics';
+  import { analytics } from '$lib/analytics';
   import { Button, Icon, Modal, SegmentButtonGroup, ToggleButton, Tooltip } from '$lib/components';
   import { createMutationForm } from '$lib/form';
   import { UpdatePostTagsInputSchema } from '$lib/validations/post';
@@ -58,7 +58,7 @@
     `),
     schema: UpdatePostTagsInputSchema,
     onSuccess: async (resp) => {
-      mixpanel.track('post:tags:update', { postId: resp.id });
+      analytics.track('post:tags:update', { postId: resp.id });
       open = false;
     },
   });

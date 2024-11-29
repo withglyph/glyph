@@ -7,7 +7,7 @@
   import IconEPassport from '~icons/tabler/e-passport';
   import { page } from '$app/stores';
   import { graphql } from '$glitch';
-  import { mixpanel } from '$lib/analytics';
+  import { analytics } from '$lib/analytics';
   import { Alert, Avatar, Button, Chip, Helmet, Icon, Link, Modal } from '$lib/components';
   import { Switch } from '$lib/components/forms';
   import { Table, TableBody, TableData, TableHead, TableHeader, TableRow } from '$lib/components/table';
@@ -75,7 +75,7 @@
   `);
 
   const handleUserIdentityVerification = () => {
-    mixpanel.track('user:personal-identity-verification:start');
+    analytics.track('user:personal-identity-verification:start');
 
     // @ts-expect-error portone 관련 코드
     IMP.init('imp72534540');
@@ -337,7 +337,7 @@
     on:change={async () => {
       const consent = !$query.me.marketingConsent;
       await updateUserMarketingConsent({ consent });
-      mixpanel.track('user:marketing_consent:update', { consent });
+      analytics.track('user:marketing_consent:update', { consent });
       marketingConsentOpen = true;
     }}
   />

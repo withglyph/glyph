@@ -3,7 +3,7 @@
   import IconLock from '~icons/glyph/lock';
   import IconReplyBar from '~icons/glyph/reply-bar';
   import { fragment, graphql } from '$glitch';
-  import { mixpanel } from '$lib/analytics';
+  import { analytics } from '$lib/analytics';
   import { Button, Icon, Tooltip } from '$lib/components';
   import { css } from '$styled-system/css';
   import { center, flex } from '$styled-system/patterns';
@@ -83,7 +83,7 @@
           commentId,
           content,
         });
-        mixpanel.track('comment:update', { postId: $query.post.id });
+        analytics.track('comment:update', { postId: $query.post.id });
         editing = false;
 
         return;
@@ -96,7 +96,7 @@
           parentId,
           visibility,
         });
-        mixpanel.track('comment:create', { postId: $query.post.id });
+        analytics.track('comment:create', { postId: $query.post.id });
         // editing = false;
         content = '';
 
@@ -109,7 +109,7 @@
           postId: $query.post.id,
           visibility,
         });
-        mixpanel.track('comment:create', { postId: $query.post.id });
+        analytics.track('comment:create', { postId: $query.post.id });
         content = '';
       }
     }}

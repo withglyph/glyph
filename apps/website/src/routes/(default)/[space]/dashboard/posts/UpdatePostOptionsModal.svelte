@@ -1,6 +1,6 @@
 <script lang="ts">
   import { graphql } from '$glitch';
-  import { mixpanel } from '$lib/analytics';
+  import { analytics } from '$lib/analytics';
   import { Button, Modal } from '$lib/components';
   import { Switch } from '$lib/components/forms';
   import { toast } from '$lib/notification';
@@ -97,7 +97,7 @@
           updatePostOptions({ postId: id, receiveFeedback, discloseStats, receivePatronage, protectContent }),
         ),
       );
-      mixpanel.track('post:update:option', {
+      analytics.track('post:update:option', {
         postIds: selectedPostIds,
         receiveFeedback,
         discloseStats,

@@ -8,5 +8,3 @@ export const setupMixpanel = () => {
     persistence: 'localStorage',
   });
 };
-
-export { default as mixpanel } from 'mixpanel-browser';

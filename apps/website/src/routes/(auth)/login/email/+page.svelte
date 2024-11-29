@@ -1,7 +1,7 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
   import { graphql } from '$glitch';
-  import { mixpanel } from '$lib/analytics';
+  import { analytics } from '$lib/analytics';
   import { Button, Helmet } from '$lib/components';
   import { FormField, TextInput } from '$lib/components/forms';
   import { createMutationForm } from '$lib/form';
@@ -20,7 +20,7 @@
     `),
     schema: LoginUserSchema,
     onSuccess: async (resp) => {
-      mixpanel.track('user:login:start', { method: 'email' });
+      analytics.track('user:login:start', { method: 'email' });
       await goto(`/login/next?email=${resp.email}`);
     },
   });

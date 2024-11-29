@@ -9,7 +9,7 @@
   import IconHeartFilled from '~icons/tabler/heart-filled';
   import IconPinnedFilled from '~icons/tabler/pinned-filled';
   import { fragment, graphql } from '$glitch';
-  import { mixpanel } from '$lib/analytics';
+  import { analytics } from '$lib/analytics';
   import { Alert, Avatar, Button, Icon } from '$lib/components';
   import { Menu, MenuItem } from '$lib/components/menu';
   import { css } from '$styled-system/css';
@@ -279,10 +279,10 @@
                 on:click={async () => {
                   if ($postComment.pinned) {
                     await unpinComment({ commentId: $postComment.id });
-                    mixpanel.track('comment:unpin', { commentId: $postComment.id });
+                    analytics.track('comment:unpin', { commentId: $postComment.id });
                   } else {
                     await pinComment({ commentId: $postComment.id });
-                    mixpanel.track('comment:pin', { commentId: $postComment.id });
+                    analytics.track('comment:pin', { commentId: $postComment.id });
                   }
                 }}
               >
@@ -359,10 +359,10 @@
                 on:click={async () => {
                   if ($postComment.liked) {
                     await unlikeComment({ commentId: $postComment.id });
-                    mixpanel.track('comment:unlike', { postId: $query.post.id, commentId: $postComment.id });
+                    analytics.track('comment:unlike', { postId: $query.post.id, commentId: $postComment.id });
                   } else {
                     await likeComment({ commentId: $postComment.id });
-                    mixpanel.track('comment:like', { postId: $query.post.id, commentId: $postComment.id });
+                    analytics.track('comment:like', { postId: $query.post.id, commentId: $postComment.id });
                   }
                 }}
               >
@@ -504,7 +504,7 @@
           if (!$postComment.masquerade || !$query.post.space) return;
 
           await blockMasquerade({ masqueradeId: $postComment.masquerade.id, spaceId: $query.post.space.id });
-          mixpanel.track('space:masquerade:block', {
+          analytics.track('space:masquerade:block', {
             masqueradeId: $postComment.masquerade?.id,
             spaceId: $query.post.space.id,
           });
@@ -528,7 +528,7 @@
 
           if (!$postComment.masquerade || !$query.post.space) return;
 
-          mixpanel.track('comment:delete', {
+          analytics.track('comment:delete', {
             commentId: $postComment.id,
           });
 

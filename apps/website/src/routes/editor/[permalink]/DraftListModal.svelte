@@ -7,7 +7,7 @@
   import IconTrash from '~icons/tabler/trash';
   import { goto } from '$app/navigation';
   import { fragment, graphql } from '$glitch';
-  import { mixpanel } from '$lib/analytics';
+  import { analytics } from '$lib/analytics';
   import { Alert, Button, Chip, Icon, Modal } from '$lib/components';
   import { Checkbox } from '$lib/components/forms';
   import { comma } from '$lib/utils';
@@ -270,7 +270,7 @@
           }
 
           await Promise.all(selectedPosts.map((postId) => deletePost({ postId })));
-          mixpanel.track('post:delete', { postIds: selectedPosts, via: 'editor' });
+          analytics.track('post:delete', { postIds: selectedPosts, via: 'editor' });
 
           deleteSelectedPosts = false;
           selectedPosts = [];
@@ -280,7 +280,7 @@
           }
 
           await deletePost({ postId: deletePostId });
-          mixpanel.track('post:delete', { postId: deletePostId, via: 'editor' });
+          analytics.track('post:delete', { postId: deletePostId, via: 'editor' });
 
           if (deletePostId === $post.id) {
             await goto('/');

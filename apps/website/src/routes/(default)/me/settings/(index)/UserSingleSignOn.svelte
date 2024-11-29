@@ -4,7 +4,7 @@
   import Naver from '$assets/icons/naver.svg?component';
   import Twitter from '$assets/icons/twitter.svg?component';
   import { fragment, graphql } from '$glitch';
-  import { mixpanel } from '$lib/analytics';
+  import { analytics } from '$lib/analytics';
   import { Alert, Button } from '$lib/components';
   import { css } from '$styled-system/css';
   import { center, flex } from '$styled-system/patterns';
@@ -105,7 +105,7 @@
           provider,
         });
 
-        mixpanel.track('user:single-sign-on:link:start', { provider });
+        analytics.track('user:single-sign-on:link:start', { provider });
         location.href = url;
       }}
     >
@@ -128,7 +128,7 @@
       size="lg"
       on:click={async () => {
         await unlinkUserSingleSignOn({ provider });
-        mixpanel.track('user:single-sign-on:unlink', { provider });
+        analytics.track('user:single-sign-on:unlink', { provider });
         open = false;
       }}
     >

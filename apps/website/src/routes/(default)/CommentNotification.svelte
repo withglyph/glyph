@@ -4,7 +4,7 @@
   import IconMessageCircle from '~icons/tabler/message-circle';
   import { goto } from '$app/navigation';
   import { fragment, graphql } from '$glitch';
-  import { mixpanel } from '$lib/analytics';
+  import { analytics } from '$lib/analytics';
   import { Icon } from '$lib/components';
   import { css } from '$styled-system/css';
   import type { CommentNotification_commentNotification } from '$glitch';
@@ -50,7 +50,7 @@
   const redirect = async (notification: typeof $commentNotification) => {
     if (notification.state === 'UNREAD') {
       await markNotificationAsRead({ notificationId: notification.id });
-      mixpanel.track('user:notification-state:read');
+      analytics.track('user:notification-state:read');
     }
 
     const resp = await ky.get(`/api/notification/${notification.id}`);

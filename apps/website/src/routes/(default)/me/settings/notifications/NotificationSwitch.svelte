@@ -1,7 +1,7 @@
 <script lang="ts">
   import * as R from 'radash';
   import { fragment, graphql } from '$glitch';
-  import { mixpanel } from '$lib/analytics';
+  import { analytics } from '$lib/analytics';
   import { Switch } from '$lib/components/forms';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
@@ -70,7 +70,7 @@
       const opted = e.currentTarget.checked;
 
       await updateNotificationPreference({ category, method, opted });
-      mixpanel.track('user:notification-preference:update', { category, method, opted });
+      analytics.track('user:notification-preference:update', { category, method, opted });
     }}
   />
   <Switch
@@ -82,7 +82,7 @@
       const opted = e.currentTarget.checked;
 
       await updateNotificationPreference({ category, method, opted });
-      mixpanel.track('user:notification-preference:update', { category, method, opted });
+      analytics.track('user:notification-preference:update', { category, method, opted });
     }}
   />
 </div>

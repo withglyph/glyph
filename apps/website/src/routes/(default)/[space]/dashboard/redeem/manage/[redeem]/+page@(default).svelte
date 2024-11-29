@@ -6,7 +6,7 @@
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
   import { graphql } from '$glitch';
-  import { mixpanel } from '$lib/analytics';
+  import { analytics } from '$lib/analytics';
   import { Alert, Button, Helmet, Icon, Image, Pagination } from '$lib/components';
   import { comma } from '$lib/utils';
   import { css } from '$styled-system/css';
@@ -286,7 +286,7 @@
       variant="red-fill"
       on:click={async () => {
         await revokeRedeemCodeGroup({ id: $query.redeemCodeGroup.id });
-        mixpanel.track('redeem-code-group:revoke', { id: $query.redeemCodeGroup.id });
+        analytics.track('redeem-code-group:revoke', { id: $query.redeemCodeGroup.id });
         await goto(`/${$query.redeemCodeGroup.post.space.slug}/dashboard/redeem/manage`);
         revokeRedeemCodeGroupOpen = false;
       }}

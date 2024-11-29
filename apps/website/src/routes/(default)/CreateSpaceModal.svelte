@@ -5,7 +5,7 @@
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
   import { fragment, graphql } from '$glitch';
-  import { mixpanel } from '$lib/analytics';
+  import { analytics } from '$lib/analytics';
   import { Button, Icon, Image, Modal, Tooltip } from '$lib/components';
   import { FormField, TextInput } from '$lib/components/forms';
   import { ThumbnailPicker } from '$lib/components/media';
@@ -65,7 +65,7 @@
     onSuccess: async ({ id, slug }) => {
       dispatch('create', { id });
 
-      mixpanel.track('space:create', { useSpaceProfile: true, via });
+      analytics.track('space:create', { useSpaceProfile: true, via });
       open = false;
 
       if (via === 'user-menu') {

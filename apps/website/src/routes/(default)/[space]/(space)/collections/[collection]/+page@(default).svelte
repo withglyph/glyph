@@ -5,7 +5,7 @@
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
   import { graphql } from '$glitch';
-  import { mixpanel } from '$lib/analytics';
+  import { analytics } from '$lib/analytics';
   import { Button, Helmet, Icon, Image, Post, ShareLinkPopover } from '$lib/components';
   import { comma } from '$lib/utils';
   import { css } from '$styled-system/css';
@@ -251,7 +251,7 @@
                     spaceId: $query.spaceCollection.space.id,
                     collectionId: $query.spaceCollection.id,
                   });
-                  mixpanel.track('post:create', {
+                  analytics.track('post:create', {
                     via: 'space-collection-home',
                     spaceId: $query.spaceCollection.space.id,
                     collectionId: $query.spaceCollection.id,

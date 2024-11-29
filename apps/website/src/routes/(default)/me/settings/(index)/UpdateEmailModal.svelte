@@ -1,6 +1,6 @@
 <script lang="ts">
   import { fragment, graphql } from '$glitch';
-  import { mixpanel } from '$lib/analytics';
+  import { analytics } from '$lib/analytics';
   import { Alert, Button, Modal } from '$lib/components';
   import { FormField, TextInput } from '$lib/components/forms';
   import { createMutationForm } from '$lib/form';
@@ -33,7 +33,7 @@
     `),
     schema: UpdateUserEmailSchema,
     onSuccess: () => {
-      mixpanel.track('user:email:update:start');
+      analytics.track('user:email:update:start');
       open = false;
       successOpen = true;
     },

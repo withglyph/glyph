@@ -3,7 +3,7 @@
   import IconChevronLeft from '~icons/tabler/chevron-left';
   import Paypal from '$assets/icons/paypal.svg?component';
   import { graphql } from '$glitch';
-  import { mixpanel } from '$lib/analytics';
+  import { analytics } from '$lib/analytics';
   import { Button, Helmet, Icon, Link, Modal, ToggleButton } from '$lib/components';
   import { Checkbox } from '$lib/components/forms';
   import { createMutationForm } from '$lib/form';
@@ -36,7 +36,7 @@
     `),
     schema: PurchasePointSchema,
     onSuccess: (resp) => {
-      mixpanel.track('point:purchase:start', {
+      analytics.track('point:purchase:start', {
         paymentMethod: $data.paymentMethod,
         pointAmount: $data.pointAmount,
       });

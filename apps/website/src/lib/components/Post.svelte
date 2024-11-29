@@ -6,7 +6,7 @@
   import IconMessageCircle from '~icons/tabler/message-circle';
   import IconMoodSmile from '~icons/tabler/mood-smile';
   import { fragment, graphql } from '$glitch';
-  import { mixpanel } from '$lib/analytics';
+  import { analytics } from '$lib/analytics';
   import { humanizeNumber } from '$lib/utils';
   import { css } from '$styled-system/css';
   import { flex } from '$styled-system/patterns';
@@ -328,7 +328,7 @@
           type="button"
           on:click={async () => {
             await unbookmarkPost({ bookmarkGroupId: $post.bookmarkGroups[0].id, postId: $post.id });
-            mixpanel.track('post:unbookmark', { postId: $post.id, via: 'feed' });
+            analytics.track('post:unbookmark', { postId: $post.id, via: 'feed' });
           }}
         >
           <Icon style={css.raw({ color: 'gray.900' })} icon={IconBookmarkFilled} size={20} />
@@ -351,7 +351,7 @@
             }
 
             await bookmarkPost({ postId: $post.id });
-            mixpanel.track('post:bookmark', { postId: $post.id, via: 'feed' });
+            analytics.track('post:bookmark', { postId: $post.id, via: 'feed' });
           }}
         >
           <Icon style={css.raw({ color: 'gray.400' })} icon={IconBookmark} size={20} />

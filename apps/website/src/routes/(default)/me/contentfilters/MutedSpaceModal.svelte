@@ -1,7 +1,7 @@
 <script lang="ts">
   import IconTrash from '~icons/tabler/trash';
   import { fragment, graphql } from '$glitch';
-  import { mixpanel } from '$lib/analytics';
+  import { analytics } from '$lib/analytics';
   import { Icon, Image, Modal } from '$lib/components';
   import { isWebView, postFlutterMessage } from '$lib/flutter';
   import { css } from '$styled-system/css';
@@ -124,7 +124,7 @@
           type="button"
           on:click={async () => {
             await unmuteSpace({ spaceId: space.id });
-            mixpanel.track('space:unmute', { spaceId: space.id, via: 'content-filters' });
+            analytics.track('space:unmute', { spaceId: space.id, via: 'content-filters' });
           }}
         >
           <Icon style={css.raw({ color: 'gray.500' })} icon={IconTrash} size={24} />

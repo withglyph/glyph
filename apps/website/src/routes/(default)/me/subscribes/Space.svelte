@@ -1,6 +1,6 @@
 <script lang="ts">
   import { fragment, graphql } from '$glitch';
-  import { mixpanel } from '$lib/analytics';
+  import { analytics } from '$lib/analytics';
   import { Avatar, Button, Image } from '$lib/components';
   import { isWebView, postFlutterMessage } from '$lib/flutter';
   import { css } from '$styled-system/css';
@@ -106,7 +106,7 @@
     variant="gray-sub-fill"
     on:click={async () => {
       await unfollowSpace({ spaceId: $space.id });
-      mixpanel.track('space:unfollow', { spaceId: $space.id });
+      analytics.track('space:unfollow', { spaceId: $space.id });
     }}
   >
     구독중

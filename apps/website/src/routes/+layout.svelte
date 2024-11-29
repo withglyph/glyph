@@ -5,7 +5,7 @@
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
   import { graphql } from '$glitch';
-  import { mixpanel } from '$lib/analytics';
+  import { airtake, mixpanel } from '$lib/analytics';
   import { isWebView, postFlutterMessage } from '$lib/flutter';
   import { toast, ToastProvider } from '$lib/notification';
   import { flex } from '$styled-system/patterns';
@@ -40,6 +40,12 @@
   $: if (browser && $query.me) {
     mixpanel.identify($query.me.id);
     mixpanel.people.set({
+      $email: $query.me.email,
+      $name: $query.me.profile.name,
+      $avatar: $query.me.profile.avatar.url,
+    });
+
+    airtake.identify($query.me.id, {
       $email: $query.me.email,
       $name: $query.me.profile.name,
       $avatar: $query.me.profile.avatar.url,

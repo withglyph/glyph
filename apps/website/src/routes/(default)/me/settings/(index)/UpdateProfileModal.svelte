@@ -1,7 +1,7 @@
 <script lang="ts">
   import IconCamera from '~icons/tabler/camera';
   import { fragment, graphql } from '$glitch';
-  import { mixpanel } from '$lib/analytics';
+  import { analytics } from '$lib/analytics';
   import { Button, Icon, Image, Modal } from '$lib/components';
   import { FormField, TextInput } from '$lib/components/forms';
   import { ThumbnailPicker } from '$lib/components/media';
@@ -50,7 +50,7 @@
     initialValues: { name: '' },
     extra: () => ({ avatarId: avatar.id }),
     onSuccess: () => {
-      mixpanel.track('user:profile:update');
+      analytics.track('user:profile:update');
       open = false;
     },
   });

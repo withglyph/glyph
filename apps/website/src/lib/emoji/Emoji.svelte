@@ -1,7 +1,7 @@
 <script lang="ts">
   import IconX from '~icons/tabler/x';
   import { graphql } from '$glitch';
-  import { mixpanel } from '$lib/analytics';
+  import { analytics } from '$lib/analytics';
   import { Icon } from '$lib/components';
   import { cx } from '$styled-system/css';
   import { center } from '$styled-system/patterns';
@@ -43,7 +43,7 @@
         postId,
         emoji,
       });
-      mixpanel.track('post:reaction:delete', { postId, emoji });
+      analytics.track('post:reaction:delete', { postId, emoji });
     }}
   >
     <em-emoji

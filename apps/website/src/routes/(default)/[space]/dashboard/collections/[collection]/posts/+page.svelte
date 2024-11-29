@@ -5,7 +5,7 @@
   import IconMinus from '~icons/tabler/minus';
   import IconPlus from '~icons/tabler/plus';
   import { graphql } from '$glitch';
-  import { mixpanel } from '$lib/analytics';
+  import { analytics } from '$lib/analytics';
   import { Button, Helmet, Icon, Image } from '$lib/components';
   import { isWebView } from '$lib/flutter';
   import { toast } from '$lib/notification';
@@ -247,7 +247,7 @@
         spaceCollectionId: $query.spaceCollection.id,
         postIds: registeredPosts.map((post) => post.id),
       });
-      mixpanel.track('space:collection:update', {
+      analytics.track('space:collection:update', {
         spaceId: $query.spaceCollection.space.id,
         collectionId: $query.spaceCollection.id,
         postIds: [registeredPosts.map((post) => post.id)],

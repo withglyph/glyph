@@ -1,7 +1,7 @@
 <script lang="ts">
   import IconHelpLine from '~icons/glyph/help-line';
   import { fragment, graphql } from '$glitch';
-  import { mixpanel } from '$lib/analytics';
+  import { analytics } from '$lib/analytics';
   import { Button, Icon, Modal, Tooltip } from '$lib/components';
   import { banks } from '$lib/const/revenue';
   import { comma } from '$lib/utils';
@@ -135,7 +135,7 @@
     variant="gradation-fill"
     on:click={async () => {
       await instantSettleRevenue();
-      mixpanel.track('user:instant-settle-revenue');
+      analytics.track('user:instant-settle-revenue');
       open = false;
     }}
   >

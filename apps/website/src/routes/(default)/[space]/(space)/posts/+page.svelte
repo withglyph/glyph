@@ -2,7 +2,7 @@
   import IconPencil from '~icons/tabler/pencil';
   import { goto } from '$app/navigation';
   import { graphql } from '$glitch';
-  import { mixpanel } from '$lib/analytics';
+  import { analytics } from '$lib/analytics';
   import { Button, Helmet, Icon, Post } from '$lib/components';
   import { css } from '$styled-system/css';
   import { center, flex } from '$styled-system/patterns';
@@ -81,7 +81,7 @@
           variant="brand-fill"
           on:click={async () => {
             const { permalink } = await createPost({ spaceId: $query.space.id });
-            mixpanel.track('post:create', { via: 'space-home', spaceId: $query.space.id });
+            analytics.track('post:create', { via: 'space-home', spaceId: $query.space.id });
             await goto(`/editor/${permalink}`);
           }}
         >

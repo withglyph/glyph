@@ -6,7 +6,7 @@
   import IconPlus from '~icons/tabler/plus';
   import { goto } from '$app/navigation';
   import { graphql } from '$glitch';
-  import { mixpanel } from '$lib/analytics';
+  import { analytics } from '$lib/analytics';
   import { Button, Helmet, Icon, Image } from '$lib/components';
   import { TextArea } from '$lib/components/forms';
   import { comma } from '$lib/utils';
@@ -332,7 +332,7 @@
               count: amount,
               description,
             });
-            mixpanel.track('redeem-code-group:create', { id: redeemCodeGroup.id });
+            analytics.track('redeem-code-group:create', { id: redeemCodeGroup.id });
             await goto(`/${$query.post.space.slug}/dashboard/redeem/complete?id=${redeemCodeGroup.id}`);
           }}
         >

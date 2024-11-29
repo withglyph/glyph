@@ -1,7 +1,7 @@
 <script lang="ts">
   import { page } from '$app/stores';
   import { graphql } from '$glitch';
-  import { mixpanel } from '$lib/analytics';
+  import { analytics } from '$lib/analytics';
   import { Button, Helmet, Link } from '$lib/components';
   import { Checkbox, FormField, TextInput } from '$lib/components/forms';
   import { createMutationForm } from '$lib/form';
@@ -31,7 +31,7 @@
     schema: CreateUserSchema,
     initialValues: { name: '' },
     onSuccess: () => {
-      mixpanel.track('user:signup:success');
+      analytics.track('user:signup:success');
       location.href = '/';
     },
   });
