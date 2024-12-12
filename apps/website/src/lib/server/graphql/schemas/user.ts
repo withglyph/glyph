@@ -1,6 +1,6 @@
 import { webcrypto } from 'node:crypto';
 import dayjs from 'dayjs';
-import { and, asc, count, desc, eq, gt, gte, lt, or } from 'drizzle-orm';
+import { and, asc, count, desc, eq, gt, gte, lt, ne, or } from 'drizzle-orm';
 import { nanoid } from 'nanoid';
 import qs from 'query-string';
 import * as R from 'radash';
@@ -1482,14 +1482,16 @@ builder.mutationFields((t) => ({
         .select({ id: UserPersonalIdentities.id, userId: UserPersonalIdentities.userId })
         .from(UserPersonalIdentities)
         .innerJoin(Users, eq(Users.id, UserPersonalIdentities.userId))
-        .where(and(eq(UserPersonalIdentities.ci, resp.response.unique_key), eq(Users.state, 'ACTIVE')));
+        .where(
+          and(
+            eq(UserPersonalIdentities.ci, resp.response.unique_key),
+            eq(Users.state, 'ACTIVE'),
+            ne(UserPersonalIdentities.userId, context.session.userId),
+          ),
+        );
 
       if (identities.length > 0) {
-        if (identities[0].userId === context.session.userId) {
-          return identities[0].id;
-        } else {
-          throw new IntentionalError('이미 인증된 다른 계정이 있어요');
-        }
+        throw new IntentionalError('이미 인증된 다른 계정이 있어요');
       }
 
       const [identity] = await database
@@ -1608,15 +1610,6 @@ builder.mutationFields((t) => ({
     type: User,
     args: { input: t.arg({ type: VerifyPassportIdentityInput }) },
     resolve: async (_, { input }, context) => {
-      const personalIdentities = await database
-        .select({ id: UserPersonalIdentities.id })
-        .from(UserPersonalIdentities)
-        .where(eq(UserPersonalIdentities.userId, context.session.userId));
-
-      if (personalIdentities.length > 0) {
-        throw new IntentionalError('이미 본인인증된 계정이에요');
-      }
-
       const passportVerification = await coocon.verifyPassportNumber({
         name: input.name,
         birthday: input.birthday,

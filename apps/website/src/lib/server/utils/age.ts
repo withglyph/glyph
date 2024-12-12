@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { and, gt, inArray } from 'drizzle-orm';
+import { and, desc, gt, inArray } from 'drizzle-orm';
 import * as R from 'radash';
 import * as E from '$lib/enums';
 import { database, UserPersonalIdentities } from '../database';
@@ -65,9 +65,10 @@ export const getPersonalIdentity = async (userId: string | undefined, context: P
     nullable: true,
     load: async (userIds: string[]) => {
       return database
-        .select()
+        .selectDistinctOn([UserPersonalIdentities.userId])
         .from(UserPersonalIdentities)
-        .where(and(inArray(UserPersonalIdentities.userId, userIds), gt(UserPersonalIdentities.expiresAt, dayjs())));
+        .where(and(inArray(UserPersonalIdentities.userId, userIds), gt(UserPersonalIdentities.expiresAt, dayjs())))
+        .orderBy(UserPersonalIdentities.userId, desc(UserPersonalIdentities.createdAt));
     },
 
     key: (identity) => identity?.userId,

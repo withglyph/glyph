@@ -54,10 +54,8 @@ identification.get('/identification/callback', async (_, context) => {
         headers: { Location: '/find-account/complete' },
       });
     } else if (context.session) {
-      if (identity) {
-        await (identity.userId === context.session.userId
-          ? context.flash('error', '이미 본인인증이 완료되었어요')
-          : context.flash('error', '이미 인증된 다른 계정이 있어요'));
+      if (identity && identity.userId !== context.session.userId) {
+        context.flash('error', '이미 인증된 다른 계정이 있어요');
         return status(303, { headers: { Location: '/me/settings' } });
       }
 
