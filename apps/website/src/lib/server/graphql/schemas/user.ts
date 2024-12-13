@@ -70,6 +70,7 @@ import {
   getAllowedAgeRating,
   getUserPoint,
   getUserRevenue,
+  useFirstRow,
 } from '$lib/server/utils';
 import { generateRandomName, getMonthlyWithdrawalDayjs } from '$lib/utils';
 import {
@@ -1488,7 +1489,7 @@ builder.mutationFields((t) => ({
         if (identities[0].userId !== context.session.userId) {
           throw new IntentionalError('이미 인증된 다른 계정이 있어요');
         } else if (identities[0].ci !== resp.response.unique_key) {
-          throw new IntentionalError('이전 인증과 정보가 달라요 (주민등록번호 변경 시에는 문의해주세요)');
+          throw new IntentionalError('이전 인증과 정보가 달라요 (정보가 변경되었을 시에는 문의해주세요)');
         }
       }
 
@@ -1630,14 +1631,40 @@ builder.mutationFields((t) => ({
         throw new IntentionalError('여권 인증에 실패했어요');
       }
 
-      await database.insert(UserPersonalIdentities).values({
-        userId: context.session.userId,
-        kind: 'PASSPORT',
-        name: input.name,
-        birthday: dayjs.kst(input.birthday, 'YYYYMMDD'),
-        ci: input.passportNumber,
-        expiresAt: dayjs().add(1, 'year'),
-      });
+      const identity = await database
+        .select({
+          id: UserPersonalIdentities.id,
+          name: UserPersonalIdentities.name,
+          birthday: UserPersonalIdentities.birthday,
+        })
+        .from(UserPersonalIdentities)
+        .where(eq(UserPersonalIdentities.userId, context.session.userId))
+        .then(useFirstRow);
+
+      if (identity && (identity.name !== input.name || !identity.birthday.isSame(dayjs.kst(input.birthday), 'day'))) {
+        throw new IntentionalError('이전 인증과 정보가 달라요 (정보가 변경되었을 시에는 문의해주세요)');
+      }
+
+      await database
+        .insert(UserPersonalIdentities)
+        .values({
+          userId: context.session.userId,
+          kind: 'PASSPORT',
+          name: input.name,
+          birthday: dayjs.kst(input.birthday, 'YYYYMMDD'),
+          ci: input.passportNumber,
+          expiresAt: dayjs().add(1, 'year'),
+        })
+        .onConflictDoUpdate({
+          target: [UserPersonalIdentities.userId],
+          set: {
+            kind: 'PASSPORT',
+            name: input.name,
+            birthday: dayjs.kst(input.birthday, 'YYYYMMDD'),
+            ci: input.passportNumber,
+            expiresAt: dayjs().add(1, 'year'),
+          },
+        });
 
       return context.session.userId;
     },

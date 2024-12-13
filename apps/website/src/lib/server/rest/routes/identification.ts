@@ -59,7 +59,7 @@ identification.get('/identification/callback', async (_, context) => {
           context.flash('error', '이미 인증된 다른 계정이 있어요');
           return status(303, { headers: { Location: '/me/settings' } });
         } else if (identity.ci !== resp.response.unique_key) {
-          context.flash('error', '이전 인증과 정보가 달라요 (주민등록번호 변경 시에는 문의해주세요)');
+          context.flash('error', '이전 인증과 정보가 달라요 (정보가 변경되었을 시에는 문의해주세요)');
           return status(303, { headers: { Location: '/me/settings' } });
         }
       }
