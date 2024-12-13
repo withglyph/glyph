@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { and, desc, gt, inArray } from 'drizzle-orm';
+import { inArray } from 'drizzle-orm';
 import * as R from 'radash';
 import * as E from '$lib/enums';
 import { database, UserPersonalIdentities } from '../database';
@@ -37,10 +37,11 @@ const getBirthdayAge = (birthday?: dayjs.Dayjs) => {
   return age;
 };
 
-type AgeIdentity = Pick<typeof UserPersonalIdentities.$inferSelect, 'kind' | 'birthday'>;
+type AgeIdentity = Pick<typeof UserPersonalIdentities.$inferSelect, 'kind' | 'birthday' | 'expiresAt'>;
 
 const allowedAgeRating = (identity: AgeIdentity | undefined): (keyof typeof E.PostAgeRating)[] => {
-  if (!identity) {
+  if (!identity || identity.expiresAt?.isBefore(dayjs())) {
+    // expiresAt null이면 유효기간 없는 사람 (개발자계정일듯...)
     return ['ALL'];
   }
 
@@ -64,11 +65,7 @@ export const getPersonalIdentity = async (userId: string | undefined, context: P
     name: 'UserPersonalIdentities(userId)',
     nullable: true,
     load: async (userIds: string[]) => {
-      return database
-        .selectDistinctOn([UserPersonalIdentities.userId])
-        .from(UserPersonalIdentities)
-        .where(and(inArray(UserPersonalIdentities.userId, userIds), gt(UserPersonalIdentities.expiresAt, dayjs())))
-        .orderBy(UserPersonalIdentities.userId, desc(UserPersonalIdentities.createdAt));
+      return database.select().from(UserPersonalIdentities).where(inArray(UserPersonalIdentities.userId, userIds));
     },
 
     key: (identity) => identity?.userId,

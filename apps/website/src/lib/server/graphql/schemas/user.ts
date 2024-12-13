@@ -1,6 +1,6 @@
 import { webcrypto } from 'node:crypto';
 import dayjs from 'dayjs';
-import { and, asc, count, desc, eq, gt, gte, lt, ne, or } from 'drizzle-orm';
+import { and, asc, count, desc, eq, gt, gte, lt, or } from 'drizzle-orm';
 import { nanoid } from 'nanoid';
 import qs from 'query-string';
 import * as R from 'radash';
@@ -1479,19 +1479,17 @@ builder.mutationFields((t) => ({
       }
 
       const identities = await database
-        .select({ id: UserPersonalIdentities.id, userId: UserPersonalIdentities.userId })
+        .select({ id: UserPersonalIdentities.id, userId: UserPersonalIdentities.userId, ci: UserPersonalIdentities.ci })
         .from(UserPersonalIdentities)
         .innerJoin(Users, eq(Users.id, UserPersonalIdentities.userId))
-        .where(
-          and(
-            eq(UserPersonalIdentities.ci, resp.response.unique_key),
-            eq(Users.state, 'ACTIVE'),
-            ne(UserPersonalIdentities.userId, context.session.userId),
-          ),
-        );
+        .where(and(eq(UserPersonalIdentities.ci, resp.response.unique_key), eq(Users.state, 'ACTIVE')));
 
       if (identities.length > 0) {
-        throw new IntentionalError('이미 인증된 다른 계정이 있어요');
+        if (identities[0].userId !== context.session.userId) {
+          throw new IntentionalError('이미 인증된 다른 계정이 있어요');
+        } else if (identities[0].ci !== resp.response.unique_key) {
+          throw new IntentionalError('이전 인증과 정보가 달라요 (주민등록번호 변경 시에는 문의해주세요)');
+        }
       }
 
       const [identity] = await database
@@ -1504,6 +1502,16 @@ builder.mutationFields((t) => ({
           phoneNumber: resp.response.phone,
           ci: resp.response.unique_key,
           expiresAt: dayjs().add(1, 'year'),
+        })
+        .onConflictDoUpdate({
+          target: [UserPersonalIdentities.userId],
+          set: {
+            kind: 'PHONE',
+            name: resp.response.name,
+            birthday: dayjs.kst(resp.response.birthday, 'YYYY-MM-DD'),
+            phoneNumber: resp.response.phone,
+            expiresAt: dayjs().add(1, 'year'),
+          },
         })
         .returning({ id: UserPersonalIdentities.id });
 

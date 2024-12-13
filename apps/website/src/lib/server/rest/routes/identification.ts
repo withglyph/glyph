@@ -27,7 +27,7 @@ identification.get('/identification/callback', async (_, context) => {
 
   if (resp.response.certified) {
     const identity = await database
-      .select({ userId: UserPersonalIdentities.userId, email: Users.email })
+      .select({ userId: UserPersonalIdentities.userId, email: Users.email, ci: UserPersonalIdentities.ci })
       .from(UserPersonalIdentities)
       .innerJoin(Users, eq(Users.id, UserPersonalIdentities.userId))
       .where(and(eq(UserPersonalIdentities.ci, resp.response.unique_key), eq(Users.state, 'ACTIVE')))
@@ -54,20 +54,37 @@ identification.get('/identification/callback', async (_, context) => {
         headers: { Location: '/find-account/complete' },
       });
     } else if (context.session) {
-      if (identity && identity.userId !== context.session.userId) {
-        context.flash('error', '이미 인증된 다른 계정이 있어요');
-        return status(303, { headers: { Location: '/me/settings' } });
+      if (identity) {
+        if (identity.userId !== context.session.userId) {
+          context.flash('error', '이미 인증된 다른 계정이 있어요');
+          return status(303, { headers: { Location: '/me/settings' } });
+        } else if (identity.ci !== resp.response.unique_key) {
+          context.flash('error', '이전 인증과 정보가 달라요 (주민등록번호 변경 시에는 문의해주세요)');
+          return status(303, { headers: { Location: '/me/settings' } });
+        }
       }
 
-      await database.insert(UserPersonalIdentities).values({
-        userId: context.session.userId,
-        kind: 'PHONE',
-        name: resp.response.name,
-        birthday: dayjs.kst(resp.response.birthday, 'YYYY-MM-DD'),
-        phoneNumber: resp.response.phone,
-        ci: resp.response.unique_key,
-        expiresAt: dayjs().add(1, 'year'),
-      });
+      await database
+        .insert(UserPersonalIdentities)
+        .values({
+          userId: context.session.userId,
+          kind: 'PHONE',
+          name: resp.response.name,
+          birthday: dayjs.kst(resp.response.birthday, 'YYYY-MM-DD'),
+          phoneNumber: resp.response.phone,
+          ci: resp.response.unique_key,
+          expiresAt: dayjs().add(1, 'year'),
+        })
+        .onConflictDoUpdate({
+          target: [UserPersonalIdentities.userId],
+          set: {
+            kind: 'PHONE',
+            name: resp.response.name,
+            birthday: dayjs.kst(resp.response.birthday, 'YYYY-MM-DD'),
+            phoneNumber: resp.response.phone,
+            expiresAt: dayjs().add(1, 'year'),
+          },
+        });
 
       await context.flash('success', '본인인증이 완료되었어요');
     }
