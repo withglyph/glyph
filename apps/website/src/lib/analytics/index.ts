@@ -7,7 +7,7 @@ export * from './mixpanel';
 const analytics = {
   track: (event: string, properties?: Record<string, unknown>) => {
     mixpanel.track(event, properties);
-    airtake.track(event, properties);
+    airtake.track(event, properties as never);
   },
 
   reset: () => {
