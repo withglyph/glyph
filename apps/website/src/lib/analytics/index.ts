@@ -1,5 +1,5 @@
-import airtake from '@airtake/browser';
 import mixpanel from 'mixpanel-browser';
+import { airtake } from './airtake';
 
 export * from './airtake';
 export * from './mixpanel';
@@ -17,5 +17,5 @@ const analytics = {
 };
 
 export { analytics };
-export { default as airtake } from '@airtake/browser';
+export { airtake } from './airtake';
 export { default as mixpanel } from 'mixpanel-browser';

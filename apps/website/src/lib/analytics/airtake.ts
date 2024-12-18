@@ -1,8 +1,6 @@
-import Airtake from '@airtake/browser';
+import { Airtake } from '@airtake/browser';
 import { env } from '$env/dynamic/public';
 
-export const setupAirtake = () => {
-  Airtake.init({
-    token: env.PUBLIC_AIRTAKE_TOKEN,
-  });
-};
+export const airtake = Airtake.init({
+  token: env.PUBLIC_AIRTAKE_TOKEN,
+});
