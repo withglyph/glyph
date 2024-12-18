@@ -17,7 +17,7 @@
     "test": "playwright test"
   },
   "dependencies": {
-    "@airtake/browser": "^0.4.0",
+    "@airtake/browser": "^0.4.1",
     "@apple/app-store-server-library": "^1.4.0",
     "@aws-sdk/client-s3": "^3.614.0",
     "@aws-sdk/client-ses": "^3.614.0",
